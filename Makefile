@@ -1,9 +1,10 @@
 include ./common.mk
-all: rgis rcommands
+all: rgis rcommands rgisPlot
 
 clean:
 	$(UNIXMAKE) -C rGIS clean
 	$(UNIXMAKE) -C rCommands clean
+	$(UNIXMAKE) -C rgisPlot clean
 	$(UNIXMAKE) -C CMlib clean
 	$(UNIXMAKE) -C DBlib clean
 	$(UNIXMAKE) -C RGlib clean
@@ -14,6 +15,8 @@ rgis: cmlib dblib rglib uilib
 	$(UNIXMAKE) -C rGIS all
 rcommands: cmlib rglib mflib
 	$(UNIXMAKE) -C rCommands all
+rgisPlot: cmlib dblib
+	$(UNIXMAKE) -C rgisPlot all
 
 cmlib:
 	$(UNIXMAKE) -C CMlib all
