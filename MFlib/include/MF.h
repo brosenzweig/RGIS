@@ -20,9 +20,12 @@ extern "C" {
 #define MFMathEpsilon	 		0.000001
 
 enum { MFStop     = false,
-		 MFContinue = true,
-		 MFState    = false,
-	 	 MFFlux     = true };
+       MFContinue = true,
+       MFState    = false,
+       MFFlux     = true,
+       MFBoundary = false,
+       MFInitial  = true,
+       MFUnset    = CMfailed};
 
 #define MFDefaultMissingFloat -9999.0
 #define MFDefaultMissingByte  -99
@@ -33,8 +36,8 @@ enum { MFStop     = false,
 enum { MFInput = 1, MFRoute = 2, MFOutput = 3, MFByte = 4, MFShort = 5, MFInt = 6, MFFloat = 7, MFDouble = 8 };
 
 enum { MFTimeStepDay    = (0x01 << 0x00),
-		 MFTimeStepMonth  = (0x01 << 0x01),
-		 MFTimeStepYear   = (0x01 << 0x02)};
+       MFTimeStepMonth  = (0x01 << 0x01),
+       MFTimeStepYear   = (0x01 << 0x02)};
 
 #define MFDateClimatologyStr "XXXX"
 #define MFNoUnit " "
@@ -112,7 +115,8 @@ float  MFModelGetLongitude (int);
 float  MFModelGetLatitude  (int);
 int    MFModelGetDownLink  (int, size_t);
 float  MFModelGetArea      (int); 
-float  MFModelGetLength    (int); 
+float  MFModelGetLength    (int);
+float  MFModelGet_dt       ();
 void   MFDefEntering       (char *);
 void   MFDefLeaving        (char *);
 
