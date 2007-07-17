@@ -107,6 +107,8 @@ char  *MFVarTypeString (int);
 int    MFOptionParse (int, char *[]);
 const char *MFOptionGet (const char *);
 void   MFOptionPrintList ();
+void   MFOptionMessage (const char *, const char *, const char *[]);
+
 
 int    MFModelRun (int,char *[],int,int (*) ());
 float  MFModelGetXCoord    (int);

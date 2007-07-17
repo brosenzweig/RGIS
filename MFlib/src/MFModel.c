@@ -237,9 +237,10 @@ static int _MFModelParse (int argc, char *argv [],int argNum, int (*conf) ()) {
 		CMmsgPrint (CMmsgInfo, "ID  %10s %30s[%10s] %6s %5s NStep %3s %4s %8s Output\n",
 			      "Start_Date", "Variable","Unit","Type", "TStep", "Set", "Flux", "Boundary");
 		for (var = MFVarGetByID (varID = 0);var != (MFVariable_t *) NULL;var = MFVarGetByID (++varID))
-			CMmsgPrint (CMmsgInfo, "%3i %10s %30s[%10s] %6s %5s %5d %3s %4s %8s %6s\n",
-				varID,var->Header.Date,var->Name,var->Unit,MFVarTypeString (var->Header.DataType),MFDateTimeStepString (var->TStep),var->NStep,
-				MFYesNoString (var->Set),MFYesNoString (var->Flux),MFYesNoString (var->Boundary), MFYesNoString (var->OutPath != (char *) NULL));
+			if (strncmp (var->Name,"__",2))
+				CMmsgPrint (CMmsgInfo, "%3i %10s %30s[%10s] %6s %5s %5d %3s %4s %8s %6s\n",
+					varID,var->Header.Date,var->Name,var->Unit,MFVarTypeString (var->Header.DataType),MFDateTimeStepString (var->TStep),var->NStep,
+					MFYesNoString (var->Set),MFYesNoString (var->Flux),MFYesNoString (var->Boundary), MFYesNoString (var->OutPath != (char *) NULL));
 		return (CMfailed);
 	}
 
