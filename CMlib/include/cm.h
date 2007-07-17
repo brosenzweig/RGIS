@@ -13,11 +13,12 @@ extern "C" {
 
 #define CMargTest(arg,shortArg,longArg) ((strcmp(arg,shortArg)==0)||(strcmp(arg,longArg)==0))
 
+typedef enum { CMmsgSysError, CMmsgAppError, CMmsgUsrError, CMmsgDebug, CMmsgWarning, CMmsgInfo } CMmsgType;
+
 const char *CMprgName (const char *);
 int   CMargShiftLeft  (int, char **, int);
 int   CMoptLookup     (const char **, const char *, bool);
-
-typedef enum { CMmsgSysError, CMmsgAppError, CMmsgUsrError, CMmsgDebug, CMmsgWarning, CMmsgInfo } CMmsgType;
+void  CMoptPrintList  (CMmsgType, const char *, const char *[]);
 
 bool CMmsgSetStreamFile (CMmsgType, const char *);
 void CMmsgSetStream     (CMmsgType, FILE *);

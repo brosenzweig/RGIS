@@ -38,6 +38,13 @@ int CMoptLookup (const char *choices [], const char *option, bool matchLength) {
 	return (CMfailed);
 }
 
+void CMoptPrintList (CMmsgType msgType, const char *optName, const char *choices []) {
+	int i;
+	CMmsgPrint (msgType,"Help [%s] options:",optName);
+	for (i = 0;choices [i] != (char *) NULL;++i) CMmsgPrint (msgType," %s",choices [i]);
+	CMmsgPrint (msgType,"\n");
+}
+
 const char *CMprgName (const char *arg0) {
 	int i;
 	for (i = strlen (arg0) - 1;i > 0;i--) if (arg0 [i] == '/') {i++; break; }
