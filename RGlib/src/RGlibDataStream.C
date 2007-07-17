@@ -12,6 +12,7 @@ balazs.fekete@unh.edu
 
 #include<DB.H>
 #include<DBio.H>
+#include<cm.h>
 #include<MF.h>
 
 DBInt RGlibRGIS2DataStream (DBObjData *grdData,DBObjData *tmplData,char *fieldName,FILE *outFile)
