@@ -265,7 +265,7 @@ void MFVarSetFloat (int varID,int itemID,double val) {
 	}
 }
 
-double MFVarGetFloat (int varID,int itemID) {
+double MFVarGetFloat (int varID,int itemID,double missingVal) {
 	double val;
 	MFVariable_t *var;
 
@@ -274,26 +274,17 @@ double MFVarGetFloat (int varID,int itemID) {
 		return (MFDefaultMissingFloat);
 	}
 	if ((itemID == 0) && (var->Set != true)) CMmsgPrint (CMmsgWarning,"Warning: Unset variable [%s]!\n",var->Name);
-	if (_MFVarTestMissingVal (var,itemID)) {
-		CMmsgPrint (CMmsgWarning, "Warning: Returning missing value [%s,%d]!\n",var->Name, itemID);
-		//printf("Warning: Returning missing value [%s,%d]!\n",var->Name, itemID);
-		switch (var->Header.DataType) {
-			default:       return (MFDefaultMissingFloat);
-			case MFFloat:
-			case MFDouble:	return (var->Header.Missing.Float);
-		}
-	}
-	else {
-		switch (var->Header.DataType) {
-			case MFByte:	val = (double) (((char *)   var->Data) [itemID]); break;
-			case MFShort:	val = (double) (((short *)  var->Data) [itemID]); break;
-			case MFInt:		val = (double) (((int *)    var->Data) [itemID]); break;
-			case MFFloat:	val = (double) (((float *)  var->Data) [itemID]); break;
-			case MFDouble:	val = (double) (((double *) var->Data) [itemID]); break;
-			default:
-				CMmsgPrint (CMmsgAppError,"Error: Invalid variable [%s,%d] type [%d] in %s:%d\n",var->Name, itemID, var->Header.DataType,__FILE__,__LINE__);
-				return (MFDefaultMissingFloat);
-		}
+	if (_MFVarTestMissingVal (var,itemID)) return (missingVal);
+
+	switch (var->Header.DataType) {
+		case MFByte:	val = (double) (((char *)   var->Data) [itemID]); break;
+		case MFShort:	val = (double) (((short *)  var->Data) [itemID]); break;
+		case MFInt:		val = (double) (((int *)    var->Data) [itemID]); break;
+		case MFFloat:	val = (double) (((float *)  var->Data) [itemID]); break;
+		case MFDouble:	val = (double) (((double *) var->Data) [itemID]); break;
+		default:
+			CMmsgPrint (CMmsgAppError,"Error: Invalid variable [%s,%d] type [%d] in %s:%d\n",var->Name, itemID, var->Header.DataType,__FILE__,__LINE__);
+			return (MFDefaultMissingFloat);
 	}
  	return (var->Flux ? val = val / (double) var->NStep : val);
 //Temporary fix for the runs with monthly precip and fraction
@@ -323,7 +314,7 @@ void MFVarSetInt (int varID,int itemID,int val) {
 	}
 }
 
-int MFVarGetInt (int varID,int itemID) {
+int MFVarGetInt (int varID,int itemID, int missingVal) {
 	int val;
 	MFVariable_t *var;
 
@@ -333,15 +324,8 @@ int MFVarGetInt (int varID,int itemID) {
 	}
 
 	if (var->Set != true) CMmsgPrint (CMmsgWarning,"Warning: Unset variable %s\n",var->Name);
-	if (_MFVarTestMissingVal (var,itemID)) {
-		CMmsgPrint (CMmsgWarning, "Warning: Returning missing value [%s,%d]!\n",var->Name, itemID);
-		switch (var->Header.DataType) {
-		   case MFByte:
-			case MFShort:
-			case MFInt:    return (var->Header.Missing.Int);
-			default:       return (MFDefaultMissingInt);
-		}
-	}
+	if (_MFVarTestMissingVal (var,itemID)) return (missingVal);
+	
 	switch (var->Header.DataType) {
 		case MFByte:	val = (int) (((char *)   var->Data) [itemID]); break;
 		case MFShort:	val = (int) (((short *)  var->Data) [itemID]); break;
