@@ -401,14 +401,15 @@ int MFModelRun (int argc, char *argv [], int argNum, int (*conf) ()) {
 		for (var = MFVarGetByID (varID = 0);var != (MFVariable_t *) NULL;var = MFVarGetByID (++varID))
 			if (var->Route) for (i = 0;i < _MFDomain->ObjNum; ++i) MFVarSetFloat (varID, i, 0.0);
 
-		for (i = _MFDomain->ObjNum - 1;i >= 0; --i)
+		for (i = _MFDomain->ObjNum - 1;i >= 0; --i) {
 			for (var = MFVarGetByID (varID = 0);var != (MFVariable_t *) NULL;var = MFVarGetByID (++varID))
 				if (var->Func != (void (*) (int)) NULL) var->Func (i);
-		for (i = _MFDomain->ObjNum - 1;i >= 0; --i)
-			if ((var->Route) && (_MFDomain->Objects [i].DLinkNum == 1)) {
-				dlink = _MFDomain->Objects [i].DLinks [0];
-				MFVarSetFloat (varID, dlink, MFVarGetFloat (varID,i,0.0) + MFVarGetFloat (varID,dlink,0.0));
-			}
+			for (var = MFVarGetByID (varID = 0);var != (MFVariable_t *) NULL;var = MFVarGetByID (++varID))	
+				if ((var->Route) && (_MFDomain->Objects [i].DLinkNum == 1)) {
+					dlink = _MFDomain->Objects [i].DLinks [0];
+					MFVarSetFloat (varID, dlink, MFVarGetFloat (varID,i,0.0) + MFVarGetFloat (varID,dlink,0.0));
+				}
+		}
 		for (var = MFVarGetByID (varID = 0);var != (MFVariable_t *) NULL;var = MFVarGetByID (++varID)) {
 			strncpy (var->Header.Date,timeCur,sizeof (var->Header.Date ) - 1);
 			if (var->OutStream != (MFDataStream_t *) NULL) MFDataStreamWrite (var);
