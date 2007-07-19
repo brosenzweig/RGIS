@@ -398,8 +398,9 @@ int MFModelRun (int argc, char *argv [], int argNum, int (*conf) ()) {
 	}
 	do	{
 		CMmsgPrint (CMmsgDebug, "Computing: %s\n", timeCur);
-		for (var = MFVarGetByID (varID = 0);var != (MFVariable_t *) NULL;var = MFVarGetByID (++varID))
-			if (var->Route) for (i = 0;i < _MFDomain->ObjNum; ++i) MFVarSetFloat (varID, i, 0.0);
+		for (i = 0;i < _MFDomain->ObjNum; ++i) 
+			for (var = MFVarGetByID (varID = 0);var != (MFVariable_t *) NULL;var = MFVarGetByID (++varID))
+				if (var->Route) MFVarSetFloat (varID, i, 0.0);
 
 		for (i = _MFDomain->ObjNum - 1;i >= 0; --i) {
 			for (var = MFVarGetByID (varID = 0);var != (MFVariable_t *) NULL;var = MFVarGetByID (++varID))

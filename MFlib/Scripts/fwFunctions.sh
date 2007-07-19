@@ -121,7 +121,7 @@ function FwInit()
    _fwRGISDomainFILE=${4}
        _fwGDSWorkDIR=${5}
   	_fwRGISResultsDIR=${6}
-	       _fwRGISBIN=${7}
+	if [ "${7}" != "" ]; then export _fwRGISBIN="${7}/"; fi
 
 	  _fwDomainNAME=$(${_fwRGISBIN}getHeader -d ${_fwRGISDomainFILE} | sed "s/Domain: //")
 	  _fwDomainTYPE=$(echo ${_fwRGISDomainFILE} | sed "s:.*\.\(gdb.\):\1:")
@@ -313,7 +313,7 @@ function _fwPreprocess()
 	[ "${_fwVERBOSE}" == "on" ] && echo "      Preprocessing ${fwYEAR} started:  $(date)"
 	(( fwPROC = 0 ))
 	[ -e "${_fwGDSDomainDIR}"  ] || mkdir -p "${_fwGDSDomainDIR}"
-	[ -e "${_fwGDSDomainFILE}" ] || ${RGISBINDIR}rgis2domain "${_fwRGISDomainFILE}"  "${_fwGDSDomainFILE}";
+	[ -e "${_fwGDSDomainFILE}" ] || ${_fwRGISBIN}rgis2domain "${_fwRGISDomainFILE}"  "${_fwGDSDomainFILE}";
 
 	if [[ "${fwDOSTATE}" == "dostate" ]]
 	then
