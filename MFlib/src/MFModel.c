@@ -236,7 +236,7 @@ static int _MFModelParse (int argc, char *argv [],int argNum, int (*conf) ()) {
 	if (testOnly) {
 		CMmsgPrint (CMmsgInfo, "ID  %10s %30s[%10s] %6s %5s NStep %3s %4s %8s Output\n",
 			      "Start_Date", "Variable","Unit","Type", "TStep", "Set", "Flux", "Boundary");
-		for (var = MFVarGetByID (varID = 0);var != (MFVariable_t *) NULL;var = MFVarGetByID (++varID))
+		for (var = MFVarGetByID (varID = 1);var != (MFVariable_t *) NULL;var = MFVarGetByID (++varID))
 			if (strncmp (var->Name,"__",2))
 				CMmsgPrint (CMmsgInfo, "%3i %10s %30s[%10s] %6s %5s %5d %3s %4s %8s %6s\n",
 					varID,var->Header.Date,var->Name,var->Unit,MFVarTypeString (var->Header.DataType),MFDateTimeStepString (var->TStep),var->NStep,
@@ -253,7 +253,7 @@ static int _MFModelParse (int argc, char *argv [],int argNum, int (*conf) ()) {
 	}
 	if ((_MFDomain = MFDomainGet (inFile)) == (MFDomain_t *) NULL)	return (CMfailed);
 
-	for (var = MFVarGetByID (varID = 0);var != (MFVariable_t *) NULL;var = MFVarGetByID (++varID)) {
+	for (var = MFVarGetByID (varID = 1);var != (MFVariable_t *) NULL;var = MFVarGetByID (++varID)) {
 		if (var->InStream == (MFDataStream_t *) NULL) var->TStep = MFTimeStepDay;
 		else if (!MFDateSetCurrent (var->Header.Date)) CMmsgPrint (CMmsgWarning,"Warning: Invalid date in input (%s)\n",var->Name);
 		if (var->Flux) sprintf (var->Unit + strlen (var->Unit),"/%s",MFDateTimeStepUnit (var->TStep));
@@ -263,10 +263,7 @@ static int _MFModelParse (int argc, char *argv [],int argNum, int (*conf) ()) {
 	if (strcmp (startDate,MFDateGetCurrent ()) != 0)//zero. strings are equal
 		CMmsgPrint (CMmsgWarning,"Warning: Adjusting start date (%s,%s)!\n",startDate, MFDateGetCurrent ());
 		
-//	CMmsgPrint (CMmsgInfo, "startDate in MFModel:%s\n", startDate);
-//	CMmsgPrint (CMmsgInfo, "MFCurrent in MFModel %s\n", MFDateGetCurrent());
-
-	for (var = MFVarGetByID (varID = 0);var != (MFVariable_t *) NULL;var = MFVarGetByID (++varID)) {
+	for (var = MFVarGetByID (varID = 1);var != (MFVariable_t *) NULL;var = MFVarGetByID (++varID)) {
 		switch (var->Header.DataType) {
 			case MFInput: 
 				CMmsgPrint (CMmsgAppError, "Error: Unresolved variable (%s [%s] %s)!\n",var->Name,var->Unit, MFVarTypeString (var->Header.DataType));	
@@ -332,10 +329,11 @@ static int _MFModelParse (int argc, char *argv [],int argNum, int (*conf) ()) {
 
 	CMmsgPrint (CMmsgInfo, "ID  %10s %30s[%10s] %6s %5s NStep %3s %4s %8s Output\n",
 			      "Start_Date", "Variable","Unit","Type", "TStep", "Set", "Flux", "Boundary");
-	for (var = MFVarGetByID (varID = 0);var != (MFVariable_t *) NULL;var = MFVarGetByID (++varID))
-		CMmsgPrint (CMmsgInfo, "%3i %10s %30s[%10s] %6s %5s %5d %3s %4s %8s %6s\n",
-			varID,var->Header.Date,var->Name,var->Unit,MFVarTypeString (var->Header.DataType),MFDateTimeStepString (var->TStep),var->NStep,
-			MFYesNoString (var->Set),MFYesNoString (var->Flux),MFYesNoString (var->Boundary), MFYesNoString (var->OutPath != (char *) NULL));
+	for (var = MFVarGetByID (varID = 1);var != (MFVariable_t *) NULL;var = MFVarGetByID (++varID))
+		if (strncmp (var->Name,"__",2) && ! var->Boundary)
+			CMmsgPrint (CMmsgInfo, "%3i %10s %30s[%10s] %6s %5s %5d %3s %4s %8s %6s\n",
+				varID,var->Header.Date,var->Name,var->Unit,MFVarTypeString (var->Header.DataType),MFDateTimeStepString (var->TStep),var->NStep,
+				MFYesNoString (var->Set),MFYesNoString (var->Flux),MFYesNoString (var->Boundary), MFYesNoString (var->OutPath != (char *) NULL));
 	if (ret == CMfailed) return (CMfailed);
 	_MFOptionTestInUse ();
 	return (ret);
@@ -347,7 +345,7 @@ static bool _MFModelReadInput (char *time)
 	int varID;
 	MFVariable_t *var;
 
-	for (var = MFVarGetByID (varID = 0);var != (MFVariable_t *) NULL;var = MFVarGetByID (++varID))
+	for (var = MFVarGetByID (varID = 1);var != (MFVariable_t *) NULL;var = MFVarGetByID (++varID))
 		if (var->InStream == (MFDataStream_t *) NULL) var->Set = var->Boundary;
 		else {
 			var->Set = true;
@@ -399,25 +397,25 @@ int MFModelRun (int argc, char *argv [], int argNum, int (*conf) ()) {
 	do	{
 		CMmsgPrint (CMmsgDebug, "Computing: %s\n", timeCur);
 		for (i = 0;i < _MFDomain->ObjNum; ++i) 
-			for (var = MFVarGetByID (varID = 0);var != (MFVariable_t *) NULL;var = MFVarGetByID (++varID))
+			for (var = MFVarGetByID (varID = 1);var != (MFVariable_t *) NULL;var = MFVarGetByID (++varID))
 				if (var->Route) MFVarSetFloat (varID, i, 0.0);
 
 		for (i = _MFDomain->ObjNum - 1;i >= 0; --i) {
-			for (var = MFVarGetByID (varID = 0);var != (MFVariable_t *) NULL;var = MFVarGetByID (++varID))
+			for (var = MFVarGetByID (varID = 1);var != (MFVariable_t *) NULL;var = MFVarGetByID (++varID))
 				if (var->Func != (void (*) (int)) NULL) var->Func (i);
-			for (var = MFVarGetByID (varID = 0);var != (MFVariable_t *) NULL;var = MFVarGetByID (++varID))	
+			for (var = MFVarGetByID (varID = 1);var != (MFVariable_t *) NULL;var = MFVarGetByID (++varID))	
 				if ((var->Route) && (_MFDomain->Objects [i].DLinkNum == 1)) {
 					dlink = _MFDomain->Objects [i].DLinks [0];
 					MFVarSetFloat (varID, dlink, MFVarGetFloat (varID,i,0.0) + MFVarGetFloat (varID,dlink,0.0));
 				}
 		}
-		for (var = MFVarGetByID (varID = 0);var != (MFVariable_t *) NULL;var = MFVarGetByID (++varID)) {
+		for (var = MFVarGetByID (varID = 1);var != (MFVariable_t *) NULL;var = MFVarGetByID (++varID)) {
 			strncpy (var->Header.Date,timeCur,sizeof (var->Header.Date ) - 1);
 			if (var->OutStream != (MFDataStream_t *) NULL) MFDataStreamWrite (var);
 		}
 	} while ((timeCur = MFDateAdvance ()) != (char *) NULL ? _MFModelReadInput (timeCur) : MFStop);
 
-	for (var = MFVarGetByID (varID = 0);var != (MFVariable_t *) NULL;var = MFVarGetByID (++varID)) {
+	for (var = MFVarGetByID (varID = 1);var != (MFVariable_t *) NULL;var = MFVarGetByID (++varID)) {
 		if (var->InStream  != (MFDataStream_t *) NULL) MFDataStreamClose (var->InStream);
 		if (var->OutStream != (MFDataStream_t *) NULL) MFDataStreamClose (var->OutStream);
 		free (var->Data);

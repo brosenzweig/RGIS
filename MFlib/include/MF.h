@@ -75,6 +75,7 @@ enum { MFConst, MFFile, MFPipe, MFhttp };
 
 typedef struct MFVariable_s {
 	MFVarHeader_t Header;
+	int    ID;
 	char   Name [MFNameLength];
 	char   Unit [MFNameLength];
 	bool   Flux, Boundary, Set, Route;

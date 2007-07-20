@@ -19,8 +19,8 @@ balazs.fekete@unh.edu
 static MFVariable_t *_MFVariables = (MFVariable_t *) NULL;
 static int _MFVariableNum = 0;
 
-MFVariable_t *MFVarGetByID (int varID) {
-	return ((varID >= 0) && (varID < _MFVariableNum) ? _MFVariables + varID : (MFVariable_t *) NULL);
+MFVariable_t *MFVarGetByID (int id) {
+	return ((id > 0) && (id <= _MFVariableNum) ? _MFVariables + id - 1: (MFVariable_t *) NULL);
 }
 
 char *MFVarTypeString (int type) {
@@ -46,11 +46,11 @@ static MFVariable_t *_MFVarNewEntry (const char *name) {
 		perror ("Error:");
 		return ((MFVariable_t *) NULL);
 	}
-	_MFVariableNum++;
-	var = _MFVariables + _MFVariableNum - 1;
+	var = _MFVariables + _MFVariableNum;
+	var->ID = _MFVariableNum + 1;
 	strncpy (var->Name,name,sizeof (var->Name) - 1);
 	strcpy  (var->Unit,MFNoUnit);
-	strcpy (var->Header.Date,MFDateClimatologyStr);
+	strcpy  (var->Header.Date,MFDateClimatologyStr);
 	var->Header.ItemNum  = 0;
 	var->Header.DataType = MFInput;
 	var->Data      = (void *) NULL;
@@ -65,14 +65,15 @@ static MFVariable_t *_MFVarNewEntry (const char *name) {
 	var->Boundary  = false;
 	var->Route     = false;
 	var->NStep     = 1;
+	_MFVariableNum++;
 	return (var);
 }
 
 static MFVariable_t *_MFVarFindEntry (const char *name) {
-	int varID;
+	int i;
 
-	for (varID = 0;varID < _MFVariableNum;++varID) if (strcmp (_MFVariables [varID].Name,name) == 0) break;
-	if (varID < _MFVariableNum) return (_MFVariables + varID);
+	for (i = 0;i < _MFVariableNum;++i) if (strcmp (_MFVariables [i].Name,name) == 0) break;
+	if (i < _MFVariableNum) return (_MFVariables + i);
 	return ((MFVariable_t *) NULL);
 }
 
@@ -172,26 +173,26 @@ int MFVarGetID (char *name,char *unit,int type, bool flux, bool boundary) {
 		if (flux)  var->Flux = flux;
 		else CMmsgPrint (CMmsgWarning,"Warning: Ignoring flux redefinition (%s [%s])!\n",var->Name,var->Unit);
 	}
-	return (var - _MFVariables);
+	return (var->ID);
 }
 
-int MFVarSetFunction (int varID,void (*func) (int)) {
+int MFVarSetFunction (int id,void (*func) (int)) {
 	MFVariable_t *var;
 
-	if ((var = MFVarGetByID (varID)) == (MFVariable_t *) NULL) {
-		CMmsgPrint (CMmsgAppError,"Error: Invalid variable [%d] in: %s:%d\n",varID,__FILE__,__LINE__);
+	if ((var = MFVarGetByID (id)) == (MFVariable_t *) NULL) {
+		CMmsgPrint (CMmsgAppError,"Error: Invalid variable [%d] in: %s:%d\n",id,__FILE__,__LINE__);
 		return (CMfailed);
 	}
 
 	if ((void *) var->Func == (void *) NULL) { var->Set  = true; var->Func = func; }
 	else
 		CMmsgPrint (CMmsgWarning,"Warning: Ignoring variable redefinition [%s]\n",var->Name);
-	return (varID);
+	return (id);
 }
 
-int MFVarGetTStep (int varID) {
+int MFVarGetTStep (int id) {
 	MFVariable_t *var;
-	return ((var = MFVarGetByID (varID)) != (MFVariable_t *) NULL ? var->NStep : MFTimeStepDay);
+	return ((var = MFVarGetByID (id)) != (MFVariable_t *) NULL ? var->NStep : MFTimeStepDay);
 } 
 
 static bool _MFVarTestMissingVal (MFVariable_t *var,int itemID)
@@ -209,12 +210,12 @@ static bool _MFVarTestMissingVal (MFVariable_t *var,int itemID)
 	return (true);
 }
 
-bool MFVarTestMissingVal (int varID,int itemID)
+bool MFVarTestMissingVal (int id,int itemID)
 	{
 	MFVariable_t *var;
 
-	if ((var = MFVarGetByID (varID)) == (MFVariable_t *) NULL)  {
-		CMmsgPrint (CMmsgAppError,"Error: Invalid variable [%d] in: %s:%d\n",varID,__FILE__,__LINE__);
+	if ((var = MFVarGetByID (id)) == (MFVariable_t *) NULL)  {
+		CMmsgPrint (CMmsgAppError,"Error: Invalid variable [%d] in: %s:%d\n",id,__FILE__,__LINE__);
 		return (true);
 	}
 	if ((itemID < 0) || (itemID >= var->Header.ItemNum)) {
@@ -224,12 +225,12 @@ bool MFVarTestMissingVal (int varID,int itemID)
 	return  (_MFVarTestMissingVal (var,itemID));
 }
 
-void MFVarSetMissingVal (int varID, int itemID)
+void MFVarSetMissingVal (int id, int itemID)
 	{
 	MFVariable_t *var;
 //printf("Missing var %s\n ",var->Name);
-	if (((var = MFVarGetByID (varID)) == (MFVariable_t *) NULL) || (itemID < 0) || (itemID >= var->Header.ItemNum)) {
-		CMmsgPrint (CMmsgAppError,"Error: Invalid variable [%d,%d] in: %s:%d\n",varID,itemID,__FILE__,__LINE__);
+	if (((var = MFVarGetByID (id)) == (MFVariable_t *) NULL) || (itemID < 0) || (itemID >= var->Header.ItemNum)) {
+		CMmsgPrint (CMmsgAppError,"Error: Invalid variable [%d,%d] in: %s:%d\n",id,itemID,__FILE__,__LINE__);
 		return;
 	}
 	switch (var->Header.DataType) {
@@ -241,15 +242,13 @@ void MFVarSetMissingVal (int varID, int itemID)
 	}
 }
 
-void MFVarSetFloat (int varID,int itemID,double val) {
+void MFVarSetFloat (int id,int itemID,double val) {
 	MFVariable_t *var;
-//if (isnan(val))printf("Not a number, varName %i %s \n",varID,var->Name);
-	if (((var = MFVarGetByID (varID)) == (MFVariable_t *) NULL) || (itemID < 0) || (itemID >= var->Header.ItemNum)) {
-		CMmsgPrint (CMmsgAppError,"Error: Invalid variable [%d,%d] in: %s:%d\n",varID,itemID,__FILE__,__LINE__);
+
+	if (((var = MFVarGetByID (id)) == (MFVariable_t *) NULL) || (itemID < 0) || (itemID >= var->Header.ItemNum)) {
+		CMmsgPrint (CMmsgAppError,"Error: Invalid variable [%d,%d] in: %s:%d\n",id,itemID,__FILE__,__LINE__);
 		return;
 	}
-//	if ((varID == 0) && (itemID == 2))
-//		printf ("Setting float variable %s\n", var->Name);
 
 	var->Set = true;
 	if (var->Flux) val = val * (double) var->NStep;
@@ -265,12 +264,12 @@ void MFVarSetFloat (int varID,int itemID,double val) {
 	}
 }
 
-double MFVarGetFloat (int varID,int itemID,double missingVal) {
+double MFVarGetFloat (int id,int itemID,double missingVal) {
 	double val;
 	MFVariable_t *var;
 
-	if (((var = MFVarGetByID (varID)) == (MFVariable_t *) NULL) || (itemID < 0) || (itemID >= var->Header.ItemNum)) {
-		CMmsgPrint (CMmsgAppError,"Error: Invalid variable [%d,%d] in: %s:%d\n",varID,itemID,__FILE__,__LINE__);
+	if (((var = MFVarGetByID (id)) == (MFVariable_t *) NULL) || (itemID < 0) || (itemID >= var->Header.ItemNum)) {
+		CMmsgPrint (CMmsgAppError,"Error: Invalid variable [%d,%d] in: %s:%d\n",id,itemID,__FILE__,__LINE__);
 		return (MFDefaultMissingFloat);
 	}
 	if ((itemID == 0) && (var->Set != true)) CMmsgPrint (CMmsgWarning,"Warning: Unset variable [%s]!\n",var->Name);
@@ -287,19 +286,16 @@ double MFVarGetFloat (int varID,int itemID,double missingVal) {
 			return (MFDefaultMissingFloat);
 	}
  	return (var->Flux ? val = val / (double) var->NStep : val);
-//Temporary fix for the runs with monthly precip and fraction
-// 	return (val);
 }
 
-void MFVarSetInt (int varID,int itemID,int val) {
+void MFVarSetInt (int id,int itemID,int val) {
 	MFVariable_t *var;
 
-	if (((var = MFVarGetByID (varID)) == (MFVariable_t *) NULL) || (itemID < 0) || (itemID >= var->Header.ItemNum)) {
-		CMmsgPrint (CMmsgAppError,"Error: Invalid variable [%d,%d] in: %s:%d\n",varID,itemID,__FILE__,__LINE__);
+	if (((var = MFVarGetByID (id)) == (MFVariable_t *) NULL) || (itemID < 0) || (itemID >= var->Header.ItemNum)) {
+		CMmsgPrint (CMmsgAppError,"Error: Invalid variable [%d,%d] in: %s:%d\n",id,itemID,__FILE__,__LINE__);
 		return;
 	}
-//	if ((varID == 0) && (itemID == 2))
-//	printf ("Setting int variable %s\n", var->Name);
+
 	var->Set = true;
 	if (var->Flux) val = val * var->NStep;
 	switch (var->Header.DataType) {
@@ -314,12 +310,12 @@ void MFVarSetInt (int varID,int itemID,int val) {
 	}
 }
 
-int MFVarGetInt (int varID,int itemID, int missingVal) {
+int MFVarGetInt (int id,int itemID, int missingVal) {
 	int val;
 	MFVariable_t *var;
 
-	if (((var = MFVarGetByID (varID)) == (MFVariable_t *) NULL) || (itemID < 0) || (itemID >= var->Header.ItemNum)) {
-		CMmsgPrint (CMmsgAppError,"Error: Invalid variable [%d,%d] in: %s:%d\n",varID,itemID,__FILE__,__LINE__);
+	if (((var = MFVarGetByID (id)) == (MFVariable_t *) NULL) || (itemID < 0) || (itemID >= var->Header.ItemNum)) {
+		CMmsgPrint (CMmsgAppError,"Error: Invalid variable [%d,%d] in: %s:%d\n",id,itemID,__FILE__,__LINE__);
 		return (MFDefaultMissingInt);
 	}
 
