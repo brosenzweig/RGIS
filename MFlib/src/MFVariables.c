@@ -62,7 +62,7 @@ static MFVariable_t *_MFVarNewEntry (const char *name) {
 	var->TStep     = MFTimeStepYear;
 	var->Set       = false;
 	var->Flux      = false;
-	var->Boundary  = false;
+	var->Initial   = false;
 	var->Route     = false;
 	var->NStep     = 1;
 	_MFVariableNum++;
@@ -120,7 +120,7 @@ MFVariable_t *MFVarSetPath (const char *name,const char *path, int type) {
 	return (var);
 }
 
-int MFVarGetID (char *name,char *unit,int type, bool flux, bool boundary) {
+int MFVarGetID (char *name,char *unit,int type, bool flux, bool initial) {
 	MFVariable_t *var;
 
 	if ((var = _MFVarFindEntry (name)) == (MFVariable_t *) NULL) {
@@ -128,7 +128,7 @@ int MFVarGetID (char *name,char *unit,int type, bool flux, bool boundary) {
 			return (CMfailed);
 		if (type == MFRoute) var->Route = true;
 		var->Header.DataType = type == MFInput ? MFInput : MFOutput;
-		var->Set      = type == MFInput ? boundary : true;
+		var->Set      = type == MFInput ? initial : true;
 	}
 	switch (var->Header.DataType) {
 		case MFInput:		break;
@@ -160,9 +160,9 @@ int MFVarGetID (char *name,char *unit,int type, bool flux, bool boundary) {
 			}
 	}
 
-	if (boundary != var->Boundary) {
-		if (boundary) var->Boundary = boundary;
-		else CMmsgPrint (CMmsgWarning,"Warning: Ignoring boundary redefinition (%s [%s])!\n",var->Name,var->Unit);
+	if (initial != var->Initial) {
+		if (initial) var->Initial = initial;
+		else CMmsgPrint (CMmsgWarning,"Warning: Ignoring initial redefinition (%s [%s])!\n",var->Name,var->Unit);
 	}
 
 	if (strncmp (unit,var->Unit,strlen (unit)) != 0) {
@@ -174,20 +174,6 @@ int MFVarGetID (char *name,char *unit,int type, bool flux, bool boundary) {
 		else CMmsgPrint (CMmsgWarning,"Warning: Ignoring flux redefinition (%s [%s])!\n",var->Name,var->Unit);
 	}
 	return (var->ID);
-}
-
-int MFVarSetFunction (int id,void (*func) (int)) {
-	MFVariable_t *var;
-
-	if ((var = MFVarGetByID (id)) == (MFVariable_t *) NULL) {
-		CMmsgPrint (CMmsgAppError,"Error: Invalid variable [%d] in: %s:%d\n",id,__FILE__,__LINE__);
-		return (CMfailed);
-	}
-
-	if ((void *) var->Func == (void *) NULL) { var->Set  = true; var->Func = func; }
-	else
-		CMmsgPrint (CMmsgWarning,"Warning: Ignoring variable redefinition [%s]\n",var->Name);
-	return (id);
 }
 
 int MFVarGetTStep (int id) {

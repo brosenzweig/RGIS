@@ -78,7 +78,7 @@ typedef struct MFVariable_s {
 	int    ID;
 	char   Name [MFNameLength];
 	char   Unit [MFNameLength];
-	bool   Flux, Boundary, Set, Route;
+	bool   Flux, Initial, Set, Route;
 	short  TStep;
 	void  *Data;
 
@@ -88,6 +88,8 @@ typedef struct MFVariable_s {
 	MFDataStream_t *InStream, *OutStream;
 	} MFVariable_t;
 
+typedef void (*MFFunction) (int);
+
 MFDataStream_t *MFDataStreamOpen  (const char *,const char *);
 int MFDataStreamClose (MFDataStream_t *);
 int MFDataStreamRead  (MFVariable_t *);
@@ -96,7 +98,6 @@ int MFDataStreamWrite (MFVariable_t *);
 int    MFVarGetID (char *,char *,int,bool,bool);
 MFVariable_t *MFVarGetByID   (int) ;
 MFVariable_t *MFVarGetByName (const char *) ;
-int    MFVarSetFunction (int,void (*) (int));
 void   MFVarSetInt (int,int,int);
 int    MFVarGetInt (int,int,int);
 void   MFVarSetFloat (int,int,double);
@@ -112,6 +113,7 @@ void   MFOptionMessage (const char *, const char *, const char *[]);
 
 
 int    MFModelRun (int,char *[],int,int (*) ());
+int    MFModelAddFunction (MFFunction);
 float  MFModelGetXCoord    (int);
 float  MFModelGetYCoord    (int);
 float  MFModelGetLongitude (int);

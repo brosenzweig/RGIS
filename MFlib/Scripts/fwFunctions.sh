@@ -409,17 +409,17 @@ function _fwPostprocess()
 		[ -e "${_fwRGISResultsDIR}/${fwVARIABLE}" ] || mkdir -p "${_fwRGISResultsDIR}/${fwVARIABLE}"
 		local fwRGISFileNAME="$(_fwRGISFilename  "${fwVARIABLE}" "${_fwVersionSTR}" "${fwYEAR}" "d")"
 		[ "${fwPROC}" -ge "${_fwMAXPROC}" ] && { wait; (( fwPROC = 0 )); }
-		${_fwRGISBIN}ds2rgis -t "${_fwDomainNAME}, ${fwVARIABLE} ${_fwVersionSTR} (${_fwDomainRES}, Daily${fwSUFFIX}})"\
+		${_fwRGISBIN}ds2rgis -t "${_fwDomainNAME}, ${fwVARIABLE} ${_fwVersionSTR} (${_fwDomainRES}, Daily${fwSUFFIX})"\
 		                     -m ${_fwRGISDomainFILE} -s blue ${fwGDSFileNAME} ${fwRGISFileNAME} &
 		[ "${fwPROC}" -ge "${_fwMAXPROC}" ] && { wait; (( fwPROC = 0 )); }
 		local fwRGISFileNAME="$(_fwRGISFilename  "${fwVARIABLE}" "${_fwVersionSTR}" "${fwYEAR}" "m")"
 		${_fwRGISBIN}dsAggregate -e month -a ${fwAMODE} ${fwGDSFileNAME} |\
-		${_fwRGISBIN}ds2rgis -t "${_fwDomainNAME}, ${fwVARIABLE} ${_fwVersionSTR} (${_fwDomainRES}, Monthly${fwSUFFIX}})"\
+		${_fwRGISBIN}ds2rgis -t "${_fwDomainNAME}, ${fwVARIABLE} ${_fwVersionSTR} (${_fwDomainRES}, Monthly${fwSUFFIX})"\
 		                     -m ${_fwRGISDomainFILE} -s blue - ${fwRGISFileNAME} &
 		[ "${fwPROC}" -ge "${_fwMAXPROC}" ] && { wait; (( fwPROC = 0 )); }
 		local fwRGISFileNAME="$(_fwRGISFilename  "${fwVARIABLE}" "${_fwVersionSTR}" "${fwYEAR}" "a")"
 		${_fwRGISBIN}dsAggregate -e year -a ${fwAMODE} ${fwGDSFileNAME} |\
-		${_fwRGISBIN}ds2rgis -t "${_fwDomainNAME}, ${fwVARIABLE} ${_fwVersionSTR} (${_fwDomainRES}, Yearly${fwSUFFIX}})"\
+		${_fwRGISBIN}ds2rgis -t "${_fwDomainNAME}, ${fwVARIABLE} ${_fwVersionSTR} (${_fwDomainRES}, Yearly${fwSUFFIX})"\
 		                     -m ${_fwRGISDomainFILE} -s blue - ${fwRGISFileNAME} &
 	done
 	wait
