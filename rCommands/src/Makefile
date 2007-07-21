@@ -3,7 +3,7 @@ INC    = ../include
 SRC    = ../src
 OBJ    = ../obj
 BIN    = ../bin
-CPP    = $(UNIXCPP) $(UNIXCPPOPS) $(NETCDFINC) -I$(INC)\
+CPP    = $(UNIXCPP) $(UNIXCPPOPS) -I$(INC)\
          -I../../CMlib/include\
          -I../../MFlib/include\
          -I../../DBlib/include\
@@ -12,7 +12,7 @@ LINK   = $(UNIXCPP)
 LIBS   = -L../../CMlib/lib\
          -L../../MFlib/lib\
          -L../../DBlib/lib\
-         -L../../RGlib/lib -lRG21 -lDB21 -lMF10 -lCM10
+         -L../../RGlib/lib -lRG21 -lDB21 -lMF10 -lCM10 $(UNIXLIBS)
 
 INCLUDES = $(INC)/CMDexp.H
 
@@ -94,4 +94,4 @@ clean:
 
 $(BIN)/%: $(SRC)/CMD%.C $(INCLUDES) $(SRC)/Makefile
 	$(CPP) -o $(OBJ)/CMD$*.o -c $(SRC)/CMD$*.C
-	$(LINK) $(OBJ)/CMD$*.o $(LIBS) $(UNIXCPPLIBS) $(NETCDFLIB) $(MATHLIB) -o $(BIN)/$*
+	$(LINK) $(OBJ)/CMD$*.o $(LIBS) -o $(BIN)/$*

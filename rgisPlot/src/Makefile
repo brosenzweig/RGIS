@@ -5,10 +5,10 @@ OBJ    = ../obj
 BIN    = ../bin
 CPP    = $(UNIXCPP) $(UNIXCPPOPS) -I$(INC)\
          -I../../CMlib/include\
-         -I../../DBlib/include $(PGINC)
+         -I../../DBlib/include
 LINK   = $(UNIXCPP)
 LIBS   = -L../../CMlib/lib\
-         -L../../DBlib/lib -lDB21 -lCM10 $(PGLIB) $(X11LIBS) $(MATHLIB)
+         -L../../DBlib/lib -lDB21 -lCM10 $(UNIXLIBS)
 TARGET = $(BIN)/rgisPlot
 
 INCLUDES = $(INC)/rgisPlot.H

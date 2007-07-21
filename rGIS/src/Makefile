@@ -12,7 +12,7 @@ LINK   = $(UNIXCPP)
 LIBS   = -L../../CMlib/lib\
          -L../../DBlib/lib\
          -L../../RGlib/lib\
-         -L../../UIlib/lib -lUI21 -lRG21 -lDB21 -lCM10 $(X11LIBS) $(MATHLIB)
+         -L../../UIlib/lib -lUI21 -lRG21 -lDB21 -lCM10 $(UNIXLIBS)
 TARGET = $(BIN)/rgis21
 
 INCLUDES = $(INC)/rgis.H

@@ -3,7 +3,7 @@ INC    = ../include
 SRC    = ../src
 OBJ    = ../obj
 LIB    = ../lib
-CPP    = $(UNIXCPP) $(UNIXCPPOPS) $(NETCDFINC) -I$(INC) -I../../CMlib/include
+CPP    = $(UNIXCPP) $(UNIXCPPOPS) -I$(INC) -I../../CMlib/include
 TARGET = $(LIB)/libDB21.a
 
 INCLUDES = $(INC)/DB.H $(INC)/DBio.H

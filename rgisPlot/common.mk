@@ -1,28 +1,14 @@
 UNIX=$(shell uname)
 
 ifeq ($(UNIX),Linux)
-export MATHLIB=-lm
-export NETCDFINC=
-export NETCDFLIB=-ludunits -lnetcdf
-export PGINC=
-export PGLIB=-lcpgplot -lpgplot -lpng
-export UNIXAR=ar -ru
 export UNIXCPP=g++
 export UNIXCPPOPS=-Wall -fsigned-char -D_GNU_SOURCE -Wno-deprecated
 export UNIXMAKE=make
-export UNIXRL=ranlib
-export X11LIBS=-lXm -lXt -lXext -lX11
+export UNIXLIBS=-ludunits -lnetcdf -lcpgplot -lpgplot -lpng -lm
 endif
 ifeq ($(UNIX),Darwin)
-export MATHLIB=-lm
-export NETCDFINC=
-export NETCDFLIB=-ludunits -lnetcdf
-export PGINC=
-export PGLIB=-lcpgplot -lpgplot -lpng
-export UNIXAR=ar -ru
 export UNIXCPP=g++
-export UNIXCPPOPS=-Wall -fsigned-char -D_GNU_SOURCE -Wno-deprecated
+export UNIXCPPOPS=-Wall -fsigned-char -D_GNU_SOURCE -Wno-deprecated -I/sw/lib/pgplot
 export UNIXMAKE=make
-export UNIXRL=ranlib
-export X11LIBS=-lXm -lXt -lXext -lX11
+export UNIXLIBS=-L/sw/lib -ludunits -lnetcdf -L/sw/lib/pgplot -lcpgplot -lpgplot -lpng -L/usr/X11R6/lib -lX11 -lg95 -lm
 endif
