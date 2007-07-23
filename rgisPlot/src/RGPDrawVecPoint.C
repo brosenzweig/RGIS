@@ -17,7 +17,7 @@ balazs.fekete@unh.edu
 DBInt RGPDrawVecPoint (DBInt mode, DBInt *entryNum, DBObjData *pntData)
 
 	{
-	DBInt ret, pntID, pntStyle, pntColor, pntSize, legendNum, i, buffLen;
+	DBInt ret, pntID, pntColor, legendNum, i, buffLen;
 	DBInt symbolMode = 0, legendMode = 0, legendPos = 0;
 	char charBuffer [RGPBufferSIZE], errorMsg [RGPBufferSIZE], legendTitle [RGPBufferSIZE], *ptr;
 	const char *symbolModes [] = { "default", "custom", NULL };
