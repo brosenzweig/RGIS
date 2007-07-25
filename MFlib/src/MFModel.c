@@ -424,8 +424,7 @@ int MFModelRun (int argc, char *argv [], int argNum, int (*conf) ()) {
 				}
 		}
 		for (var = MFVarGetByID (varID = 1);var != (MFVariable_t *) NULL;var = MFVarGetByID (++varID)) {
-			strncpy (var->Header.Date,timeCur,sizeof (var->Header.Date ) - 1);
-			if (var->OutStream != (MFDataStream_t *) NULL) MFDataStreamWrite (var);
+			if (var->OutStream != (MFDataStream_t *) NULL) MFDataStreamWrite (var, timeCur);
 		}
 	} while ((timeCur = MFDateAdvance ()) != (char *) NULL ? _MFModelReadInput (timeCur) : MFStop);
 

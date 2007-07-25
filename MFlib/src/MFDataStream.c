@@ -146,10 +146,10 @@ int MFDataStreamRead (MFVariable_t *var) {
 			return (CMfailed);
 		}
  
-		strncpy (var->Header.Date,header.Date,sizeof (header.Date));
+		strncpy (var->Header.Date,   header.Date, sizeof (header.Date));
 		if (header.Swap != 1)
 			switch (header.DataType) {
-				case MFShort:	for (i = 0;i < var->Header.ItemNum;++i) MFSwapHalfWord ((short *)  (var->Data) + i); break;
+				case MFShort:  for (i = 0;i < var->Header.ItemNum;++i) MFSwapHalfWord ((short *)  (var->Data) + i); break;
 				case MFInt:    for (i = 0;i < var->Header.ItemNum;++i) MFSwapWord     ((int *)    (var->Data) + i); break;
 				case MFFloat:  for (i = 0;i < var->Header.ItemNum;++i) MFSwapWord     ((float *)  (var->Data) + i); break;
 				case MFDouble: for (i = 0;i < var->Header.ItemNum;++i) MFSwapLongWord ((double *) (var->Data) + i); break;
@@ -159,12 +159,12 @@ int MFDataStreamRead (MFVariable_t *var) {
 	return (MFContinue);
 }
 
-int MFDataStreamWrite (MFVariable_t *var) {
+int MFDataStreamWrite (MFVariable_t *var, const char *date) {
 	int itemSize;
 	MFVarHeader_t header;
 
 	memcpy (&header, &(var->Header), sizeof (MFVarHeader_t));
-	strncpy (header.Date, MFDateGetCurrent (),sizeof (header.Date) - 1);
+	strncpy (header.Date, date, sizeof (header.Date) - 1);
 	itemSize = MFVarItemSize (header.DataType);
 	header.Swap = 1;
 	if (!MFVarWriteHeader (&(header),var->OutStream->Handle.File) != CMsucceeded) return (CMfailed);

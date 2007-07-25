@@ -499,9 +499,8 @@ function _fwSpinup()
 		done)
 
 		echo "${fwOptions}" > ${fwOptionsFILE}
-		local fwEXEC="${_fwModelBIN} ${fwOptions}"
 		[ "${_fwVERBOSE}" == "on" ] && echo "   Passnum [${fwPASS}] started:  $(date)"
-		if ${fwEXEC}
+		if echo ${fwOptions} | xargs ${_fwModelBIN}
 		then
 			[ "${_fwVERBOSE}" == "on" ] && echo "   Passnum [${fwPASS}] finished: $(date)"
 			local fwOptionsFILE="${_fwGDSLogDIR}/SpinupN_Options.log"
@@ -527,7 +526,6 @@ function _fwRun()
 	[ "${_fwVERBOSE}" == "on" ] && echo "Model run started:  $(date)"
 	for (( fwYEAR = fwStartYEAR; fwYEAR <= fwEndYEAR; ++fwYEAR ))
 	do
-		[ "${_fwVERBOSE}" == "on" ] && echo "   Running year [${fwYEAR}] started:  $(date)"
 		if (( fwYEAR == fwStartYEAR )); then fwDOSTATE="dostate"; else fsDOSTATE="nostate"; fi
 		_fwPreprocess "${fwDOSTATE}" "${fwYEAR}" || return -1
 
@@ -537,7 +535,7 @@ function _fwRun()
 		local  fwWarningLOG="file:${_fwGDSLogDIR}/Run${fwYEAR}_Warnings.log"
 		local     fwInfoLOG="file:${_fwGDSLogDIR}/Run${fwYEAR}_Info.log"
 
-		fwOptions=$(echo ${_fwGDSDomainFILE}
+		fwOptions=$(echo ${_fwGDSDomainFILE} -s "${fwYEAR}-01-01" -n "${fwYEAR}-12-31"
 		echo "-m sys_error=on"
 		echo "-m app_error=on"
 		echo "-m usr_error=${fwUserLOG}"
@@ -600,8 +598,8 @@ function _fwRun()
 			fi
  		done)
 		echo "${fwOptions}" > ${fwOptionsFILE}
-		local fwEXEC="${_fwModelBIN} ${fwOptions}"
-		if ${fwEXEC}
+		[ "${_fwVERBOSE}" == "on" ] && echo "   Running year [${fwYEAR}] started:  $(date)"
+		if echo ${fwOptions} | xargs ${_fwModelBIN}
 		then
 			[ "${_fwPOSTPROCESS}" == "on" ] && { _fwPostprocess "${fwYEAR}" || return -1; }
 			[ "${_fwVERBOSE}" == "on" ] && echo "   Running year [${fwYEAR}] finished: $(date)"

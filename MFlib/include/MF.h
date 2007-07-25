@@ -93,7 +93,7 @@ typedef void (*MFFunction) (int);
 MFDataStream_t *MFDataStreamOpen  (const char *,const char *);
 int MFDataStreamClose (MFDataStream_t *);
 int MFDataStreamRead  (MFVariable_t *);
-int MFDataStreamWrite (MFVariable_t *);
+int MFDataStreamWrite (MFVariable_t *, const char *);
 
 int    MFVarGetID (char *,char *,int,bool,bool);
 MFVariable_t *MFVarGetByID   (int) ;
