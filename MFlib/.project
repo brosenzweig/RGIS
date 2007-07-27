@@ -3,7 +3,6 @@
 	<name>MFlib</name>
 	<comment></comment>
 	<projects>
-		<project>CMlib</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>
