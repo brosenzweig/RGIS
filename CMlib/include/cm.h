@@ -8,8 +8,7 @@
 extern "C" {
 #endif
 
-#define CMsucceeded 0
-#define CMfailed   -1
+enum { CMsucceeded = 0,  CMfailed  = -1 };
 
 #define CMargTest(arg,shortArg,longArg) ((strcmp(arg,shortArg)==0)||(strcmp(arg,longArg)==0))
 
