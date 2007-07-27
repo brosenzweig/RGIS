@@ -10,10 +10,10 @@ balazs.fekete@unh.edu
 
 *******************************************************************************/
 
-#include<stdio.h>
-#include<string.h>
-#include<stdlib.h>
-#include<cm.h>
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
+#include <cm.h>
 
 #define BLOCKSIZE 128
 

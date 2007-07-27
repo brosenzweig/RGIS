@@ -10,10 +10,10 @@ balazs.fekete@unh.edu
 
 *******************************************************************************/
 
-#include<stdlib.h>
-#include<string.h>
-#include<cm.h>
-#include<MF.h>
+#include <stdlib.h>
+#include <string.h>
+#include <cm.h>
+#include <MF.h>
 
 #define MFconstStr "const:"
 #define MFfileStr  "file:"

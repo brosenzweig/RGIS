@@ -10,10 +10,10 @@ balazs.fekete@unh.edu
 
 *******************************************************************************/
 
-#include<stdio.h>
-#include<string.h>
-#include<cm.h>
-#include<MF.h>
+#include <stdio.h>
+#include <string.h>
+#include <cm.h>
+#include <MF.h>
 
 int MFLoadConfig (char *fileName, int (*func) (const char *,const char *)) {
 	FILE *fp;
