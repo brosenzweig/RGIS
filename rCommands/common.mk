@@ -9,6 +9,6 @@ endif
 ifeq ($(UNIX),Darwin)
 export UNIXCPP=g++
 export UNIXCPPOPS=-Wall -fsigned-char -D_GNU_SOURCE -Wno-deprecated
-export UNIXLIBS=-L/sw/lib -ludunits -lnetcdf -lm
+export UNIXLIBS=-L/opt/local/lib -ludunits -lnetcdf -lm
 export UNIXMAKE=make
 endif
