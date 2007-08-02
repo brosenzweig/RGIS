@@ -106,9 +106,10 @@ function FwArguments()
 			(-O|--optionsprint)
 				_fwOPTIONSPRINT="on"
 			;;
-         (-T|--testonly)
+			(-T|--testonly)
 				_fwTESTONLY="on"
-			;;			(-V|--verbose)
+			;;
+			(-V|--verbose)
 				FwVERBOSE="on"
 			;;
 			(-h|--help)
@@ -199,7 +200,17 @@ function FwOptions()
 		shift
 	done
 	local fwMessageOPTIONS="-m sys_error=off -m app_error=off -m usr_error=off -m debug=off -m warning=off -m info=on"
-#	[ "${_fwOPTIONSPRINT}" == "on" ] && { echo "-m sys_error=on -m app_error=on -m usr_error=on -m debug=on -m warning=on -m info=on -T"; echo "$(_fwOptionList)"; return -1 }
+	if [ "${_fwOPTIONSPRINT}" == "on" ]
+	then
+		echo "-m sys_error=on"
+		echo "-m app_error=on"
+		echo "-m usr_error=on"
+		echo "-m debug=on"
+		echo "-m warning=on"
+		echo "-T"
+		echo "$(_fwOptionList)"
+		return -1
+	fi
 	local fwLINES=($(${_fwModelBIN} ${_fwGDSDomain} $(_fwOptionList) -T ${fwMessageOPTIONS} | grep "XXXX"  | cut -c15-45,58-64,77-80,81-85,86-94))
 	for (( fwVARnum = 0; fwVARnum < ${#fwLINES[@]} / 5 ; ++fwVARnum ))
 	do
