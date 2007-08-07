@@ -13,7 +13,7 @@ LIBS   = -L../../CMlib/lib\
          -L../../DBlib/lib\
          -L../../RGlib/lib\
          -L../../UIlib/lib -lUI21 -lRG21 -lDB21 -lCM10 $(UNIXLIBS)
-TARGET = $(BIN)/rgis21
+TARGET = rgis21
 
 INCLUDES = $(INC)/rgis.H
 
@@ -52,13 +52,19 @@ OBJS = $(OBJ)/RGISMain.o\
        $(OBJ)/RGISMetaDB.o\
        $(OBJ)/RGISDisplay.o
 
-all: $(TARGET)
+all: $(BIN)/$(TARGET)
+
+install:
+	cp $(BIN)/$(TARGET) $(INSTALLDIR)/bin/
+
+uninstall:
+	rm $(INSTALLDIR)/bin/$(TARGET)
 
 clean:
 	rm $(TARGET) $(OBJS)
 
-$(TARGET): $(OBJS) $(SRC)/Makefile
-	$(CPP) $(OBJS) $(LIBS) -o $(TARGET)
+$(BIN)/$(TARGET): $(OBJS) $(SRC)/Makefile
+	$(CPP) $(OBJS) $(LIBS) -o $(BIN)/$(TARGET)
 
 $(OBJ)/%.o: $(SRC)/%.C $(INCLUDES)
 	$(CPP) -o $(OBJ)/$*.o -c $(SRC)/$*.C

@@ -9,7 +9,7 @@ CPP    = $(UNIXCPP) $(UNIXCPPOPS) -I$(INC)\
 LINK   = $(UNIXCPP)
 LIBS   = -L../../CMlib/lib\
          -L../../DBlib/lib -lDB21 -lCM10 $(UNIXLIBS)
-TARGET = $(BIN)/rgisPlot
+TARGET = rgisPlot
 
 INCLUDES = $(INC)/rgisPlot.H
 
@@ -20,13 +20,19 @@ OBJS = $(OBJ)/RGPMain.o\
        $(OBJ)/RGPDrawNetwork.o\
        $(OBJ)/RGPColorMaps.o
 
-all: $(TARGET)
+all: $(BIN)/$(TARGET)
+
+install:
+	cp $(BIN)/$(TARGET) $(INSTALLDIR)/bin/
+
+uninstall:
+	rm $(INSTALLDIR)/bin/$(TARGET)
 
 clean:
 	rm $(TARGET) $(OBJS)
 
-$(TARGET): $(OBJS) $(SRC)/Makefile
-	$(LINK) $(OBJS) $(LIBS) -o $(TARGET)
+$(BIN)/$(TARGET): $(OBJS) $(SRC)/Makefile
+	$(LINK) $(OBJS) $(LIBS) -o $(BIN)/$(TARGET)
 
 $(OBJ)/%.o: $(SRC)/%.C $(INCLUDES)
 	$(CPP) -o $(OBJ)/$*.o -c $(SRC)/$*.C

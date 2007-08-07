@@ -4,6 +4,12 @@ BIN = ./bin
 
 all: $(OBJ) $(BIN) source
 
+install:
+	$(UNIXMAKE) -C src install
+
+uninstall:
+	$(UNIXMAKE) -C src uninstall
+
 clean:
 	$(UNIXMAKE) -C src clean
 

@@ -89,6 +89,12 @@ UTILS = $(BIN)/dsAggregate\
 
 all: $(UTILS)
 
+install:
+	cp $(UTILS) $(INSTALLDIR)/bin/
+
+uninstall:
+	rm $(INSTALLDIR)/bin/*
+
 clean:
 	rm $(UTILS) $(OBJ)/CMD*.o
 

@@ -12,3 +12,7 @@ export UNIXCPPOPS=-Wall -fsigned-char -D_GNU_SOURCE -Wno-deprecated -I/opt/local
 export UNIXMAKE=make
 export UNIXLIBS=-L/usr/X11R6/lib -L/opt/local/lib -lXm -lXt -lXext -lX11 -ludunits -lnetcdf
 endif
+
+ifndef INSTALLDIR
+export INSTALLDIR=/usr/local/share/ghaas
+endif
