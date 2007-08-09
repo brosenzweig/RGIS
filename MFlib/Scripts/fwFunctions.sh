@@ -337,7 +337,7 @@ function _fwPreprocess()
 	local fwDOSTATE="${1}"
 	local    fwYEAR="${2}"
 	local fwPROC
-	[ "${FwVERBOSE}" == "on" ] && echo "      Preprocessing ${fwYEAR} started:  $(date)"
+	[ "${FwVERBOSE}" == "on" ] && echo "      Preprocessing ${fwYEAR} started:  $(date '+%Y-%m-%d %H:%M:%S')"
 	(( fwPROC = 0 ))
 	[ -e "${_fwGDSDomainDIR}"  ] || mkdir -p "${_fwGDSDomainDIR}"
 	[ -e "${_fwGDSDomainFILE}" ] || ${_fwRGISBIN}rgis2domain "${_fwRGISDomainFILE}"  "${_fwGDSDomainFILE}";
@@ -414,7 +414,7 @@ function _fwPreprocess()
 		fi
 	done
 	wait
-	[ "${FwVERBOSE}" == "on" ] && echo "      Preprocessing ${fwYEAR} finished: $(date)"
+	[ "${FwVERBOSE}" == "on" ] && echo "      Preprocessing ${fwYEAR} finished: $(date '+%Y-%m-%d %H:%M:%S')"
 	return 0
 }
 
@@ -424,7 +424,7 @@ function _fwPostprocess()
 	local    fwYEAR="${2}"
 	local fwPROC
 	if [ "${fwYEAR}" == "" ]; then local fwSUFFIX="LTM"; else local fwSUFFIX="TS${fwYEAR}"; fi
-	[ "${FwVERBOSE}" == "on" ] && { echo "      Postprocessing ${fwYEAR} started:  $(date)"; }
+	[ "${FwVERBOSE}" == "on" ] && { echo "      Postprocessing ${fwYEAR} started:  $(date '+%Y-%m-%d %H:%M:%S')"; }
 	(( fwPROC = 0 ))
 	for (( fwI = 0; fwI < ${#_fwOutputARRAY[@]} ; ++fwI ))
 	do
@@ -439,19 +439,22 @@ function _fwPostprocess()
 		[ "${fwPROC}" -ge "${_fwMAXPROC}" ] && { wait; (( fwPROC = 0 )); }
 		${_fwRGISBIN}ds2rgis -t "${_fwDomainNAME}, ${fwVARIABLE} ${fwVERSION} (${FwDomainRES}, Daily${fwSUFFIX})"\
 		                     -m ${_fwRGISDomainFILE} -s blue ${fwGDSFileNAME} ${fwRGISFileNAME} &
+		(( ++fwPROC ))
 		[ "${fwPROC}" -ge "${_fwMAXPROC}" ] && { wait; (( fwPROC = 0 )); }
 		local fwRGISFileNAME="$(FwRGISFilename "${fwVARIABLE}" "${fwVERSION}" "m" "${fwYEAR}")"
 		${_fwRGISBIN}dsAggregate -e month -a ${fwAMODE} ${fwGDSFileNAME} |\
 		${_fwRGISBIN}ds2rgis -t "${_fwDomainNAME}, ${fwVARIABLE} ${fwVERSION} (${FwDomainRES}, Monthly${fwSUFFIX})"\
 		                     -m ${_fwRGISDomainFILE} -s blue - ${fwRGISFileNAME} &
+		(( ++fwPROC ))
 		[ "${fwPROC}" -ge "${_fwMAXPROC}" ] && { wait; (( fwPROC = 0 )); }
 		local fwRGISFileNAME="$(FwRGISFilename "${fwVARIABLE}" "${fwVERSION}" "a" "${fwYEAR}")"
 		${_fwRGISBIN}dsAggregate -e year -a ${fwAMODE} ${fwGDSFileNAME} |\
 		${_fwRGISBIN}ds2rgis -t "${_fwDomainNAME}, ${fwVARIABLE} ${fwVERSION} (${FwDomainRES}, Yearly${fwSUFFIX})"\
 		                     -m ${_fwRGISDomainFILE} -s blue - ${fwRGISFileNAME} &
+		(( ++fwPROC ))
 	done
 	wait
-	[ "${FwVERBOSE}" == "on" ] && { echo "      Postprocessing ${fwYEAR} finished: $(date)"; }
+	[ "${FwVERBOSE}" == "on" ] && { echo "      Postprocessing ${fwYEAR} finished: $(date '+%Y-%m-%d %H:%M:%S')"; }
 	return 0
 }
 
@@ -468,7 +471,7 @@ function _fwSpinup()
 	local  fwWarningLOG="file:${_fwGDSLogDIR}/Spinup0_Warnings.log"
 	local     fwInfoLOG="file:${_fwGDSLogDIR}/Spinup0_Info.log"
 
-	[ "${FwVERBOSE}" == "on" ] && echo "Initialization started:  $(date)"
+	[ "${FwVERBOSE}" == "on" ] && echo "Initialization started:  $(date '+%Y-%m-%d %H:%M:%S')"
 	_fwPreprocess "dostate" "" || return -1
 	for ((fwPASS = 1; fwPASS <= _fwPASSNUM; ++fwPASS))
 	do
@@ -528,22 +531,22 @@ function _fwSpinup()
 		done)
 
 		echo "${fwOptions}" > ${fwOptionsFILE}
-		[ "${FwVERBOSE}" == "on" ] && echo "   Passnum [${fwPASS}] started:  $(date)"
+		[ "${FwVERBOSE}" == "on" ] && echo "   Passnum [${fwPASS}] started:  $(date '+%Y-%m-%d %H:%M:%S')"
 		if echo ${fwOptions} | xargs ${_fwModelBIN}
 		then
-			[ "${FwVERBOSE}" == "on" ] && echo "   Passnum [${fwPASS}] finished: $(date)"
+			[ "${FwVERBOSE}" == "on" ] && echo "   Passnum [${fwPASS}] finished: $(date '+%Y-%m-%d %H:%M:%S')"
 			local fwOptionsFILE="${_fwGDSLogDIR}/SpinupN_Options.log"
 			local     fwUserLOG="file:${_fwGDSLogDIR}/SpinupN_UserError.log"
 			local    fwDebugLOG="file:${_fwGDSLogDIR}/SpinupN_Debug.log"
 			local  fwWarningLOG="file:${_fwGDSLogDIR}/SpinupN_Warnings.log"
 			local     fwInfoLOG="file:${_fwGDSLogDIR}/SpinupN_Info.log"
 		else
-			[ "${FwVERBOSE}" == "on" ] && echo "   Passnum [${fwPASS}] failed:   $(date)"
+			[ "${FwVERBOSE}" == "on" ] && echo "   Passnum [${fwPASS}] failed:   $(date '+%Y-%m-%d %H:%M:%S')"
 			return -1
 		fi
 	done
 	[ "${_fwPOSTPROCESS}" == "on" ] && { _fwPostprocess "${fwVERSION}" "" || return -1; }
-	[ "${FwVERBOSE}"      == "on" ] && echo "Initialization finished: $(date)"
+	[ "${FwVERBOSE}"      == "on" ] && echo "Initialization finished: $(date '+%Y-%m-%d %H:%M:%S')"
 	return 0
 }
 
@@ -553,7 +556,7 @@ function _fwRun()
 	local   fwStartYEAR="${2}"
 	local     fwEndYEAR="${3}"
 
-	[ "${FwVERBOSE}" == "on" ] && echo "Model run started:  $(date)"
+	[ "${FwVERBOSE}" == "on" ] && echo "Model run started:  $(date '+%Y-%m-%d %H:%M:%S')"
 	for (( fwYEAR = fwStartYEAR; fwYEAR <= fwEndYEAR; ++fwYEAR ))
 	do
 		if (( fwYEAR == fwStartYEAR )); then fwDOSTATE="dostate"; else fsDOSTATE="nostate"; fi
@@ -628,17 +631,17 @@ function _fwRun()
 			fi
  		done)
 		echo "${fwOptions}" > ${fwOptionsFILE}
-		[ "${FwVERBOSE}" == "on" ] && echo "   Running year [${fwYEAR}] started:  $(date)"
+		[ "${FwVERBOSE}" == "on" ] && echo "   Running year [${fwYEAR}] started:  $(date '+%Y-%m-%d %H:%M:%S')"
 		if echo ${fwOptions} | xargs ${_fwModelBIN}
 		then
 			[ "${_fwPOSTPROCESS}" == "on" ] && { _fwPostprocess "${fwVERSION}" "${fwYEAR}" || return -1; }
-			[ "${FwVERBOSE}"      == "on" ] && echo "   Running year [${fwYEAR}] finished: $(date)"
+			[ "${FwVERBOSE}"      == "on" ] && echo "   Running year [${fwYEAR}] finished: $(date '+%Y-%m-%d %H:%M:%S')"
 		else
-			[ "${FwVERBOSE}"      == "on" ] && echo "   Running year [${fwYEAR}] failed:   $(date)"
+			[ "${FwVERBOSE}"      == "on" ] && echo "   Running year [${fwYEAR}] failed:   $(date '+%Y-%m-%d %H:%M:%S')"
 			return -1
 		fi
 	done
-	[ "${FwVERBOSE}" == "on" ] && echo "Model run finished: $(date)"
+	[ "${FwVERBOSE}" == "on" ] && echo "Model run finished: $(date '+%Y-%m-%d %H:%M:%S')"
 	return 0
 }
 
