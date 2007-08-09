@@ -19,9 +19,14 @@ if [ -z "${GHAAS_DIR}" ]; then
 	fi
 fi
 
-. ${GHAAS_DIR}/Scripts/pubrc
+if [ ${XUSERFILESEARCHPATH:-unset} != unset ]
+then
+   unset XUSERFILESEARCHPATH
+fi
 
-GHAAS_EXEC=${GHAAS_BIN}/rgis21
+export XAPPLRESDIR="$GHAAS_DIR/XResources"
+
+GHAAS_EXEC=${GHAAS_DIR}/bin/rgis21
 if `which what > /dev/null 2> /dev/null`; then
 	what $0 | grep GHAAS
 	what $GHAAS_EXEC | grep GHAAS
