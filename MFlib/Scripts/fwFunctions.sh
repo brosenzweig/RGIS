@@ -55,6 +55,7 @@ function FwArguments()
 	    FwWARNINGS="on"
 	   _fwTESTONLY="off"
   _fwOPTIONSPRINT="off"
+   _fwDAILYOUTPUT="off"
 	     FwVERBOSE="off"
 	while [ "${1}" != "" ]
 	do
@@ -109,6 +110,17 @@ function FwArguments()
 			(-T|--testonly)
 				_fwTESTONLY="on"
 			;;
+			(-D|--dailyoutput)
+				shift
+				case ${1} in
+					(on)
+						_fwDAILYOUTPUT="on"
+					;;
+					(off)
+						_fwDAILYOUTPUT="off"
+					;;
+				esac
+			;;
 			(-V|--verbose)
 				FwVERBOSE="on"
 			;;
@@ -120,6 +132,8 @@ function FwArguments()
 				echo "           -p, --postprocess on|off"
 				echo "           -W, --warnings    on|off"
 				echo "           -T, --testonly"
+				echo "           -O, --optionsprint"
+				echo "           -D, --dailoutput  on|off"
 				echo "           -V, --verbose"
 				return -1
 		esac
@@ -131,13 +145,12 @@ function FwArguments()
 function FwInit()
 {
 	      _fwModelBIN=${1}	
-     _fwDomainPREFIX=${2}
+       _fwDomainNAME=${2}
    _fwRGISDomainFILE=${3}
        _fwGDSWorkDIR=${4}
   	_fwRGISResultsDIR=${5}
 	if [ "${6}" != "" ]; then export _fwRGISBIN="${6}/"; else _fwRGISBIN=""; fi
 
-	    _fwDomainNAME=$(${_fwRGISBIN}getHeader -d ${_fwRGISDomainFILE} | sed "s/Domain: //")
 	    _fwDomainTYPE="${_fwRGISDomainFILE##*.}"
 	      FwDomainRES="${_fwRGISDomainFILE##*_}"
 	      FwDomainRES="${FwDomainRES%.gdb?}"
@@ -158,7 +171,7 @@ function FwInit()
 		;;
 	esac
 	 _fwGDSDomainDIR="${_fwGDSWorkDIR}/${_fwDomainNAME}/${_fwDomainTYPE}_${FwDomainRES}"
-	_fwGDSDomainFILE="${_fwGDSDomainDIR}/${_fwDomainPREFIX}${_fwDomainTYPE}_${FwDomainRES}.ds"
+	_fwGDSDomainFILE="${_fwGDSDomainDIR}/${_fwDomainNAME}${_fwDomainTYPE}_${FwDomainRES}.ds"
 }
 
 function FwDataSrc()
@@ -310,9 +323,9 @@ function FwGDSFilename()
 	local     fwSTEP="${5}"
 	if [ "${fwYEAR}" == "" ]
 	then
-		local fwFILENAME="${_fwGDSDomainDIR}/${fwVERSION}/${_fwDomainPREFIX}_${fwMODE}_${fwVERSION}_${fwVARIABLE}_${fwSTEP}LTM_${FwDomainRES}.gds"
+		local fwFILENAME="${_fwGDSDomainDIR}/${fwVERSION}/${_fwDomainNAME}_${fwMODE}_${fwVERSION}_${fwVARIABLE}_${fwSTEP}LTM_${FwDomainRES}.gds"
 	else
-		local fwFILENAME="${_fwGDSDomainDIR}/${fwVERSION}/${_fwDomainPREFIX}_${fwMODE}_${fwVERSION}_${fwVARIABLE}_${fwSTEP}TS${fwYEAR}_${FwDomainRES}.gds"
+		local fwFILENAME="${_fwGDSDomainDIR}/${fwVERSION}/${_fwDomainNAME}_${fwMODE}_${fwVERSION}_${fwVARIABLE}_${fwSTEP}TS${fwYEAR}_${FwDomainRES}.gds"
 	fi
 	echo ${fwFILENAME}
 }
@@ -325,9 +338,9 @@ function FwRGISFilename()
 	local     fwYEAR="${4}"
 	if [ "${fwYEAR}" == "" ]
 	then
-		local fwFILENAME="${_fwRGISResultsDIR}/${fwVARIABLE}/${_fwDomainPREFIX}_${fwVERSION}_${fwVARIABLE}_${fwSTEP}LTM_${FwDomainRES}.gdbc"
+		local fwFILENAME="${_fwRGISResultsDIR}/${fwVARIABLE}/${_fwDomainNAME}_${fwVERSION}_${fwVARIABLE}_${fwSTEP}LTM_${FwDomainRES}.gdbc"
 	else
-		local fwFILENAME="${_fwRGISResultsDIR}/${fwVARIABLE}/${_fwDomainPREFIX}_${fwVERSION}_${fwVARIABLE}_${fwSTEP}TS${fwYEAR}_${FwDomainRES}.gdbc"
+		local fwFILENAME="${_fwRGISResultsDIR}/${fwVARIABLE}/${_fwDomainNAME}_${fwVERSION}_${fwVARIABLE}_${fwSTEP}TS${fwYEAR}_${FwDomainRES}.gdbc"
 	fi
 	echo "${fwFILENAME}"
 }
@@ -435,11 +448,14 @@ function _fwPostprocess()
 		[ -e "${fwGDSFileNAME}" ] || local fwGDSFileNAME="$(FwGDSFilename "${fwVARIABLE}" "State" "${fwVERSION}" "${fwYEAR}" "d")"
 		[ -e "${fwGDSFileNAME}" ] || { echo "Skipping missing variable [${fwVARIABLE}]"; echo ${fwGDSFileNAME}; continue; }
 		[ -e "${_fwRGISResultsDIR}/${fwVARIABLE}" ] || mkdir -p "${_fwRGISResultsDIR}/${fwVARIABLE}"
-		local fwRGISFileNAME="$(FwRGISFilename "${fwVARIABLE}" "${fwVERSION}" "d" "${fwYEAR}")"
-		[ "${fwPROC}" -ge "${_fwMAXPROC}" ] && { wait; (( fwPROC = 0 )); }
-		${_fwRGISBIN}ds2rgis -t "${_fwDomainNAME}, ${fwVARIABLE} ${fwVERSION} (${FwDomainRES}, Daily${fwSUFFIX})"\
-		                     -m ${_fwRGISDomainFILE} -s blue ${fwGDSFileNAME} ${fwRGISFileNAME} &
-		(( ++fwPROC ))
+		if [ "_fwDAILYOUTPUT" == "on" ]
+		then
+			local fwRGISFileNAME="$(FwRGISFilename "${fwVARIABLE}" "${fwVERSION}" "d" "${fwYEAR}")"
+			[ "${fwPROC}" -ge "${_fwMAXPROC}" ] && { wait; (( fwPROC = 0 )); }
+			${_fwRGISBIN}ds2rgis -t "${_fwDomainNAME}, ${fwVARIABLE} ${fwVERSION} (${FwDomainRES}, Daily${fwSUFFIX})"\
+			                     -m ${_fwRGISDomainFILE} -s blue ${fwGDSFileNAME} ${fwRGISFileNAME} &
+			(( ++fwPROC ))
+		fi
 		[ "${fwPROC}" -ge "${_fwMAXPROC}" ] && { wait; (( fwPROC = 0 )); }
 		local fwRGISFileNAME="$(FwRGISFilename "${fwVARIABLE}" "${fwVERSION}" "m" "${fwYEAR}")"
 		${_fwRGISBIN}dsAggregate -e month -a ${fwAMODE} ${fwGDSFileNAME} |\
