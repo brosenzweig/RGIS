@@ -1,0 +1,103 @@
+include ../common.mk
+INC    = ../include
+SRC    = ../src
+OBJ    = ../obj
+BIN    = ../bin
+CPP    = $(UNIXCPP) $(UNIXCPPOPS) -I$(INC)\
+         -I../../CMlib/include\
+         -I../../MFlib/include\
+         -I../../DBlib/include\
+         -I../../RGlib/include
+LINK   = $(UNIXCPP)
+LIBS   = -L../../CMlib/lib\
+         -L../../MFlib/lib\
+         -L../../DBlib/lib\
+         -L../../RGlib/lib -lRG21 -lDB21 -lMF10 -lCM10 $(UNIXLIBS)
+
+INCLUDES = $(INC)/CMDexp.H
+
+UTILS = $(BIN)/dsAggregate\
+        $(BIN)/dsDuration\
+        $(BIN)/dsSampling\
+        $(BIN)/grdDateLayers\
+        $(BIN)/grdRenameLayers\
+        $(BIN)/grdZoneStats\
+        $(BIN)/grdZoneHist\
+        $(BIN)/grdNoNeg\
+        $(BIN)/grdAppendLayers\
+        $(BIN)/grdExtractLayers\
+        $(BIN)/grdOperation\
+        $(BIN)/grdCalculate\
+        $(BIN)/grdCycleMean\
+        $(BIN)/grdCellStats\
+        $(BIN)/grdDifference\
+        $(BIN)/grdReclassDisc\
+        $(BIN)/grdTimeSeries\
+        $(BIN)/grdTSAggr\
+        $(BIN)/grdSeasonAggr\
+        $(BIN)/grdSeasonMean\
+        $(BIN)/grdMinMax\
+        $(BIN)/grdImport\
+        $(BIN)/netAccumulate\
+        $(BIN)/netUnaccumulate\
+        $(BIN)/netInvAccum\
+        $(BIN)/netBasinDistrib\
+        $(BIN)/netBasinHist\
+        $(BIN)/netBasinProf\
+        $(BIN)/netBasinStats\
+        $(BIN)/netCellSlopes\
+        $(BIN)/netUpstreamAvg\
+        $(BIN)/netErosion\
+        $(BIN)/netTransfer\
+        $(BIN)/netDefragment\
+        $(BIN)/pntGridSampling\
+        $(BIN)/pntSTNChar\
+        $(BIN)/pntSubbasins\
+        $(BIN)/pntSubbasStats\
+        $(BIN)/pntSubbasHist\
+        $(BIN)/pntSubbasCenter\
+        $(BIN)/pntStationDist\
+        $(BIN)/pntSymbolField\
+        $(BIN)/tblAddField\
+        $(BIN)/tblRedefField\
+        $(BIN)/tblDeleteField\
+        $(BIN)/tblJoinTables\
+        $(BIN)/tblMJoinTables\
+        $(BIN)/tblDeleteRec\
+        $(BIN)/tblSelectRec\
+        $(BIN)/tblIdleRec\
+        $(BIN)/tblCalculate\
+        $(BIN)/tblTopoCalc\
+        $(BIN)/tblConvCoord\
+        $(BIN)/tblMergeCoord\
+        $(BIN)/tblDecimalDate\
+        $(BIN)/tblMergeDate\
+        $(BIN)/tblSplitDate\
+        $(BIN)/tblStatistics\
+        $(BIN)/getHeader\
+        $(BIN)/setHeader\
+        $(BIN)/rgis2asciigrid\
+        $(BIN)/rgis2domain\
+        $(BIN)/rgis2table\
+        $(BIN)/rgis2dm\
+        $(BIN)/dm2rgis\
+        $(BIN)/rgis2ds\
+        $(BIN)/ds2rgis\
+        $(BIN)/rgisMetadb \
+        $(BIN)/rgis2netcdf\
+        $(BIN)/netcdf2rgis
+
+all: $(UTILS)
+
+install:
+	cp $(UTILS) $(INSTALLDIR)/bin/
+
+uninstall:
+	rm $(INSTALLDIR)/bin/*
+
+clean:
+	rm $(UTILS) $(OBJ)/CMD*.o
+
+$(BIN)/%: $(SRC)/CMD%.C $(INCLUDES) $(SRC)/Makefile
+	$(CPP) -o $(OBJ)/CMD$*.o -c $(SRC)/CMD$*.C
+	$(LINK) $(OBJ)/CMD$*.o $(LIBS) -o $(BIN)/$*
