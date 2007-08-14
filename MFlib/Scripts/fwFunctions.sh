@@ -133,7 +133,7 @@ function FwArguments()
 				echo "           -W, --warnings    on|off"
 				echo "           -T, --testonly"
 				echo "           -O, --optionsprint"
-				echo "           -D, --dailoutput  on|off"
+				echo "           -D, --dailyoutput  on|off"
 				echo "           -V, --verbose"
 				return -1
 		esac
@@ -448,7 +448,7 @@ function _fwPostprocess()
 		[ -e "${fwGDSFileNAME}" ] || local fwGDSFileNAME="$(FwGDSFilename "${fwVARIABLE}" "State" "${fwVERSION}" "${fwYEAR}" "d")"
 		[ -e "${fwGDSFileNAME}" ] || { echo "Skipping missing variable [${fwVARIABLE}]"; echo ${fwGDSFileNAME}; continue; }
 		[ -e "${_fwRGISResultsDIR}/${fwVARIABLE}" ] || mkdir -p "${_fwRGISResultsDIR}/${fwVARIABLE}"
-		if [ "_fwDAILYOUTPUT" == "on" ]
+		if [ "${_fwDAILYOUTPUT}" == "on" ]
 		then
 			local fwRGISFileNAME="$(FwRGISFilename "${fwVARIABLE}" "${fwVERSION}" "d" "${fwYEAR}")"
 			[ "${fwPROC}" -ge "${_fwMAXPROC}" ] && { wait; (( fwPROC = 0 )); }
