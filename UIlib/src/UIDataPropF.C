@@ -57,7 +57,7 @@ class UIDataPropProjection
 	};
 
 static UIDataPropProjection _UIDataPropProjections [] = {
-	UIDataPropProjection (DBProjectionSpherical,"Geopgraphic"),
+	UIDataPropProjection (DBProjectionSpherical,"Geographic"),
 	UIDataPropProjection (DBProjectionCartesian,"Cartesian")};
 
 
