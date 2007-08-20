@@ -61,7 +61,7 @@ uninstall:
 	rm $(INSTALLDIR)/bin/$(TARGET)
 
 clean:
-	rm $(TARGET) $(OBJS)
+	rm $(BIN)/$(TARGET) $(OBJS)
 
 $(BIN)/$(TARGET): $(OBJS) $(SRC)/Makefile
 	$(CPP) $(OBJS) $(LIBS) -o $(BIN)/$(TARGET)

@@ -179,6 +179,7 @@ int main (int argc,char *argv [])
 	char *domain = (char *) NULL, *version = (char *) NULL;
 	char *layerName;
 	int shadeSet = DBDataFlagDispModeContGreyScale;
+	int shrink   = false;
 	DBFloat var;
 	DBRegion extent;
 	DBPosition pos;
@@ -227,6 +228,19 @@ int main (int argc,char *argv [])
 			if ((argNum = CMargShiftLeft (argPos,argv,argNum)) <= argPos) break;
 			continue;
 			}
+		if (CMargTest (argv [argPos],"-x","--extent"))
+			{
+			int extentCodes [] = {	true, false };
+			const char *extentNames [] = { "maximum","minimum", (char *) NULL };
+
+			if ((argNum = CMargShiftLeft (argPos,argv,argNum)) <= argPos)
+				{ CMmsgPrint (CMmsgUsrError,"Missing shadeset!\n");     return (CMfailed); }
+			if ((shrink = CMoptLookup (extentNames,argv [argPos],true)) == CMfailed)
+				{ CMmsgPrint (CMmsgUsrError,"Invalid shadeset!\n");     return (CMfailed); }
+			shrink = extentCodes [shrink];
+			if ((argNum = CMargShiftLeft (argPos,argv,argNum)) <= argPos) break;
+			continue;
+			}
 		if (CMargTest (argv [argPos],"-t","--title"))
 			{
 			if ((argNum = CMargShiftLeft (argPos,argv,argNum)) <= argPos)
@@ -262,11 +276,11 @@ int main (int argc,char *argv [])
 		if (CMargTest (argv [argPos],"-s","--shadeset"))
 			{
 			int shadeCodes [] = {	DBDataFlagDispModeContStandard,
-											DBDataFlagDispModeContGreyScale,
-											DBDataFlagDispModeContBlueScale,
-											DBDataFlagDispModeContBlueRed,
-											DBDataFlagDispModeContElevation };
-			const char *shadeSets [] = {	"standard","grey","blue","blue-to-red","elevation", (char *) NULL };
+			                        DBDataFlagDispModeContGreyScale,
+			                        DBDataFlagDispModeContBlueScale,
+			                        DBDataFlagDispModeContBlueRed,
+			                        DBDataFlagDispModeContElevation };
+			const char *shadeSets [] = { "standard","grey","blue","blue-to-red","elevation", (char *) NULL };
 
 			if ((argNum = CMargShiftLeft (argPos,argv,argNum)) <= argPos)
 				{ CMmsgPrint (CMmsgUsrError,"Missing shadeset!\n");     return (CMfailed); }
@@ -287,6 +301,7 @@ int main (int argc,char *argv [])
 			CMmsgPrint (CMmsgInfo,"%s [options] <output file>\n",CMprgName(argv[0]));
 			CMmsgPrint (CMmsgInfo,"     -c,--calculate [expression]\n");
 			CMmsgPrint (CMmsgInfo,"     -r,--variable  [variable expression]\n");
+			CMmsgPrint (CMmsgInfo,"     -x,--extent    [maximum minimum]\n");
 			CMmsgPrint (CMmsgInfo,"     -t,--title     [dataset title]\n");
 			CMmsgPrint (CMmsgInfo,"     -u,--subject   [subject]\n");
 			CMmsgPrint (CMmsgInfo,"     -d,--domain    [domain]\n");
@@ -340,8 +355,7 @@ int main (int argc,char *argv [])
 	if ((record = table->Add ("TEMPRecord")) == (DBObjRecord *) NULL) return (CMfailed);
 //	for (i = 0;i < expNum;++i) expressions [i]->Evaluate (record);
 
-	for (i = 0;i < varNum;++i) extent.Shrink (grdVar [i]->Extent ());
-
+	if (shrink) for (i = 0;i < varNum;++i) extent.Shrink (grdVar [i]->Extent ());
 
 	if (title	== (char *) NULL)	title   = "Grid Calculate Result";
 	if (subject == (char *) NULL) subject = "GridCalc";

@@ -29,7 +29,7 @@ uninstall:
 	rm $(INSTALLDIR)/bin/$(TARGET)
 
 clean:
-	rm $(TARGET) $(OBJS)
+	rm $(BIN)/$(TARGET) $(OBJS)
 
 $(BIN)/$(TARGET): $(OBJS) $(SRC)/Makefile
 	$(LINK) $(OBJS) $(LIBS) -o $(BIN)/$(TARGET)

@@ -315,6 +315,7 @@ class DBRegion
 		void Expand (DBRegion region) { Expand (region.LowerLeft); Expand (region.UpperRight); }
 		void Shrink (DBRegion region)
 			{
+			Expand (region);
 			if (LowerLeft.X  < region.LowerLeft.X)  LowerLeft.X  = region.LowerLeft.X;
 			if (LowerLeft.Y  < region.LowerLeft.Y)  LowerLeft.Y  = region.LowerLeft.Y;
 			if (UpperRight.X > region.UpperRight.X) UpperRight.X = region.UpperRight.X;
