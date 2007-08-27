@@ -52,7 +52,7 @@ function FwArguments()
 	     _fwSPINUP="on"
 	   _fwFINALRUN="on"
 	_fwPOSTPROCESS="on"
-   _fwPOSTPROCESS="auto"
+    _fwPREPROCESS="auto"
     _fwPURGEFILES="on"
 	    FwWARNINGS="on"
 	   _fwTESTONLY="off"
