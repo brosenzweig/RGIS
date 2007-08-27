@@ -52,6 +52,8 @@ function FwArguments()
 	     _fwSPINUP="on"
 	   _fwFINALRUN="on"
 	_fwPOSTPROCESS="on"
+   _fwPOSTPROCESS="auto"
+    _fwPURGEFILES="on"
 	    FwWARNINGS="on"
 	   _fwTESTONLY="off"
   _fwOPTIONSPRINT="off"
@@ -63,44 +65,66 @@ function FwArguments()
 			(-s|--spinup)
 				shift
 				case ${1} in
-					(on)
-						_fwSPINUP="on"
+					(on|off)
+						_fwSPINUP="${1}"
 					;;
-					(off)
-						_fwSPINUP="off"
+					(*)
+						echo "Invalid --spinup argument [${1}]"
 					;;
 				esac
 			;;
 			(-f|--finalrun)
 				shift
 				case ${1} in
-					(on)
-						_fwFINALRUN="on"
+					(on|off)
+						_fwFINALRUN="${1}"
 					;;
-					(off)
-						_fwFINALRUN="off"
+					(*)
+						echo "Invalid --finalrun argument [${1}]"
 					;;
 				esac
 			;;
-			(-p|--postrocess)
+			(-r|--preprocess)
 				shift
 				case ${1} in
-					(on)
-						_fwPOSTPROCESS="on"
+					(auto|forced)
+						_fwPREPROCESS="${1}"
 					;;
-					(off)
-						_fwPOSTPROCESS="off"
+					(*)
+						echo "Invalid --preprocess argument [${1}]"
+					;;
+				esac
+			;;
+			(-p|--postprocess)
+				shift
+				case ${1} in
+					(on|off)
+						_fwPOSTPROCESS="${1}"
+					;;
+					(*)
+						echo "Invalid --postprocess argument [${1}]"
+					;;
+				esac
+			;;
+			(-u|--purgefiles)
+				shift
+				case ${1} in
+					(on|off)
+						_fwPURGEFILES="${1}"
+					;;
+					(*)
+						echo "Invalid --purgfiles argument [${1}]"
 					;;
 				esac
 			;;
 			(-W|--warnings)
 				shift
 				case ${1} in
-					(on)
-						FwWARNINGS="on"
+					(on|off)
+						FwWARNINGS="${1}"
 					;;
-					(off)
-						FwWARNINGS="off"
+					(*)
+						echo "Invalid --warnings argument [${1}]"
 					;;
 				esac
 			;;
@@ -113,11 +137,11 @@ function FwArguments()
 			(-D|--dailyoutput)
 				shift
 				case ${1} in
-					(on)
-						_fwDAILYOUTPUT="on"
+					(on|off)
+						_fwDAILYOUTPUT="${1}"
 					;;
-					(off)
-						_fwDAILYOUTPUT="off"
+					(*)
+						echo "Invalid --dailyoutput argument [${1}]"
 					;;
 				esac
 			;;
@@ -129,7 +153,9 @@ function FwArguments()
 				echo "${_fwPROGNAME} [-s on|off] [-f on|off] [-p on|off] -W on|off -T -V"
 				echo "           -s, --spinup      on|off"
 				echo "           -f, --finalrun    on|off"
+				echo "           -r, --preprocess  auto|force"
 				echo "           -p, --postprocess on|off"
+				echo "           -u, --purgefiles  on|off"
 				echo "           -W, --warnings    on|off"
 				echo "           -T, --testonly"
 				echo "           -O, --optionsprint"
@@ -352,8 +378,9 @@ function _fwPreprocess()
 	local fwPROC
 	[ "${FwVERBOSE}" == "on" ] && echo "      Preprocessing ${fwYEAR} started:  $(date '+%Y-%m-%d %H:%M:%S')"
 	(( fwPROC = 0 ))
-	[ -e "${_fwGDSDomainDIR}"  ] || mkdir -p "${_fwGDSDomainDIR}"
-	[ -e "${_fwGDSDomainFILE}" ] || ${_fwRGISBIN}rgis2domain "${_fwRGISDomainFILE}"  "${_fwGDSDomainFILE}";
+	[ -e "${_fwGDSDomainDIR}"        ] || mkdir -p "${_fwGDSDomainDIR}"
+	[ "${_fwPREPROCESS}" == "forced" ] && rm -f "${_fwGDSDomainFILE}";
+	[ -e "${_fwGDSDomainFILE}"       ] || ${_fwRGISBIN}rgis2domain "${_fwRGISDomainFILE}" "${_fwGDSDomainFILE}";
 
 	if [ "${fwDOSTATE}" == "dostate" ]
 	then
@@ -375,6 +402,7 @@ function _fwPreprocess()
 				if [ -e "${fwSOURCE[4]}" ]
 				then
 					local fwFILENAME="$(FwGDSFilename "${fwInputITEM}" "State" "${fwSOURCE[2]}" "${fwYEAR}" "d")"
+					[ "${_fwPREPROCESS}" == "forced" ] && rm -f "${fwFILENAME}"
 					if [ ! -e "${fwFILENAME}" ]
 					then
 						[ -e "${_fwRGISDomainFILE}" ] || { echo "Missing domain file: ${_fwRGISDomainFILE}"; return -1; }
@@ -419,6 +447,7 @@ function _fwPreprocess()
 			[ -e "${fwSOURCE[4]}" ] || { echo "  ${fwInputITEM} datafile [${fwSOURCE[4]}] is missing!"; return -1; }
 			[ -e "${_fwGDSDomainDIR}/${fwSOURCE[2]}" ] || mkdir -p "${_fwGDSDomainDIR}/${fwSOURCE[2]}"
 			local fwFILENAME="$(FwGDSFilename "${fwInputITEM}" "Input" "${fwSOURCE[2]}" "${fwInYEAR}" "d")"
+			[ "${_fwPREPROCESS}" == "forced" ] && rm -f "${fwFILENAME}"
 			[ -e "${fwFILENAME}" ] && continue
 			[ -e "${_fwRGISDomainFILE}" ] || { echo "Missing domain file: ${_fwRGISDomainFILE}"; return -1; }
 			[ "${fwPROC}" -ge "${_fwMAXPROC}" ] && { wait; (( fwPROC = 0 )) ; }
@@ -656,7 +685,24 @@ function _fwRun()
 			[ "${FwVERBOSE}"      == "on" ] && echo "   Running year [${fwYEAR}] failed:   $(date '+%Y-%m-%d %H:%M:%S')"
 			return -1
 		fi
+		if [ "${_fwPURGEFILES}" == "on" ] && (( fwYEAR != fwStartYEAR ))
+		then
+			for (( fwI = 0; fwI < ${#_fwStateARRAY[@]} ; ++fwI ))
+			 do
+				local fwInputITEM=(${_fwStateARRAY[${fwI}]})
+				rm -f "$(FwGDSFilename "${fwInputITEM[0]}" "State" "${fwVERSION}" "$(( fwYEAR - 1 ))" "d")"
+			done
+		fi
 	done
+	if [ "${_fwPURGEFILES}" == "on" ]
+	then
+		for (( fwI = 0; fwI < ${#_fwStateARRAY[@]} ; ++fwI ))
+		 do
+			local fwInputITEM=(${_fwStateARRAY[${fwI}]})
+			rm -f "$(FwGDSFilename "${fwInputITEM[0]}" "State" "${fwVERSION}" "$(( fwYEAR - 1 ))" "d")"
+		done
+	fi
+
 	[ "${FwVERBOSE}" == "on" ] && echo "Model run finished: $(date '+%Y-%m-%d %H:%M:%S')"
 	return 0
 }
