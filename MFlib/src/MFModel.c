@@ -398,11 +398,12 @@ int MFModelRun (int argc, char *argv [], int argNum, int (*conf) ()) {
 	int i, iFunc, varID, dlink;
 	char *timeCur;
 	MFVariable_t *var;
+	time_t sec;
 
 	if (_MFModelParse (argc,argv,argNum,conf) == CMfailed) return (CMfailed);
 
 	timeCur = MFDateGetCurrent ();
-	time_t sec;
+
 	time(&sec);
 	CMmsgPrint (CMmsgInfo, "Model run started at... %s  started at %.24s \n", timeCur, ctime(&sec));
 	if (_MFModelReadInput (timeCur) == MFStop) {
