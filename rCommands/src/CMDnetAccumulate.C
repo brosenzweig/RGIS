@@ -2,7 +2,7 @@
 
 GHAAS RiverGIS Utilities V1.0
 Global Hydrologic Archive and Analysis System
-Copyright 1994-2004, University of New Hampshire
+Copyright 1994-2007, University of New Hampshire
 
 CMDnetAccumulate.C
 
@@ -19,14 +19,14 @@ int main (int argc,char *argv [])
 
 	{
 	int argPos, argNum = argc, ret, verbose = false;
-	float coeff = 0.000001;
-	char *title  = (char *) NULL,		*subject = (char *) NULL;
-	char *domain = (char *) NULL,		*version = (char *) NULL;
-	char *netName = (char *) NULL,	*stnName = (char *) NULL;
-	char *tsName = (char *) NULL;
+	float coeff      = 0.000001;
+	char *title      = (char *) NULL, *subject = (char *) NULL;
+	char *domain     = (char *) NULL, *version = (char *) NULL;
+	char *netName    = (char *) NULL,  *stnName = (char *) NULL;
+	char *tsName     = (char *) NULL;
 	char *fields [5] = { (char *) NULL, (char *) NULL, (char *) NULL, (char *) NULL, (char *) NULL };
-	DBInt shadeSet = DBFault;
-	bool areaMult = true, correction = false, allowNegative = true;
+	DBInt shadeSet   = DBFault;
+	bool areaMult    = true, correction = false, allowNegative = true;
 	DBObjData *data, *netData, *grdData, *stnData = (DBObjData *) NULL, *tsData = (DBObjData *) NULL;
 
 	for (argPos = 1;argPos < argNum; )

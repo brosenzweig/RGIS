@@ -50,6 +50,7 @@ UTILS = $(BIN)/dsAggregate\
         $(BIN)/netErosion\
         $(BIN)/netTransfer\
         $(BIN)/netDefragment\
+        $(BIN)/netCells2Grid\
         $(BIN)/pntGridSampling\
         $(BIN)/pntSTNChar\
         $(BIN)/pntSubbasins\
