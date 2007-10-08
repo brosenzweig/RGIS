@@ -1190,7 +1190,8 @@ DBInt DBImportNetCDF (DBObjData *data,const char *filename)
 					return (DBFault);
 					}
 				}
-			extent.UpperRight.X = extent.UpperRight.X + cellSize.X;
+			extent.LowerLeft.X  = extent.LowerLeft.X  - cellSize.X / 2.0;
+			extent.UpperRight.X = extent.UpperRight.X + cellSize.X / 2.0;
 			}
 		else if (strncmp (name,"lat", strlen ("lat")) == 0)
 			{
@@ -1254,7 +1255,8 @@ DBInt DBImportNetCDF (DBObjData *data,const char *filename)
 					return (DBFault);
 					}
 				}
-			extent.UpperRight.Y = extent.UpperRight.Y + cellSize.Y;
+			extent.LowerLeft.Y  = extent.LowerLeft.Y  - cellSize.Y / 2.0;
+			extent.UpperRight.Y = extent.UpperRight.Y + cellSize.Y / 2.0;
 			}
 		else if (strncmp (name,"time",     strlen (name)) == 0)
 			{
