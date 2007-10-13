@@ -60,6 +60,7 @@ UTILS = $(BIN)/dsAggregate\
         $(BIN)/pntStationDist\
         $(BIN)/pntSymbolField\
         $(BIN)/tblAddField\
+        $(BIN)/tblConv2Point\
         $(BIN)/tblRedefField\
         $(BIN)/tblDeleteField\
         $(BIN)/tblJoinTables\
