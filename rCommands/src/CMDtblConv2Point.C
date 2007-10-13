@@ -202,8 +202,7 @@ int main (int argc,char *argv [])
 				}
 			}
 
-	if (ret == DBSuccess)
-		ret = (argNum > 2) && (strcmp (argv [2],"-") != 0) ? pntData->Write (argv [2]) : pntData->Write (stdout);
+	ret = (argNum > 2) && (strcmp (argv [2],"-") != 0) ? pntData->Write (argv [2]) : pntData->Write (stdout);
 
 	delete data;
 	delete pntData;
