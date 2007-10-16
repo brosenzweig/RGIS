@@ -49,7 +49,7 @@ DBInt RGPDrawVecPoint (DBInt mode, DBInt *entryNum, DBObjData *pntData)
 	{ fprintf (stderr,"Corrupt point coverage"); return (DBFault); }
 
 	do	{
-		RGPPrintMessage (mode,entryNum,"Symbol mode [default|uniform|custom]:");
+		RGPPrintMessage (mode,entryNum,"Symbol mode [default|custom]:");
 		if (fgets (charBuffer,sizeof (charBuffer) - 2,stdin) == (char *) NULL) { ret = DBFault; goto Stop; }
 		if ((strlen (charBuffer) > 0) && (charBuffer [strlen (charBuffer) - 1] == '\n'))
 			charBuffer [strlen (charBuffer) - 1] = '\0';
@@ -119,7 +119,7 @@ DBInt RGPDrawVecPoint (DBInt mode, DBInt *entryNum, DBObjData *pntData)
 		cpgqch (&charSize);
 		cpgsch (1.0);
 
-		sprintf (charBuffer,"Nagy budos Lofasz");
+		sprintf (charBuffer,"Moderal szoveg");
 		cpgqtxt (llX,llY,0.0,1.0,charBuffer,xCoord,yCoord);
 		tWidth  = xCoord[2] - xCoord[1];
 		tHeight = yCoord[1] - yCoord[0];
