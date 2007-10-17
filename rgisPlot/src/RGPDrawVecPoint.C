@@ -17,7 +17,7 @@ balazs.fekete@unh.edu
 DBInt RGPDrawVecPoint (DBInt mode, DBInt *entryNum, DBObjData *pntData)
 
 	{
-	DBInt ret, pntID, pntColor, legendNum, i, buffLen;
+	DBInt ret, pntID, pntColor, pntSize, legendNum, i, buffLen;
 	DBInt symbolMode = 0, legendMode = 0, legendPos = 0;
 	char charBuffer [RGPBufferSIZE], errorMsg [RGPBufferSIZE], legendTitle [RGPBufferSIZE], *ptr;
 	const char *symbolModes [] = { "default", "custom", NULL };
@@ -97,12 +97,14 @@ DBInt RGPDrawVecPoint (DBInt mode, DBInt *entryNum, DBObjData *pntData)
 		case 1:	break;
 		}
 	cpgqci (&pntColor);
+	cpgqlw (&pntSize);
 
 	if ((xCoord = (float *) calloc (pntIO->ItemNum (),sizeof (float))) == (float *) NULL)
 		{ perror ("Memory Reallocation Error in: RGPDrawLine ()"); delete pntIO; return (DBFault); }
 	if ((yCoord = (float *) calloc (pntIO->ItemNum (),sizeof (float))) == (float *) NULL)
 		{ perror ("Memory Reallocation Error in: RGPDrawLine ()"); free (xCoord); delete pntIO; return (DBFault); }
 
+	cpgslw (3);
 	for (pntID = 0;pntID < pntIO->ItemNum (); ++pntID)
 		{
 		record = pntIO->Item (pntID);
@@ -110,7 +112,7 @@ DBInt RGPDrawVecPoint (DBInt mode, DBInt *entryNum, DBObjData *pntData)
 		coord = pntIO->Coordinate (record);
 		xCoord [pntID] = coord.X;
 		yCoord [pntID] = coord.Y;
-		cpgpt (1,xCoord + pntID,yCoord + pntID,-6);
+		cpgpt1 (xCoord [pntID],yCoord [pntID],-1);
 		}
 	if (legendMode == 0)
 		{
@@ -154,6 +156,7 @@ DBInt RGPDrawVecPoint (DBInt mode, DBInt *entryNum, DBObjData *pntData)
 
 Stop:
 	cpgsci (pntColor);
+	cpgslw (pntSize);
 	if (xCoord != (float *) NULL) free (xCoord);
 	if (yCoord != (float *) NULL) free (yCoord);
 	delete pntIO;
