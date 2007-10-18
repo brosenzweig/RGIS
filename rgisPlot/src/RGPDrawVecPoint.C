@@ -121,7 +121,7 @@ DBInt RGPDrawVecPoint (DBInt mode, DBInt *entryNum, DBObjData *pntData)
 		cpgqch (&charSize);
 		cpgsch (1.0);
 
-		sprintf (charBuffer,"Moderal szoveg");
+		sprintf (charBuffer,"Moderalt szoveg");
 		cpgqtxt (llX,llY,0.0,1.0,charBuffer,xCoord,yCoord);
 		tWidth  = xCoord[2] - xCoord[1];
 		tHeight = yCoord[1] - yCoord[0];
