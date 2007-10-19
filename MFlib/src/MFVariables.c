@@ -232,7 +232,7 @@ void MFVarSetFloat (int id,int itemID,double val) {
 	MFVariable_t *var;
 
 	if (((var = MFVarGetByID (id)) == (MFVariable_t *) NULL) || (itemID < 0) || (itemID >= var->Header.ItemNum)) {
-		CMmsgPrint (CMmsgAppError,"Error: Invalid variable [%d,%d] in: %s:%d\n",id,itemID,__FILE__,__LINE__);
+		CMmsgPrint (CMmsgAppError,"Error: Invalid variable [%d,%d] in: MFVarSetFloat ()\n",id,itemID);
 		return;
 	}
 
@@ -255,7 +255,7 @@ double MFVarGetFloat (int id,int itemID,double missingVal) {
 	MFVariable_t *var;
 
 	if (((var = MFVarGetByID (id)) == (MFVariable_t *) NULL) || (itemID < 0) || (itemID >= var->Header.ItemNum)) {
-		CMmsgPrint (CMmsgAppError,"Error: Invalid variable [%d,%d] in: %s:%d\n",id,itemID,__FILE__,__LINE__);
+		CMmsgPrint (CMmsgAppError,"Error: Invalid variable [%d,%d] in: MFVarGetFloat ()\n",id,itemID);
 		return (MFDefaultMissingFloat);
 	}
 	if ((itemID == 0) && (var->Set != true)) CMmsgPrint (CMmsgWarning,"Warning: Unset variable [%s]!\n",var->Name);

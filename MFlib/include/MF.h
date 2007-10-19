@@ -25,7 +25,7 @@ enum { MFStop     = false,
        MFFlux     = true,
        MFBoundary = false,
        MFInitial  = true,
-       MFUnset    = CMfailed};
+       MFUnset    = -2 };
 
 #define MFDefaultMissingFloat -9999.0
 #define MFDefaultMissingByte  -99
