@@ -84,6 +84,15 @@ function FwArguments()
 					;;
 				esac
 			;;
+			(-n|--passnum)
+				shift
+				if (( "${1}" < 1 || "${1}" > 20 ))
+				then
+					echo "Invalid --preprocess argument [${1}]"
+				else
+					_fwPASSNUM="${1}"
+				fi
+			;;
 			(-r|--preprocess)
 				shift
 				case ${1} in
@@ -153,6 +162,7 @@ function FwArguments()
 				echo "${_fwPROGNAME} [-s on|off] [-f on|off] [-p on|off] -W on|off -T -V"
 				echo "           -s, --spinup      on|off"
 				echo "           -f, --finalrun    on|off"
+				echo "           -n, --passnum     [num]"
 				echo "           -r, --preprocess  auto|forced"
 				echo "           -p, --postprocess on|off"
 				echo "           -u, --purgefiles  on|off"
