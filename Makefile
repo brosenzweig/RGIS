@@ -11,9 +11,6 @@ install: $(INSTALLDIR)/bin $(INSTALLDIR)/XResources/bitmaps $(INSTALLDIR)/Messag
 	cp Messages/*.*         $(INSTALLDIR)/Messages/
 	cp Scripts/*.sh         $(INSTALLDIR)/Scripts/
 
-$(INSTALLDIR)/bin/rgis: $(INSTALLDIR)/Scripts/rgis.sh
-	ln -s $(INSTALLDIR)/Scripts/rgis.sh $(INSTALLDIR)/bin/rgis
-
 uninstall:
 	$(UNIXMAKE) -C rGIS       uninstall
 	$(UNIXMAKE) -C rgisPlot   uninstall
