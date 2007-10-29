@@ -17,15 +17,16 @@ balazs.fekete@unh.edu
 #include <math.h>
 
 int main(int argc,char *argv []) {
-	int argPos, argNum = argc, ret = CMfailed, itemSize, i, bin, binNum = 1000;
-	FILE *inFile   = (FILE *)   NULL, *outFile = stdout;
-	char *fileName = (char *)   NULL;
-	void *items    = (void *)   NULL;
-	double *max    = (double *) NULL;
-	double *min    = (double *) NULL;
-	float  *output = (float *)  NULL;
-	int    *bins   = (int *)    NULL;
-	double value;
+	int argPos, argNum = argc, ret = CMfailed, itemSize, i, bin, binNum = 1000, percent;
+	bool outBins = false;
+	FILE  *inFile   = (FILE *)   NULL, *outFile = stdout;
+	char  *fileName = (char *)   NULL;
+	void  *items    = (void *)   NULL;
+	double *max     = (double *) NULL;
+	double *min     = (double *) NULL;
+	float  *output  = (float *)  NULL;
+	int    *bins    = (int *)    NULL;
+	double value, binMax, binMin, percentMax, percenMin;
 	MFVarHeader_t header, outHeader;
 
 	if (argNum < 2) goto Help;
@@ -46,6 +47,19 @@ int main(int argc,char *argv []) {
 			if ((argNum = CMargShiftLeft(argPos,argv,argNum)) <= argPos) break;
 			continue;
 		}
+		if (CMargTest (argv [argPos],"-m","--mode"))
+			{
+			int mode;
+			const char *modes [] = { "time_series", "bins", (char *) NULL };
+
+			if ((argNum = CMargShiftLeft (argPos,argv,argNum)) <= argPos)
+				{ CMmsgPrint (CMmsgUsrError,"Missing savesteps!\n");    return (CMfailed); }
+			if ((mode = CMoptLookup (modes,argv [argPos],true)) == DBFault)
+				{ CMmsgPrint (CMmsgUsrError,"Invalid savesteps mode!\n"); return (CMfailed); }
+			outBins = mode == 1 ? true : false;
+			if ((argNum = CMargShiftLeft (argPos,argv,argNum)) <= argPos) break;
+			continue;
+			}
 		if (CMargTest(argv[argPos],"-h","--help")) {
 			if ((argNum = CMargShiftLeft(argPos,argv,argNum)) < argPos) break;
 Help:		CMmsgPrint (CMmsgUsrError,"%s [options] <out datastream>\n",CMprgName(argv[0]));
@@ -54,7 +68,7 @@ Help:		CMmsgPrint (CMmsgUsrError,"%s [options] <out datastream>\n",CMprgName(arg
 			CMmsgPrint (CMmsgUsrError,"  -h,--help\n");
 			ret = CMsucceeded;
 			goto Stop;
-		}
+		}lufira/raid/users/pamela/nie/Global_20c3m-ECHAM5-Run1_Discharge_mTS1986_2015_30min.gdbc
 		if ((argv [argPos][0] == '-') && (strlen (argv [argPos]) > 1)) {
 			CMmsgPrint (CMmsgUsrError,"Unknown option: %s!\n",argv [argPos]);
 			return (CMfailed);
@@ -229,87 +243,101 @@ Help:		CMmsgPrint (CMmsgUsrError,"%s [options] <out datastream>\n",CMprgName(arg
 				break;
 		}
 	}
-	rewind (inFile);
-	while (MFVarReadHeader (&header,inFile)) {
-		if ((int) fread (items,itemSize,header.ItemNum,inFile) != header.ItemNum) {
-			CMmsgPrint (CMmsgSysError, "Input reading error in: %s:%d\n",__FILE__,__LINE__);
-			perror (":");
-			goto Stop;
+	if (outBins) {
+		for (percent = 0;percent < 100; ++percent) {
+			for(i = 0; i < header.ItemNum; i++) {
+				for (bin = 0;bin < binNum; ++bin)
+					if (bins [bin * header.ItemNum + i] / bins [i] * 100.0 < (float) percent) break;
+				binMax = bin < binNum ? (float)  bin      * (max [i] - min [i]) / (float) binNum + min [i] : max [i];
+				binMim = bin > 0      ? (float) (bin - 1) * (max [i] - min [i]) / (float) binNum + min [i] : min [i];
+				percentMin = 
+			}
 		}
-		switch (header.DataType) {
-			case MFByte:
-				for(i = 0; i < header.ItemNum; i++) {
-					if (((char *)   items) [i] == header.Missing.Int) output [i] = outHeader.Missing.Float;
-					else if (bins [i] > 0) {
-						value = (double) (((char *)   items) [i]);
-						bin = (int) round ((double) (binNum - 1) * (value - min [i]) / (max [i] - min [i]));
-						output [i] = 100.0 * (double) bins [bin * header.ItemNum + i] / (double) bins [i];
+		ret = CMsucceeded;
+	}
+	else {
+		rewind (inFile);
+		while (MFVarReadHeader (&header,inFile)) {
+			if ((int) fread (items,itemSize,header.ItemNum,inFile) != header.ItemNum) {
+				CMmsgPrint (CMmsgSysError, "Input reading error in: %s:%d\n",__FILE__,__LINE__);
+				perror (":");
+				goto Stop;
+			}
+			switch (header.DataType) {
+				case MFByte:
+					for(i = 0; i < header.ItemNum; i++) {
+						if (((char *)   items) [i] == header.Missing.Int) output [i] = outHeader.Missing.Float;
+						else if (bins [i] > 0) {
+							value = (double) (((char *)   items) [i]);
+							bin = (int) round ((double) (binNum - 1) * (value - min [i]) / (max [i] - min [i]));
+							output [i] = 100.0 * (double) bins [bin * header.ItemNum + i] / (double) bins [i];
+						}
+						else output [i] = 100.0;
 					}
-					else output [i] = 100.0;
-				}
-				break;
-			case MFShort:
-				for(i = 0; i < header.ItemNum; i++) {
-					if (header.Swap != 1) MFSwapHalfWord (((short *)  items) + i);
-					if (((short *)  items) [i] == header.Missing.Int) output [i] = outHeader.Missing.Float;
-					else if (bins [i] > 0) {
+					break;
+				case MFShort:
+					for(i = 0; i < header.ItemNum; i++) {
+						if (header.Swap != 1) MFSwapHalfWord (((short *)  items) + i);
+						if (((short *)  items) [i] == header.Missing.Int) output [i] = outHeader.Missing.Float;
+						else if (bins [i] > 0) {
 							value = (double) (((short *)  items) [i]);
 							bin = (int) round ((double) (binNum - 1) * (value - min [i]) / (max [i] - min [i]));
 							output [i] = 100.0 * (double) bins [bin * header.ItemNum + i] / (double) bins [i];
+						}
+						else output [i] = 100.0;
 					}
-					else output [i] = 100.0;
-				}
-				break;
-			case MFInt:
-				for(i = 0; i < header.ItemNum; i++) {
-					if(header.Swap != 1) MFSwapWord      (((int *)    items) + i);
-					if (((int *)    items) [i] == header.Missing.Int) output [i] = outHeader.Missing.Float;
-					else if (bins [i] > 0) {
-						value = (double) (((int *)    items) [i]);
-						bin = (int) round ((double) (binNum - 1) * (value - min [i]) / (max [i] - min [i]));
-						output [i] = 100.0 * (double) bins [bin * header.ItemNum + i] / (double) bins [i];
+					break;
+				case MFInt:
+					for(i = 0; i < header.ItemNum; i++) {
+						if(header.Swap != 1) MFSwapWord      (((int *)    items) + i);
+						if (((int *)    items) [i] == header.Missing.Int) output [i] = outHeader.Missing.Float;
+						else if (bins [i] > 0) {
+							value = (double) (((int *)    items) [i]);
+							bin = (int) round ((double) (binNum - 1) * (value - min [i]) / (max [i] - min [i]));
+							output [i] = 100.0 * (double) bins [bin * header.ItemNum + i] / (double) bins [i];
+						}
+						else output [i] = 100.0;
 					}
-					else output [i] = 100.0;
-				}
-				break;
-			case MFFloat:
-				for(i = 0; i < header.ItemNum; i++) {
-					if (header.Swap != 1) MFSwapWord     (((float *)  items) + i);
-					if (MFMathEqualValues (((float *)   items) [i],header.Missing.Float) == true) output [i] = outHeader.Missing.Float;
-					else if (bins [i] > 0) {
-						value = (double) (((float *)  items) [i]);
-						bin = (int) round ((double) (binNum - 1) * (value - min [i]) / (max [i] - min [i]));
-						output [i] = 100.0 * (double) bins [bin * header.ItemNum + i] / (double) bins [i];
+					break;
+				case MFFloat:
+					for(i = 0; i < header.ItemNum; i++) {
+						if (header.Swap != 1) MFSwapWord     (((float *)  items) + i);
+						if (MFMathEqualValues (((float *)   items) [i],header.Missing.Float) == true) output [i] = outHeader.Missing.Float;
+						else if (bins [i] > 0) {
+							value = (double) (((float *)  items) [i]);
+							bin = (int) round ((double) (binNum - 1) * (value - min [i]) / (max [i] - min [i]));
+							output [i] = 100.0 * (double) bins [bin * header.ItemNum + i] / (double) bins [i];
+						}
+						else output [i] = 100.0;
 					}
-					else output [i] = 100.0;
-				}
-				break;
-			case MFDouble:
-				for(i = 0; i < header.ItemNum; i++) {
-					if (header.Swap != 1) MFSwapLongWord  (((double *) items) + i);
-					if (MFMathEqualValues (((double *)  items) [i],header.Missing.Float) == true) output [i] = outHeader.Missing.Float;
-					else if (bins [i] > 0) {
-						value = (double) (((double *) items) [i]);
-						bin = (int) round ((double) (binNum - 1) * (value - min [i]) / (max [i] - min [i]));
-						output [i] = 100.0 * (double) bins [bin * header.ItemNum + i] / (double) bins [i];
+					break;
+				case MFDouble:
+					for(i = 0; i < header.ItemNum; i++) {
+						if (header.Swap != 1) MFSwapLongWord  (((double *) items) + i);
+						if (MFMathEqualValues (((double *)  items) [i],header.Missing.Float) == true) output [i] = outHeader.Missing.Float;
+						else if (bins [i] > 0) {
+							value = (double) (((double *) items) [i]);
+							bin = (int) round ((double) (binNum - 1) * (value - min [i]) / (max [i] - min [i]));
+							output [i] = 100.0 * (double) bins [bin * header.ItemNum + i] / (double) bins [i];
+						}
+						else output [i] = 100.0;
 					}
-					else output [i] = 100.0;
-				}
-				break;
+					break;
+			}
+			strcpy (outHeader.Date,header.Date);
+			if (MFVarWriteHeader (&outHeader,outFile) == false) {
+				CMmsgPrint (CMmsgSysError, "Output writing error in: %s:%d\n",__FILE__,__LINE__);
+				perror (":");
+				goto Stop;
+			}
+			if ((int) fwrite (output,sizeof (float),outHeader.ItemNum,outFile) != outHeader.ItemNum) {
+				CMmsgPrint (CMmsgSysError, "Output reading error in: %s:%d\n",__FILE__,__LINE__);
+				perror (":");
+				goto Stop;
+			}
 		}
-		strcpy (outHeader.Date,header.Date);
-		if (MFVarWriteHeader (&outHeader,outFile) == false) {
-			CMmsgPrint (CMmsgSysError, "Output writing error in: %s:%d\n",__FILE__,__LINE__);
-			perror (":");
-			goto Stop;
-		}
-		if ((int) fwrite (output,sizeof (float),outHeader.ItemNum,outFile) != outHeader.ItemNum) {
-			CMmsgPrint (CMmsgSysError, "Output reading error in: %s:%d\n",__FILE__,__LINE__);
-			perror (":");
-			goto Stop;
-		}
+		ret = CMsucceeded;
 	}
-	ret = CMsucceeded;
 Stop:
 	if (items    != (void *)   NULL) free (items);
 	if (max      != (double *) NULL) free (max);
