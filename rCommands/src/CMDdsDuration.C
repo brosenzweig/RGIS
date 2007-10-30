@@ -18,7 +18,7 @@ balazs.fekete@unh.edu
 
 int main(int argc,char *argv []) {
 	int argPos, argNum = argc, ret = CMfailed, itemSize, i, bin, binNum = 1000, percent;
-	bool outBins = false;
+	bool valueMode = false;
 	FILE  *inFile   = (FILE *)   NULL, *outFile = stdout;
 	char  *fileName = (char *)   NULL;
 	void  *items    = (void *)   NULL;
@@ -26,7 +26,7 @@ int main(int argc,char *argv []) {
 	double *min     = (double *) NULL;
 	float  *output  = (float *)  NULL;
 	int    *bins    = (int *)    NULL;
-	double value, binMax, binMin, percentMax, percenMin;
+	double value, binSize, binMax, binMin, percentMax, percentMin;
 	MFVarHeader_t header, outHeader;
 
 	if (argNum < 2) goto Help;
@@ -50,13 +50,13 @@ int main(int argc,char *argv []) {
 		if (CMargTest (argv [argPos],"-m","--mode"))
 			{
 			int mode;
-			const char *modes [] = { "time_series", "bins", (char *) NULL };
+			const char *modes [] = { "percent", "value", (char *) NULL };
 
 			if ((argNum = CMargShiftLeft (argPos,argv,argNum)) <= argPos)
 				{ CMmsgPrint (CMmsgUsrError,"Missing savesteps!\n");    return (CMfailed); }
-			if ((mode = CMoptLookup (modes,argv [argPos],true)) == DBFault)
+			if ((mode = CMoptLookup (modes,argv [argPos],true)) == CMfailed)
 				{ CMmsgPrint (CMmsgUsrError,"Invalid savesteps mode!\n"); return (CMfailed); }
-			outBins = mode == 1 ? true : false;
+			valueMode = mode == 1 ? true : false;
 			if ((argNum = CMargShiftLeft (argPos,argv,argNum)) <= argPos) break;
 			continue;
 			}
@@ -65,10 +65,11 @@ int main(int argc,char *argv []) {
 Help:		CMmsgPrint (CMmsgUsrError,"%s [options] <out datastream>\n",CMprgName(argv[0]));
 			CMmsgPrint (CMmsgUsrError,"  -i, --input [input datastream]\n");
 			CMmsgPrint (CMmsgUsrError,"  -b, --bins  [# of bins]\n");
+			CMmsgPrint (CMmsgUsrError,"  -m, --mode  [percent|value]\n");
 			CMmsgPrint (CMmsgUsrError,"  -h,--help\n");
 			ret = CMsucceeded;
 			goto Stop;
-		}lufira/raid/users/pamela/nie/Global_20c3m-ECHAM5-Run1_Discharge_mTS1986_2015_30min.gdbc
+		}
 		if ((argv [argPos][0] == '-') && (strlen (argv [argPos]) > 1)) {
 			CMmsgPrint (CMmsgUsrError,"Unknown option: %s!\n",argv [argPos]);
 			return (CMfailed);
@@ -243,14 +244,32 @@ Help:		CMmsgPrint (CMmsgUsrError,"%s [options] <out datastream>\n",CMprgName(arg
 				break;
 		}
 	}
-	if (outBins) {
+	if (valueMode) {
 		for (percent = 0;percent < 100; ++percent) {
 			for(i = 0; i < header.ItemNum; i++) {
-				for (bin = 0;bin < binNum; ++bin)
-					if (bins [bin * header.ItemNum + i] / bins [i] * 100.0 < (float) percent) break;
-				binMax = bin < binNum ? (float)  bin      * (max [i] - min [i]) / (float) binNum + min [i] : max [i];
-				binMim = bin > 0      ? (float) (bin - 1) * (max [i] - min [i]) / (float) binNum + min [i] : min [i];
-				percentMin = 
+				binSize = (max [i] - min [i]) / (float) binNum;
+				if (MFMathEqualValues (binSize, 0.0)) output [i] = min [i];
+				else {
+					for (bin = 0;bin < binNum; ++bin) {
+						percentMin = bins [bin * header.ItemNum + i] / bins [i] * 100.0;
+						if ((float) percent > percentMin) break;
+					}
+					binMax = bin < binNum ? (float)  bin      * binSize + min [i] : max [i];
+					binMin = bin > 0      ? (float) (bin - 1) * binSize + min [i] : min [i];
+					percentMax = bin < binNum ? bins [bin * header.ItemNum + i] / bins [i] * 100.0 : 100.0;
+					output [i] = (binMax + binMin) / 2.0;
+				}
+			}
+			sprintf (outHeader.Date,"%3d", percent + 1);
+			if (MFVarWriteHeader (&outHeader,outFile) == false) {
+				CMmsgPrint (CMmsgSysError, "Output writing error in: %s:%d\n",__FILE__,__LINE__);
+				perror (":");
+				goto Stop;
+			}
+			if ((int) fwrite (output,sizeof (float),outHeader.ItemNum,outFile) != outHeader.ItemNum) {
+				CMmsgPrint (CMmsgSysError, "Output reading error in: %s:%d\n",__FILE__,__LINE__);
+				perror (":");
+				goto Stop;
 			}
 		}
 		ret = CMsucceeded;
