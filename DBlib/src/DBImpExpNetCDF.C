@@ -392,6 +392,7 @@ static DBInt _DBExportNetCDFTimeDefine (DBObjData *dbData,int ncid,int dimids []
 	switch (strlen (timeStr))
 		{
 		case  4:
+			strcat (timeStr,"-01-01 00:00:00");
 			sscanf (timeStr,"%4d",&eYear);
 			eMonth = eDay = eHour = eMinute = 0;
 			strcpy (timeStr,(gridIO->Layer (0))->Name ());
@@ -402,6 +403,7 @@ static DBInt _DBExportNetCDFTimeDefine (DBObjData *dbData,int ncid,int dimids []
 			str = "0001-00-00 00:00:00";
 			break;
 		case  7:
+			strcat (timeStr,"-01 00:00:00");
 			sscanf (timeStr,"%4d-%2d",&eYear,&eMonth);
 			eDay = eHour = eMinute = 0;
 			strcpy (timeStr,(gridIO->Layer (0))->Name ());
@@ -412,6 +414,7 @@ static DBInt _DBExportNetCDFTimeDefine (DBObjData *dbData,int ncid,int dimids []
 			str = "0000-01-00 00:00:00";
 			break;
 		case 10:
+			strcat (timeStr," 00:00:00");
 			sscanf (timeStr,"%4d-%2d-%2d",&eYear,&eMonth,&eDay);
 			eHour = eMinute = 0;
 			strcpy (timeStr,(gridIO->Layer (0))->Name ());
@@ -422,6 +425,7 @@ static DBInt _DBExportNetCDFTimeDefine (DBObjData *dbData,int ncid,int dimids []
 			str = "0000-00-01 00:00:00";
 			break;
 		case 13:
+			strcat (timeStr,":00:00");
 			sscanf (timeStr,"%4d-%2d-%2d %2d",&eYear,&eMonth,&eDay,&eHour);
 			eMinute = 0;
 			strcpy (timeStr,(gridIO->Layer (0))->Name ());
@@ -432,6 +436,7 @@ static DBInt _DBExportNetCDFTimeDefine (DBObjData *dbData,int ncid,int dimids []
 			str = "0000-00-00 01:00:00";
 			break;
 		case 16:
+			strcat (timeStr,":00");
 			sscanf (timeStr,"%4d-%2d-%2d %2d:%2d",&eYear,&eMonth,&eDay,&eHour,&eMinute);
 			strcpy (timeStr,(gridIO->Layer (0))->Name ());
 			if (strncmp (timeStr,"XXXX",4) == 0) for (i = 0;i < 4;i++) timeStr [i] = '0';
