@@ -1,9 +1,9 @@
 include ./common.mk
 all: rgis_target rgisPlot_target rcommands_target tfcommands_target
 
-install: $(INSTALLDIR)/bin $(INSTALLDIR)/XResources/bitmaps $(INSTALLDIR)/Messages $(INSTALLDIR)/Scripts $(INSTALLDIR)/bin/rgis
+install: $(INSTALLDIR)/bin $(INSTALLDIR)/XResources/bitmaps $(INSTALLDIR)/Messages $(INSTALLDIR)/Scripts
 	$(UNIXMAKE) -C rGIS       install
-	$(UNIXMAKE) -C rgisPlot   install
+#	$(UNIXMAKE) -C rgisPlot   install
 	$(UNIXMAKE) -C rCommands  install
 	$(UNIXMAKE) -C tfCommands install
 	cp XResources/bitmaps/* $(INSTALLDIR)/XResources/bitmaps/
@@ -13,7 +13,7 @@ install: $(INSTALLDIR)/bin $(INSTALLDIR)/XResources/bitmaps $(INSTALLDIR)/Messag
 
 uninstall:
 	$(UNIXMAKE) -C rGIS       uninstall
-	$(UNIXMAKE) -C rgisPlot   uninstall
+#	$(UNIXMAKE) -C rgisPlot   uninstall
 	$(UNIXMAKE) -C rCommands  uninstall
 	$(UNIXMAKE) -C tfCommands uninstall
 	rm -rf $(INSTALLDIR)/XResources
@@ -26,7 +26,7 @@ clean:
 	$(UNIXMAKE) -C rGIS       clean
 	$(UNIXMAKE) -C rCommands  clean
 	$(UNIXMAKE) -C tfCommands clean
-	$(UNIXMAKE) -C rgisPlot   clean
+#	$(UNIXMAKE) -C rgisPlot   clean
 	$(UNIXMAKE) -C CMlib      clean
 	$(UNIXMAKE) -C DBlib      clean
 	$(UNIXMAKE) -C RGlib      clean
