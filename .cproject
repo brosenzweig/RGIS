@@ -12,12 +12,36 @@
 <builder id="org.eclipse.cdt.build.core.settings.default.builder.697259889" keepEnvironmentInBuildfile="false" name="Gnu Make Builder" superClass="org.eclipse.cdt.build.core.settings.default.builder"/>
 <tool id="org.eclipse.cdt.build.core.settings.holder.libs.771763664" name="holder for library settings" superClass="org.eclipse.cdt.build.core.settings.holder.libs"/>
 <tool id="org.eclipse.cdt.build.core.settings.holder.908274627" name="GNU C++" superClass="org.eclipse.cdt.build.core.settings.holder">
+<option id="org.eclipse.cdt.build.core.settings.holder.undef.incpaths.1590279028" superClass="org.eclipse.cdt.build.core.settings.holder.undef.incpaths" valueType="undefIncludePath">
+<listOptionValue builtIn="false" value="/usr/include/c++/4.0.0/backward"/>
+<listOptionValue builtIn="false" value="/usr/include/c++/4.0.0"/>
+<listOptionValue builtIn="false" value="/usr/local/include"/>
+<listOptionValue builtIn="false" value="/usr/lib/gcc/i686-apple-darwin9/4.0.1/include"/>
+<listOptionValue builtIn="false" value="/usr/include/c++/4.0.0/i686-apple-darwin9"/>
+<listOptionValue builtIn="false" value="/opt/local/include"/>
+</option>
 <inputType id="org.eclipse.cdt.build.core.settings.holder.inType.1412343868" languageId="org.eclipse.cdt.core.g++" languageName="GNU C++" sourceContentType="org.eclipse.cdt.core.cxxSource,org.eclipse.cdt.core.cxxHeader" superClass="org.eclipse.cdt.build.core.settings.holder.inType"/>
 </tool>
 <tool id="org.eclipse.cdt.build.core.settings.holder.1934079396" name="GNU C" superClass="org.eclipse.cdt.build.core.settings.holder">
+<option id="org.eclipse.cdt.build.core.settings.holder.undef.incpaths.363005039" superClass="org.eclipse.cdt.build.core.settings.holder.undef.incpaths" valueType="undefIncludePath">
+<listOptionValue builtIn="false" value="/usr/include/c++/4.0.0/backward"/>
+<listOptionValue builtIn="false" value="/usr/include/c++/4.0.0"/>
+<listOptionValue builtIn="false" value="/usr/local/include"/>
+<listOptionValue builtIn="false" value="/usr/lib/gcc/i686-apple-darwin9/4.0.1/include"/>
+<listOptionValue builtIn="false" value="/usr/include/c++/4.0.0/i686-apple-darwin9"/>
+<listOptionValue builtIn="false" value="/opt/local/include"/>
+</option>
 <inputType id="org.eclipse.cdt.build.core.settings.holder.inType.175791016" languageId="org.eclipse.cdt.core.gcc" languageName="GNU C" sourceContentType="org.eclipse.cdt.core.cSource,org.eclipse.cdt.core.cHeader" superClass="org.eclipse.cdt.build.core.settings.holder.inType"/>
 </tool>
 <tool id="org.eclipse.cdt.build.core.settings.holder.1464288362" name="Assembly" superClass="org.eclipse.cdt.build.core.settings.holder">
+<option id="org.eclipse.cdt.build.core.settings.holder.undef.incpaths.1717369074" superClass="org.eclipse.cdt.build.core.settings.holder.undef.incpaths" valueType="undefIncludePath">
+<listOptionValue builtIn="false" value="/usr/include/c++/4.0.0/backward"/>
+<listOptionValue builtIn="false" value="/usr/include/c++/4.0.0"/>
+<listOptionValue builtIn="false" value="/usr/local/include"/>
+<listOptionValue builtIn="false" value="/usr/lib/gcc/i686-apple-darwin9/4.0.1/include"/>
+<listOptionValue builtIn="false" value="/usr/include/c++/4.0.0/i686-apple-darwin9"/>
+<listOptionValue builtIn="false" value="/opt/local/include"/>
+</option>
 <inputType id="org.eclipse.cdt.build.core.settings.holder.inType.318078339" languageId="org.eclipse.cdt.core.assembly" languageName="Assembly" sourceContentType="org.eclipse.cdt.core.asmSource" superClass="org.eclipse.cdt.build.core.settings.holder.inType"/>
 </tool>
 </toolChain>
