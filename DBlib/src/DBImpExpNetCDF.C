@@ -859,8 +859,8 @@ DBInt DBExportNetCDF (DBObjData *dbData,const char *fileName)
 			} break;
 		case DBTypeGridContinuous:
 			{
-			short *record, fillVal = 32766;
-			double extent [2], dataOffset, scaleFactor, signVar;
+			float *record, fillVal;
+			float extent [2], dataOffset, scaleFactor;
 			DBFloat gridVal;
 			DBInt layerID;
 			DBPosition pos;
@@ -885,33 +885,29 @@ DBInt DBExportNetCDF (DBObjData *dbData,const char *fileName)
 				{ fprintf(stderr, "NC Error: %s\n", nc_strerror(status)); nc_close (ncid); return (DBFault); }
 			if ((status = nc_put_att_text (ncid,varid,"var_desc",strlen (str),str)) != NC_NOERR)
 				{ fprintf(stderr, "NC Error: %s\n", nc_strerror(status)); nc_close (ncid); return (DBFault); }
-			if ((status = nc_put_att_short (ncid,varid,"_FillValue",   NC_SHORT,1,&fillVal)) != NC_NOERR)
-				{ fprintf(stderr, "NC Error: %s\n", nc_strerror(status)); nc_close (ncid); return (DBFault); }
-			if ((status = nc_put_att_short (ncid,varid,"missing_value",NC_SHORT,1,&fillVal)) != NC_NOERR)
+			if ((status = nc_put_att_float (ncid,varid,"missing_value",NC_FLOAT,1,&fillVal)) != NC_NOERR)
 				{ fprintf(stderr, "NC Error: %s\n", nc_strerror(status)); nc_close (ncid); return (DBFault); }
 
 			gridIO = new DBGridIO (dbData);
 
+			fillVal     = gridIO->MissingValue ();
+			scaleFactor = 1.0;
+			dataOffset  = 0.0;
 			extent [0]  = gridIO->Minimum ();
 			extent [1]  = gridIO->Maximum ();
-			dataOffset  = (extent [1] + extent [0]) / 2.0;
-			if (dataOffset > 0.0) signVar = 1.0; else { signVar = -1.0; dataOffset = dataOffset * signVar; }
-			scaleFactor = pow (10.0,floor (log10 (dataOffset) - 1.0));
-			dataOffset  = scaleFactor * floor (dataOffset / scaleFactor) * signVar;
-
-			scaleFactor = log10 (fabs (extent [1] - extent [0]) / (double) 50000.0);
-			scaleFactor = pow ((double) 10.0,scaleFactor > 0.0 ? floor (scaleFactor) : ceil (scaleFactor));
-			if ((status = nc_put_att_double (ncid,varid,"scale_factor",NC_DOUBLE,1,&scaleFactor)) != NC_NOERR)
+			if ((status = nc_put_att_float (ncid,varid,"_FillValue",   NC_FLOAT,1,&fillVal)) != NC_NOERR)
+				{ fprintf(stderr, "NC Error: %s\n", nc_strerror(status)); nc_close (ncid); return (DBFault); }
+			if ((status = nc_put_att_float (ncid,varid,"scale_factor",NC_FLOAT,1,&scaleFactor)) != NC_NOERR)
 				{ fprintf(stderr, "NC Error: %s\n", nc_strerror(status)); delete gridIO; nc_close (ncid); return (DBFault); }
-			if ((status = nc_put_att_double (ncid,varid,"add_offset",NC_DOUBLE,1,&dataOffset)) != NC_NOERR)
+			if ((status = nc_put_att_float (ncid,varid,"add_offset",  NC_FLOAT,1,&dataOffset)) != NC_NOERR)
 				{ fprintf(stderr, "NC Error: %s\n", nc_strerror(status)); delete gridIO; nc_close (ncid); return (DBFault); }
-			if ((status = nc_put_att_double (ncid,varid,"actual_range",NC_DOUBLE,2,extent)) != NC_NOERR)
+			if ((status = nc_put_att_float (ncid,varid,"actual_range",NC_FLOAT,2,extent)) != NC_NOERR)
 				{ fprintf(stderr, "NC Error: %s\n", nc_strerror(status)); delete gridIO; nc_close (ncid); return (DBFault); }
 			if ((status = nc_enddef (ncid)) != NC_NOERR)
 				{ fprintf(stderr, "NC Error: %s\n", nc_strerror(status)); delete gridIO; nc_close (ncid); return (DBFault); }
 			/* End Defining Core Variable */
 
-			if ((record = (short *) calloc (gridIO->ColNum (),sizeof (short))) == (short *) NULL)
+			if ((record = (float *) calloc (gridIO->ColNum (),sizeof (float))) == (float *) NULL)
 				{
 				fprintf (stderr,"Memory allocation error in: DBExportNetCDF ()\n");
 				delete gridIO;
@@ -928,9 +924,8 @@ DBInt DBExportNetCDF (DBObjData *dbData,const char *fileName)
 					start [DIMLat] = pos.Row; count [DIMLat] = 1;
 					start [DIMLon] = 0; count [DIMLon] = gridIO->ColNum ();
 					for (pos.Col = 0;pos.Col < gridIO->ColNum ();pos.Col++)
-						record [pos.Col] = gridIO->Value (layerRec,pos,&gridVal) ?
-								 (short) ((gridVal - dataOffset) / scaleFactor) : fillVal;
-					if ((status = nc_put_vara_short (ncid,varid,start,count,record)) != NC_NOERR)
+						record [pos.Col] = gridIO->Value (layerRec,pos,&gridVal) ? gridVal : fillVal;
+					if ((status = nc_put_vara_float (ncid,varid,start,count,record)) != NC_NOERR)
 						{
 						fprintf(stderr, "NC Error: %s\n", nc_strerror(status));
 						free (record);
