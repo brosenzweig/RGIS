@@ -874,7 +874,7 @@ DBInt DBExportNetCDF (DBObjData *dbData,const char *fileName)
 			/* Begin Defining Core Variable */
 			if ((status = nc_redef (ncid)) != NC_NOERR)
 				{ fprintf(stderr, "NC Error: %s\n", nc_strerror(status)); nc_close (ncid); return (DBFault); }
-			if ((status = nc_def_var (ncid,_DBExportNetCDFRename (dbData->Document (DBDocSubject)),NC_SHORT,(int) 4,dimids,&varid))  != NC_NOERR)
+			if ((status = nc_def_var (ncid,_DBExportNetCDFRename (dbData->Document (DBDocSubject)),NC_FLOAT,(int) 4,dimids,&varid))  != NC_NOERR)
 				{ fprintf(stderr, "NC Error: %s\n", nc_strerror(status)); nc_close (ncid); return (DBFault); }
 
 			str = dbData->Name ();
