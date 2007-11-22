@@ -15,8 +15,8 @@ install: $(INSTALLDIR)/bin $(INSTALLDIR)/XResources/bitmaps $(INSTALLDIR)/Messag
 uninstall:
 	$(UNIXMAKE) -C rGIS       uninstall
 	$(UNIXMAKE) -C rgisPlot   uninstall
-	$(UNIXMAKE) -C rCommands  uninstall
 	$(UNIXMAKE) -C tfCommands uninstall
+	$(UNIXMAKE) -C rCommands  uninstall
 	rm -rf $(INSTALLDIR)/XResources
 	rm -rf $(INSTALLDIR)/Messages
 	rm -rf $(INSTALLDIR)/Scripts
