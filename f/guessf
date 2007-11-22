@@ -1,0 +1,41 @@
+#!/usr/bin/perl
+#
+# Tries to identify columns in an incoming, blank-delimited input file,
+# outputting standard format
+
+$terminator="\t";
+
+while (<>) {
+	chomp;
+	$term="";
+	while (\S) {
+		$field=$_;
+		# quoted strings are simply copied
+		if (/^\"[^\"]*\"\s*/) {
+			$field =~ s/^(\"[^\"]*\").*/$1/;
+			s/^\"[^\"]*\"\s*(.*)/$1/;
+			print $term, $field;
+			$term=$terminator;
+			next;
+		}
+		# numbers are copied
+		if (/^\d+\s*/) {
+			$field =~ s/^(\d+).*/$1/;
+			s/^\d+\s*(.*)/$1/;
+			print $term, $field;
+			$term=$terminator;
+			next;
+		}
+		# alpha-
+		if (/^[\.a-zA-Z_][\.a-zA-Z_\s]*/) {
+			$field =~ s/^([\.a-zA-Z_][\.a-zA-Z_\s]*).*/$1/;
+			$field =~ s/.s*$//;
+			s/^[\.a-zA-Z_][\.a-zA-Z_\s]*(.*)/$1/;
+			print "$term\"$field\"";
+			$term=$terminator;
+			next;
+		}
+	}
+	print "\n";
+}
+

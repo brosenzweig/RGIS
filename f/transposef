@@ -1,0 +1,15 @@
+#!/usr/bin/perl
+
+while (<>)
+	{
+	chomp;
+	@cols = split ("\t",$_);
+	for ($i = 0;$i < @cols;$i++)
+		{
+		$cols[$i] =~ s/\"(.*)\"/$1/;
+		if ($rows[$i] ne "") { $rows[$i] = "$rows[$i]\t";}
+		$rows[$i] = "$rows[$i]\"$cols[$i]\"";
+		}
+	}
+
+for ($i = 0;$i < @rows;$i++) { print "$rows[$i]\n"; }

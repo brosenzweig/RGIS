@@ -1,0 +1,104 @@
+#!/usr/bin/perl
+
+%operand = (
+	'h' => 0,
+	'n' => 0,
+	't' => 0,
+);				# supported switches and # of parameters
+%longoperand = (
+	'-help'		=> 'h',
+	'-name'		=> 'n',
+	'-transpose'	=> 't',
+);				# long option names and equivalent shorts
+
+while ($_ = $ARGV[0], /^-/) {			# get field list
+	s/^-//;
+	exists($operand{$_}) || exists($longoperand{$_})
+		|| die "Argument -$_ not supported.\n";
+	($longoperand{$_}) && ($_ = $longoperand{$_});
+	$args{$_}++;				# count number
+	shift;
+}
+
+if ($args{h}) {					# requesting help
+print <<EOM;
+Transforms single-column input to f-compatible tab-separated output.
+
+Usage:
+
+col2f [-nth] ... [inputfile] ...
+
+-n, --name
+	Interpret first value in each dataset as output column name
+        (default) or first dataset as column names (transpose mode).
+	(Automatic names are padded if the first dataset does not
+	contain enough elements in transpose mode.)
+-t, --transpose
+	Transpose output.  Interprets incoming columns as data rows.
+-h, --help
+        Print this usage information.
+
+Input files are assumed to be in single-column datasets, with blank
+lines as delimiters between consecutive output colums (default) or rows.
+
+Additional help can be found by executing helpf.
+
+EOM
+exit
+}
+
+$blank = 1;
+while (<>) {
+	chomp;
+	s/#.*//;
+	if (/^\s*$/) {
+		($blank) || (push (@colends, $#lines));
+		$blank = 1;
+		next;
+	}
+	push (@lines, $_);
+	($blank) && (push (@cols, $#lines));
+	$blank = 0;
+}
+($blank) || (push (@colends, $#lines));
+
+$max = -1;
+foreach $i (0..$#cols) {
+	$max = (($max < $colends[$i]-$cols[$i]) ?
+		$colends[$i]-$cols[$i] : $max);
+}
+
+($vert, $horiz) = (($args{'t'}) ? ($#cols, $max) : ($max, $#cols));
+
+foreach $i (0..$horiz) {
+	(0 == $i) || (print "\t");
+	if (!$args{n}) {
+		print '"col', $i+1, '"';
+		next;
+	}					# automatic columns
+	if (!$args{'t'}) {
+		print $lines[$cols[$i]];
+		next;
+	}
+	if ($args{'t'}) {
+		print (($i <= $colends[0]) ?
+			($lines[$i]) : ("\"col" . (1+$i) . "\""));
+		next;
+	}
+}
+print "\n";
+
+$first = (($args{'n'}) ? 1 : 0); 
+
+foreach $i ($first..$vert) {
+	foreach $j (0..$horiz) {
+		($k, $l) = (($args{'t'}) ? ($j, $i) : ($i, $j));
+
+		(0 == $j) || (print "\t");
+		if ($k <= $colends[$l]-$cols[$l]) {
+			print $lines[$cols[$l]+$k];
+		}
+	}
+	print "\n";
+}
+

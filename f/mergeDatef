@@ -1,0 +1,115 @@
+#!/usr/bin/perl
+
+if ("" eq $ARGV[0]) {
+
+print "Merges fields into Date field [yyyy-mm-dd hh:ii] format.\n";
+
+prhelp:
+print <<"EOM";
+
+Usage:
+
+mergeDataf  -y [field] -m [field] -d [field] -h [field] -i [field]
+
+where
+
+		-y specifies year field.
+		-m specifies month field.
+		-d specifies day field.
+		-h specifies hour field.
+		-i specifies minute field.
+
+Additional help can be found by executing helpf.
+
+EOM
+exit;
+}
+
+%operand = (y => 0, m => 1, d => 2, h => 3, i => 4);
+
+%longoperand = ('-year'	=> 'y', '-month' => 'm', '-day' => 'd', '-hour' => 'h', '-minute' => 'i');
+
+if (@ARGV / 2 < 1) { print "Invalid number of arguments\n"; goto prhelp; }
+
+$comp = -1;
+while ($_ = $ARGV[0], /^-/)
+	{
+	s/^-//;
+	exists($operand{$_}) || exists($longoperand{$_}) || die "Argument -$_ not supported.\n";
+	if ($longoperand{$_}) { $_ = $longoperand{$_}; }
+	switch:
+		{
+		if (/^y/)	{ $yrField = $ARGV[1]; $yrField =~ s/^\"(.*)\"$/$1/; if ($comp < $operand{$_}) { $comp = $operand{$_}; }}
+		if (/^m/)	{ $moField = $ARGV[1]; $moField =~ s/^\"(.*)\"$/$1/; if ($comp < $operand{$_}) { $comp = $operand{$_}; }}
+		if (/^d/)	{ $dyField = $ARGV[1]; $dyField =~ s/^\"(.*)\"$/$1/; if ($comp < $operand{$_}) { $comp = $operand{$_}; }}
+		if (/^h/)	{ $hrField = $ARGV[1]; $hrField =~ s/^\"(.*)\"$/$1/; if ($comp < $operand{$_}) { $comp = $operand{$_}; }}
+		if (/^i/)	{ $miField = $ARGV[1]; $miField =~ s/^\"(.*)\"$/$1/; if ($comp < $operand{$_}) { $comp = $operand{$_}; }}
+		}
+	shift;
+	shift;
+	}
+
+if (($moField eq "") && ($dyField ne "")) { print "Month field is not set\n"; goto prhelp; }
+if (($dyField eq "") && ($hrField ne "")) { print "Day field is not set\n"; 	goto prhelp; }
+if (($hrField eq "") && ($miField ne "")) { print "Hour field is not set\n";	goto prhelp; }
+
+($_ = <>) || exit;
+while (/^\s*$/) { ($_ = <>) || exit; }
+
+chomp;
+@colHeads = split(/\t/, $_);
+
+($_ = <>) || exit;
+while (/^\s*$/) { ($_ = <>) || exit; }
+
+chomp;
+@fields = split(/\t/, $_);
+
+($fields == $colheads) || die "Number of header and data fields differs.\n";
+
+$yrCol = $moCol = $dyCol = $hrCol = $miCol = -1;
+for ($field = 0;$field < @colHeads;$field++)
+	{
+	$colHeads[$field] =~ s/"(.*)"/$1/;
+	if (($yrField ne "") && ($colHeads[$field] eq $yrField))	{ $yrCol = $field; }
+	if (($moField ne "") && ($colHeads[$field] eq $moField))	{ $moCol = $field; }
+	if (($dyField ne "") && ($colHeads[$field] eq $dyField))	{ $dyCol = $field; }
+	if (($hrField ne "") && ($colHeads[$field] eq $hrField))	{ $hrCol = $field; }
+	if (($miField ne "") && ($colHeads[$field] eq $miField))	{ $miCol = $field; }
+	}
+if (($yrField ne "") && ($yrCol == -1)) { print "Invalid Year field.\n";	goto prhelp; }
+if (($moField ne "") && ($moCol == -1)) { print "Invalid Month field.\n";	goto prhelp; }
+if (($dyField ne "") && ($dyCol == -1)) { print "Invalid Day field.\n";		goto prhelp; }
+if (($hrField ne "") && ($hrCol == -1)) { print "Invalid Hour field.\n";	goto prhelp; }
+if (($miField ne "") && ($miCol == -1)) { print "Invalid Minute field.\n";	goto prhelp; }
+
+print "\"$colHeads[0]\"";
+for ($field = 1;$field < @colHeads;$field++) { print "\t\"$colHeads[$field]\""; }
+print "\t\"Date\"\n";
+
+while ("" ne $_)
+	{
+	print "$fields[0]";
+	for ($field = 1;$field <= @colHeads;$field++) { print "\t$fields[$field]"; }
+	if ($yrCol != -1) { printf ("\"%04d",$fields[$yrCol]); }
+	else	{ print "\"XXXX"; }
+
+	if ($moCol != -1)
+		{
+		printf ("-%02d",$fields[$moCol]);
+		if ($dyCol != -1)
+			{
+			printf ("-%02d",$fields[$dyCol]);
+			if ($hrCol != -1)
+				{
+				printf (" %02d",$fields[$hrCol]);
+				if ($miCol != -1) { printf (":%02d",$fields[$miCol]); }
+				}
+			}
+		}
+	print "\"\n";
+	($_ = <>) || last;
+	while (/^\s*$/) { ($_ = <>) || last; }
+	chomp;
+	@fields = split(/\t/, $_);
+	}

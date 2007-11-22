@@ -1,0 +1,461 @@
+#!/usr/bin/perl
+
+use POSIX;
+
+if ("" eq $ARGV[0]) {
+prhelp:
+print <<"EOM";
+Performs statistical and grouping operations on a tab-separated datafile.
+
+Usage:
+
+statf [-operation  [field]] ... [inputfile] ...
+
+where fieldnames must match fieldnames in first line of the datafile.
+Operations are:
+
+-e, --reverse
+	Reverses order of groups, printing descending list.  Default
+	group listing is ascending.
+-f, --field  operation  [field]
+	Perform `operation' on field values, where operation is one
+	of the following:
+
+	num
+		Output number of rows inside group.
+	nonnull  field
+		Number of non-NULL field values inside group.
+	min  field
+		Output the minimum value in the given field.
+	max  field
+		Output the maximum value in the given field.
+	sum  field
+		Output the sum of values in the given field.
+	avg  field
+		Output the mean of non-NULL values in given field.
+	navg  field
+		Output the mean of all values in given field.
+	pct  field  percentage
+		Percentage function [ x : F(x) = p/100 ].
+	med  field
+		Output the median of values in given field.
+	mod  field
+		Output the mode of values in given field.
+	dev  field
+		Output standard deviation of values in given field.
+
+	Field values are assumed to be numeric.
+
+-g, --group  field
+	Perform selected operations on data groups, selected by having
+	the same value in the group field.  Process whole
+	input if no group is given.  Select groups based on groups of
+	fields if multiple groups are given.
+-h, --help
+	Print this usage information.
+-n, --nulls
+	Don't inhibit NULL keys from grouping.
+-m, --memorysave
+	Force low memory usage, increase runtime (inhibit distribution cache).
+-r, --rename  name
+	Set the name of the next output column.
+-v, --verbose
+	Verbose operation.
+
+Additional help can be found by executing helpf.
+
+EOM
+exit;
+}
+
+#--------------------------------------------------------------------
+%operand=(
+	'f' => 1,
+	'g' => 1,
+	'e' => 0,
+	'v' => 0,
+	'r' => 1,
+	'h' => 0,
+	'm' => 0,
+	'n' => 0,
+);				# supported switches and # of parameters
+%longoperand=(
+	'-field'	=> 'f',
+	'-group'	=> 'g',
+	'-rename'	=> 'r',
+	'-reverse'	=> 'e',
+	'-help'		=> 'h',
+	'-nulls'	=> 'n',
+	'-memorysave'	=> 'm',
+	'-verbose'	=> 'v',
+);				# long option names and equivalent shorts
+%function = (
+	num	=> 0,
+	nonnull	=> 1,
+	min	=> 1,
+	max	=> 1,
+	sum	=> 1,
+	avg	=> 1,
+	navg	=> 1,
+	pct	=> 2,
+	dev	=> -1,
+	mod	=> -1,
+	med	=> -1,
+);
+
+%unary = (
+	num	=> 1,
+);				# unary operators
+
+$terminator="\t";
+
+
+$rename="";
+while ($_ = $ARGV[0], /^-/) {				# get field list
+	s/^-//;
+	($longoperand{$_}) && ($_ = $longoperand{$_});
+	exists($operand{$_}) || die "Argument `-$_' not supported.\n";
+
+	if (0 < $operand{$_}) {				# pick up parameters
+		("" ne $ARGV[1]) || die "Operator required after `-$_'.\n";
+
+		if ("f" eq $_) {
+			exists($function{$ARGV[1]}) ||
+				die "Invalid operator `$ARGV[1]'.\n";
+			("pct" eq $ARGV[1]) && ((!defined($ARGV[2])) &&
+				(!defined($ARGV[3]))) &&
+					die "Invalid format for `pct'.\n";
+			if (exists($unary{$ARGV[1]})) {
+				push (@opr, $ARGV[1]);
+				push (@var, "");
+				push (@prvar, "");
+				push (@colname, $rename);
+				$rename = "";
+				shift;
+				shift;
+				next;
+			}
+			push (@opr, $ARGV[1]);
+			push (@var, $ARGV[2]);
+			push (@prvar, $ARGV[2]);
+			$prvar[-1] =~ s/^\"(.*)\"$/$1/;
+
+			if ("pct" eq $ARGV[1]) {
+				(($ARGV[3] <= 100) && ($ARGV[3] >= 0)) ||
+					die "Percentage outside 0-100 [%]\n";
+				$pct[$#opr] = $ARGV[3]/100;
+				if ("" eq $rename) {
+					$rename = "pct_$ARGV[3]($prvar[-1])";
+				}
+				shift;
+			}
+			if ("med" eq $ARGV[1]) {
+				if ("" eq $rename) {
+					$rename = "med($prvar[-1])";
+				}
+				$opr[-1] = "pct";
+				$pct[$#opr] = 0.5;
+			}				# median = pct50
+ 
+			push (@colname, $rename);
+			$rename = "";
+			shift;
+			shift;
+		}
+		if ("g" eq $_) {
+			push (@groupcol, $ARGV[1]);
+			$groupcol[-1] =~ s/^\"(.*)\"$/$1/;
+			$groupcol[-1] = "\"$groupcol[-1]\"";
+
+			push (@groupvar, $rename);
+			$groupvar[-1] =~ s/^\"(.*)\"$/$1/;
+
+			$rename = "";
+			shift;
+		}
+		if ("r" eq $_) {
+			$rename = $ARGV[1];
+			$rename =~ s/^\"(.*)\"$/$1/;
+			shift;
+		}
+	} else {
+		$args{$_}++;				# count number
+	}
+	shift;
+}
+
+if ($args{'h'}) {						# requesting help
+	goto prhelp;
+}
+
+(0 <= $#opr) || die "Must specify fields.\n";
+
+($_ = <>) || exit;
+while (/^\s*$/) {
+	($_ = <>) || exit;
+}								# skip to header
+
+chomp;
+s/\s*//;
+@colheads = split(/\t/, $_);
+foreach $i (0 .. $#colheads) {
+	(!$src{$colheads[$i]}) || die "`$colheads[$i]' repeated?\n";
+	if ($colheads[$i] =~ /^".*"$/) {
+		$tmp = $colheads[$i];
+		$tmp =~ s/^\"(.*)\"$/$1/;
+		(!$src{$tmp}) || die "`$colheads[$i]' repeated?\n";
+		$src{$tmp} = $i;
+	} else {
+		$src{"\"$colheads[$i]\""} = $i;
+	}
+	$src{$colheads[$i]} = $i;
+}							# set up lookup table
+
+foreach $i (0 .. $#opr) {
+	(exists($src{$var[$i]})) || (!$var[$i]) ||
+		die "Invalid field name `$var[$i]'.\n";
+	if ((!exists($target{$var[$i]})) && ($var[$i])) {
+		$target{$var[$i]} = (keys %target)+1;
+	}
+}				# set up source fields and target columns
+
+$term = "";
+$grpcode = "";
+foreach $i (0 .. $#groupcol) {
+	if ($groupvar[$i]) {
+		print "$term\"$groupvar[$i]\"";
+	} else {
+		print "$term$groupcol[$i]";
+	}
+	if ($grpcode) {
+		$grpcode .= ' . "\t" . ';
+	}
+	$grpcode = "$grpcode\$line[$src{$groupcol[$i]}]";
+	$term = $terminator;
+}
+if (!exists($target{$grpcode})) {
+	$target{$grpcode} = (keys %target)+1;
+}
+
+foreach $i (0 .. $#opr) {
+	if ($colname[$i]) {
+		print "$term\"$colname[$i]\"";
+		$term = $terminator;
+		next;
+	}
+	if ($function{$opr[$i]}) {
+		print "$term\"$opr[$i]($prvar[$i])\"";
+	}
+	if ("num" eq $opr[$i]) {
+		print "$term\"num\"";
+	}
+	$term = $terminator;
+}						# header of calculated fields
+print "\n";
+
+while (<>) {
+	chomp;
+	/\S/ || next;
+	@line = split(/\t/, $_);
+	$lineno++;
+	$term = "";
+	
+	$gr[$lineno] = ($groupid = eval $grpcode);	# which group?
+
+	$num{$groupid}++;
+	if (!exists($group{$groupid})) {
+		$group{$groupid} = keys %group;
+		$row = (-1 != $groupcol) ? $group{$groupid} : 0;
+		foreach $i (@var) {
+			($i) || next;
+			$min[$row][$target{$i}] = $line[$src{$i}];
+			$max[$row][$target{$i}] = $line[$src{$i}];
+			$total[$row][$target{$i}] = 0;
+			$nonnull[$row][$target{$i}] = 0;
+		}
+	}						# new group?
+
+	$row = (-1 != $groupcol) ? $group{$groupid} : 0;
+
+	%stored=();
+	foreach $i (@var) {
+		($i) || next;
+		!exists($stored{$i}) || next;
+
+		$tmp = $line[$src{$i}];
+		$data[$target{$i}][$lineno] = $tmp;
+
+		if ("" ne $tmp) {
+			if ($min[$row][$target{$i}] > $tmp) {
+				$min[$row][$target{$i}] = $tmp;
+			}
+			if ($max[$row][$target{$i}] < $tmp) {
+				$max[$row][$target{$i}] = $tmp;
+			}
+			$total[$row][$target{$i}] += $tmp;
+			$nonnull[$row][$target{$i}]++;
+		}
+		$stored{$i} = 1;
+	}
+}
+
+
+($k, $v)=each %group;
+if ($k =~ /^"/) {
+	@grs = (sort keys %group);
+} else {
+	@grs = (sort { $a <=> $b } keys %group )
+}
+if ($args{'e'}) {
+	@grs = reverse (@grs);
+}							# group order
+
+foreach $key (@grs) {
+	($key =~ /^\t*$/) && (-1 != $#groupcol) && (!$args{'n'}) && next;
+							# skip NULL groups
+	($num{$key}) || die "Impossible: zero count for group `$key'.\n";
+							# assert?
+	@cached = ();
+	@values = ();
+	@distr = ();				# flush distribution cache
+
+	$term = "";
+	if (-1 != $#groupcol) {
+		print "$key";
+		$term = $terminator;
+	}						# group if present
+
+	$row=$group{$key};
+	foreach $i (0 .. $#opr) {
+		if (0 < $i) {
+			$term = $terminator;
+		}
+		print "$term";
+		$vr = $target{$var[$i]};
+
+		if ($opr[$i] eq "min") {
+			print $min[$row][$vr];
+			next;
+		}
+		if ($opr[$i] eq "max") {
+			print $max[$row][$vr];
+			next;
+		}
+		if ($opr[$i] eq "sum") {
+			print $total[$row][$vr];
+			next;
+		}
+		if ($opr[$i] eq "avg") {
+			if (!$nonnull[$row][$vr]) {
+				print "";
+				next;
+			}
+			print "", $total[$row][$vr] / $nonnull[$row][$vr];
+			next;
+		}
+		if ($opr[$i] eq "navg") {
+			print "", $total[$row][$vr] / $num{$key};
+			next;
+		}
+		if ($opr[$i] eq "num") {
+			print $num{$key};
+			next;
+		}
+		if ($opr[$i] eq "nonnull") {
+			print $nonnull[$row][$vr];
+			next;
+		}					# static values
+
+		if (-1 == $groupcol) {
+			@dat = (1 .. $lineno);
+		} else {
+			@dat = grep {$gr[$_] eq $key} (1 .. $lineno);
+		}					# matching linenumbers
+
+		if ($opr[$i] eq "mod") {		# mode
+			$tmp = $data[$vr];
+			@tmp = @$tmp;
+			@tmp = @tmp[@dat];	 # row, array, matching group
+
+			@tmp = grep { "" ne $_ } @tmp;
+			(-1 == $#tmp) && next;
+
+			my %n = ();
+			foreach $j (@tmp) {
+				$n{$j}++;
+			}
+			@tmp = sort { $n{$a} <=> $n{$b} } keys %n;
+
+			if ((0 == $#tmp) || ($n{$tmp[-2]} != $n{$tmp[-1]})) {
+				print $tmp[-1];
+			}			# mode if (a) single value  OR
+						# (b) no tie for #1
+		}
+		if ($opr[$i] eq "pct") {		# percentage
+			if ($cached[$vr]) {
+				$tmp = $values[$vr];
+				@tmp = @$tmp;
+				$stmp = $distr[$vr];
+				@stmp = @$stmp;
+
+				$j = $pct[$i] * $stmp[-1];
+				$j = (grep { $stmp[$_] >= $j }
+					(0 .. $#stmp))[0];
+				print $tmp[$j];
+				next;
+			}			# use cached distribution
+
+			@tmp = @{ $data[$vr] };
+			@tmp = @tmp[@dat];	# row, array, matching group
+
+			@tmp = sort { $a <=> $b } grep { "" ne $_ } @tmp;
+			next  unless @tmp;		# only NULL?
+
+			my %n;
+			foreach $j (@tmp) {
+				$n{$j}++;
+			}
+			my @stmp = map { $n{$_} } uniq(@tmp);
+			foreach $j (1 .. $#tmp) {
+				$stmp[$j] += $stmp[$j-1];
+			}
+
+			$j = $pct[$i] * $stmp[-1];
+			if (!$args{'m'}) {
+				$values[$vr] = [ @tmp ];
+				$distr[$vr] = [ @stmp ];
+				$cached[$vr] = 1;
+			}				# save to cache
+
+			$j = (grep { $stmp[$_] >= $j } (0 .. $#stmp))[0];
+			print $tmp[$j];
+			next;
+		}
+		if ($opr[$i] eq "dev") {		# std deviation
+			$avg = $total[$row][$vr] / $num{$key};
+			$tmp = $data[$vr];
+			@tmp = @$tmp;
+			@tmp = @tmp[@dat];	# row, array, matching group
+			$t = 0;
+
+			foreach $j (@tmp) {
+				$t += ($data[$vr][$j] - $avg)**2;
+			}
+			print sqrt($t/$num{$key});
+			next;
+		}
+		warn "No handler for `$opr[$i]'.\n";	# assert?
+	}
+	print "\n";
+}
+
+sub uniq {
+	my @tmp;
+	my %seen;
+
+	foreach (@_) {
+		push(@tmp, $_)  unless $seen{$_}++;
+	}
+	return @tmp;
+}
+

@@ -1,0 +1,146 @@
+#!/usr/bin/perl
+
+
+#--------------------------------------------------------------------
+%operand=(
+	v => 0,
+	h => 0,
+);				# supported switches and # of parameters
+
+%longoperand=(
+	-help		=> h,
+	-verbose	=> v,
+);				# long option names and equivalent shorts
+
+$terminator="\t";
+
+while ($_ = $ARGV[0], /^-/) {			# get field list
+	s/^-//;
+	exists($operand{$_}) || exists($longoperand{$_})
+		|| die "Argument -$_ not supported.\n";
+	($longoperand{$_}) && ($_ = $longoperand{$_});
+	$args{$_}++;				# count number
+	shift;
+}
+
+
+if ($args{h}) {					# requesting help
+print <<EOM;
+Checks a tab-separated input file for inconsistencies.  Returns 0 if file
+appears to be correct, exits with error 1 if not.
+
+Usage:
+
+chkf [-vh] [inputfile] ...
+
+Input is read from standard input if no filename is given.
+
+-h, --help
+        Print this usage information.
+-v, --verbose
+        Verbose operation.  Produces a listing of errors to standard
+        error, stopping only on fatal errors.
+
+Additional help can be found by executing helpf.
+ 
+EOM
+exit
+}
+
+
+if (<>) {					# read header line
+	chomp;
+	@colheads = split(/\t/, $_);
+
+	(0 >= $colheads) ||
+		die "No field headers in first row.\n";
+
+	foreach $i (@colheads) {		# process header fields
+		$number++;
+		if ($i =~ /^\s*$/) {
+			(!$args{v}) ||
+				warn "No name found in column $number.\n";
+			$prob++;
+			next;
+		}
+		if (!($i =~ /^\".*\"$/)) {
+			(!$args{v}) ||
+				warn "Field name '$i' unquoted.\n";
+			$prob++;
+		}
+		if ($cols{$i}) {
+			(!$args{v}) ||
+				warn "Repeated field name '$i'.\n";
+			$prob++;
+		}
+		$cols{$i}=$number;
+	}
+} else {
+	(!$args{v}) ||
+		warn "Input file is empty.\n";
+	$prob++;
+	exit 1;					# empty input file
+}
+
+if (<>) {
+	chomp;
+        @line = split(/\t/, $_);
+	$lines = 1;
+
+	if ((@line+0) != (@colheads+0)) {
+		(!$args{v}) ||
+			warn "Number of columns incorrect (data row $lines).\n";
+		$prob++;
+		exit 1;
+	}
+	$number=0;
+	foreach $i (@line) {
+		$string{$number}=0;
+		$number++;
+		if ($i =~ /^\s*$/) {
+			(!$args{v}) ||
+				warn "No data (row $lines, column $number).\n";
+			$prob++;
+			next;
+		}
+		if ($i =~ /^\".*\"$/) {
+			$string{$number-1}=1;
+		}
+	}
+} else {					# no data
+	exit;
+}
+
+while (<>) {					# data lines
+	chomp;
+	if (/^\s*$/) { next; }	
+	@line = split(/\t/, $_);
+	$lines++;
+
+	if ((@line+0) != (@colheads+0)) {
+		(!$args{v}) ||
+			warn "Number of columns incorrect (data row $lines).\n";
+		$prob++;
+		exit 1;
+	}
+	$number=0;
+	foreach $i (@line) {
+		$number++;
+		if ($i =~ /^\".*\"$/) {
+			$str = 1;
+		} else {
+			$str = 0;
+		}
+		if ($string{$number} != $str) {
+			(!$args{v}) ||
+				warn "Type mismatch (row $lines, column ",
+					$number, ").\n";
+			$prob++;
+		}
+	}
+}
+
+($prob) || exit 0;
+
+exit 1;
+

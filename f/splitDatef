@@ -1,0 +1,122 @@
+#!/usr/bin/perl
+
+if ("" eq $ARGV[0]) {
+
+print "Splits Date field into separate fields.\n";
+
+prhelp:
+print <<"EOM";
+
+Usage:
+
+splitDatef  -f [field]
+
+where -f specifies the date field to be split.
+
+Additional help can be found by executing helpf.
+
+EOM
+exit;
+}
+
+%operand = (f => 0);
+
+%longoperand = ('-field'	=> 'f');
+
+@timeComp = ( 'Year', 'Month', 'Day', 'Hour', 'Minute' );
+
+if (@ARGV / 2 < 1) { print "Invalid number of arguments\n"; goto prhelp; }
+
+while ($_ = $ARGV[0], /^-/)
+	{
+	s/^-//;
+	exists($operand{$_}) || exists($longoperand{$_}) || die "Argument -$_ not supported.\n";
+	if ($longoperand{$_}) { $_ = $longoperand{$_}; }
+	switch:
+		{
+		if (/^f/)	{ $dateField = $ARGV[1]; $dateField =~ s/^\"(.*)\"$/$1/; }
+		}
+	shift;
+	shift;
+	}
+
+if ($dateField eq "") { print "Date field is not set\n"; goto prhelp; }
+
+($_ = <>) || exit;
+while (/^\s*$/) { ($_ = <>) || exit; }
+
+chomp;
+@colHeads = split(/\t/, $_);
+
+($_ = <>) || exit;
+while (/^\s*$/) { ($_ = <>) || exit; }
+
+chomp;
+@fields = split(/\t/, $_);
+
+($fields == $colheads) || die "Number of header and data fields differs.\n";
+
+$col = -1;
+for ($field = 0;$field < @colHeads;$field++)
+	{
+	$colHeads[$field] =~ s/"(.*)"/$1/;
+	if ($colHeads[$field] eq $dateField)	{ $col = $field; }
+	}
+
+if ($col == -1) { die "Invalid column field\n"; }
+
+print "\"$colHeads[0]\"";
+for ($field = 1;$field <= $col;$field++) { print "\t\"$colHeads[$field]\""; }
+$rest = $fields[$col];
+$rest =~ s/"(.*)"/$1/;
+for ($compNum = 0;$compNum < @timeComp;$compNum++)
+	{
+	if ($compNum == 0)
+		{
+		print "\t\"$timeComp[$compNum]\"";
+		$rest =~  s/(\d{4})(.*)/$2/;
+		if (!$rest)	{ last; }
+		}
+	else
+		{
+		print "\t\"$timeComp[$compNum]\"";
+		$rest =~  s/(.\d{2})(.*)/$2/;
+		if (!$rest)	{ last; }
+		}
+	}
+for ( ;$field < @colHeads;$field++) { print "\t\"$colHeads[$field]\""; }
+print "\n";
+
+while ("" ne $_)
+	{
+	print "$fields[0]";
+	for ($field = 1;$field <= $col;$field++) { print "\t$fields[$field]"; }
+	$rest = $fields[$col];
+	$rest =~ s/"(.*)"/$1/;
+	for ($compNum = 0;$compNum < @timeComp;$compNum++)
+		{
+		if ($compNum == 0)
+			{
+			$comp = $rest;
+			$comp =~ s/(\d{4})(.*)/$1/;
+			printf ("\t%d",$comp);
+			$rest =~ s/(\d{4})(.*)/$2/;
+			if (!$rest)	{ last; }
+			}
+		else
+			{
+			$comp = $rest;
+			$comp =~ s/.(\d{2})(.*)/$1/;
+			printf ("\t%d",$comp);
+			$rest =~ s/.(\d{2})(.*)/$2/;
+			if (!$rest)	{ last; }
+			}
+		}
+	for ( ;$field < @fields;$field++) { print "\t$fields[$field]"; }
+
+	print "\n";
+	($_ = <>) || last;
+	while (/^\s*$/) { ($_ = <>) || last; }
+	chomp;
+	@fields = split(/\t/, $_);
+	}

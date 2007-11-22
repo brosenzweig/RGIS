@@ -1,0 +1,140 @@
+
+  f - The Solution To All Your Tabular Data Processing Needs
+  = = === ======== == === ==== ======= ==== ========== =====
+
+
+The f suite of programs is designed to make processing of 
+tabular information easier for programmers and data processors 
+in the UNIX environment.  The f modules are written in Perl v.5
+for ease of portability.
+
+
+
+Why use f?
+
+Many of the f programs are based on existing unix tools such
+as cut, grep and join.  However they differ from these functions in that
+cutting, searching and joining of tables are based exclusively on the
+named fields rather than on columns identified by position based on the
+delimiter or strings occurring anywhere in the line.
+
+The advantage to using the f system is that the user does not need to
+know the order of the columns, only the names of the column of interest
+and in some cases the data type of that column.  This provides a
+powerful advantage when writing code to modify tabular data when the
+fields of interest are not always in the same position within the
+table.
+
+
+
+
+f Common Table Format:
+
+The Common Table Format (CTf) has been selected as it has been shown
+to be acceptable for tabular data input into existing programs as 
+diverse as Microsoft Access, ARC/INFO and RGIS.
+
+The tables are assumed to be in ASCII with tab delimiters. Double
+quotes surround all strings and the first line (or record) of the
+table contains the field names also in double quotes. For example 
+a table in CTf would look something like this:
+
+
+"ID"	"Name"	"Mean"
+12	"Test One"	25.3
+22	"Second String"	99.9
+23	"3rd"	100.001
+
+
+Lines are separated by carriage returns.  It is assumed that field names
+do not contain white space or other characters important to the UNIX
+shell.
+
+
+
+Descriptions of the f Functions
+
+
+General f functions:
+
+addf	- cumulative sums down the selected columns 
+calcf	- simple math operators for processing one or two fields
+cutf	- select and order fields
+formatf	- apply Perl regular expressions to fields
+freqf	- generate binned frequencies for selected fields
+grepf	- select rows (records) based on logical operators
+joinf	- relational join of a table to another or itself
+printf	- write a table into a user defined format (f export function)
+		<note: printf exists>
+scanf	- read a table from some user defined format (f import function)
+sortf	- sort the table based on values in chosen fields
+
+Specialized f functions:
+
+ver2horf - convert vertical discharge field to horizontal discharge field
+hor2verf - convert horizpontal discharge field to vertical discharge field
+
+
+f Function Usage:
+
+General Notes:
+
+A UNIX paradigm is used throughout the f class of functions.  Control of
+the program workings are via runtime flags which are always first in the
+command sequence.  The runtime flags are followed by any number of input 
+files.  Output of the functions is sent to standard output.
+
+Piping from one command to another is allowed.
+
+
+addf [-cvf field] ... [inputfile] [inputfile] ...
+
+	The resultant field name will be modiefied such that 
+	the double quotes will be stripped and with '"add(' added
+	to the beginning and ')"' added to the end.  In other words
+	the field name "Mean" becomes "add(Mean)".
+
+calcf [-f field operator [field | value]] [inputfile] [inputfile] ...
+
+cutf [-f field] ... [inputfile] [inputfile] ...
+
+formatf
+
+freqf [-f field] [-min value] [-max value] [-size value] [-n value]
+      [inputfile] [inputfile] ...
+
+grepf [-f field operator [field | value]] [inputfile] [inputfile] ...
+
+joinf [-j field field] [-t table] [inputfile] ...
+
+printf
+
+scanf
+
+sortf [-a field] ... [-d field] ... [inputfile] [inputfile] ...
+
+
+
+Specialized f functions:
+
+ver2horf
+
+hor2verf
+
+
+The field names must match field names in the first line of
+the specified input files. The double quotes must be included 
+and these quotes must be preceeded by the '\'.  For example
+if the example table from the table format section were named
+'infile' then the following would extract two columns: 
+
+cutf -f \"ID\" -f \"Mean\" infile > outfile
+
+The following would calculate the cumulative sum of the "Mean" column
+and output on that column
+
+addf -c -f \"Mean\" infile > outfile
+
+This is the same as 
+
+addf -f \"Mean\" infile | cutf -f \"add(Mean)\" > outfile

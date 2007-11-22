@@ -1,0 +1,68 @@
+#!/usr/bin/perl -w
+
+if ("" eq $ARGV[0]) {
+prhelp:
+print <<"EOM";
+Prepares barChart data for GNUPlot/Plotutils.
+
+Usage:
+
+barChart [-wo value [value]] ... [inputfile] ...
+
+where fieldnames must match fieldnames in first line of the datafile.
+
+-w, --barwidth  value
+	Specifies bar width.
+-o, --baroffset
+	Specifies bar offset.
+-l, --logarithmic
+   Logarithmic barchart
+
+EOM
+exit;
+}
+
+%operand=(
+	w => 1,
+	o => 1,
+	wo => 2,
+	ow => 2,
+	l  => 0);				# supported switches and # of parameters
+
+%longoperand=(
+	'-barwidth'		=> 'w',
+	'-baroffset'	=> 'o',
+	'-logarithmic' => 'l');				# long option names and equivalent shorts
+
+$interval = 1.0;
+$offset = 0.0;
+$zero = 0;
+
+while ($_=$ARGV[0], /^-/)
+	{
+	$_ =~ s/^-//;
+	exists($operand{$_}) || exists($longoperand{$_}) || die "Argument -$_ not supported.\n";
+	if ($longoperand{$_}) { $_=$longoperand{$_}; }
+	("" ne $ARGV[$operand{$_} - 1]) || die "Missing parameter for -$_.\n";
+	shift;
+	if ("w"  eq $_) { $interval = $ARGV[0]; shift; next; }
+	if ("o"  eq $_) { $offset   = $ARGV[0]; shift; next; }
+	if ("wo" eq $_) { $interval = $ARGV[0]; shift; $offset   = $ARGV[0]; shift; next; }
+	if ("ow" eq $_) { $offset   = $ARGV[0]; shift; $interval = $ARGV[0]; shift; next; }
+	if ("l"  eq $_) { $zero = 1; next; }
+	}
+
+$interval = $interval / 2.0;
+while (<>)
+	{
+	chomp;
+	s/\#.*//;
+	s/^ *//;
+	if (/^$/) { next; }
+
+	($x,  $y)=split(/\s+/, $_);
+
+	print $x-$interval + $offset, "\t$zero\n",	$x+$interval + $offset, "\t$zero\n";
+	print $x+$interval + $offset, "\t$y\n",      $x-$interval + $offset, "\t$y\n";
+	print $x-$interval + $offset, "\t$zero\n\n";
+	}

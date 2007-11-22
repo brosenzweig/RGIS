@@ -1,0 +1,131 @@
+#!/usr/bin/perl
+
+if ("" eq $ARGV[0]) {
+
+print "Calculates decimal date from GHAAS date field.\n";
+
+prhelp:
+print <<"EOM";
+
+Usage:
+
+decimalDatef  -r [field] -f [field]
+
+where -f, --field specifies the date field to be converted.
+		-r, --rename specifiels the output field.
+
+Additional help can be found by executing helpf.
+
+EOM
+exit;
+}
+
+%operand = (f => 1, r => 1);
+
+%longoperand = ('-field'	=> 'f', '-rename' => 'r');
+
+if (@ARGV / 2 < 1) { print "Invalid number of arguments\n"; goto prhelp; }
+
+@firstDayOfMonth = (0, 31, 59, 90, 120, 151, 181, 212, 243, 273, 304, 334 );
+
+$dateField = $dDateField = "";
+
+while ($_ = $ARGV[0], /^-/)
+	{
+	s/^-//;
+	exists($operand{$_}) || exists($longoperand{$_}) || die "Argument -$_ not supported.\n";
+	if ($longoperand{$_}) { $_ = $longoperand{$_}; }
+	switch:
+		{
+		if (/^f/)	{ $dateField = $ARGV[1]; $dateField  =~ s/^\"(.*)\"$/$1/; }
+		if (/^r/)	{ $dateField = $ARGV[1]; $dDateField =~ s/^\"(.*)\"$/$1/; }
+		}
+	shift;
+	shift;
+	}
+
+if ($dateField  eq "") { print "Date field is not set\n"; goto prhelp; }
+if ($dDateField eq "") { $dDateField = "DecimalDate"; }
+
+($_ = <>) || exit;
+chomp;
+@colHeads = split(/\t/, $_);
+
+($_ = <>) || exit;
+chomp;
+@fields = split(/\t/, $_);
+
+(@fields != @colheads) || die "Number of header and data fields differs.\n";
+
+$col = $dd = -1;
+for ($field = 0;$field < @colHeads;$field++)
+	{
+	$colHeads[$field] =~ s/"(.*)"/$1/;
+	if ($colHeads[$field] eq $dateField)	{ $col = $field; }
+	if ($colHeads[$field] eq $dDateField)	{ $dd  = $field; }
+	}
+
+if ($col == -1) { die "Invalid column field\n"; }
+
+print "\"$colHeads[0]\"";
+if ($dd == -1)
+	{
+	for ($field = 1;$field <= $col;$field++) { print "\t\"$colHeads[$field]\""; }
+	print "\t\"$dDateField\"";
+	$dd = $field;
+	for ( ;$field < @colHeads;$field++) { print "\t\"$colHeads[$field]\""; }
+	$newCol = "True";
+	}
+else { for ($field = 1;$field <= @colHeads;$field++) { print "\t\"$colHeads[$field]\""; } $newCol = "False"; }
+print "\n";
+
+while ("" ne $_)
+	{
+	print "$fields[0]";
+	for ($field = 1;$field < $dd;$field++) { print "\t$fields[$field]"; }
+	$fields[$col] =~ s/^\"(.*)\"$/$1/;
+	($date,$hour) = split (" ",$fields[$col]);
+	($year,$month,$day) = split ("-",$date);
+
+	if ($month ne "")
+		{
+		if ((($year >> 0x02) << 0x02) == $year)
+			{
+			$century = $year;
+			$century =~ s/(.*)00$/$1/;
+			if ($century eq "")	{ $daysInYear = 366; }
+			else
+				{
+				if ((($century >> 0x02) << 0x02) == $century) { $daysInYear = 366; }
+				else	{ $daysInYear = 365; }
+				}
+			}
+		else	{ $daysInYear = 365; }
+
+		$dayOfYear = $firstDayOfMonth [$month - 1];
+		if (($month > 2) && ($daysInYear == 366)) { $dayOfYear++; }
+
+		if ($day ne "")
+			{
+			$dayOfYear += $day;
+			if ($hour ne "")
+				{
+				($hour,$min) = split (":",$hour);
+				$dayOfYear = $dayOfYear + $hour / 60.0;
+				if ($min ne "") { $dayOfYear = $dayOfYear + $hour / 3600.0; }
+				}
+			}
+		else	{ $dayOfYear += 15; }
+		}
+	else { $dayOfYear = 183; }
+	$decimalYear = $year + $dayOfYear / $daysInYear;	
+	printf ("\t$decimalYear");
+	if ($newCol eq "False") { $field++; }
+	for ( ;$field < @fields;$field++) { print "\t$fields[$field]"; }
+
+	print "\n";
+	($_ = <>) || last;
+	while (/^\s*$/) { ($_ = <>) || last; }
+	chomp;
+	@fields = split(/\t/, $_);
+	}

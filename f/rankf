@@ -1,0 +1,146 @@
+#!/usr/bin/perl
+# -w
+
+if ("" eq $ARGV[0]) {
+prhelp:
+print <<"EOM";
+Calculates rank of field contents of a tab-separated datafile.
+
+Usage:
+
+rankf [-rfhn [field|name]] ... [inputfile] ...
+
+Fieldnames must match fieldnames in first line of the datafile.
+Operations are:
+
+-r, --rename  name
+	Override the automatically assigned column name for the next
+        rank column.
+-f, --field  field
+	Specify field to calculate rank of.
+-l, --nonull
+	Suppress maximum rank columns.
+-n, --nomax
+	Suppress maximum rank columns.
+-h, --help
+	Print this usage information.
+
+Additional help can be found by executing helpf.
+
+EOM
+exit;
+}
+
+#--------------------------------------------------------------------
+%operand=(
+	'r' => 1,
+	'f' => 1,
+	'l' => 0,
+	'n' => 0,
+	'h' => 0,
+);				# supported switches and # of parameters
+
+%longoperand=(
+	'-rename'	=> 'r',
+	'-field'	=> 'f',
+	'-nomax'	=> 'n',
+	'-nonull'	=> 'l',
+	'-help'		=> 'h',
+);				# long option names and equivalent shorts
+
+$terminator = "\t";
+$rename = "";
+$var = "";
+while ($_ = $ARGV[0], /^-/) {				# get field list
+	s/^-//;
+	($longoperand{$_}) && ($_ = $longoperand{$_});
+	exists($operand{$_}) || die "Argument `-$_' not supported.\n";
+
+	if (0 < $operand{$_}) {				# more parameters
+		("" ne $ARGV[1]) || die "Operator required after `-$_'.\n";
+		if ("f" eq $_) {
+			($var = $ARGV[1]) =~ s/^\"(.*)\"$/$1/;
+			$prvar = ("" eq $rename) ? 
+				("$var") :
+				("$rename");
+			$rename = "";
+		}
+		if ("r" eq $_) {
+			$rename = $ARGV[1];
+			$rename =~ s/^\"(.*)\"$/$1/;
+		}
+		shift;
+	}
+	$args{$_}++;					# count number
+	shift;
+}
+
+if ($args{'h'}) {					# help
+	goto prhelp;
+}
+
+("" eq $var) && die "Must specify field to rank.\n";
+
+(defined($_ = <>)) || exit;				# read header line
+while (/^\s*$/) {
+	(defined($_ = <>)) || exit;
+}
+
+$term = "";
+chomp;
+@colheads = split(/\t/, $_);
+foreach $i (0 .. $#colheads) {				# create LUT
+	(!exists($src{$colheads[$i]})) || die "`$colheads[$i]' repeated?\n";
+	if ($colheads[$i] =~ /^".*"$/) {
+		($tmp = $colheads[$i]) =~ s/^\"(.*)\"$/$1/;
+		(!$src{$tmp}) || die "`$colheads[$i]' repeated?\n";
+		$src{$tmp} = $i;
+	}
+	$src{$colheads[$i]} = $i;
+	$colheads[$i] =~ s/^\"(.*)\"$/$1/;
+}							# read header
+
+(exists($src{$var})) || die "Invalid field name `$var'.\n";
+$rank = $src{$var};
+
+foreach $i (@colheads) {				# write header
+	print "$term\"$i\"";
+	$term = $terminator;
+}
+print "$term\"rank($prvar)\"";
+if (!$args{'n'}) {
+	print "$term\"maxrank($prvar)\"";
+	$term = $terminator;
+}
+print "\n";
+
+while (<>) {
+	chomp;
+	(/\S/) || next;
+	@line = split(/\t/, $_);
+
+	push (@lns, $_);
+	push @dat, $line[$rank];
+}
+
+$num = (@j = (sort { ($dat[$a] <=> $dat[$b]) || ($a <=> $b) } 
+	(grep { "" ne $dat[$_] } (0 .. $#dat))));	# non-NULL
+@j = (@j, grep { "" eq $dat[$_] } (0 .. $#dat));	# +NULL
+foreach $k (0 .. $#j) {
+	$ranklist[$j[$k]] = $k+1;			# reverse lookup	
+}
+
+foreach $i (0 .. $#dat) {
+	($args{'l'}) && ($ranklist[$i] > $num) && next;
+	print $lns[$i];
+	if ( $ranklist[$i] <= $num ) {;
+		print "\t$ranklist[$i]";
+	} else {
+		print "\t";
+	}
+	if (!$args{'n'}) {
+		print "\t$num";
+	}
+	print "\n";
+}
+

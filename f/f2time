@@ -1,0 +1,407 @@
+#!/usr/bin/perl
+
+%operand = (
+	'fb' => 1,
+	'fa' => 1,
+	'fad' => 1,
+	'fd' => 1,
+	'fs' => 1,
+	'fe' => 1,		# format row
+
+	'hb' => 1,
+	'ha' => 1,
+	'had' => 1,
+	'hd' => 1,
+	'hs' => 1,
+	'he' => 1,		# header row
+
+	'db' => 1,
+	'da' => 1,
+	'dad' => 1,
+	'dd' => 1,
+	'dn' => 1,
+	'ds' => 1,
+	'de' => 1,		# data rows
+
+	'nf' => 0,		# no format row
+	'nh' => 0,		# no header
+	'na' => 0,		# no axis
+	'tc' => 0,
+	'tr' => 0,
+
+	'e' => 1,
+	'f' => 1,
+	'n' => 1,
+	'm' => 1,
+	'x' => 1,
+	'l' => 0,
+	's' => 0,
+	't' => 0,
+	'h' => 0,
+	'i' => 0,
+);				# supported switches and # of parameters
+%longoperand = (
+	'-fbegin'	=> 'fb',
+	'-faxis'	=> 'fa',
+	'-faxisdot'	=> 'fad',
+	'-fdot'		=> 'fd',
+	'-fsep'		=> 'fs',
+	'-fend'		=> 'fe',	# format row
+
+	'-hbegin'	=> 'hb',
+	'-haxis'	=> 'ha',
+	'-haxisdot'	=> 'had',
+	'-hdot'		=> 'hd',
+	'-hsep'		=> 'hs',
+	'-hend'		=> 'he',	# header row
+
+	'-dbegin'	=> 'db',
+	'-daxis'	=> 'da',
+	'-daxisdot'	=> 'dad',
+	'-ddot'		=> 'dd',
+	'-ddotnot'	=> 'dn',
+	'-dsep'		=> 'ds',
+	'-dend'		=> 'de',	# data rows
+
+	'-noformat'	=> 'nf',
+	'-noheader'	=> 'nh',
+	'-noaxis'	=> 'na',
+	'-tablerowsonly'	=> 'tc',
+	'-tablecolsonly'	=> 'tr',
+
+	'-header'	=> 'e',
+	'-footer'	=> 'f',
+	'-bin'		=> 'n',
+	'-min'		=> 'm',
+	'-max'		=> 'x',
+	'-html'		=> 'l',
+	'-tab'		=> 'b',
+	'-stripquote'	=> 's',
+	'-transpose'	=> 't',
+	'-help'		=> 'h',
+	'-internals'	=> 'i',
+);				# long option names and equivalent shorts
+
+
+$header = "";
+
+$fb = "\\begin{tabular}{|";
+$fa = "l";
+$fd = "c";
+$fs = "|";
+$fe = "|}\n";
+
+$hb = "\\hline";
+$ha = " ";
+$hd = " ## ";
+$hs = "&";
+$he = "\\\\ \\hline \\hline\n";
+
+$db = "";
+$da = "## ";
+$dd = " X ";
+$dn = "   ";
+$ds = "&";
+$de = "\\\\ \\hline\n";
+
+$n = 1;
+
+$footer = "\\end{tabular}\n";				# defaults
+
+
+while ($_=$ARGV[0], /^-/) {				# get field list
+	s/^-//;
+	exists($operand{$_}) || exists($longoperand{$_}) ||
+		die "Argument -$_ not supported.\n";
+	if ($longoperand{$_}) {
+		$_=$longoperand{$_};
+	}
+	(!$operand{$_}) || ("" ne $ARGV[1]) ||
+		die "Value expected for `-$_'.\n";
+	if (/^[ef]$/) {
+		$tmp = $/;				# save separator
+		undef $/;
+		open (DFILE, "< $ARGV[1]") || die "can't open $ARGV[1].\n";
+		("e" ne $_) || ($header = <DFILE>);
+		("f" ne $_) || ($footer = <DFILE>);
+		close DFILE;
+		$/ = $tmp;				# restore separator
+		$args{$_}++;				# count number
+		shift;
+		shift;
+		next;
+	}
+	if ('l' eq $_) {
+		$args{'nf'} = 1;		# HTML needs no prototype
+
+		$hb = "<TR NOSAVE>\n";
+		$ha = "<TD NOSAVE>&nbsp;</TD>\n";
+		$hd = "<TD NOSAVE>##</TD>\n";
+		$hs = "";
+		$he = "</TR>\n\n";
+		
+		$db = "<TR NOSAVE>\n";
+		$da = "<TD NOSAVE>##</TD>\n";
+		$dd = "<TD NOSAVE>X</TD>\n";
+		$dn = "<TD NOSAVE>&nbsp;</TD>\n";
+		$ds = "";
+		$de = "</TR>\n\n";
+
+		$header = "<TABLE BORDER=1 NOSAVE>\n";
+		$footer = "</TABLE>\n";
+		$args{$_}++;				# count number
+		shift;
+		next;
+	}						# HTML output
+	if ('b' eq $_) {
+		$args{'nf'} = 1;		# Tab-sep needs no prototype
+
+		$hb = "";
+		$ha = "";
+		$hd = "##";
+		$hs = "\t";
+		$he = "\n";
+		
+		$db = "";
+		$da = "##";
+		$dd = "X";
+		$dn = "";
+		$ds = "\t";
+		$de = "\n";
+
+		$header = "";
+		$footer = "";
+		$args{$_}++;				# count number
+		shift;
+		next;
+	}						# Tab-separated output
+	if (1 == $operand{$_}) {
+		$ARGV[1] =~ s/"/\\"/g;
+		(defined(eval "\$$_ = \"$ARGV[1]\"")) ||
+			die "Error loading parameter `$_'\n";
+		shift;
+	}
+	$args{$_}++;					# count number
+	shift;
+}
+
+if ($args{h}) {						# requesting help
+print <<EOM;
+Transforms f-compatible tables to time information (Gantt-charts).
+Input contains at least three columns: identifier, minimum, maximum times.
+Header information is discarded.
+
+Usage:
+
+f2time [-option [file|value]] ... [inputfile] ...
+
+-e, --header  file
+	Prescribes a header to be put before template rows.  Optional.
+-f, --footer  file
+	Prescribes a footer to be put after template rows.  Optional.
+
+-n, --bin
+	Specify bin width.  Defaults to 1.
+-m, --min
+	Specify minimum bin.  Defaults to set minimum.
+-x, --max
+	Specify maximum bin.  Defaults to set maximum.
+
+-l, --html
+	Specify a HTML table format.  See documentation for details.
+	Formatting parameters set before --html lose their meaning.
+-b, --tab
+	Specify tab-separated output.  See documentation for details.
+	Formatting parameters set before --tab lose their meaning.
+-s, --stripquote
+	Remove quotes from (string) field values.
+-t, --transpose
+	Create a horizontal chart.
+-tc,  --tablecolsonly
+-tr,  --tablerowsonly
+	See documentation.
+
+-na, --noaxis
+	Suppress printing of first column.
+-nf, --noformat
+	Suppress printing of formatting row.
+-nh, --noheader
+	Suppress printing of header row.
+-i, --internals
+        Dump table internals, no footer or header.  Implies -na, -nf, -nh
+-h, --help
+        Print this usage information.
+
+Formatting parameters (for format, header, and data lines):
+
+-fb  -fa  -fad  [-fd -fs] ...  [-fd]  -fe
+-hb  -ha  -had  [-hd -hs] ...  [-hd]  -he
+-db  -da  -dad  [[-dd|-dn] -ds] ... [-dd]  -de  (repeated for each time line)
+...
+
+For details of formatting parameters and parameters -tc/--tablecolsonly
+and -tr/--tablerowsonly, see documentation.  Parameter values may contain
+double quotes (\") but none with a preceding backslash.
+
+EOM
+exit;
+}
+
+
+$fad = defined($fad) ? $fad : $fs ;
+$had = defined($had) ? $had : $hs ;
+$dad = defined($dad) ? $dad : $ds ;			# default separators
+(!defined($m)) || ($min = $m);
+(!defined($x)) || ($max = $x);				# autorange?
+($n > 0) || die "Bin width must be positive.\n";
+
+
+print $header;
+
+if (!($_ = <>)) {
+	print $footer;
+	exit;
+}
+while (/^\s*$/) {
+	if (!($_ = <>)) {
+		print $footer;
+		exit;
+	}
+}							# skip header
+
+%seq = ();
+%st = ();
+%en = ();
+
+while (<>) {						# data lines
+	chomp;
+	/\S/ || next;
+	@line = split(/\t/, $_);
+	if ($args{'s'}) {
+		foreach $i (0..$#line) {
+			$line[$i] =~ s/^\"(.*)\"$/$1/;
+		}
+	}
+	if (!exists($seq{$line[0]})) {
+		push (@sq, $line[0]);
+		$seq{$line[0]} = $#sq;
+	}
+	($mn, $mx) = (($line[1] < $line[2]) ?
+		($line[1], $line[2]) : ($line[2], $line[1]));
+	push ( @{$st{$line[0]}}, $mn );
+	push ( @{$en{$line[0]}}, $mx );
+
+	$min = defined($min) ? (($min < $mn) ? $min : $mn) : $mn;
+	$max = defined($max) ? (($max > $mx) ? $max : $mx) : $mx;
+}
+
+(!defined($m)) || ($min = $m);
+(!defined($x)) || ($max = $x);				# autorange?
+($min <= $max) || die "Limits conflict.\n";
+
+if ($args{'i'}) {
+	$args{'nf'} = 1;
+	$args{'na'} = 1;
+	$args{'nh'} = 1;
+	$header = "";
+	$footer = "";
+}							# table internals only
+
+@vert = ();
+for ($i = $min; $i <= $max; $i += $n) {
+	push (@vert, $i);
+}
+if ($args{'t'}) {
+	@horiz = @vert;
+	@vert = (0..$#sq);
+} else {
+	@horiz = (0..$#sq);
+}							# axes
+
+$cols = 1 + $#horiz + ($args{'tc'} ? 0 : !!!$args{'na'});
+							# total # of cols
+$rows = 1 + $#vert + ($args{'tr'} ? 0 : !!!$args{'nf'} + !!!$args{'nh'});
+							# total # of rows
+$fa =~ s/\#v\#/$rows/g;
+$fa =~ s/\#h\#/$cols/g;
+$fb =~ s/\#v\#/$rows/g;
+$fb =~ s/\#h\#/$cols/g;
+$ha =~ s/\#v\#/$rows/g;
+$ha =~ s/\#h\#/$cols/g;
+$hb =~ s/\#v\#/$rows/g;
+$hb =~ s/\#h\#/$cols/g;
+$da =~ s/\#v\#/$rows/g;
+$da =~ s/\#h\#/$cols/g;
+$db =~ s/\#v\#/$rows/g;
+$db =~ s/\#h\#/$cols/g;		# substitute table dimensions where needed
+
+if (!$args{'nf'}) {
+	print $fb;
+	if (!$args{'na'}) {
+		print "$fa$fad";
+	}
+	$term = "";
+	foreach $i (@horiz) {
+		print "$term$fd";
+		$term = $fs;
+	}
+	print $fe;
+}							# format
+
+if (!$args{'nh'}) {
+	print $hb;
+	if (!$args{'na'}) {
+		print "$ha$had";
+	}
+	$term = "";
+	foreach $i (@horiz) {
+		if ($args{'t'}) {
+			($tmp = $hd) =~ s/\#v\#/$rows/g;
+			$tmp =~ s/\#h\#/$cols/g;
+			$tmp =~ s/\#\#/$i/g;
+		} else {
+			($tmp = $hd) =~ s/\#v\#/$rows/g;
+			$tmp =~ s/\#h\#/$cols/g;
+			$tmp =~ s/\#\#/$sq[$i]/g;
+		}
+		print "$term$tmp";
+		$term = $hs;
+	}
+	print $he;
+}							# header
+
+foreach $i (@vert) {
+	print $db;
+	if (!$args{'na'}) {
+		if ($args{'t'}) {
+			($tmp = $da) =~ s/\#\#/$sq[$i]/g;
+		} else {
+			($tmp = $da) =~ s/\#\#/$i/g;
+		}
+		print "$tmp$dad";
+	}
+	$term = "";
+	foreach $j (@horiz) {
+		$tmp = 0;
+		if ($args{'t'}) {
+			@s = @{$st{$sq[$i]}};
+			@e = @{$en{$sq[$i]}};
+			$t = $j;
+		} else {
+			@s = @{$st{$sq[$j]}};
+			@e = @{$en{$sq[$j]}};
+			$t = $i;
+		}
+		foreach $k (0..$#s) {
+			$tmp ||= (($s[$k] <= $t) && ($t <= $e[$k]));
+			$tmp ||= (($t <= $s[$k]) && ($e[$k] < $t+$n));
+			$tmp ||= (($s[$k] < $t+$n) && ($t+$n <= $e[$k]));
+		}
+		print "$term", ($tmp) ? ($dd) : ($dn);
+		$term = $ds;
+	}
+	print $de;
+}							# data
+
+print $footer;
+

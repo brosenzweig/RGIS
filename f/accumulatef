@@ -1,0 +1,131 @@
+#!/usr/bin/perl
+
+if ("" eq $ARGV[0]) {
+
+print "Accumulates given field. When no field is specified it accumulates ones.\n";
+
+prhelp:
+print <<"EOM";
+
+Usage:
+
+accumulatef  [-raf operator [field]]  ... [inputfile] ...
+
+where
+   -f specifies the field to be accumulated
+      sum field
+		    accumulate field
+		avg field
+		    average field
+	-r rename target field.
+
+Additional help can be found by executing helpf.
+
+EOM
+exit;
+}
+
+%operand = (f => 1, a => 2, r => 3, );
+%longoperand = ('-field'	=> 'f', -rank => 'a',  '-rename'	=> 'r');
+%operator = ( 'sum' => 1, 'avg' => 2);
+
+$field = 0;
+@inField = ();
+@operator = ();
+@outField = ();
+$renField = "";
+
+while ($_ = $ARGV[0], /^-/)
+	{
+	s/^-//;
+	shift;
+	if ($longoperand{$_}) { $_ = $longoperand{$_}; }
+	exists($operand{$_}) || die "Argument -$_ not supported.\n";
+	switch:
+		{
+		if (/^a/)
+			{
+			$inField[$field] =  "";
+			if ($renField ne "") { $outField[$field] = $renField; }
+			else { $outField[$field] = "Rank"; }
+			$operator[$field] = 1;
+			$field++;
+			$renField = "";
+			}
+		if (/^f/)	
+			{
+			exists($operator{$ARGV[0]}) || die "Operator $_ not supported.\n";
+			$operator[$field] = $operator{$ARGV[0]};
+			$inField[$field]  = $ARGV[1];
+			if ($renField ne "") { $outField[$field] = $renField; }
+			else { $outField[$field] = "Accumulated($inField[$field])"; }
+			$field++;
+			$renField = "";
+			shift;
+			shift;
+			}
+		if (/^r/)	{ $renField = $ARGV[0]; shift;}
+		}
+	}
+
+($_ = <>) || exit;
+while (/^\s*$/) { ($_ = <>) || exit; }
+
+chomp;
+@colHeads = split(/\t/, $_);
+
+($_ = <>) || exit;
+while (/^\s*$/) { ($_ = <>) || exit; }
+
+chomp;
+@fields = split(/\t/, $_);
+
+($fields == $colheads) || die "Number of header and data fields differs.\n";
+
+for ($col = 0;$col < @colHeads;$col++) { $colHeads[$col] =~ s/^\"(.*)\"$/$1/; }
+
+for ($field = 0;$field < @inField;$field++)
+	{
+	if ($inField[$field] ne "")
+		{
+		for ($col = 0;$col < @colHeads;$col++)
+			{ if ($colHeads[$col] eq $inField[$field])	{ last; } }
+		if ($col == @colHeads) { die "Invalid column field\n"; }
+		else {$inField[$field] = $col; }
+		}
+	else	{ $inField[$field] = -1; }
+	}
+
+@obsNum= ();
+@sum = ();
+
+for ($field = 0;$field < @inField;$field++) { $obsNum[$field] = $sum[$field] = 0; }
+
+print "$colHeads[0]";
+for ($field = 1;$field < @colHeads;$field++) { print "\t\"$colHeads[$field]\""; }
+for ($field = 0;$field < @inField; $field++) { print "\t\"$outField[$field]\""; }
+print "\n";
+
+while ("" ne $_)
+	{
+	print "$fields[0]";
+	for ($field = 1;$field < @fields;$field++) { print "\t$fields[$field]"; }
+	for ($field = 0;$field < @inField; $field++)
+		{
+		if ($inField[$field] != -1)
+			{
+			$var = $fields[$inField[$field]];
+			$sum[$field] += $var;
+			}
+		else { $sum[$field]++; }
+		if ($operator[$field] == 1) { $ret = $sum[$field]; }
+		if ($operator[$field] == 2) { $obsNum[$field]++; $ret = $sum[$field] / $obsNum[$field]; }
+		print "\t$ret";
+		}
+	print "\n";
+	($_ = <>) || last;
+	while (/^\s*$/) { ($_ = <>) || last; }
+	chomp;
+	@fields = split(/\t/, $_);
+	}
+

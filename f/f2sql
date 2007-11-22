@@ -1,0 +1,352 @@
+#!/usr/bin/perl -w
+# Concatinated version of a2sql.pl
+# Written by Fekete Andras
+# Version 2.3 (March 2005)
+use strict;
+use PDL;
+use PDL::Math;
+use DBI();
+use Tie::File;
+
+if($#ARGV < 0) {
+   print STDERR <<EOF;
+Usage: $0 [options] <INPUTFILE>
+-h <HOSTNAME>     => Set hostname (default: 'localhost')
+-P <PORT>         => Set port (def: '3306')
+-u <USERNAME>     => Set username (def: 'mysql')
+-p <PASSWORD>     => Set password (def: 'mysql')
+-d <DATABASE>     => Set database (database must exist, def: 'test')
+-t <TABLENAME>    => Set name of new table (def: filename without ext)
+-D <DESCFILE>     => File to read column descriptions from (def: parse comments in file)
+-k "<PRIMKEYLST>" => List of colnums to be primary keys (ex: -k "1,4,5")
+-H                => No header
+-F                => Don't check file for proper column format
+-T                => Create temp file while checking proper column format *Recommended* (unsets -F)
+                     This option also keeps original file intact, and doesn't delete tmp file if -v is set
+-s                => Don't execute commands, just show (sets -v)
+-a                => Don't remove table if it exists
+-r                => If a line in file already exists in the database, it overwrites it (unsets -i)
+-i                => If a line in file already exists in the database, it ignores it (unsets -r)
+-v                => Verbose (supply more times for more verbosity)
+EOF
+	exit;
+}
+
+my $host = "localhost";
+my $port = "3306";
+my $user = "mysql";
+my $pass = "mysql";
+my $database = "test";
+my $descfile;
+my @primkey;
+my $tablename = $ARGV[-1];
+$tablename =~ s/(.*)\..*$/$1/; # remove extension
+my $fixfile = 1;
+my $fixtmp = 0;
+my $execute = 1;
+my $remove = 1;
+my $verbose = 0;
+my $headless = 0;
+my $overwrite = 0;
+my $cmd;
+
+my $i = 0;
+while ($#ARGV > $i) {
+	if("-h" eq $ARGV[$i]) { $host = $ARGV[$i + 1]; $i += 2; }
+	elsif("-P" eq $ARGV[$i]) { $port = $ARGV[$i + 1]; $i += 2; }
+	elsif("-u" eq $ARGV[$i]) { $user = $ARGV[$i + 1]; $i += 2; }
+	elsif("-p" eq $ARGV[$i]) { $pass = $ARGV[$i + 1]; $i += 2; }
+	elsif("-d" eq $ARGV[$i]) { $database = $ARGV[$i + 1]; $i += 2; }
+	elsif("-t" eq $ARGV[$i]) { $tablename = $ARGV[$i + 1]; $i += 2; }
+	elsif("-D" eq $ARGV[$i]) { $descfile = $ARGV[$i + 1]; $i += 2; }
+	elsif("-k" eq $ARGV[$i]) { @primkey = split(/,/,$ARGV[$i + 1]); $i += 2; }
+	elsif("-F" eq $ARGV[$i]) { $fixfile = 0; $i++; }
+	elsif("-T" eq $ARGV[$i]) { $fixfile = 1; $fixtmp = 1; $i++; }
+	elsif("-s" eq $ARGV[$i]) { $execute = 0; $verbose = 1; $remove = 0; $i++; }
+	elsif("-a" eq $ARGV[$i]) { $remove = 0; $i++; }
+	elsif("-H" eq $ARGV[$i]) { $headless = 1; $i++; }
+	elsif("-r" eq $ARGV[$i]) { $overwrite = 1; $i++; }
+	elsif("-i" eq $ARGV[$i]) { $overwrite = 2; $i++; }
+	elsif("-v" eq $ARGV[$i]) { $verbose++; $i++; }
+	else { print STDERR "Argument not understood: $ARGV[$i]\n"; $i++; }
+}
+system("date") if ($verbose);
+print STDERR "host=$host\nuser=$user\npass=$pass\ndatabase=$database\ntablename=$tablename\n" if($verbose);
+my $dbh = DBI->connect("DBI:mysql:database=$database;host=$host;port=$port", $user, $pass, {'RaiseError' => 1});
+
+my @colheads;
+my @coldesc;
+print STDERR "Calculating column types...\n" if($verbose);
+my ($size, $type, $max, $min) = listSizeType($ARGV[-1]);
+print STDERR "\tdone.\n" if($verbose);
+system("date") if ($verbose);
+if($headless) {
+	my $j = 0;
+	foreach $_ (@$type) {
+		if($_ =~ /f/) { $colheads[$j] = $j . "float"; }
+		elsif($_ =~ /i/) { $colheads[$j] = $j . "int"; }
+		elsif($_ =~ /d/) { $colheads[$j] = $j . "date"; }
+		elsif($_ =~ /t/) { $colheads[$j] = $j . "datetime"; }
+		elsif($_ =~ /c/) { $colheads[$j] = $j . "char"; }
+		else { die "Unknown variable type: $_\n"; }
+		$j++;
+	}
+} else {
+	@colheads = getColHeads($ARGV[-1]);
+	if(defined($descfile)) {
+		if((-e $descfile) && (open(FILE,$descfile))) {
+			while(<FILE>) {
+				chomp;
+				next if(/^#/);
+				my @line = split(/\t/);
+				for (my $j = 0; $j <= $#colheads; $j++) {
+					$coldesc[$j] = $line[1] if($colheads[$j] eq $line[0]);
+				}
+			}
+		} else { print STDERR "Could not use description file!\n"; }
+	}
+}
+
+for (my $j = 0; $j <=$#colheads; $j++) {
+	print "@$size[$j]@$type[$j]  $colheads[$j]\n" if($verbose);
+	if(@$type[$j] =~ /f/) {
+		if((!@$type[$j] =~ /u/) && (@$max[$j] < @$min[$j] * -1)) { @$max[$j] = @$min[$j] * -1; }
+		if(@$max[$j] < 0) { @$max[$j] *= -1; }
+		my $log10Val = @$max[$j] != 0 ? int(PDL::Math::rint (log (@$max[$j]))) : 0;
+		if ($log10Val >= 0) {
+			my $length = 8 > $log10Val + 2 ? 8 : $log10Val + 2;
+			my $decimals = $length - $log10Val - 2;
+			@$size[$j] = "$length,$decimals";
+		} else {
+			my $length = abs ($log10Val) + 6;
+			my $decimals = $length - 3;
+			@$size[$j] = "$length,$decimals";
+		}
+	}
+}
+
+#my $drh = DBI->install_driver("mysql");
+#my @dbs = DBI->data_sources("mysql", { "host" => $host, "port" => $port } ); }
+#$i = 0;
+#foreach $_ (@dbs) { print "$_ eq $database? "; if($_ eq $database) { $i = 1; print "= true\n"; } }
+#if(($i == 0) && $execute) {
+#	eval { $drh->func("createdb", $database, [$host, $user, $pass,], 'admin') };
+#	print "Cannot create database: $database! $@\n" if($@);
+#}
+
+my @dbs = $dbh->tables();
+$i = 0;
+foreach $_ (@dbs) { s/`//g; if($_ eq $tablename) { $i = 1; } }
+if($i && $remove) {
+	$cmd = "DROP TABLE $tablename";
+	print STDERR "CMD: $cmd\n" if($verbose);
+	if($execute) {
+		eval { $dbh->do($cmd) };
+		print STDERR "CMD: \" $cmd \" failed: $@\n" if ($@);
+	}
+	$i = 0;
+}
+
+if(!$i) {
+	$cmd = "CREATE TABLE $tablename (";
+	for (my $j = 0; $j <= $#colheads; $j++) {
+		if($j != 0) { $cmd .= ", "; }
+		$colheads[$j] =~ s/^"//;
+		$colheads[$j] =~ s/"$//;
+		$colheads[$j] =~ s/[ ]/_/g;
+		$cmd .= $colheads[$j] . " ";
+#		$cmd .= $dbh->quote($colheads[$j]) . " ";
+		if(@$type[$j] =~ /i/) {
+			if(@$type[$j] =~ /u/) {
+				if(@$max[$j] > 4294967295) { $cmd .= "FLOAT(" . @$size[$j] . ",0) UNSIGNED DEFAULT NULL"; }
+				else { $cmd .= "INT(" . @$size[$j] . ") UNSIGNED DEFAULT NULL"; }
+			} else {
+				if(@$max[$j] > 2147483647) { $cmd .= "FLOAT(" . @$size[$j] . ",0) DEFAULT NULL"; }
+				else { $cmd .= "INT(" . @$size[$j] . ") DEFAULT NULL"; }
+			}
+		}
+		elsif(@$type[$j] =~ /f/) {
+			if(@$type[$j] =~ /u/) { $cmd .= "FLOAT(" . @$size[$j] . ") UNSIGNED DEFAULT NULL"; }
+			else { $cmd .= "FLOAT(" . @$size[$j] . ") DEFAULT NULL"; }
+		}
+		elsif(@$type[$j] =~ /d/) { $cmd .= "DATE DEFAULT \"0000-00-00\""; }
+		elsif(@$type[$j] =~ /t/) { $cmd .= "DATETIME DEFAULT \"0000-00-00 00:00:00\""; }
+		elsif(@$type[$j] =~ /c/) { $cmd .= "VARCHAR(" . @$size[$j] . ") DEFAULT NULL"; }
+		else { die "Unknown variable type: @$type[$j]\n"; }
+		$cmd .= " NOT NULL" if (grep {$_ - 1 eq $j} @primkey);
+		$cmd .= " COMMENT " . $dbh->quote($coldesc[$j]) if(defined($coldesc[$j]));
+	}
+	if(defined($primkey[0])) {
+		$cmd .= ", PRIMARY KEY (" . $colheads[$primkey[0] - 1];
+		for (my $j = 1; $j <= $#primkey; $j++) { $cmd .= ", " . $colheads[$primkey[$j] - 1]; }
+		$cmd .= ")";
+	}
+	$cmd .= ") CHARACTER SET ascii;";
+	print STDERR "CMD: $cmd\n" if($verbose);
+	if($execute) {
+		eval { $dbh->do($cmd) };
+		print STDERR "CMD: \" $cmd \" failed: $@\n" if ($@);
+	}
+}
+
+if($fixfile) {
+	print STDERR "Cleaning file...\n" if($verbose);
+	if($fixtmp) {
+		open(FILE,$ARGV[-1]) || die "Can't open: $ARGV[-1]\n";
+		open(TMP,">$ARGV[-1].tmp") || die "Can't make temp file: $ARGV[-1].tmp\n";
+		if(!$headless) { $_ = <FILE>; }
+		my $j = 0;
+		while(<FILE>) {
+			my $newline;
+			chomp($_);
+			$_ =~ s/\t\t/\t\\N\t/g;
+			$_ =~ s/\t\t/\t\\N\t/g;
+			$_ =~ s/\t$/\t\\N/g;
+			my @row = split(/\t/,$_);
+			for (my $k = 0; $k <= $#row; $k++) {
+				if(@$type[$k] =~ /d/ && !($row[$k] =~ /\d\d\d\d-\d\d-\d\d/))
+					{ $row[$k] =~ s/(\d\d\d\d)-(\d\d)/$1-$2-00/; }
+			}
+			$newline = join("\t",@row);
+			print TMP "$_\n";
+			print "line: $j\n" if($verbose >= 2);
+			$j++;
+		}
+		close(TMP);
+		close(FILE);
+		$ARGV[-1] = $ARGV[-1] . ".tmp";
+#		system("mv $ARGV[-1].tmp $ARGV[-1]");
+	} else {
+		tie my @lines, 'Tie::File', $ARGV[-1], memory => 300_000_000 or die "Can't open: '$ARGV[-1]'\n";
+#		(tied @lines)->defer;
+		for (my $j = !$headless; defined($lines[$j]); $j++) {
+			my $line = $lines[$j];
+			my $newline;
+			chomp($line);
+			$line =~ s/\t\t/\t\\N\t/g;
+			$line =~ s/\t\t/\t\\N\t/g;
+			$line =~ s/\t$/\t\\N/g;
+			my @row = split(/\t/,$line);
+			for (my $k = 0; $k <= $#row; $k++) {
+				if(@$type[$k] =~ /d/ && !($row[$k] =~ /\d\d\d\d-\d\d-\d\d/))
+					{ $row[$k] =~ s/(\d\d\d\d)-(\d\d)/$1-$2-00/; }
+			}
+			$newline = join("\t",@row);
+			if($lines[$j] ne $newline) { $lines[$j] = $newline; }
+			print "line: $j\n" if($verbose >= 2);
+		}
+#		(tied @lines)->flush;
+		untie @lines;
+	}
+	print STDERR "\tdone.\n" if($verbose);
+	system("date") if ($verbose);
+}
+
+$cmd = "LOAD DATA LOCAL INFILE " . $dbh->quote($ARGV[-1]);
+if($overwrite == 1) { $cmd .= " REPLACE"; }
+elsif($overwrite == 2) { $cmd .= " IGNORE"; }
+$cmd .= " INTO TABLE $tablename";
+$cmd .= " ( $colheads[0]";
+for (my $j = 1; $j <= $#colheads; $j++) { $cmd .= ", " . $colheads[$j]; }
+$cmd .= ") ";
+if(!$headless) { $cmd .= " IGNORE 1 LINES"; }
+$cmd .= ";";
+print STDERR "CMD: $cmd\n" if($verbose);
+if($execute) {
+	eval { $dbh->do($cmd) };
+	print STDERR "CMD: \" $cmd \" failed: $@\n" if ($@);
+}
+
+$dbh->disconnect();
+system("rm -f $ARGV[-1]") if($fixtmp && !$verbose);
+system("date") if ($verbose);
+# Library for retrieving data from ASCII tab delimited files
+# Written by: Fekete Andras
+
+# returns the name of the headers in file
+sub getColHeads {
+	open(INFILE,$_[0]) || die "Can't open: '$_[0]'\n";
+	$_ = <INFILE>;
+	chomp $_;
+	my @colheads = split("\t",$_);
+	close(INFILE);
+	return @colheads;
+}
+
+my @xxvaluesxx;
+my @xxsizexx;
+my @xxminxx;
+my @xxmaxxx;
+
+#returns [ <NUMCHAR>, <TYPE>, <MAX>, <MIN> ]
+# known: it doesn't check type of first line
+sub listSizeType {
+	open(INFILE,$_[0]) || die "Can't open: '$_[0]'\n";
+	$_ = <INFILE>;
+	@xxvaluesxx = split("\t",$_);
+	my @nonint;
+	my @nonfloat;
+	my @signed;
+	my @isdefined;
+	my $num = @xxvaluesxx;
+	for(my $x = 0; $x < $num; $x++)
+		{ $isdefined[$x] = $xxsizexx[$x] = $nonint[$x] = $nonfloat[$x] = $signed[$x] = 0; }
+#------------------------------------------
+	while (<INFILE>) {
+		chomp $_;
+		next if(/^#/); # Ignore comments in file
+		undef (@xxvaluesxx);
+		@xxvaluesxx = split("\t",$_);
+
+		for (my $x=0;$x<$num;$x++) {
+			if(!defined($xxvaluesxx[$x])) { next; }
+			$isdefined[$x] = 1;
+			my $floatcheck = length($xxvaluesxx[$x]);
+			if ($xxsizexx[$x] < $floatcheck) { $xxsizexx[$x] = $floatcheck; }
+			if(("" ne ($floatcheck = $xxvaluesxx[$x])) && !$nonfloat[$x]) { # must check if could be char
+				$floatcheck =~ s/^\-//;
+				if($nonint[$x]) {
+					$floatcheck =~ s/\.//;
+					if ($floatcheck =~ /\D/) {
+						$floatcheck =~ s/[-"]//g;
+						if($floatcheck =~ /\D/) {
+							$floatcheck =~ s/[ :]//g;
+							if($floatcheck =~ /\D/) { $nonfloat[$x] = 1; } else { $nonfloat[$x] = 3; }
+						} else { $nonfloat[$x] = 2; }
+						next;
+					}
+				} else {
+					if ($floatcheck =~ /\D/) {
+						$nonint[$x] = 1;
+						$floatcheck =~ s/\.//;
+						if ($floatcheck =~ /\D/) {
+							$floatcheck =~ s/[-"]//g;
+							if($floatcheck =~ /\D/) {
+								$floatcheck =~ s/[ :]//g;
+								if($floatcheck =~ /\D/) { $nonfloat[$x] = 1; } else { $nonfloat[$x] = 3; }
+							} else { $nonfloat[$x] = 2; }
+							next;
+						}
+					}
+				}
+				$floatcheck = $xxvaluesxx[$x];
+				if($floatcheck =~ /^\-/) { $signed[$x] = 1; }
+				if(!defined($xxminxx[$x]) || $xxminxx[$x] > $floatcheck) { $xxminxx[$x] = $floatcheck; }
+				if(!defined($xxmaxxx[$x]) || $xxmaxxx[$x] < $floatcheck) { $xxmaxxx[$x] = $floatcheck; }
+			}
+		}
+	}
+	close(INFILE);
+#------------------------------------------
+	undef(@xxvaluesxx);
+	for (my $x=0;$x<$num;$x++) {
+		if(!$isdefined[$x]) { $xxvaluesxx[$x] = "c"; $xxminxx[$x] = $xxmaxxx[$x] = undef; next; }
+		if($signed[$x]) { $xxvaluesxx[$x] = ""; } else { $xxvaluesxx[$x] = "u"; }
+		if (!$nonint[$x]) { $xxvaluesxx[$x] .= "i"; }
+		elsif ($nonfloat[$x] == 0) { $xxvaluesxx[$x] .= "f"; }
+		elsif ($nonfloat[$x] == 2) { $xxvaluesxx[$x] .= "d"; }
+		elsif ($nonfloat[$x] == 3) { $xxvaluesxx[$x] .= "t"; }
+		else { $xxvaluesxx[$x] = "c"; $xxminxx[$x] = $xxmaxxx[$x] = undef; }
+	}
+	return (\@xxsizexx, \@xxvaluesxx, \@xxmaxxx, \@xxminxx);
+}

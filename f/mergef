@@ -1,0 +1,14 @@
+#!/usr/bin/perl -w
+
+use POSIX;
+
+open (leftFILE,"$ARGV[0]")  || die ("Can't open $ARGV[0]");
+open (rightFILE,"$ARGV[1]") || die ("Can't open $ARGV[0]");
+
+while (<leftFILE>)
+	{
+	chomp;
+	$left = $_;
+	$right = <rightFILE>;
+	printf ("$left\t$right");
+	}

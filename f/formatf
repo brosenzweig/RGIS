@@ -1,0 +1,97 @@
+#!/usr/bin/perl
+
+use POSIX;
+
+if ("" eq $ARGV[0]) {
+prhelp:
+print <<"EOM";
+Formats fields using C printf syntax
+
+Usage:
+
+calcf [-fh formatstring field]  ...
+
+where fieldnames must match fieldnames in first line of the datafile.
+
+-f, --field  [field] 
+
+-h, --help
+	Print this usage information.
+
+Additional help can be found by executing helpf.
+
+EOM
+exit;
+}
+
+#--------------------------------------------------------------------
+
+%operand=(
+	f => 2,
+	h => 0,
+);				# supported switches and # of parameters
+
+%longoperand=(
+	'-field'	=> 'f',
+	'-help'		=> 'h',
+);				# long option names and equivalent shorts
+
+$terminator="\t";
+%fieldList = ();
+
+while ($_ = $ARGV[0], /^-/) # get field list
+	{
+	s/^-//;
+	exists($operand{$_}) || exists($longoperand{$_}) || die "Argument -$_ not supported.\n";
+	($longoperand{$_}) && ($_ = $longoperand{$_});
+	if ("f" eq $_)
+		{
+		$field = $ARGV[2];
+		$field =~ s/^\"(.*)\"$/$1/;
+		$format = $ARGV[1];
+		$format =~ s/^\"(.*)\"$/$1/;
+		$formatList{$field} = $format;
+		shift;
+		shift;
+		}
+	else { goto prhelp; }
+	shift;
+	}
+
+($_ = <>) || exit;				# read header line
+
+while (/^\s*$/) { ($_ = <>) || exit; }
+chomp;
+@fieldNames = split(/\t/, $_);
+
+for ($i = 0;$i < @fieldNames; $i++) { $fieldNames [$i] =~ s/^\"(.*)\"$/$1/; }
+
+print "$_\n";
+
+($_ = <>) || exit;
+while (/^\s*$/) { ($_ = <>) || exit; }
+chomp;
+@fields = split(/\t/, $_);			# get first line
+
+(@fields == @fieldNames) || die "Number of header and data fields differs.\n";
+
+while ("" ne $_)
+	{
+	for ($i = 0;$i < @fieldNames; $i++)
+		{
+		if ($i > 0) { print $terminator; }
+		if ($formatList{$fieldNames[$i]})
+			{
+			printf ("$formatList{$fieldNames[$i]}",$fields[$i]);
+			}
+		else
+			{
+			print $fields[$i];
+			}
+		}
+	printf ("\n");
+	($_ = <>) || exit;
+	while (/^\s*$/) { ($_ = <>) || exit; }
+	chomp;
+	@fields = split(/\t/, $_);
+	}

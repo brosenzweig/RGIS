@@ -1,0 +1,663 @@
+#!/usr/bin/perl -w
+
+use POSIX;
+
+use strict;
+
+if (0 == @ARGV) {
+printhelp:
+print <<"EOM";
+Performs elementary calculations on selected fields (columns) of a
+tab-separated datafile.
+
+Usage:
+
+calcfpp [-cvxhref [[field | name] operator [field | value]]] ... [input] ...
+
+where fieldnames must match fieldnames in first line of the datafile.
+
+-c, --calculate
+	Inhibits printing of input columns, printing calculated columns only.
+-d, --debug
+	Dump calculated ``-e'' field expressions to stderr and exit.
+-e, --expression  Perl_expression
+	Substitute field values in the given Perl expression.  
+	``\${ fieldname }'' is replaced by field contents.  Contrary to
+	closing comment below, fieldnames are extrapolated quoted, if
+	necessary.  (First trying quotes, then apostrophes, if necessary.)
+        Use of ``--rename'' is mandatory with this option.
+
+-x, --extern  command  arg1,arg2,arg3...
+	Invoke external program with given parameters.  Arguments must
+	form a single parameter (i.e., no unquoted whitespace), and the
+	individual arguments must not contain commas.  Arguments are passed
+	as strings, interpretation is up to the external command.
+        Use of ``--rename'' is mandatory with this option.
+
+-f, --field  [field] operator [field | value]
+	Specifies operation to perform.  Possible invocations are
+
+	- field
+		Unary minus.
+
+	2^  field
+	10^  field
+	exp  field
+	log  field
+	log2  field
+	log10  field
+		Base 2, base 10, and natural logarithm and exponentiation.
+
+	abs  field
+		Absolute value.
+	sqrt  field
+		Square root.
+
+	sin  field
+	cos  field
+	tan  field
+		Sine, cosine and tangent.
+
+	sum  field
+	avg  field
+		Cumulative sum and cumulative average.
+
+	min  [ field1 | value ]  [ field2 | value ]
+		Minimum of two values.
+	max  [ field1 | value ]  [ field2 | value ]
+		Maximum of two values.
+
+	int  field
+		Integer value, truncating.
+	floor  field
+		Floor function (integer value, rounding down).
+	ceil  field
+		Ceiling function.
+
+	[field | value] + [field | value]
+		Addition or string concatenation.
+	[field | value] - [field | value]
+		Subtraction.
+	[field | value] * [field | value]
+		Multiplication.
+	[field | value] / [field | value]
+		Division.  Undefined for division by zero.
+	[field | value] % [field | value]
+		Modulus.  Undefined for division by zero.
+	[field | value] ^ [field | value]
+	[field | value] pow [field | value]
+		Exponentiation.
+
+-h, --help
+	Print this usage information.
+-r, --rename  name
+	Rename field.  Sets the header of the next calculated field.
+-v, --verbose
+	Verbose operation.
+
+NOTE: unlike other f commands, calcf does not try to guess column names.
+      Other f commands match an unquoted field identifier with a quoted 
+      field name if the unquoted header name would be invalid, i.e., field
+      `5' may be given as `-f 5' if no field is called an unquoted '5'.
+      calcf requires exact header names, quoted, if necessary.
+
+EOM
+exit;
+}
+
+#--------------------------------------------------------------------
+my ($log2, $log10) = (log(2), log(10));
+
+my %operand = (
+	c => 0,
+	d => 0,
+	e => 1,
+	x => 2,
+	f => 2,			# 3 for binary functions
+	h => 0,
+	r => 1,
+	v => 0,
+);				# supported switches and # of parameters
+
+my %longoperand = (
+	'-calculate'	=> 'c',
+	'-debug'	=> 'd',
+	'-expression'	=> 'e',
+	'-extern'	=> 'x',
+	'-field'	=> 'f',
+	'-rename'	=> 'r',
+	'-help'		=> 'h',
+	'-verbose'	=> 'v',
+);				# long option names and equivalent shorts
+
+
+				# operators in this table are transformed to
+				# an eval() block, trading off some performance
+				# for increased maintainability
+my %function2eval = (
+	"abs"	=> '"abs(\${ $ARGV[2] })"',	# unary, no exception handling
+	"exp"	=> '"exp(\${" . $ARGV[2] . "})"',
+	"2^"	=> '"exp($log2 * \${ $ARGV[2] })"',
+	"10^"	=> '"exp($log10 * \${ $ARGV[2] })"',
+	"int"	=> '"int(\${" . $ARGV[2] . "})"',
+	"floor"	=> '"floor(\${" . $ARGV[2] . "})"',
+	"ceil"	=> '"ceil(\${" . $ARGV[2] . "})"',
+	"sin"	=> '"sin(\${" . $ARGV[2] . "})"',
+	"cos"	=> '"cos(\${" . $ARGV[2] . "})"',
+
+						# binary, no exceptions
+	"*"	=> '"\${" . $ARGV[1] . "} * \${" . $ARGV[3] . "}"',
+	"**"	=> '"\${" . $ARGV[1] . "} ** \${" . $ARGV[3] . "}"',
+	"^"	=> '"\${" . $ARGV[1] . "} ^ \${" . $ARGV[3] . "}"',
+
+						# unary w/exceptions
+	"sqrt"	=> '"(\${" .$ARGV[2]. "} <= $::EPS ) ? \"$::INVALID\" : ' .
+			'sqrt(\${" . $ARGV[2] . "})"',
+	"log"	=> '"(\${" .$ARGV[2]. "} <= $::EPS ) ? \"$::INVALID\" : ' .
+			'log(\${" . $ARGV[2] . "})"',
+	"log2"	=> '"(\${" .$ARGV[2]. "} <= $::EPS ) ? \"$::INVALID\" : ' .
+			'log(\${" . $ARGV[2] . "})/$log2"',
+	"log10"	=> '"(\${ $ARGV[2] } <= $::EPS ) ? \"$::INVALID\" : ' .
+			'log(\${" . $ARGV[2] . "})/$log10"',
+	"tan"	=> '"(abs(\${ $ARGV[2] }) <= $::EPS ) ? \"$::INVALID\" : ' .
+			'sin(\${" . $ARGV[2] . "})/cos(\${" . $ARGV[2] . "})"',
+
+						# binary w/exceptions
+	"/"	=> '"(abs(\${ $ARGV[3] }) <= $::EPS ) ? \"$::INVALID\" : ' .
+			'\${" . $ARGV[1] . "}/\${" . $ARGV[3] . "}"',
+	"%"	=> '"(abs(\${ $ARGV[3] }) <= $::EPS ) ? \"$::INVALID\" : ' .
+			'\${" . $ARGV[1] . "}/\${" . $ARGV[3] . "}"',
+	"min"	=> '"(\${$ARGV[1]} <= \${$ARGV[3]}) ? \${$ARGV[1]} : ' .
+			'\${" . $ARGV[3] . "}"',
+	"max"	=> '"(\${$ARGV[1]} <= \${$ARGV[3]}) ? \${$ARGV[3]} : ' .
+			'\${" . $ARGV[1] . "}"',
+
+##	"+"	=> '"\${" . $ARGV[1] . "} + \${" . $ARGV[3] . "}"',
+);				# -f operators implemented as eval()'s
+
+my %unary = (
+	"sqrt"	=> 1,
+	"-"	=> 1,
+	"abs"	=> 1,
+	"log"	=> 1,
+	"sum"	=> 1,
+	"avg"	=> 1,
+	"log"	=> 1,
+	"log2"	=> 1,
+	"log10"	=> 1,
+	"exp"	=> 1,
+	"2^"	=> 1,
+	"10^"	=> 1,
+	"int"	=> 1,
+	"floor"	=> 1,
+	"ceil"	=> 1,
+	"sin"	=> 1,
+	"cos"	=> 1,
+	"tan"	=> 1,
+);				# unary operators
+
+my %binary = (
+	"+"	=> "+",
+	"-"	=> "-",
+	"*"	=> "*",
+	"/"	=> "/",
+	"%"	=> "%",
+	"^"	=> "^",
+	"**"	=> "^",
+	"min"	=> "min",
+	"max"	=> "max",
+);				# binary operators
+
+my %prefixbinary = (
+	"min"	=> "min",
+	"max"	=> "max",
+);				# binary operators with operation as prefix
+				# in formatted output
+
+#--------------------------------------------------------------------
+my $separator="\t";				# column separator
+my $rename = '';				# header aliases
+my %args;					# command-line arguments
+my @calc;
+
+*EPS = \1E-10;					# zero is -$EPS .. +$EPS;
+*INVALID = \'???';				# NaN's, etc.
+{ my $tmp = $::EPS; $tmp = $::INVALID; }	# silence "unused" warnings
+
+while ($_ = $ARGV[0], /^-/) {			# get field list
+	s/^-//;
+
+	die "Argument -$_ not supported.\n"
+		unless exists($operand{$_}) or exists($longoperand{$_});
+	($_ = $longoperand{$_})
+		if defined($longoperand{$_});
+
+	if (0 < $operand{$_}) {			# pick up parameters
+		die "Missing expression or arguments after -$_.\n"
+			if (@ARGV < 1+$operand{$_});
+
+		if ("f" eq $_) {
+			die "Fields required after -f.\n"
+				if ('' eq $ARGV[1]) or ('' eq $ARGV[2]);
+
+			if (exists($unary{$ARGV[1]})) {
+				(my $pr = $ARGV[2]) =~ s/^ \" (.*) \" $/$1/x;
+				my $head = "$ARGV[1]($pr)";
+				$head = $rename
+					if ('' ne $rename);
+				$head = "\"$head\""
+					unless $head =~ /^ \" (.*) \" $/x;
+
+				if (exists($function2eval{$ARGV[1]})) {
+					my $f = eval($function2eval{$ARGV[1]});
+					push (@calc, {
+						'perl_expression' => $f,
+						'header' => $head,
+					});
+				} else {
+					push (@calc, {
+						'opr' => $ARGV[1],
+						'arg' => $ARGV[2],
+						'header' => $head,
+					});
+				}
+
+			} else {
+				die "Field required after $ARGV[2].\n"
+					if (@ARGV < 4) or ('' eq $ARGV[3]);
+				die "Invalid operator $ARGV[2]\n"
+					unless $binary{$ARGV[2]};
+
+				(my $pr1 = $ARGV[1]) =~ s/^ " (.*) " $/$1/x;
+				(my $pr2 = $ARGV[3]) =~ s/^ " (.*) " $/$1/x;
+				
+				my $head = "(($pr1) $ARGV[2] ($pr2))";
+##				$head = "$ARGV[2]$pr"
+##					if $noparen{$ARGV[1]};
+				$head = $rename
+					if ('' ne $rename);
+				$head = "\"$head\""
+					unless $head =~ /^ \" (.*) \" $/x;
+
+				if (exists($function2eval{$ARGV[2]})) {
+					my $f = eval($function2eval{$ARGV[2]});
+					push (@calc, {
+						'perl_expression' => $f,
+						'header' => $head,
+					});
+##				} else {
+##				push (@calc, {
+##					'expr' => $ARGV[1],
+##					'arg' => $ARGV[2],
+##					'header' => $head,
+##				});
+##
+##					push (@calc, {
+##						'opr' => $ARGV[1],
+##						'arg' => $ARGV[2],
+##						'header' => $head,
+##					});
+##				} else {
+##					push (@var1, $ARGV[1]);
+##					push (@prvar1, $ARGV[1]);
+##					$prvar1[-1] =~ s/^\"(.*)\"$/$1/;
+##					push (@opr, $ARGV[2]);
+##					if (!$binary{$ARGV[2]}) {
+##						$opr[-1] = $binary{$ARGV[2]};
+##					}
+##					push (@var2, $ARGV[3]);
+##					push (@prvar2, $ARGV[3]);
+##					shift;
+				}
+			}
+			$rename="";
+			shift;
+			shift;
+		}
+		if ("e" eq $_) {
+			die "Must specify column name with -$_.\n"
+				if ('' eq $rename);
+
+			$rename = "\"$rename\""
+				unless $rename =~ /^ \" (.*) \" $/x;
+			push (@calc, {
+				'perl_expression' => $ARGV[1],
+				'header' => $rename,
+			});
+			$rename="";
+			shift;
+		}
+		if ("x" eq $_) {
+			die "Must specify column name with -$_.\n"
+				if ('' eq $rename);
+			die "Missing arguments of -$_.\n"
+				if ('' eq $ARGV[1]) or ('' eq $ARGV[2]);
+			$rename = "\"$rename\""
+				unless $rename =~ /^ \" (.*) \" $/x;
+
+			push (@calc, {
+				'extern' => $ARGV[1],
+				'args' => $ARGV[2],
+				'header' => $rename,
+			});
+			$rename="";
+			shift;
+			shift;
+		}
+		if ("r" eq $_) {
+			($rename = $ARGV[1]) =~ s/^\"(.*)\"$/$1/;
+			shift;
+		}
+	} else {
+		$args{$_}++;			# count number
+	}
+	shift;
+}
+
+goto printhelp  if $args{h};
+
+die("Must specify fields to calculate.\n")  unless (@calc);
+
+defined($_ = <>) or exit;			# read header line, skip blanks
+while (/^ \s* $/x) {
+	exit  unless defined($_ = <>);
+}
+chomp;
+my @colheads = split(/\t/, $_);
+
+my $term = "";
+print($_), $term = $separator
+	unless $args{c} or $args{d};
+
+exit  unless defined($_ = <>);
+while (/^ \s* $/x) {
+	exit  unless defined($_ = <>);
+}
+
+chomp;
+my @line = split(/\t/, $_);			# get headers
+
+die "Number of header and data fields differs.\n"
+	unless (@line == @colheads);
+
+my %src;
+my %is_string;
+foreach my $i (0 .. $#colheads) {		# name->column# lookup table
+	die "Header $colheads[$i] repeated?\n"
+		if exists($src{$colheads[$i]});
+
+## Removed: field names are not guessed (i.e., don't auto-supply quotes)
+##
+##	if (($colheads[$i] =~ /^ " (.*) " $/x) or
+##		($colheads[$i] =~ /^ " (.*) " $/x))
+##	{
+##		$tmp = $1;
+##		die "Header $colheads[$i] repeated?\n"
+##			if defined($src{$tmp});
+##		$src{$tmp} = $i;
+##	}
+	$src{$colheads[$i]} = $i;
+
+	$is_string{$i} = 0 + ($line[$i] =~ /^ " .* " $/x);
+}
+
+foreach my $c (@calc) {			# ${...} expansions and parameter lists
+	if (exists($c->{perl_expression})) {
+		my $expr = $c->{perl_expression};
+		$c->{perl_expression} = symbolic2eval($expr);
+
+		warn("/$expr/ -> /$c->{perl_expression}/\n")
+			if $args{d};
+		next;
+	}
+
+	if (exists($c->{extern})) {
+		my $expr = symbolic2eval($c->{args});
+		$c->{parameters} = [ map { '"' . $_ . '"' } split(/,/, $expr) ];
+
+		warn("/$c->{args}/ -> /$expr/\n")
+			if $args{d};
+		next;
+	}
+}
+
+exit  if $args{d};					# s/// expression only
+
+##foreach my $i (0 .. $#opr) {
+##	push (@src1, $src{ $var1[$i] });
+##	push (@src2, $src{ $var2[$i] });
+##}							# find source fields
+
+
+##foreach my $i (0 .. $#opr) {				# calculated fields
+foreach my $i (@calc) {					# calculated fields
+##	my $opr = $opr[$i];
+##???
+##	if (defined($colname[$i])) {
+##		print $term, "\"", $colname[$i], "\"";
+##	}
+##/???
+	print($term, $i->{header}), next
+		if exists($i->{perl_expression}) or (exists($i->{extern}));
+
+###next;	#???
+
+##???
+##	if (("sqrt" eq $opr) or ("abs" eq $opr) or ("int" eq $opr) or
+##		("log" eq $opr) or ("exp" eq $opr) or 
+##		("log2" eq $opr) or ("log10" eq $opr) or
+##		("floor" eq $opr) or ("ceil" eq $opr) or ("sum" eq $opr) or
+##		("avg" eq $opr) or ("sin" eq $opr) or ("tan" eq $opr) or
+##		("cos" eq $opr) or ("10^" eq $opr))
+##	{
+##		print $term, "\"$opr($prvar2[$i])\"";
+##	}
+##	if (exists($prefixbinary{$opr})) {
+##		print $term, "\"$opr($prvar1[$i],$prvar2[$i])\"";
+##	}
+##	if (("-" eq $opr) and ("" eq $var1[$i])) {
+##		print $term, "\"$opr($prvar2[$i])\"";
+##	}
+##	if (exists($binary{$opr})) {
+##		print $term, "\"($prvar1[$i])$opr($prvar2[$i])\"";
+##	}
+##???
+
+	die "Should not reach this";
+							# should not reach this
+} continue {
+	$term = $separator;
+}
+
+print "\n";
+
+my @sum;						# running sums
+my $number = 0;						# ...for averages
+
+while ("" ne $_) {					# data lines
+	$term="";
+	print($_), $term = $separator
+		if !$args{c};
+
+	$number++;
+##	foreach my $i (0 .. $#opr) {			# calculated fields
+	foreach my $c (@calc) {				# calculated fields
+		my ($is_str1, $is_str2);
+
+		if (exists($c->{perl_expression})) {
+			my $e = eval($c->{perl_expression});
+			die("eval exception: $@\n")  if $@;
+
+			print $term, $e;
+			next;
+		}
+
+		if (exists($c->{extern})) {
+			my $params = join(" ", map { eval($_) } 
+					@{ $c->{parameters} });
+			my $ret = `$c->{extern}  $params`;
+			chomp($ret);
+			print $term, $ret;
+
+			next;
+		}
+
+##		$_ = $opr[$i];
+next;
+
+my $i = 0;
+
+##
+##		my ($val1, $val2) = @line[ $src1[$i], $src2[$i] ];
+##		$val1 =~ s/" (.*) "/$1/x
+##			if ($is_str1 = $is_string{$src1[$i]});
+##		$val2 =~ s/" (.*) "/$1/x
+##			if ($is_str2 = $is_string{$src2[$i]});
+##
+##		if (("" ne $var1[$i]) and !exists($src{$var1[$i]})) {
+##			$is_str1 = 0;
+##			$val1 = $var1[$i];
+##			if ($val1 =~ /" (.*) "/x) {
+##				$val1 =~ s/" (.*) "/$1/x;
+##				$is_str1 = 1;
+##			}
+##		}
+##		if (!exists($src{$var2[$i]})) {
+##			$is_str2 = 0;
+##			$val2 = $var2[$i];
+##			if ($val2 =~ /" (.*) "/x) {
+##				$val2 =~ s/" (.*) "/$1/x;
+##				$is_str2 = 1;
+##			}
+##		}
+##
+##				## no exception handling after this line
+##				##
+##		print($term, $::INVALID), next
+##			if ( (("sqrt" eq $_) and ($val2 < 0)) or
+##				(($_ =~ /^log/) and ($val2 < 0)) or
+##				(("tan" eq $_) and (0 == cos($val2))) or
+##				(("/" eq $_) and (0 == cos($val2))) or
+##				(("%" eq $_) and (0 == cos($val2))) );
+
+###		print($term, sqrt($val2)), next		# implemented as eval
+###			if ("sqrt" eq $_);
+###		print($term, abs($val2)), next		# implemented as eval
+###			if ("abs" eq $_);
+
+##		if ("sum" eq $_) {
+##			$sum[$i] += $val2;
+##			print($term, $sum[$i]);
+##			next;
+##		}
+##		if ("avg" eq $_) {
+##			$sum[$i] += $val2;
+##			print($term, $sum[$i] / $number);
+##			next;
+##		}
+
+###		print($term, int($val2)), next		# implemented as eval
+###			if ("int" eq $_);
+###		print($term, floor($val2)), next	# implemented as eval
+###			if ("floor" eq $_);
+###		print($term, ceil($val2)), next		# implemented as eval
+###			if ("ceil" eq $_);
+
+##		if ("max" eq $_) {			# implemented as eval
+##			if ($val2 < $val1) {
+##				print $term, $val1;
+##			} else {
+##				print $term, $val2;
+##			}
+##			next;
+##		}
+##		if ("min" eq $_) {			# implemented as eval
+##			if ($val1 < $val2) {
+##				print $term, $val1;
+##			} else {
+##				print $term, $val2;
+##			}
+##			next;
+##		}
+
+###	print($term, exp($val2)), next			# implemented as eval
+###		if ("exp" eq $_);
+###	print($term, exp(log(2) * $val2)), next		# implemented as eval
+###		if ("2^" eq $_);
+###	print($term, exp(log(10) * $val2)), next	# implemented as eval
+###		if ("10^" eq $_);
+###
+###	print($term, log($val2)), next			# implemented as eval
+###		if ("log" eq $_);
+###	print($term, log($val2) / log(2)), next		# implemented as eval
+###		if ("log2" eq $_);
+###	print($term, log($val2) / log(10)), next	# implemented as eval
+###		if ("log10" eq $_);
+###
+###	print($term, sin($val2)), next			# implemented as eval
+###		if ("sin" eq $_);
+###	print($term, cos($val2)), next			# implemented as eval
+###		if ("cos" eq $_);
+###	print($term, sin($val2)/cos($val2)), next	# implemented as eval
+###		if ("tan" eq $_);
+
+##		if ("-" eq $_) {			# ???
+##			my $val1 = 0  if ('' eq $var1[$i]);
+##
+##			print $term, $val1-$val2;
+##		}
+##
+##		if ("+" eq $_) {			# ???
+##			if ($is_str1 or $is_str2) {
+##				print $term, '"', $val1, $val2, '"';
+##			} else {
+##				print $term, $val1 + $val2;
+##			}
+##		}
+
+###		print($term, $val1 * $val2), next	# implemented as eval
+###			if ("*" eq $_);
+###		print($term, $val1 / $val2), next	# implemented as eval
+###			if ("/" eq $_);
+###		print($term, $val1 % $val2), next	# implemented as eval
+###			if ("%" eq $_);
+###		print($term, $val1 ** $val2), next	# implemented as eval
+###			if ("^" eq $_);
+
+	} continue {
+		$term = $separator;
+	}
+
+	print "\n";
+
+	exit  unless defined($_ = <>);
+	while (/^ \s* $/x) {
+		exit  unless defined($_ = <>);
+	}
+	chomp;
+	@line = split(/\t/, $_);
+}
+
+#---------------------------------------
+# symbolic2eval(): expand ${...} definitions to $line[...] expressions
+sub symbolic2eval {
+	my ($s) = @_;
+
+	while ($s =~ / \$ \{ \s* (.*?) \s* \} /x) {
+		my $name = $1;
+		if (!exists($src{$name})) {
+			if (exists($src{"\"$name\""})) {
+				$name = "\"$name\"";
+			} elsif (exists($src{"'$name'"})) {
+				$name = "'$name'";
+			} else {
+				die "Undefined field $name\n";
+			}
+		}
+
+		$s =~ s/ \$ \{ \s* (.*?) \s* \}/\$line[$src{$name}]/x;
+	}
+
+	return $s;
+}
+

@@ -1,0 +1,137 @@
+#!/usr/bin/perl
+
+%operand = (
+	a => 1,
+	h => 0,
+	b => 1,
+	w => 1,
+	t => 1,
+);				# supported switches and # of parameters
+
+%longoperand = (
+	'-align'	=> 'a',
+	'-help'		=> 'h',
+	'-border'	=> 'b',
+	'-width'	=> 'w',
+	'-title'	=> 't',
+);				# long option names and equivalent shorts
+
+$border = "1";
+#$width = "100%";
+
+%flush = (
+	'c'		=> 'center',
+	'center'	=> 'center',
+	'l'		=> 'left',
+	'left'		=> 'left',
+	'r'		=> 'right',
+	'right'		=> 'right',
+);
+
+while ($_=$ARGV[0], /^-/) {			# get field list
+	s/^-//;
+	exists($operand{$_}) || exists($longoperand{$_})
+		|| die "Argument -$_ not supported.\n";
+	if ($longoperand{$_}) {
+		$_=$longoperand{$_};
+	}
+	(!$operand{$_}) || ("" ne $ARGV[1]) ||
+			die "Value expected for `-$_'.\n";
+	if ("b" eq $_) {
+		$border = $ARGV[1];
+		shift;
+	}
+	if ("w" eq $_) {
+		$width = $ARGV[1];
+		shift;
+	}
+	if ("t" eq $_) {
+		$title = $ARGV[1];
+		shift;
+	}
+	if ("a" eq $_) {
+		(!$align{$ARGV[1]}) ||
+			die "Improper alignment.\n";
+		$alignment = $flush{$ARGV[1]};
+		shift;
+	}
+  
+	$args{$_}++;				# count number
+	shift;
+}
+
+
+if ($args{h}) {					# requesting help
+print <<EOM;
+Transforms f-compatible input to a HTML table.
+
+Usage:
+
+f2html [-avhbwt [parameter]] ... [inputfile] ...
+
+-a, --align  [left|l|center|c|right|r]
+	Sets position of table to left-flushed (left or l), centered
+	(center or c), or right (right or r).
+-b, --border  borderwidth
+	Sets the border width to the specified number of pixels.
+	Set to zero to eliminate border.
+-w, --width  tablewidth
+	Sets the table width to the specified number of pixels, 
+	or the specified percentage of the display if `%' is
+	appended.  Sets to automatic width if set to zero.
+-t, --title  title
+	Sets a comment string for the start of the table.
+-h, --help
+        Print this usage information.
+ 
+EOM
+exit
+}
+
+$title =~ s/</&lt;/;  $title =~ s/>/&gt;/;
+
+if ($_=<>) {					# read header line
+	chomp;
+	@colheads = split(/\t/, $_);
+
+	($sec, $min, $hour, $mday, $mon, $year, $wday, $yday, $isdst)=
+		localtime(time);
+	print "<!-- ", 1900+$year, ".", $mon+1, ".$mday. $min:$hour -->\n";
+
+	(!$title) ||
+		print "<!-- $title -->\n";
+
+	print "<TABLE BORDER=\"$border\" COLS=", 1+$#colheads;
+	(!$width) ||
+		print " WIDTH=\"$width\"";
+	(!$alignment) ||
+		print " ALIGN=\"$alignment\"";
+	print ">\n<TR>\n";
+	foreach $i (@colheads) {
+		$i =~ s/^\"(.*)\"$/$1/;
+		print "<TD>$i</TD>\n"
+	}
+	print "</TR>\n";
+} else {
+	exit;					# empty input file
+}
+
+while (<>) {					# data lines
+	chomp;
+	/\S/ || next;
+
+	@line = split(/\t/, $_);
+
+	print "\n<TR>\n";
+	foreach $i (@line) {
+		$i =~ s/^\"(.*)\"$/$1/;
+		print "<TD>$i</TD>\n";
+	}
+	print "</TR>\n";
+}
+
+print "\n</TABLE>\n";
+(!$title) ||
+	print "<!-- $title -->\n";
+print "<!-- ", 1900+$year, ".", $mon+1, ".$mday. $min:$hour -->\n";
+

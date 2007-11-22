@@ -1,0 +1,136 @@
+#!/usr/bin/perl
+
+if ("" eq $ARGV[0]) {
+
+print "Creates a martrix table.\n";
+
+prhelp:
+print <<"EOM";
+
+Usage:
+
+matrixf  -c [field] -r [field] -v [field]
+
+where -c, -r and -v specifies the column, row and variable field of a matrix
+
+Additional help can be found by executing helpf.
+
+EOM
+exit;
+}
+
+%operand = (c => 0, r => 1, v => 2, );
+
+%longoperand = ('-row'	=> 'r', '-column'	=> 'c', -variable => 'v');
+
+if (@ARGV / 2 < 2) { print "Invalid number of arguments\n"; goto prhelp; }
+
+while ($_ = $ARGV[0], /^-/)
+	{
+	s/^-//;
+	exists($operand{$_}) || exists($longoperand{$_}) || die "Argument -$_ not supported.\n";
+	if ($longoperand{$_}) { $_ = $longoperand{$_}; }
+	switch:
+		{
+		if (/^c/)	{ $ColField = $ARGV[1]; $ColField =~ s/^\"(.*)\"$/$1/; }
+		if (/^r/)	{ $RowField = $ARGV[1]; $RowField =~ s/^\"(.*)\"$/$1/; }
+		if (/^v/)	{ $VarField = $ARGV[1]; $VarField =~ s/^\"(.*)\"$/$1/; }
+		}
+	shift;
+	shift;
+	}
+
+if ($ColField eq "") { print "Column field is not set\n"; goto prhelp; }
+if ($VarField eq "") { print "Variable field is not set\n"; goto prhelp; }
+
+($_ = <>) || exit;
+while (/^\s*$/) { ($_ = <>) || exit; }
+
+chomp;
+@colHeads = split(/\t/, $_);
+
+($_ = <>) || exit;
+while (/^\s*$/) { ($_ = <>) || exit; }
+
+chomp;
+@fields = split(/\t/, $_);
+
+($fields == $colheads) || die "Number of header and data fields differs.\n";
+
+for ($col = 0;$col < @colHeads;$col++)
+	{
+	$colHeads[$col] =~ s/"(.*)"/$1/;
+	if ($colHeads[$col] eq $ColField)	{ last; }
+	}
+if ($col == @colHeads) { die "Invalid column field\n"; }
+
+if ($RowField ne "")
+	{
+	for ($row = 0;$row < @colHeads;$row++)
+		{
+		$colHeads[$row] =~ s/"(.*)"/$1/;
+		if ($colHeads[$row] eq $RowField)	{ last; }
+		}
+	if ($row == @colHeads) { die "Invalid row field\n"; }
+	}
+else	{ $row = ""; }
+
+for ($var = 0;$var < @colHeads;$var++)
+	{
+	$colHeads[$var] =~ s/"(.*)"/$1/;
+	if ($colHeads[$var] eq $VarField)	{ last; }
+	}
+if ($var == @colHeads) { die "Invalid variable field\n"; }
+
+%colList = ();
+%rowList = ();
+$colNum = $rowNum = 0;
+while ("" ne $_)
+	{
+	$colKey = $fields[$col];
+	if (exists($colList{$colKey})) { $colPos = $colList{$colKey}; }
+	else
+		{
+		$colPos = $colNum; $colNum++;
+		$colList{$colKey} = $colPos;
+		for ($i = 0;$i < $rowNum;$i++) { $array[$i][$colPos] = "";}
+		}
+	if ($row ne "")
+		{
+		$rowKey = $fields[$row];
+		if (exists($rowList{$rowKey})) { $rowPos = $rowList{$rowKey}; }
+		else
+			{
+			$rowPos = $rowNum; $rowNum++;
+			$rowList{$rowKey} = $rowPos;
+			for ($i = 0;$i < $colNum;$i++) { $array[$rowPos][$i] = "";}
+			}
+		}
+	else
+		{
+		if ($rowNum == 0) { $rowList{"Row"} = $rowNum; $rowNum++; }
+		$rowPos = 0;
+		}
+	$array[$rowPos][$colPos] = $fields[$var];
+	($_ = <>) || last;
+	while (/^\s*$/) { ($_ = <>) || last; }
+	chomp;
+	@fields = split(/\t/, $_);
+	}
+print "\"$ColField/$RowField\"";
+foreach $colKey (sort keys %colList)
+	{
+	print "\t$colKey";
+	}
+print "\n";
+foreach $rowKey (sort keys %rowList)
+	{
+	print "$rowKey";
+	$rowPos = $rowList{$rowKey};
+	foreach $colKey (sort keys %colList)
+		{
+		$colPos = $colList{$colKey};
+		print "\t$array[$rowPos][$colPos]";
+		}
+	print "\n";
+	}

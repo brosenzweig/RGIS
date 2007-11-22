@@ -1,0 +1,274 @@
+#!/usr/bin/perl
+
+if ("" eq $ARGV[0])
+	{
+prhelp:
+
+	print <<"EOM";
+Calculates linear regression.
+
+Usage:
+
+regf -g [field] -x [field]] -y [field] [inputfile] ...
+
+where fieldnames must match fieldnames in first line of the datafile.
+Operations are:
+
+-g, --group  field
+	Perform selected operations on data groups, selected by having
+	the same value in the group field.  Process whole
+	input if no group is given.  Select groups based on groups of
+	fields if multiple groups are given.
+
+-x, --xField  field
+	x variable field
+
+-y, --yField  field
+	y variable field
+
+-w, --weight field
+
+-h, --help
+	Print this usage information.
+
+The output fields are:
+
+b0 - Intersept;
+
+b1 - Slope;
+
+r  - (x,y) correlation coefficient;
+
+R2 - squared multiple (y,yHat) correlation coefficient;
+
+n  - number of observation;
+
+S - square root of sum of the residuals sqrt (SSE/(n-2));
+
+b0Bound - confidence boundary for intersept;
+
+b1Bound - confidence boundary for slope;
+
+Additional help can be found by executing helpf.
+
+EOM
+	exit;
+	}
+
+%operand=('g' => 1, 'x' => 1, 'y' => 1,  'w' => 1, 'h' => 0);
+
+%longoperand=('-xfield' => 'x', '-yfield' => 'y', '-group' => 'g', -weight => 'w', '-help' => 'h');
+
+$terminator="\t";
+$XField = $YField="";
+$GroupNum= 0;
+
+while ($_ = $ARGV[0], /^-/)
+	{
+	s/^-//;
+	($longoperand{$_}) && ($_ = $longoperand{$_});
+	exists($operand{$_}) || die "Argument `-$_' not supported.\n";
+	if (0 < $operand{$_}) { ("" ne $ARGV[0]) || die "field required after '-$_'.\n"; }
+
+	switch:
+		{
+		if (/^g/)
+			{
+			$GFields[$GroupNum] = $ARGV[1];
+			$GroupNum++;
+			shift;
+			}
+		if (/^x/)
+			{
+			if ($XField ne "") { die "x field is already defined\n"; }
+			$XField = $ARGV[1];
+			shift;
+			}
+		if (/^y/)
+			{
+			if ($YField ne "") { die "y field is already defined\n"; }
+			$YField = $ARGV[1];
+			shift;
+			}
+		if (/^w/)
+			{
+			if ($WField ne "") { die "w field is already defined\n"; }
+			$WField = $ARGV[1];
+			shift;
+			}
+		if (/^h/)
+			{
+			goto prhelp;
+			}
+		}
+	shift;
+	}
+
+($XField ne "") || die "x field is not specified\n";
+($YField ne "") || die "y field is not specified\n";
+
+($_ = <>) || exit;
+while (/^\s*$/) { ($_ = <>) || exit; }
+chomp;
+s/\s*//;
+@colHeads = split(/\t/, $_);
+
+($_ = <>) || exit;
+while (/^\s*$/) { ($_ = <>) || exit; }
+chomp;
+@fields = split(/\t/, $_);
+
+($fields == $colheads) || die "Number of header and data fields differs.\n";
+
+$XFieldNum = $YFieldNum = $WFieldNum = -1;
+for ($group = 0;$group < $GroupNum;$group++) { $GFieldNum[$group] = -1; }
+
+for ($col = 0;$col < @colHeads;$col++)
+	{
+	$colHeads[$col] =~ s/"(.*)"/$1/;
+	if ($colHeads[$col] eq $XField)	{ $XFieldNum = $col; }
+	if ($colHeads[$col] eq $YField)	{ $YFieldNum = $col; }
+	for ($group = 0;$group < $GroupNum;$group++)
+		{
+		if ($colHeads[$col] eq $GFields[$group])	{ $GFieldNum[$group] = $col; }
+		}
+	if ($WField) { if ($colHeads[$col] eq $WField)	{ $WFieldNum = $col; } }
+	}
+
+if ($XFieldNum == -1) { die "x field does not exists.\n"; }
+if ($YFieldNum == -1) { die "y field does not exists.\n"; }
+for ($group = 0;$group < $GroupNum;$group++)
+	{
+	if ($GFieldNum[$group] == -1) { die "'$GFields[$group]' group field does not exists.\n"; }
+	}
+if ($WField && ($YFieldNum == -1)) { die "Weight field does not exists.\n"; }
+
+if ($GroupNum > 0)
+	{
+	print "$GFields[0]";
+	for ($group = 1;$group < $GroupNum;$group++) { print "\t$GFields[$group]"; }
+	print "\t";
+	}
+
+print "\"b0\"\t\"b1\"\t\"r\"\t\"R2\"\t\"n\"\t\"S\"\t\"b0Bound\"\t\"b1Bound\"\n";
+
+$sumX = $sumY = $sumX2 = $sumY2 = $sumXY = $sumW = 0;
+$groupName = "";
+%groupArray = ();
+while ("" ne $_)
+	{
+	if ($GroupNum > 0)
+		{
+		$groupName = $fields[$GFieldNum[0]];
+		for ($group = 1;$group < $GroupNum;$group++)
+			{
+			$groupName  = "$groupName\t$fields[$GFieldNum[$group]]";
+			}
+		if (exists ($groupArray{$groupName}))
+				{ ($sumX, $sumY, $sumX2, $sumY2, $sumXY, $sumW) = split ('\t',$groupArray{$groupName}); }
+		else	{ $sumX = $sumY = $sumX2 = $sumY2 = $sumXY = $sumW = 0; }
+		}
+	if ($WField)
+			{ $weight = $fields[$WFieldNum]; }
+	else	{ $weight = 1.0; }
+	$sumX  += $fields[$XFieldNum] * $weight;
+	$sumY  += $fields[$YFieldNum] * $weight;
+	$sumX2 += $fields[$XFieldNum] * $fields[$XFieldNum] * $weight;
+	$sumY2 += $fields[$YFieldNum] * $fields[$YFieldNum] * $weight;
+	$sumXY += $fields[$XFieldNum] * $fields[$YFieldNum] * $weight;
+	$sumW  += $weight;
+	if ($groupName ne "")
+		{
+		$groupText = "$sumX\t$sumY\t$sumX2\t$sumY2\t$sumXY\t$sumW";
+		$groupArray{$groupName} = $groupText;
+		}
+#	($_ = <>) || last;
+	do	{
+		chomp;
+		($_ = <>) || last;
+		@fields = split(/\t/, $_);
+		} while (($fields[$XFieldNum] eq "") || ($fields[$YFieldNum] eq ""))
+	}
+
+if (%groupArray > 0)
+	{
+	foreach $groupName (sort keys %groupArray)
+		{
+		($sumX, $sumY, $sumX2, $sumY2, $sumXY, $sumW) = split ('\t',$groupArray{$groupName});
+
+		if (($sumW > 2) && ($sumX2 != $sumX * $sumX) && ($sumY2 != $sumY * $sumY))
+			{
+			$b1 = ($sumXY - $sumX * $sumY / $sumW) / ($sumX2 - $sumX * $sumX / $sumW);
+			$b0 = $sumY / $sumW - $b1 * $sumX / $sumW; 
+			$r = ($sumXY - $sumX * $sumY / $sumW) / sqrt (($sumX2 - $sumX * $sumX / $sumW) * ($sumY2 - $sumY * $sumY / $sumW));
+			$se2 = ($sumY2 - 2 * $b1 * $sumXY - 2 * $b0 * $sumY + 2 * $b0 * $b1 * $sumX + $b1 * $b1 * $sumX2 + $sumW * $b0 * $b0);
+			$R2 = 1.0 - $se2 / ($sumY2 - $sumY * $sumY / $sumW);
+			$se2 = $se2 / ($sumW - 2);
+			$S = sqrt ($se2);
+			$t = t ($sumW - 2);
+			$b0Bound = $t * sqrt ($sumX2 / ($sumW * ($sumX2 - $sumX * $sumX / $sumW))) * $S;
+			$b1Bound = $t * sqrt ($se2 / ($sumX2 - $sumX * $sumX / $sumW));
+			print "$groupName\t$b0\t$b1\t$r\t$R2\t$sumW\t$S\t$b0Bound\t$b1Bound\n";
+			}
+		}
+	}
+else	
+	{
+	if (($sumW > 2) && ($sumX2 != $sumX * $sumX) && ($sumY2 - $sumY * $sumY))
+		{
+		$b1 = ($sumXY - $sumX * $sumY / $sumW) / ($sumX2 - $sumX * $sumX / $sumW);
+		$b0 = $sumY / $sumW - $b1 * $sumX / $sumW; 
+		$r = ($sumXY - $sumX * $sumY / $sumW) / sqrt (($sumX2 - $sumX * $sumX / $sumW) * ($sumY2 - $sumY * $sumY / $sumW));
+		$se2 = ($sumY2 - 2 * $b1 * $sumXY - 2 * $b0 * $sumY + 2 * $b0 * $b1 * $sumX + $b1 * $b1 * $sumX2 + $sumW * $b0 * $b0);
+		$R2 = 1.0 - $se2 / ($sumY2 - $sumY * $sumY / $sumW);
+		$se2 = $se2 / ($sumW - 2);
+		$S = sqrt ($se2);
+		$t = t ($sumW - 2);
+		$b0Bound = $t * sqrt ($sumX2 / ($sumW * ($sumX2 - $sumX * $sumX / $sumW))) * $S;
+		$b1Bound = $t * sqrt ($se2 / ($sumX2 - $sumX * $sumX / $sumW));
+		print "$b0\t$b1\t$r\t$R2\t$sumW\t$S\t$b0Bound\t$b1Bound\n";
+		}
+	}
+
+sub t
+	{
+	my $num = shift (@_);
+	my %tList = (	 '1' => 12.706,
+						 '2' =>  4.303,
+						 '3' =>  3.182,
+						 '4' =>  2.776,
+						 '5' =>  2.571,
+						 '6' =>  2.447,
+						 '7' =>  2.365,
+						 '8' =>  2.306,
+						 '9' =>  2.262,
+						'10' =>  2.228,
+						'11' =>  2.201,
+						'12' =>  2.179,
+						'13' =>  2.160,
+						'14' =>  2.145,
+						'15' =>  2.135,
+						'16' =>  2.120,
+						'17' =>  2.110,
+						'18' =>  2.101,
+						'19' =>  2.093,
+						'20' =>  2.086,						
+						'21' =>  2.080,
+						'22' =>  2.074,
+						'23' =>  2.069,
+						'24' =>  2.064,
+						'25' =>  2.060,
+						'26' =>  2.056,
+						'27' =>  2.052,
+						'28' =>  2.048,
+						'29' =>  2.045,
+						'30' =>  2.042,
+						'40' =>  2.021,
+						'60' =>  2.000,
+						'120' => 1.980,
+						);
+
+	$t = 1.960;
+	foreach $i (sort keys %tList) { if (($i >= $num) && ($t < $tList{$i})) { $t = $tList{$i}; } }
+	return ($t);
+	}

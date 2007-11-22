@@ -1,0 +1,27 @@
+#!/usr/bin/perl -w
+
+$mdelta=0.1;
+$afdelta=0.15;
+$kdelta=0.2;
+
+while (<>) {
+	chomp;
+	s/\#.*//;
+	s/^ *//;
+	if (/^$/) { next; }
+
+	($x, $kozep, $min, $max, $also, $felso)=split(/\s+/, $_);
+
+	#$x -= 0.5;
+
+	print $x-$mdelta, "\t$min\n", $x+$mdelta, "\t$min\n\n";
+	print $x-$mdelta, "\t$max\n", $x+$mdelta, "\t$max\n\n";
+	print "$x\t$min\n$x\t$max\n\n";
+
+	print $x-$kdelta, "\t$kozep\n", $x+$kdelta, "\t$kozep\n\n";
+
+	print $x-$afdelta, "\t$also\n", $x+$afdelta, "\t$also\n";
+	print $x+$afdelta, "\t$felso\n", $x-$afdelta, "\t$felso\n";
+	print $x-$afdelta, "\t$also\n\n";
+}
+

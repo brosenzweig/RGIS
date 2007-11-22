@@ -1,0 +1,171 @@
+#!/usr/bin/perl -w
+
+use strict;
+
+if (!@ARGV or ("" eq $ARGV[0])) {
+printhelp:
+print <<"EOM";
+Extracts selected fields (columns) from a tab-separated datafile.
+
+Usage:
+
+cutf [-hvnrf [field | name] [name]] ... [inputfile] ...
+
+where fieldnames must match fieldnames in first line of the datafile.
+
+-f, --field  field
+	Specifies field (column) to display.  Repeat for multiple fields.
+-h, --help
+	Print this usage information.
+-n, --name  name1  name2 
+        Rename field.  Replaces name1 with name2 as a column name.  May
+	only be used with `-v'.
+-r, --rename  name
+        Rename field.  Sets the field name of the next `-f' field.  Ignored
+	if negated operation (`-v') is requested.
+-v, --reverse
+	Negated operation, suppressing given fields only.  Ignored if
+	no fields are given.
+
+EOM
+exit;
+}
+
+#--------------------------------------------------------------------
+my %operand = (
+	'f' => 1,
+	'h' => 0,
+	'n' => 2,
+	'r' => 1,
+	'v' => 0,
+);				# supported switches and # of parameters
+
+my %longoperand = (
+	'-field'	=> 'f',
+	'-help'		=> 'h',
+	'-name'		=> 'n',
+	'-rename'	=> 'r',
+	'-reverse'	=> 'v',
+);				# long option names and equivalent shorts
+
+my @var;					# column names (input)
+my @header;					# column names (output)
+my %mv;						# column name -> new name pairs
+my %args;					# command-line param counts
+my $rename = '';				# prescribed name for next col
+
+while ($_ = $ARGV[0], /^-/) {		# get field list
+	s/^-//;
+	($_ = $longoperand{$_})  if defined($longoperand{$_});
+	die "Argument -$_ not supported.\n"
+		unless exists($operand{$_});
+
+	if (0 < $operand{$_}) {			# pick up parameters
+		("" ne $ARGV[1]) ||
+			die "Missing parameter for -$_.\n";
+		if ("f" eq $_) {		# specify field
+			push (@var, $ARGV[1]);
+			$var[-1] =~ s/^ \" (.*) \" $/$1/x;
+			if ("" ne $rename) {
+				push (@header, $rename);
+			} else {
+				push (@header, $var[-1]);
+			}
+			$rename = "";
+		}
+		if ("n" eq $_) {		# rename field
+			("" ne $ARGV[2]) ||
+				die "Missing parameter for -$_.\n";
+			$ARGV[2] =~ s/^ " (.*) " $/$1/x;
+			if ($ARGV[1] !~ /^ " .* " $/x) {
+				$mv{"\"$ARGV[1]\""} = $ARGV[2];
+			}
+			$mv{$ARGV[1]} = $ARGV[2];
+			shift;
+		}
+		if ("r" eq $_) {		# rename next field
+			($rename = $ARGV[1]) =~ s/^ " (.*) " $/$1/x;
+		}
+		shift;
+	}
+	$args{$_}++;				# count number of occurences
+	shift;
+}
+
+goto printhelp  if $args{h};
+
+
+die "`-n' clashes with `-r'.\n"  if $args{n} and $args{r};
+die "Must specify fields.\n"  unless (@var) or $args{n};
+
+exit  unless defined($_ = <>); 				# read header line
+while (/^ \s* $/x) {
+	exit  unless defined($_ = <>);
+}
+chomp;
+
+my @src;					# column index in input for
+						# each output column
+my @colheads = split(/\t/, $_);
+
+foreach my $i (@colheads) {
+	$i =~ s/^ \" (.*) \" $/$1/x;
+}
+
+foreach my $i (@var) {				# process field arguments
+	my @cols = grep { $colheads[$_] eq $i } (0 .. $#colheads);
+	warn "Repeated field `$i'.\n"		if (1 < @cols);
+	die "Fieldname `$i' not found.\n"	unless @cols;
+	push (@src, $cols[0]);
+}
+
+my %field;					# 
+
+foreach my $i (@var) {
+	my $tmp = defined($mv{$i}) ? $mv{$i} : $i ;
+	$field{$i} = $tmp;
+	$field{"\"$i\""} = $tmp;
+}
+
+my $separator="\t";
+my $term = "";
+
+if ($args{'v'}) {
+	foreach my $i (@colheads) {		# print header
+		if (!exists($field{$i})) {
+			my $tmp = defined($mv{$i}) ? "\"$mv{$i}\"" : "\"$i\"";
+			print "$term$tmp";
+			$term = $separator;
+		}
+	}
+} else {
+	foreach my $i (0 .. $#var) {
+		print $term, "\"$header[$i]\"";
+		$term = $separator;
+	}
+}
+
+print "\n";
+while (<>) {					# data lines
+	next  unless /\S/;
+	chomp;
+	my @line = split(/\t/, $_);
+	
+	$term="";
+	if ($args{'v'}) {
+		foreach my $j (0 .. $#line) {	# print matching columns
+			my $i = $colheads[$j];
+			if (!exists($field{$i})) {
+				print "$term$line[$j]";
+				$term = $separator;
+			}
+		}
+	} else {
+		foreach my $i (0 .. $#var) {
+			print $term, $line[$src[$i]];
+			$term = $separator;
+		}
+	}
+	print "\n";
+}
+

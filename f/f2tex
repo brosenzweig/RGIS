@@ -1,0 +1,146 @@
+#!/usr/bin/perl
+
+%operand = (
+	'f' => 1,
+	'h' => 0,
+	't' => 1,
+	'y' => 1,
+	'l' => 0,
+	's' => 0,
+);				# supported switches and # of parameters
+
+%longoperand = (
+	'-format'	=> 'f',
+	'-help'		=> 'h',
+	'-title'	=> 't',
+	'-type'		=> 'y',
+	'-long'		=> 'l',
+	'-super'	=> 's',
+);				# long option names and equivalent shorts
+
+%tabletype = (
+	''	=> 'tabular',
+	'l'	=> 'longtable',
+	's'	=> 'supertabular',
+);
+
+$type = "";
+
+while ($_=$ARGV[0], /^-/) {			# get field list
+	s/^-//;
+	exists($operand{$_}) || exists($longoperand{$_})
+		|| die "Argument -$_ not supported.\n";
+	if ($longoperand{$_}) {
+		$_=$longoperand{$_};
+	}
+	(!$operand{$_}) || ("" ne $ARGV[1]) ||
+		die "Value expected for `-$_'.\n";
+	if ("f" eq $_) {
+		$format = $ARGV[1];
+		shift;
+	}
+	if ("t" eq $_) {
+		$title = $ARGV[1];
+		shift;
+	}
+	if ("y" eq $_) {
+		$type = $ARGV[1];
+		shift;
+	}
+	$args{$_}++;				# count number
+	shift;
+}
+
+
+if ($args{h}) {					# requesting help
+print <<EOM;
+Transforms f-compatible input to LaTeX table contents.
+
+Usage:
+
+f2tex [-tfh [parameter]] ... [inputfile] ...
+
+-f, --format  format_string
+	Specifies a format string for the table.  (Default is left-justified
+	fields with leftmost and rightmost vertical lines.)
+-t, --title  title
+	Sets a comment string for the start of the table.
+-l, --long
+	Prescribes a longtable environment for the table.
+-s, --super
+	Prescribes a supertabular environment for the table.
+-y, --type  tabletype
+	Prescribes a custom environment for the table.
+-h, --help
+        Print this usage information.
+ 
+Table contents may be imported to LaTeX documents by issuing the command
+\\input{...}.  Don't forget to include packages for nonstandard table
+environments.
+
+EOM
+exit
+}
+
+(!!$args{'s'} + !!$args{'l'} + !!$args{'y'} < 2) ||
+	die "Conflicting table types given.\n";
+
+if ($args{'y'}) {
+	$tabletype{$type} = $type;
+} else {
+	$type = ($args{'s'}) ? ('s') : (($args{'l'}) ? ('l') : (''));
+}
+
+($_ = <>) || exit;					# read header line
+while (/^\s*$/) {
+	($_ = <>) || exit;
+}
+chomp;
+s/\\/\\backslash/g;
+s/([#&%_^{}])/\\$1/g;
+@colheads = split(/\t/, $_);
+
+($sec, $min, $hour, $mday, $mon, $year, $wday, $yday, $isdst)=
+	localtime(time);
+print "% ", 1900+$year, ".", $mon+1, ".$mday. $hour:$min\n";
+
+(!$title) ||
+	print "% $title\n";
+
+print "\\begin{$tabletype{$type}}";
+if ($args{'f'}) {
+	print "{$format}\n\\hline\n";
+} else {
+	print "{|", 'l' x (1+$#colheads), "|}\n\\hline\n";
+}
+
+$sepr = "";
+foreach $i (@colheads) {
+	$i =~ s/^\"(.*)\"$/$1/;
+	print "$sepr\\textbf{$i}";
+	$sepr = " & \n";
+}
+print " \\\\\n\\hline \n%-------------------\n";
+
+while (<>) {					# data lines
+	chomp;
+	/\S/ || next;
+
+	s/([#&%])/\\$1/g;
+	@line = split(/\t/, $_);
+
+	$sepr = "";
+	foreach $i (@line) {
+		$i =~ s/^\"(.*)\"$/$1/;
+		print "$sepr$i";
+		$sepr = " & \n";
+	}
+	print "  \\\\\n\\hline \n%-------------------\n";
+}
+
+print "\\end{$tabletype{$type}}\n";
+
+(!$title) ||
+	print "% $title\n";
+print "% ", 1900+$year, ".", $mon+1, ".$mday. $hour:$min\n";
+

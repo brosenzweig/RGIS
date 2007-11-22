@@ -1,0 +1,119 @@
+#!/usr/bin/perl
+
+%operand = (
+	'e' => 1,
+	'r' => 1,
+	'f' => 1,
+	's' => 0,
+	'h' => 0,
+);				# supported switches and # of parameters
+%longoperand = (
+	'-header'	=> 'e',
+	'-row'		=> 'r',
+	'-footer'	=> 'f',
+	'-stripquote'	=> 's',
+	'-help'		=> 'h',
+);				# long option names and equivalent shorts
+
+while ($_=$ARGV[0], /^-/) {			# get field list
+	s/^-//;
+	exists($operand{$_}) || exists($longoperand{$_})
+		|| die "Argument -$_ not supported.\n";
+	if ($longoperand{$_}) {
+		$_=$longoperand{$_};
+	}
+	(!$operand{$_}) || ("" ne $ARGV[1]) ||
+		die "Value expected for `-$_'.\n";
+	if (/^[erf]$/) {
+		$tmp = $/;				# save separator
+		undef $/;
+		open (DFILE, "< $ARGV[1]") || die "can't open $ARGV[1].\n";
+		("e" ne $_) || ($header = <DFILE>);
+		("r" ne $_) || ($row = <DFILE>);
+		("f" ne $_) || ($footer = <DFILE>);
+		close DFILE;
+		$/ = $tmp;				# restore separator
+		shift;
+	}
+	$args{$_}++;					# count number
+	shift;
+}
+
+if ($args{h} || !$row) {				# requesting help
+print <<EOM;
+Generates reports from f-compatible tables.
+
+Usage:
+
+f2templ [-erfh [file]] ... [inputfile] ...
+
+-e, --header  file
+	Prescribes a header to be put before template rows.  Optional.
+-r, --row  file
+	Prescribes a template to be used with data rows.
+-f, --footer  file
+	Prescribes a footer to be put after template rows.  Optional.
+-s, --stripquote
+	Remove quotes from (string) field values.
+-h, --help
+        Print this usage information.
+
+Fields in row files may be specified as \#\#fieldname\#\# in the template;
+they get replaced by the corresponding field (column) value.
+
+EOM
+exit;
+}
+
+
+
+print $header;
+
+if (!($_ = <>)) {
+	print $footer;
+	exit;
+}
+while (/^\s*$/) {
+	if (!($_ = <>)) {
+		print $footer;
+		exit;
+	}
+}							# get to header
+
+chomp;
+@colheads = split(/\t/, $_);
+foreach $i (0..$#colheads) {
+	(!$src{$colheads[$i]}) || die "Field $colheads[$i] repeated?\n";
+	if ($colheads[$i] =~ /^".*"$/) {
+		($tmp = $colheads[$i]) =~ s/^\"(.*)\"$/$1/;
+		(!$src{$tmp}) || die "Field $colheads[$i] repeated?\n";
+		$src{$tmp} = $i;
+	}
+	$src{$colheads[$i]} = $i;
+}							# set up lookup table
+
+($tmp = $row) =~ s{
+	\#\#([^\#]+)\#\#
+}{
+	(exists($src{$1})) || die "Unknown field `$1'.\n";
+}gemx;							# verify references
+
+
+while (<>) {						# data lines
+	chomp;
+	/\S/ || next;
+	s/\\/\\backslash/g;
+	s/([#\$\&%_{}])/\\$1/g;
+	@line = split(/\t/, $_);
+	if ($args{'s'}) {
+		foreach $i (0..$#line) {
+			$line[$i] =~ s/^\"(.*)\"$/$1/;
+		}
+	}
+
+	($tmp = $row) =~ s/\#\#([^\#]+)\#\#/"$line[$src{$1}]"/gemx;
+	print $tmp;
+}
+
+print $footer;
+

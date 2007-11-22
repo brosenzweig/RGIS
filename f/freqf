@@ -1,0 +1,259 @@
+#!/usr/bin/perl
+
+if ("" eq $ARGV[0]) {
+prhelp:
+print <<"EOM";
+Creates a histogram of a tab-separated datafile.
+
+Usage:
+
+freqf [-operation [field]] ... [inputfile] ...
+
+where fieldnames must match fieldnames in first line of the datafile.
+Operations are:
+
+-m, --minimum  value
+-x, --maximum  value
+	Specify minimum and maximum values.  Minimum is inclusive,
+	maximum is exclusive.
+-n, --bin  number
+	Specify the number of bins.
+-w, --width  value
+	Specify bin interval widths.
+-p, --point value,value,value,value,value...
+	Specify bin points.
+-t, --trim
+	Discard data in extreme bins (i.e., over maximum or under minimum).
+-f, --field  field
+	Specify field to calculate histogram of.
+-g, --fancygraphics
+	Output an ASCII histogram in a separate string column.
+-h, --help
+	Print this usage information.
+
+Additional help can be found by executing helpf.
+
+EOM
+exit;
+}
+
+#--------------------------------------------------------------------
+%operand=(
+	'm' => 1,
+	'x' => 1,
+	'n' => 1,
+	'w' => 1,
+	'p' => 1,
+	't' => 0,
+	'f' => 1,
+	'g' => 0,
+	'h' => 0,
+);				# supported switches and # of parameters
+
+%longoperand=(
+	'-maximum'	=> 'x',
+	'-minimum'	=> 'm',
+	'-bin'		=> 'n',
+	'-width'	=> 'w',
+	'-point'	=> 'p',
+	'-trim'		=> 't',
+	'-field'	=> 'f',
+	'-fancygraphics'=> 'g',
+	'-help'		=> 'h',
+);				# long option names and equivalent shorts
+
+$terminator="\t";
+
+
+while ($_ = $ARGV[0], /^-/) {				# get field list
+	s/^-//;
+	exists($operand{$_}) || exists($longoperand{$_}) ||
+		die "Argument `-$_' not supported.\n";
+	if ($longoperand{$_}) {
+		$_=$longoperand{$_};
+	}
+	if (0<$operand{$_}) {				# pick up parameters
+		("" ne $ARGV[1]) ||
+			die "Operator required after `-$_'.\n";
+		if ("m" eq $_) {
+			$min = $ARGV[1];
+		}
+		if ("x" eq $_) {
+			$max = $ARGV[1];
+		}
+		if ("n" eq $_) {
+			(0 < $ARGV[1]) ||
+				die "Positive bin number expected.\n";
+			$bin = int($ARGV[1]);
+		}
+		if ("w" eq $_) {
+			(0 < $ARGV[1]) ||
+				die "Positive bin width expected.\n";
+			$width = $ARGV[1];
+		}
+		if ("f" eq $_) {
+			$var = $ARGV[1];
+			$prvar = $var;
+			$prvar =~ s/^\"(.*)\"$/$1/;
+		}
+		if ("p" eq $_) {
+			@p = split(',', $ARGV[1]);
+			foreach $i (@p) {
+				("" eq $i) ||
+					push (@pts, $i);
+			}
+		}
+		shift;
+	} else {
+		$args{$_}++;				# count number
+	}
+	shift;
+}
+
+if ($args{'h'}) {					# requesting help
+	goto prhelp;
+}
+
+
+("" eq $min) || ("" eq $min) || ($min < $max) ||
+	die "Inconsistent minimum and maximum values.\n";
+
+$supplied = (defined($width)) + (defined($bin) << 1) + 
+	(defined($max) << 2) + (defined($min) << 3);
+
+("" ne $var) || die "Must specify field.\n";
+
+(15 != $supplied) ||
+	die "Overspecified bin set.\n";
+
+(3 != $supplied) || (8 != $supplied) || (4 != $supplied) ||
+	die "Underspecified bin set.\n";
+
+(0 != $supplied) || (-1 != $#pts) ||
+	die "Underspecified bin set.\n";
+
+
+($_ = <>) || exit;					# read header line
+while (/^\s*$/) {
+	($_ = <>) || exit;
+}
+
+chomp;
+@colheads = split(/\t/, $_);
+foreach $i (0..$#colheads) {				# set up lookup table
+	(!$src{$colheads[$i]}) ||
+		die "Header $colheads[$i] repeated?\n";
+	if ($colheads[$i] =~ /^".*"$/) {
+		$tmp = $colheads[$i];
+		$tmp =~ s/^\"(.*)\"$/$1/;
+		(!$src{$tmp}) ||
+			die "Header $colheads[$i] repeated?\n";
+		$src{$tmp} = $i;
+	}
+	$src{$colheads[$i]} = $i;
+}							# read headers
+
+
+(exists($src{$var})) ||
+		die "Invalid field name `$var'.\n";
+
+
+print "\"min($prvar)\"\t\"max($prvar)\"\t\"num\"\t\"relative\"";
+if ($args{'g'}) {
+	print "\t\"graph\"";
+}
+print "\n";
+
+
+while (<>) {
+	chomp;
+	(/\S/) || next;
+	@line = split(/\t/, $_);
+
+	push (@data, $line[$src{$var}]);
+	if (("" eq $min) || ($min > $data[-1])) {
+		$dmin = $data[-1];
+	}
+	if (("" eq $max) || ($max < $data[-1])) {
+		$dmax = $data[-1];
+	}
+}
+
+
+if ((1==$supplied) || (2==$supplied) || (9==$supplied) || (10==$supplied)) {
+	$max = $dmax;
+}
+if ((1==$supplied) || (2==$supplied) || (5==$supplied) || (6==$supplied)) {
+	$min = $dmin;
+}
+
+
+if (("" ne $bin) && ("" eq $width)) {
+	foreach $i (0 .. $bin) {
+		push (@calcpts, $min + $i * ($max - $min) / $bin);
+	}
+}
+if (("" eq $bin) && ("" ne $width)) {
+	for ($i = $min; $i <= $max; $i += $width) {
+		push (@calcpts, $i);
+	}
+	if (($i != $max) && ($i-$width != $max)) {
+		push (@calcpts, $i);
+	}
+}
+if (("" ne $bin) && ("" ne $width)) {
+	for ($i = $bin; $i > 0; $i--) {
+		push (@calcpts, $min + $i * $width);
+	}
+}
+
+foreach $i (@pts = (@pts, @calcpts)) {
+	$pt{$i} = $i;
+}
+@pts = sort { $a <=> $b } keys %pt;
+
+foreach $i (@data) {
+	$bin = 0;
+	if ($i >= $pts[0]) {
+		$j = 1;
+		while (($j <= $#pts) && ($i >= $pts[$j])) {
+			$j++;
+		}		
+		$bin=$j;
+	}
+	$res[$bin]++;
+}
+
+if ($args{'t'}) {
+	$res[0]=0;
+	$res[-1]=0;
+}
+
+$sum = 0;
+$max = 0;
+foreach $i (@res) {
+	$sum += $i;
+	if ($max < $i) {
+		$max = $i;
+	}
+}
+
+(0 != $sum) || exit;
+
+if (!$args{'t'}) {
+	unshift @pts, "";
+	push @pts, "";
+} else {
+	shift @res;
+	pop @res;
+}
+
+foreach $k (0..$#res) {
+	print "$pts[$k]$terminator$pts[$k+1]$terminator", 
+		0+$res[$k], "$terminator", $res[$k]/$sum;
+	if ($args{'g'}) {
+		print "$terminator\"", ("#" x (30*$res[$k]/$max)), "\"";
+	}
+	print "\n";
+}
+

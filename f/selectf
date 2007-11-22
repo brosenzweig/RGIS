@@ -1,0 +1,271 @@
+#!/usr/bin/perl
+
+if ("" eq $ARGV[0]) {
+prhelp:
+print <<"EOM";
+Selects rows from a tab-separated datafile based on user-supplied
+conditions.
+
+Usage:
+
+selectf [-fhtivon [[field | name] operator [field | value]]] ... [inputfile] [> outputfile]
+
+where fieldnames must match fieldnames in first line of the datafile.
+If outputfile is ommited, then the whole file is printed to stdout!
+
+-f, --field  [field | value] operator [field | value]
+	Specifies operation to perform.  Possible invocations are
+
+	[field | value]  <   [field | value]
+	[field | value]  <=  [field | value]
+
+	[field | value]  ==  [field | value]
+	[field | value]  !=  [field | value]
+	[field | value]  <>  [field | value]
+
+	[field | value]  >   [field | value]
+	[field | value]  >=  [field | value]
+
+		Specifies relations between field contents or values.
+		Strings are separated from numbers by field content;
+		any comparison between fields where at least one is a
+		string results in string comparison.  Numeric comparison
+		may be forced with `-n'.
+
+	field  ~  regexp
+	field  !~ regexp
+
+		Match the line if field contents match the given Perl regular
+		expression.
+
+-h, --help
+	Print this usage information.
+-i, --ignore-case
+	Ignore character case in string comparisons and regular
+	expression matches.
+-v, --reverse
+	Performs a negated search, printing non-matching lines only.
+-n, --numeric
+	Force numeric comparison on all relations.
+-o, --or
+	Supplies OR expressions.  Line is matched if all previously supplied
+	expressions OR all trailing expressions evaluate to true.  May be
+	repeated.
+-s, --strict
+	Force exact matches on field names.  Without this switch, grepf
+	tries to guess fieldnames except requiring an exact match.
+-t, --test
+	Dump compiled match expression to standard error for debugging.
+
+NOTE: unlike other f commands, grepf does not try to guess column names.
+      grepf requires exact header names, quoted, if necessary.
+
+Additional help can be found by executing helpf.
+
+EOM
+exit;
+}
+
+#--------------------------------------------------------------------
+%operand=(
+	f => 3,
+	v => 0,
+	h => 0,
+	i => 0,
+	n => 0,
+	o => 0,
+	s => 0,
+	t => 0,
+);				# supported switches and # of parameters
+%longoperand=(
+	'-field'	=> 'f',
+	'-numeric'	=> 'n',
+	'-help'		=> 'h',
+	'-reverse'	=> 'v',
+	'-ignore-case'	=> 'i',
+	'-or'		=> 'o',
+	'-strict'	=> 's',
+	'-test'		=> 't',
+);				# long option names and equivalent shorts
+%binary=(
+	"<"	=> "<",
+	"<="	=> "<=",
+	"=="	=> "==",
+	"!="	=> "!=",
+	"<>"	=> "!=",
+	">"	=> ">",
+	">="	=> ">=",
+	"~"	=> "=~",
+	"!~"	=> "!~",
+);				# binary operators
+%str=(
+	"<"	=> "lt",
+	"<="	=> "le",
+	"=="	=> "eq",
+	"!="	=> "ne",
+	"<>"	=> "ne",
+	">"	=> "gt",
+	">="	=> "ge"
+);				# string comparison
+%match=(
+	"=~"	=> "=~",
+	"!~"	=> "!~",
+);				# match
+
+
+while ($_=$ARGV[0], /^-/) {			# get field list
+	s/^-//;
+	exists($operand{$_}) || exists($longoperand{$_})
+		|| die "Argument -$_ not supported.\n";
+	if ($longoperand{$_}) {
+		$_=$longoperand{$_};
+	}
+	if ("o" eq $_) {
+		(-1 < $#opr) ||
+			die "OR requires a preceding expression.\n";
+		push (@var1, "");
+		push (@prvar1, "");
+		push (@opr, $_);
+		push (@var2, "");
+		push (@prvar2, "");
+		shift;
+		next;
+	}
+	if (0<$operand{$_}) {			# pick up parameters
+		if ("f" eq $_) {
+			("" ne $ARGV[1]) ||
+				die "Field required.\n";
+			$binary{$ARGV[2]} || $match{$ARGV[2]} ||
+				die "Invalid operator $ARGV[2]\n";
+			("" ne $ARGV[3]) ||
+				die "Field required after $ARGV[2].\n";
+			push (@var1, $ARGV[1]);
+			push (@prvar1, $ARGV[1]);
+			$prvar1[-1] =~ s/^\"(.*)\"$/$1/;
+			push (@opr, $ARGV[2]);
+			push (@var2, $ARGV[3]);
+			push (@prvar2, $ARGV[3]);
+			$prvar2[-1] =~ s/^\"(.*)\"$/$1/;
+			shift;
+			shift;
+			shift;
+		}
+	}
+	$args{$_}++;			# count number
+	shift;
+}
+
+if ($args{'h'}) {				# requesting help
+	goto prhelp;
+}
+
+("o" ne $opr[-1]) || die "OR requires a trailing expression.\n";
+(0 <= $#opr) || die "Must specify fields.\n";
+
+
+($_=<>) || exit;				# read header line
+while (/^\s*$/) {
+	($_ = <>) || exit;
+}
+chomp;
+print "$_\t\"Results\"\n";
+@colheads = split(/\t/, $_);			# extract headers
+
+($_=<>) || exit;
+while (/^\s*$/) {
+	($_ = <>) || exit;
+}
+chomp;
+@line = split(/\t/, $_);			# get first data row
+
+($line == $colheads) || die "Number of header and data fields differs.\n";
+
+foreach $i (0..$#colheads) {			# set up lookup table
+	("" == $src{$colheads[$i]}) ||
+		die "Header $colheads[$i] repeated?\n";
+	if ((!$args{'s'}) && ($colheads[$i] =~ /^\".*\"$/)) {
+		$tmp = $colheads[$i];
+		$tmp =~ s/\"(.*)\"/$1/;
+		$src{$tmp} = $i;
+	}					# store core name w/o 
+						# quotes if non-strict mode
+	$src{$colheads[$i]} = $i;
+	if ($line[$i] =~ /^".*"$/) {
+		$string{$i} = 1;
+	}
+}
+
+
+$compare = (($args{'v'})?("!"):("")). '(';	# create match expression
+foreach $i (0..$#opr) {
+	$cmp = "";
+	if ("o" eq $opr[$i]) {
+		$cmp = ") || (";
+	}
+
+	if ($binary{$opr[$i]}) {
+		$v1 = $var1[$i];
+		$s1 = 0;
+		if ($var1[$i] =~ /^\".*\"$/) {
+			$v1 = "\$line[$src{$var1[$i]}]";
+			$s1 = $string{$src{$var1[$i]}};
+		}
+		if ($var1[$i] =~ /^\'.*\'$/) {
+			$v1 =~ s/^\'(.*)\'$/$1/;
+			$v1 = "\"$v1\"";
+			$s1 = 1;
+		}
+		if ((!$args{'s'}) && exists($src{$var1[$i]})) {
+			$v1 = "\$line[$src{$var1[$i]}]";
+			$s1 = $string{$src{$var1[$i]}};
+		}
+		$v2 = $var2[$i];
+		$s2 = 0;
+		if ($var2[$i] =~ /^\".*\"$/) {
+			$v2 = "\$line[$src{$var2[$i]}]";
+			$s2 = $string{$src{$var2[$i]}};
+		}
+		if ($var2[$i] =~ /^\'.*\'$/) {
+			$v2 =~ s/^\'(.*)\'$/$1/;
+			$v2 = "\"$v2\"";
+			$s2 = 1;
+		}
+		if ((!$args{'s'}) && exists($src{$var2[$i]})) {
+			$v2 = "\$line[$src{$var2[$i]}]";
+			$s2 = $string{$src{$var2[$i]}};
+		}
+
+		$tmp = $binary{$opr[$i]};
+
+		if (($str{$binary{$opr[$i]}}) && ($s1||$s2) && (!$args{'n'})) {
+			$tmp = $str{$binary{$opr[$i]}};
+		}
+		if (($compare !~ /\)\)$/) && ($compare !~ / *\($/)) {
+			$cmp = " && ";
+		}
+		$cmp = "$cmp($v1 $tmp ";
+
+		$tmp = (($match{$binary{$opr[$i]}})?("/"):(""));
+		$cmp = "$cmp$tmp$v2$tmp"
+			.
+			(($match{$binary{$opr[$i]}}&&$args{'i'})?("g"):(""))
+			.
+			")";
+	}
+
+	$compare = "$compare$cmp";
+}                                                       # find source fields
+$compare = "$compare)";
+
+(!$args{'t'}) || warn "$compare\n";
+!(eval $compare) || print "$_\n";
+
+while (<>) {						# data lines
+	/\S/ || next;
+	chomp;
+	@line = split(/\t/, $_);
+
+	(eval $compare) || print "$_\t0\n";
+	!(eval $compare) || print "$_\t1\n";
+}
+

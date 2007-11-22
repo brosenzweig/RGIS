@@ -1,0 +1,185 @@
+#!/usr/bin/perl
+
+if ("" eq $ARGV[0]) {
+prhelp:
+print <<"EOM";
+Sorts a tab-separated datafile based on field contents.
+
+Usage:
+
+sortf [-acdsbnh [field]] ... [inputfile] ...
+
+where fieldnames must match fieldnames in first line of the datafile.
+
+-a, --ascending  field
+	Prescribes ascending sort order on field `field'.
+-c, --calculate
+	Inhibits printing of input columns, printing only enumerated
+	sort columns.
+-d, --descending  field
+	Prescribes descending sort order on field `field'.
+-s, --string
+	Force next sort field to sort as strings.
+-n, --numeric
+	Force next sort field to sort on numeric values.
+-b, --debug
+	Dump sort expression to stderr and exit.
+-h, --help
+	Print this usage information.
+
+Additional help can be found by executing helpf.
+
+EOM
+exit;
+}
+
+#--------------------------------------------------------------------
+%operand=(
+	a => 1,
+	d => 1,
+	b => 0,
+	s => 0,
+	n => 0,
+	c => 0,
+	h => 0,
+);				# supported switches and # of parameters
+
+%longoperand=(
+	'-ascending'	=> 'a',
+	'-descending'	=> 'd',
+	'-debug'	=> 'b',
+	'-numeric'	=> 'n',
+	'-string'	=> 's',
+	'-calculate'	=> 'c',
+	'-help'		=> 'h',
+);				# long option names and equivalent shorts
+
+$terminator="\t";
+
+while ($_=$ARGV[0], /^-/) {				# get field list
+	s/^-//;
+	($longoperand{$_}) && ($_=$longoperand{$_});
+	exists($operand{$_}) || die "Argument -$_ not supported.\n";
+
+	if (0<$operand{$_}) {				# pick up parameters
+		if ($_ =~ /^[ad]$/) {
+			("" ne $ARGV[1]) ||
+				die "Field required after `-$_`.\n";
+			push (@opr, $_);
+			push (@var, $ARGV[1]);
+			push (@prvar, $ARGV[1]);
+			$prvar[-1] =~ s/^\"(.*)\"$/$1/;
+			push (@sorttype, $nexttype);
+			$nexttype = "";
+			shift;
+		}
+	} else {
+		(/^[ns]$/) && ($nexttype = $_);
+		$args{$_}++;				# count number
+	}
+	shift;
+}
+
+if ($args{'h'}) {					# requesting help
+	goto prhelp;
+}
+
+(0 <= $#opr) || die "Must specify fields.\n";
+
+($_ = <>) || exit;					# read header line
+while (/^\s*$/) {
+	($_ = <>) || exit;
+}
+
+chomp;
+@colheads = split(/\t/, $_);
+$head = $_;
+
+
+($_ = <>) || exit;					# get first data row
+while (/^\s*$/) {
+	($_ = <>) || exit;
+}
+
+chomp;
+@line = split(/\t/, $_);
+
+#($line == $colheads) || die "Number of header and data fields differs.\n";
+
+$number=0;
+foreach $i (0 .. $#colheads) {				# set up lookup table
+	("" eq $src{$colheads[$i]}) || die "`$colheads[$i]' repeated?\n";
+	if ($colheads[$i] =~ /^".*"$/) {
+		($tmp = $colheads[$i]) =~ s/^\"(.*)\"$/$1/;
+		("" eq $src{$tmp}) || die "`$colheads[$i]' repeated?\n";
+		$src{$tmp} = $i;
+	}
+	$src{$colheads[$i]} = $i;
+
+	if ($line[$i] =~ /^".*"$/) {			# string field
+		$string{$i} = 1;
+	}
+
+	foreach $i (0 .. $#colheads) {
+		$data[$number][$i] = $line[$i];
+	}						# store data
+}
+
+$compare = '';					# create sort expression
+foreach $i (0 .. $#opr) {
+	(exists($src{$var[$i]})) || die "Invalid field `$var[$i]'.\n";
+	push (@src, $src{$var[$i]});
+
+	($a, $b) = (("a" eq $opr[$i]) ? ('$a', '$b') : ('$b', '$a'));
+	$cmp = ((($string{$src[-1]} || ("s" eq $sorttype[$i])) &&
+		("n" ne $sorttype[$i]))
+		? ('cmp') : ('<=>'));
+	$cmp = "(\$data[$a][$src[-1]] $cmp \$data[$b][$src[-1]])";
+
+	$compare = $compare . (($i)?(" || "):("")) . $cmp;
+}							# find source fields
+$compare = "$compare || ($a <=> $b)";			# lexicographic
+
+($args{'b'}) && die "$compare\n";
+
+$term="";
+if (!$args{'c'}) {					# header/sort fields
+	print "$head\n";
+} else {
+	foreach $i (@prvar) {
+		print "$term\"$i\"";
+		$term = $terminator;
+	}
+	print "\n";
+}
+
+while (<>) {						# data lines
+	/\S/ || next;
+
+	chomp;
+	@line = split(/\t/, $_);
+	$number++;
+
+	foreach $i (0 .. $#colheads) {
+		$data[$number][$i] = $line[$i];
+	}
+}
+
+@sorok = sort { eval $compare } (0 .. $number);
+
+foreach $i (0 .. $#sorok) {
+	$term="";
+	if ($args{'c'}) {
+		foreach $j (0 .. $#opr) {
+			print "$term$data[$sorok[$i]][$src{$var[$j]}]";
+			$term = $terminator;
+		}
+	} else {
+		foreach $j (0 .. $#colheads) {
+			print "$term$data[$sorok[$i]][$j]";
+			$term = $terminator;
+		}
+	}
+	print "\n";
+}
+

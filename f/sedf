@@ -1,0 +1,179 @@
+#!/usr/bin/perl
+#-w
+
+if ("" eq $ARGV[0]) {
+prhelp:
+print <<"EOM";
+Extracts regular expression matches from a tab-separated datafile fields.
+
+Usage:
+
+sedf [-csrmh  [field  regexp|name]] ... [inputfile] ...
+
+where fieldnames must match fieldnames in first line of the datafile.
+
+-c, --calculate
+	Inhibits printing of input columns, printing only extracted
+	information.
+-s, --search  field  regexp
+	Specifies a regular expression to match and a fieldname to
+	extract it from.  Matching follows Perl regular expression
+	match rules.
+-r, --rename  name
+	Sets the output name of the next output column.
+-h, --help
+	Print this usage information.
+
+Matches print the whole matched regular expression if it does not contain
+a pair of parentheses.  If the regular expression contains parentheses,
+only the part inside the parentheses is printed.
+
+Example:
+
+Splitting a Date field into Year, Month, and Day:
+sedf -r Year -s Date '\\d\\d\\d\\d'  -r Month -s Date '-(\\d\\d)-'  \\
+	-r Day -s Date '\\d\\d\$'
+
+Additional help can be found by executing helpf.
+
+EOM
+exit;
+}
+
+
+#--------------------------------------------------------------------
+%operand=(
+	's' => 2,
+	'r' => 1,
+	'c' => 0,
+	'h' => 0,
+);				# supported switches and # of parameters
+
+%longoperand=(
+	'-search'	=> 's',
+	'-rename'	=> 'r',
+	'-calculate'	=> 'c',
+	'-help'		=> 'h',
+);				# long option names and equivalent shorts
+
+$terminator="\t";
+
+
+$rename="";
+while ($_ = $ARGV[0], /^-/) {				# get field list
+	s/^-//;
+	exists($operand{$_}) || exists($longoperand{$_})
+		|| die "Argument `-$_' not supported.\n";
+	if ($longoperand{$_}) {
+		$_=$longoperand{$_};
+	}
+	if (0<$operand{$_}) {				# pick up parameters
+		("" ne $ARGV[1]) ||
+			die "Operator required after `-$_'.\n";
+		if ("s" eq $_) {
+			push (@var, $ARGV[1]);
+			push (@regexp, $ARGV[2]);
+			push (@name, $rename);
+			$rename = "";
+			shift;
+			shift;
+		}
+		if ("r" eq $_) {
+			($rename = $ARGV[1]) =~ s/^\"(.*)\"$/$1/;
+			shift;
+		}
+	} else {
+		$args{$_}++;				# count number
+	}
+	shift;
+}
+
+
+if ($args{h}) {						# requesting help
+	goto prhelp;
+}
+
+
+(0 <= $#var) || die "Must specify fields.\n";
+
+($_ = <>) || exit;					# read header line
+while (/^\s*$/) {
+	($_ = <>) || exit;
+}
+
+chomp;
+s/\s*//;
+@colheads = split(/\t/, $_);
+foreach $i (0..$#colheads) {
+	(!$src{$colheads[$i]}) ||
+		die "Header $colheads[$i] repeated?\n";
+	if ($colheads[$i] =~ /^".*"$/) {
+		($tmp = $colheads[$i]) =~ s/^\"(.*)\"$/$1/;
+		(!$src{$tmp}) ||
+			die "Header $colheads[$i] repeated?\n";
+		$src{$tmp} = $i;
+	}
+	$src{$colheads[$i]} = $i;
+}							# set up lookup table
+
+$term = "";
+if (!$args{'c'}) {
+	print $_;
+	$term = $terminator;
+}
+
+foreach $i (@regexp) {
+	eval { "" =~ /$i/ };
+	die "Invalid pattern `$i'.\n" if $@;
+}
+
+foreach $i (0..$#var) {
+	(exists($src{$var[$i]})) || (!$var[$i]) ||
+		die "Invalid field name `$var[$i]'.\n";
+	if ($name[$i]) {
+		print "$term\"$name[$i]\"";
+	} else {
+		$_ = $var[$i];
+		s/^"(.*)"$/$1/;
+		$ref{$_}++;
+		print "$term\"r$ref{$_}($_)\"";
+	}
+	$term = $terminator;
+}
+print "\n";
+
+
+while (<>) {
+	chomp;
+	/\S/ || next;
+	s/\s*//;
+	@line = split(/\t/, $_);
+	$term = "";
+
+	if (!$args{'c'}) {
+		print $_;
+		$term = $terminator;
+	}
+
+	foreach $i (0..$#var) {
+		$_ = $line[$src{$var[$i]}];
+		$qt = "";
+		if (/^".*"$/) {
+			s/^"(.*)"$/$1/;
+			$qt = "\"";
+		}
+		if (/$regexp[$i]/) {
+			if ($regexp[$i] =~ /\(.*\)/) {
+				s/.*$regexp[$i].*/$1/;
+			} else {
+				s/.*($regexp[$i]).*/$1/;
+			}
+			print "$term$qt$_$qt";
+		} else {
+			print "$term$qt$qt";
+		}
+		$term = $terminator;
+	}
+	print "\n";
+}
+

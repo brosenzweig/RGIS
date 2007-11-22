@@ -1,7 +1,7 @@
 include ./common.mk
 all: rgis_target rgisPlot_target rcommands_target tfcommands_target
 
-install: $(INSTALLDIR)/bin $(INSTALLDIR)/XResources/bitmaps $(INSTALLDIR)/Messages $(INSTALLDIR)/Scripts
+install: $(INSTALLDIR)/bin $(INSTALLDIR)/XResources/bitmaps $(INSTALLDIR)/Messages $(INSTALLDIR)/Scripts $(INSTALLDIR)/f
 	$(UNIXMAKE) -C rGIS       install
 	$(UNIXMAKE) -C rgisPlot   install
 	$(UNIXMAKE) -C rCommands  install
@@ -10,6 +10,7 @@ install: $(INSTALLDIR)/bin $(INSTALLDIR)/XResources/bitmaps $(INSTALLDIR)/Messag
 	cp XResources/ghaas     $(INSTALLDIR)/XResources/
 	cp Messages/*.*         $(INSTALLDIR)/Messages/
 	cp Scripts/*.sh         $(INSTALLDIR)/Scripts/
+	cp f/*                  $(INSTALLDIR)/f/
 
 uninstall:
 	$(UNIXMAKE) -C rGIS       uninstall
@@ -19,6 +20,7 @@ uninstall:
 	rm -rf $(INSTALLDIR)/XResources
 	rm -rf $(INSTALLDIR)/Messages
 	rm -rf $(INSTALLDIR)/Scripts
+	rm -rf $(INSTALLDIR)/f
 	rmdir  $(INSTALLDIR)/bin
 	rmdir  $(INSTALLDIR)
 
@@ -42,6 +44,8 @@ $(INSTALLDIR)/Messages:
 	mkdir -p $(INSTALLDIR)/Messages
 $(INSTALLDIR)/Scripts:
 	mkdir -p $(INSTALLDIR)/Scripts
+$(INSTALLDIR)/f:
+	mkdir -p $(INSTALLDIR)/f
 
 rgis_target: cmlib_target dblib_target rglib_target uilib_target
 	$(UNIXMAKE) -C rGIS all
