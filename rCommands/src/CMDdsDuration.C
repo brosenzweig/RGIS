@@ -193,7 +193,7 @@ Help:		CMmsgPrint (CMmsgUsrError,"%s [options] <out datastream>\n",CMprgName(arg
 					if (((char *)   items) [i] == header.Missing.Int) continue;
 					if (!MFMathEqualValues (max [i],min [i])) {
 						value = (double) (((char *)   items) [i]);
-						bin = (int) round ((double) (binNum - 1) * (value - min [i]) / (max [i] - min [i]));
+						bin = (int) floor ((double) (binNum - 1) * (value - min [i]) / (max [i] - min [i]));
 						for (  ;bin >= 0; bin--) bins [bin * header.ItemNum + i] += 1;
 					}
 				}
@@ -204,7 +204,7 @@ Help:		CMmsgPrint (CMmsgUsrError,"%s [options] <out datastream>\n",CMprgName(arg
 					if (((short *)  items) [i] == header.Missing.Int) continue;
 					if (!MFMathEqualValues (max [i],min [i])) {
 						value = (double) (((short *)  items) [i]);
-						bin = (int) round ((double) (binNum - 1) * (value - min [i]) / (max [i] - min [i]));
+						bin = (int) floor ((double) (binNum - 1) * (value - min [i]) / (max [i] - min [i]));
 						for (  ;bin >= 0; bin--) bins [bin * header.ItemNum + i] += 1;
 					}
 				}
@@ -215,7 +215,7 @@ Help:		CMmsgPrint (CMmsgUsrError,"%s [options] <out datastream>\n",CMprgName(arg
 					if (((int *)    items) [i] == header.Missing.Int) continue;
 					if (!MFMathEqualValues (max [i],min [i])) {
 						value = (double) (((int *)    items) [i]);
-						bin = (int) round ((double) (binNum - 1) * (value - min [i]) / (max [i] - min [i]));
+						bin = (int) floor ((double) (binNum - 1) * (value - min [i]) / (max [i] - min [i]));
 						for (  ;bin >= 0; bin--) bins [bin * header.ItemNum + i] += 1;
 					}
 				}
@@ -226,7 +226,7 @@ Help:		CMmsgPrint (CMmsgUsrError,"%s [options] <out datastream>\n",CMprgName(arg
 					if (MFMathEqualValues (((float *)   items) [i],header.Missing.Float) == true)  continue;
 					if (!MFMathEqualValues (max [i],min [i])) {
 						value = (double) (((float *)  items) [i]);
-						bin = (int) round ((double) (binNum - 1) * (value - min [i]) / (max [i] - min [i]));
+						bin = (int) floor ((double) (binNum - 1) * (value - min [i]) / (max [i] - min [i]));
 						for (  ;bin >= 0; bin--) bins [bin * header.ItemNum + i] += 1;
 					}
 				}
@@ -237,7 +237,7 @@ Help:		CMmsgPrint (CMmsgUsrError,"%s [options] <out datastream>\n",CMprgName(arg
 					if (MFMathEqualValues (((double *)  items) [i],header.Missing.Float) == true) continue;
 					if (!MFMathEqualValues (max [i],min [i])) {
 						value = (double) (((double *) items) [i]);
-						bin = (int) round ((double) (binNum - 1) * (value - min [i]) / (max [i] - min [i]));
+						bin = (int) floor ((double) (binNum - 1) * (value - min [i]) / (max [i] - min [i]));
 						for (  ;bin >= 0; bin--) bins [bin * header.ItemNum + i] += 1;
 					}
 				}
@@ -288,7 +288,7 @@ Help:		CMmsgPrint (CMmsgUsrError,"%s [options] <out datastream>\n",CMprgName(arg
 						if (((char *)   items) [i] == header.Missing.Int) output [i] = outHeader.Missing.Float;
 						else if (bins [i] > 0) {
 							value = (double) (((char *)   items) [i]);
-							bin = (int) round ((double) (binNum - 1) * (value - min [i]) / (max [i] - min [i]));
+							bin = (int) floor ((double) (binNum - 1) * (value - min [i]) / (max [i] - min [i]));
 							output [i] = 100.0 * (double) bins [bin * header.ItemNum + i] / (double) bins [i];
 						}
 						else output [i] = 100.0;
@@ -300,7 +300,7 @@ Help:		CMmsgPrint (CMmsgUsrError,"%s [options] <out datastream>\n",CMprgName(arg
 						if (((short *)  items) [i] == header.Missing.Int) output [i] = outHeader.Missing.Float;
 						else if (bins [i] > 0) {
 							value = (double) (((short *)  items) [i]);
-							bin = (int) round ((double) (binNum - 1) * (value - min [i]) / (max [i] - min [i]));
+							bin = (int) floor ((double) (binNum - 1) * (value - min [i]) / (max [i] - min [i]));
 							output [i] = 100.0 * (double) bins [bin * header.ItemNum + i] / (double) bins [i];
 						}
 						else output [i] = 100.0;
@@ -312,7 +312,7 @@ Help:		CMmsgPrint (CMmsgUsrError,"%s [options] <out datastream>\n",CMprgName(arg
 						if (((int *)    items) [i] == header.Missing.Int) output [i] = outHeader.Missing.Float;
 						else if (bins [i] > 0) {
 							value = (double) (((int *)    items) [i]);
-							bin = (int) round ((double) (binNum - 1) * (value - min [i]) / (max [i] - min [i]));
+							bin = (int) floor ((double) (binNum - 1) * (value - min [i]) / (max [i] - min [i]));
 							output [i] = 100.0 * (double) bins [bin * header.ItemNum + i] / (double) bins [i];
 						}
 						else output [i] = 100.0;
@@ -324,7 +324,7 @@ Help:		CMmsgPrint (CMmsgUsrError,"%s [options] <out datastream>\n",CMprgName(arg
 						if (MFMathEqualValues (((float *)   items) [i],header.Missing.Float) == true) output [i] = outHeader.Missing.Float;
 						else if (bins [i] > 0) {
 							value = (double) (((float *)  items) [i]);
-							bin = (int) round ((double) (binNum - 1) * (value - min [i]) / (max [i] - min [i]));
+							bin = (int) floor ((double) (binNum - 1) * (value - min [i]) / (max [i] - min [i]));
 							output [i] = 100.0 * (double) bins [bin * header.ItemNum + i] / (double) bins [i];
 						}
 						else output [i] = 100.0;
@@ -336,7 +336,7 @@ Help:		CMmsgPrint (CMmsgUsrError,"%s [options] <out datastream>\n",CMprgName(arg
 						if (MFMathEqualValues (((double *)  items) [i],header.Missing.Float) == true) output [i] = outHeader.Missing.Float;
 						else if (bins [i] > 0) {
 							value = (double) (((double *) items) [i]);
-							bin = (int) round ((double) (binNum - 1) * (value - min [i]) / (max [i] - min [i]));
+							bin = (int) floor ((double) (binNum - 1) * (value - min [i]) / (max [i] - min [i]));
 							output [i] = 100.0 * (double) bins [bin * header.ItemNum + i] / (double) bins [i];
 						}
 						else output [i] = 100.0;

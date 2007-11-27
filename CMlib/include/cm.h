@@ -2,10 +2,11 @@
 #define _CM_H
 
 #include <stdio.h>
-#include <stdbool.h>
 
 #if defined(__cplusplus)
 extern "C" {
+#else
+#include <stdbool.h>	
 #endif
 
 enum { CMsucceeded = 0,  CMfailed  = -1 };

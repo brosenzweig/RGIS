@@ -14,3 +14,10 @@ export UNIXCPPOPS=-g -Wall -fsigned-char -D_GNU_SOURCE -Wno-deprecated -I/opt/lo
 export UNIXMAKE=make
 export UNIXRL=ranlib
 endif
+ifeq ($(UNIX),SunOS)
+export UNIXAR=ar -ru
+export UNIXCPP=g++
+export UNIXCPPOPS=-g -Wall -fsigned-char -D_GNU_SOURCE -Wno-deprecated -I/usr/local/netcdf/include -I/usr/local/udunits/include 
+export UNIXMAKE=make
+export UNIXRL=ranlib
+endif
