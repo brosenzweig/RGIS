@@ -1032,6 +1032,7 @@ DBInt DBImportNetCDF (DBObjData *data,const char *filename)
 	double *vector, *latitudes, *longitudes;
 	double *timeSteps;
 	double missingValue;
+	double scaleFactor, dataOffset;
 	DBCoordinate cellSize; 
 	DBRegion extent;
 	DBObjRecord *layerRec, *dataRec;
@@ -1347,7 +1348,9 @@ DBInt DBImportNetCDF (DBObjData *data,const char *filename)
 				nc_close (ncid);
 				return (DBFault);
 				}
-			if ((status = nc_get_att_double (ncid,id,"missing_value",&missingValue)) != NC_NOERR) missingValue = -9999.0;
+			if ((status = nc_get_att_double (ncid,id, "missing_value", &missingValue)) != NC_NOERR) missingValue = -9999.0;
+			if ((status = nc_get_att_double (ncid,id, "scale_factor",  &scaleFactor))  != NC_NOERR) scaleFactor  = 1.0;
+			if ((status = nc_get_att_double (ncid,id, "add_offset",    &dataOffset))   != NC_NOERR) dataOffset   = 0.0;
 			varid = id;
 			}
 		}
@@ -1452,9 +1455,9 @@ DBInt DBImportNetCDF (DBObjData *data,const char *filename)
 				return (DBFault);
 				}
 			if (longitudes [0] < longitudes [1])
-				for (colID = 0;colID < colNum;colID++) ((float *) (dataRec->Data ())) [colNum * rowID + colID] = vector [colID];
+				for (colID = 0;colID < colNum;colID++) ((float *) (dataRec->Data ())) [colNum * rowID + colID] = scaleFactor * vector [colID]              + dataOffset;
 			else
-				for (colID = 0;colID < colNum;colID++) ((float *) (dataRec->Data ())) [colNum * rowID + colID] = vector [colNum - colID - 1];
+				for (colID = 0;colID < colNum;colID++) ((float *) (dataRec->Data ())) [colNum * rowID + colID] = scaleFactor * vector [colNum - colID - 1] + dataOffset;
 			}
 		}
 	gridIO = new DBGridIO (data);
