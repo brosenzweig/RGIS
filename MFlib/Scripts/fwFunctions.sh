@@ -185,7 +185,7 @@ function FwInit()
    _fwRGISDomainFILE=${3}
        _fwGDSWorkDIR=${4}
   	_fwRGISResultsDIR=${5}
-	if [ "${6}" != "" ]; then export _fwRGISBIN="${6}/"; else _fwRGISBIN=""; fi
+	if [ "${6}" != "" ]; then export _fwRGISBIN="${6}/"; else export _fwRGISBIN=""; fi
 
 	    _fwDomainTYPE="${_fwRGISDomainFILE##*.}"
 	      FwDomainRES="${_fwRGISDomainFILE##*_}"
