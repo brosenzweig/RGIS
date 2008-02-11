@@ -43,7 +43,6 @@ static MFVariable_t *_MFVarNewEntry (const char *name) {
 	_MFVariables = (MFVariable_t *) realloc (_MFVariables,(_MFVariableNum + 1) * sizeof (MFVariable_t));
 	if (_MFVariables == (MFVariable_t *) NULL) {
 	 	CMmsgPrint (CMmsgSysError,"Error: Memory allocation error in: %s:%d\n",__FILE__,__LINE__);
-		perror ("Error:");
 		return ((MFVariable_t *) NULL);
 	}
 	var = _MFVariables + _MFVariableNum;

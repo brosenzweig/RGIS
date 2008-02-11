@@ -26,7 +26,6 @@ MFDataStream_t *MFDataStreamOpen (const char *path, const char *mode) {
 	if (path == (char *) NULL) return ((MFDataStream_t *) NULL);
 	if ((dStream = (MFDataStream_t *) malloc (sizeof (MFDataStream_t))) == (MFDataStream_t *) NULL) {
 		CMmsgPrint (CMmsgSysError,"Memory allocation error in: %s:%d\n",__FILE__,__LINE__);
-		perror ("Perror:");
 		return (MFDataStream_t *) NULL;
 	}
 	if (strncmp (path,MFconstStr,strlen (MFconstStr)) == 0) {
@@ -39,7 +38,6 @@ MFDataStream_t *MFDataStreamOpen (const char *path, const char *mode) {
 		dStream->Type = MFPipe;
 		if ((dStream->Handle.File = popen (path + strlen (MFpipeStr),mode)) == (FILE *) NULL) {
 			CMmsgPrint (CMmsgSysError,"Error: Opening datastream pipe [%s] in: %s:%d\n",path + strlen (MFpipeStr),__FILE__,__LINE__);
-			perror ("Perror:");
 			free (dStream);
 			dStream = (MFDataStream_t *) NULL;
 		}
@@ -48,7 +46,6 @@ MFDataStream_t *MFDataStreamOpen (const char *path, const char *mode) {
 		dStream->Type = MFFile;
 		if ((dStream->Handle.File = fopen (path + strlen (MFfileStr),mode)) == (FILE *) NULL) {
 			CMmsgPrint (CMmsgSysError,"Error: Opening datastream file [%s] in: %s:%d\n",path + strlen (MFfileStr),__FILE__,__LINE__);
-			perror ("Perror:");
 			free (dStream);
 			dStream = (MFDataStream_t *) NULL;
 		}
@@ -119,7 +116,6 @@ int MFDataStreamRead (MFVariable_t *var) {
 		if (var->Data == (void *) NULL) {
 			if ((var->Data = (void *) realloc (var->Data,header.ItemNum * MFVarItemSize (header.DataType))) == (void *) NULL) { 
 				CMmsgPrint (CMmsgSysError,"Variable [%s] allocation error in: %s:%d\n",var->Name,__FILE__,__LINE__);
-				perror ("Perror"); 
 				return (CMfailed); 
 			}
 			var->Header.ItemNum  = header.ItemNum;

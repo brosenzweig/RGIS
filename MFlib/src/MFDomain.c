@@ -37,7 +37,6 @@ MFDomain_t *MFDomainGet (FILE *inFile) {
 
 	if (fread (domain,sizeof (MFDomain_t) - sizeof (MFObject_t *),1,inFile) != 1) {
 		CMmsgPrint (CMmsgSysError,"File Reading Error in: %s:%d\n",__FILE__,__LINE__);
-		perror ("Perror:");
 		MFDomainFree (domain);
 		return ((MFDomain_t *) NULL);
 	}
@@ -75,7 +74,6 @@ MFDomain_t *MFDomainGet (FILE *inFile) {
 			domain->Objects [objID].DLinks = (size_t *) calloc (domain->Objects [objID].DLinkNum,sizeof (size_t *));
 			if (domain->Objects [objID].DLinks == (size_t *) NULL) {
 				CMmsgPrint (CMmsgSysError,"Memory Allocation Error in: %s:%d\n",__FILE__,__LINE__);
-				perror ("Perror:");
 				MFDomainFree (domain);
 				return ((MFDomain_t *) NULL);
 			}

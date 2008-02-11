@@ -293,7 +293,6 @@ static int _MFModelParse (int argc, char *argv [],int argNum, int (*conf) ()) {
 					var->Header.ItemNum = _MFDomain->ObjNum;
 					if ((var->Data = (void *) calloc (var->Header.ItemNum,MFVarItemSize (var->Header.DataType))) == (void *) NULL) {
 						CMmsgPrint (CMmsgSysError,"Memory Allocation Error in: %s:%d\n",__FILE__,__LINE__);
-						perror ("Perror:");
 						ret = CMfailed;
 					}
 					switch (var->Header.DataType) {
