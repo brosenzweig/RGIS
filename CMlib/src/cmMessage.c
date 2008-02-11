@@ -95,5 +95,6 @@ int CMmsgPrint (CMmsgType msgType, const char *format, ...) {
 		va_end (ap);
 		fflush (fp);
 	}
+	if (msgType == CMmsgSysError) perror ("Perror:");
 	return (ret);
 }
