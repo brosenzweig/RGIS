@@ -17,12 +17,13 @@ balazs.fekete@unh.edu
 #include <string.h>
 #include <stdlib.h>
 #include <unistd.h>
-#include <iostream.h>
-#include <fstream.h>
+#include <iostream>
+#include <fstream>
 #include <DB.H>
 #include <DBio.H>
 #include <RG.H>
 
+using namespace std;
 /*=========================================================================*/
 #define RGISLaoutByRow			0
 #define RGISLaoutByCol			1
