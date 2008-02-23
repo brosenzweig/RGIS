@@ -4,13 +4,13 @@ ifeq ($(UNIX),Linux)
 export UNIXCPP=g++
 export UNIXCPPOPS=-g -Wall -fsigned-char -D_GNU_SOURCE -Wno-deprecated
 export UNIXMAKE=make
-export UNIXLIBS=-ludunits -lnetcdf -lcpgplot -lpgplot -lpng -lm
+export UNIXLIBS=-lcpgplot -lpgplot -lpng -lm
 endif
 ifeq ($(UNIX),Darwin)
 export UNIXCPP=g++
-export UNIXCPPOPS=-g -Wall -fsigned-char -D_GNU_SOURCE -Wno-deprecated -I/opt/local/include -I/usr/local/pgplot
+export UNIXCPPOPS=-g -Wall -fsigned-char -D_GNU_SOURCE -Wno-deprecated -I/sw/lib/pgplot
 export UNIXMAKE=make
-export UNIXLIBS=-L/opt/local/lib -L/usr/local/pgplot -L/opt/local/lib/gcc42 -ludunits -lnetcdf -lcpgplot -lpgplot -lgfortran -L/usr/X11R6/lib -lX11 -lm
+export UNIXLIBS=-L/sw/lib -L/sw/lib/pgplot -L/sw/lib/gcc4.2/lib -L/usr/X11R6/lib -lcpgplot -lpgplot -lgfortran -lpng -lX11 -lm
 endif
 ifeq ($(UNIX),SunOS)
 export UNIXCPP=g++
