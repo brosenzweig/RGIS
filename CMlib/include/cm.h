@@ -27,6 +27,7 @@ int  CMmsgPrint         (CMmsgType, const char *, ...);
 void CMmsgCloseStream   (CMmsgType);
 void CMmsgCloseAllStreams ();
 
+char *CMstrAppend    (char *, const char *, const char *);
 char *CMstrDuplicate (const char *);
 
 char *CMbufGetLine      (char *, int *, FILE *);
