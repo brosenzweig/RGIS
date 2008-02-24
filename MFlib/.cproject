@@ -5,7 +5,7 @@
 <storageModule moduleId="org.eclipse.cdt.core.settings">
 <cconfiguration id="preference.org.eclipse.cdt.managedbuilder.core.configurationDataProvider.980271130">
 <storageModule moduleId="cdtBuildSystem" version="4.0.0">
-<configuration artifactExtension="" artifactName="MFlib" buildProperties="" description="" id="preference.org.eclipse.cdt.managedbuilder.core.configurationDataProvider.980271130" name="Preference Configuration" parent="org.eclipse.cdt.build.core.prefbase.cfg">
+<configuration artifactExtension="" artifactName="MFlib" buildProperties="" description="Unmanaged Makefile configuration" id="preference.org.eclipse.cdt.managedbuilder.core.configurationDataProvider.980271130" name="Makefile" parent="org.eclipse.cdt.build.core.prefbase.cfg">
 <folderInfo id="preference.org.eclipse.cdt.managedbuilder.core.configurationDataProvider.980271130." name="/" resourcePath="">
 <toolChain id="org.eclipse.cdt.build.core.prefbase.toolchain.936249912" name="No ToolChain" resourceTypeBasedDiscovery="false" superClass="org.eclipse.cdt.build.core.prefbase.toolchain">
 <targetPlatform binaryParser="org.eclipse.cdt.core.ELF;org.eclipse.cdt.core.GNU_ELF;org.eclipse.cdt.core.MachO" id="org.eclipse.cdt.build.core.prefbase.toolchain.936249912.1057448149" name=""/>
@@ -58,7 +58,7 @@
 </configuration>
 </storageModule>
 
-<storageModule buildSystemId="org.eclipse.cdt.managedbuilder.core.configurationDataProvider" id="preference.org.eclipse.cdt.managedbuilder.core.configurationDataProvider.980271130" moduleId="org.eclipse.cdt.core.settings" name="Preference Configuration">
+<storageModule buildSystemId="org.eclipse.cdt.managedbuilder.core.configurationDataProvider" id="preference.org.eclipse.cdt.managedbuilder.core.configurationDataProvider.980271130" moduleId="org.eclipse.cdt.core.settings" name="Makefile">
 <externalSettings/>
 <extensions>
 <extension id="org.eclipse.cdt.core.ELF" point="org.eclipse.cdt.core.BinaryParser"/>
