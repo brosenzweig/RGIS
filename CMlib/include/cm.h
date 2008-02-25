@@ -9,7 +9,7 @@ extern "C" {
 #include <stdbool.h>	
 #endif
 
-enum { CMsucceeded = 0,  CMfailed  = -1 } CMreturn;
+typedef enum { CMsucceeded = 0,  CMfailed  = -1 } CMreturn;
 
 #define CMargTest(arg,shortArg,longArg) ((strcmp(arg,shortArg)==0)||(strcmp(arg,longArg)==0))
 
