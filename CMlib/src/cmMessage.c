@@ -17,6 +17,8 @@ static bool  _CMmsgStatusWarning  = true;
 static bool  _CMmsgStatusDebug    = true;
 static bool  _CMmsgStatusInfo     = true;
 
+static size_t _CMmsgIndentLevel [] = { 0, 0, 0, 0, 0, 0};
+
 bool CMmsgSetStreamFile (CMmsgType msgType, const char *filename) {
 	FILE *fp;
 
@@ -71,7 +73,7 @@ void CMmsgSetStatus (CMmsgType msgType, bool status) {
 }
 
 int CMmsgPrint (CMmsgType msgType, const char *format, ...) {
-	int ret = 0;
+	int i, ret = 0;
 	FILE *fp = (FILE *) NULL;
 	va_list ap;
 	
@@ -90,6 +92,7 @@ int CMmsgPrint (CMmsgType msgType, const char *format, ...) {
 			if (_CMmsgStatusInfo)     fp = _CMmsgStreamInfo     == (FILE *) NULL ?  stdout : _CMmsgStreamInfo;     break;
 	}
 	if (fp != (FILE *) NULL) {
+		for (i = 0;i < _CMmsgIndentLevel[msgType]; ++i) fprintf (fp, "   ");
 		va_start (ap, format);
 		ret = vfprintf (fp, format, ap);
 		va_end (ap);
@@ -97,4 +100,8 @@ int CMmsgPrint (CMmsgType msgType, const char *format, ...) {
 	}
 	if (msgType == CMmsgSysError) perror ("Perror:");
 	return (ret);
+}
+
+void CMmsgIndent (CMmsgType msgType, bool indent) {
+	_CMmsgIndentLevel [msgType] =  indent ? _CMmsgIndentLevel [msgType] + 1 : _CMmsgIndentLevel[msgType] - 1;
 }

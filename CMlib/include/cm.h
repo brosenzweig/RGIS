@@ -13,7 +13,7 @@ typedef enum { CMsucceeded = 0,  CMfailed  = -1 } CMreturn;
 
 #define CMargTest(arg,shortArg,longArg) ((strcmp(arg,shortArg)==0)||(strcmp(arg,longArg)==0))
 
-typedef enum { CMmsgSysError, CMmsgAppError, CMmsgUsrError, CMmsgDebug, CMmsgWarning, CMmsgInfo } CMmsgType;
+typedef enum { CMmsgSysError = 0, CMmsgAppError = 1, CMmsgUsrError = 2, CMmsgDebug = 3, CMmsgWarning = 4, CMmsgInfo = 5} CMmsgType;
 
 const char *CMprgName (const char *);
 int   CMargShiftLeft  (int, char **, int);
@@ -24,6 +24,7 @@ bool CMmsgSetStreamFile (CMmsgType, const char *);
 void CMmsgSetStream     (CMmsgType, FILE *);
 void CMmsgSetStatus     (CMmsgType, bool);
 int  CMmsgPrint         (CMmsgType, const char *, ...);
+void CMmsgIndent        (CMmsgType, bool);
 void CMmsgCloseStream   (CMmsgType);
 void CMmsgCloseAllStreams ();
 
