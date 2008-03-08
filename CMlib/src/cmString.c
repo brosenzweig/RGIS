@@ -22,6 +22,7 @@ char *CMstrDuplicate (const char *inString)
 {
 	char *outString;
 
+	if (inString == (const char *) NULL) return ((char *) NULL);
 	if ((outString = (char *) malloc (strlen (inString) + 1)) == (char *) NULL) {
 	   CMmsgPrint (CMmsgSysError, "Error: Memory allocation in: %s:%d\n",__FILE__,__LINE__);
 		perror ("Perror:");
