@@ -179,7 +179,7 @@ int main (int argc,char *argv [])
 	char *domain = (char *) NULL, *version = (char *) NULL;
 	char *layerName;
 	int shadeSet = DBDataFlagDispModeContGreyScale;
-	int shrink   = false;
+	int shrink   = true;
 	DBFloat var;
 	DBRegion extent;
 	DBPosition pos;
@@ -231,7 +231,7 @@ int main (int argc,char *argv [])
 		if (CMargTest (argv [argPos],"-x","--extent"))
 			{
 			int extentCodes [] = {	true, false };
-			const char *extentNames [] = { "maximum","minimum", (char *) NULL };
+			const char *extentNames [] = { "minimum","maximum", (char *) NULL };
 
 			if ((argNum = CMargShiftLeft (argPos,argv,argNum)) <= argPos)
 				{ CMmsgPrint (CMmsgUsrError,"Missing shadeset!\n");     return (CMfailed); }
