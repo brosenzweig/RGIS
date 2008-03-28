@@ -33,19 +33,19 @@ static DBInt modifyDate (DBObjData *dbData, int timeStep,
 
 	switch (timeStep)
 		{
-		case DBTimeStepYear:		stepDate.Set (interval);			break;
-		case DBTimeStepMonth:   stepDate.Set (0,interval);			break;
-		case DBTimeStepDay:	   stepDate.Set (0,0,interval);		break;
-		case DBTimeStepHour:		stepDate.Set (0,0,0,interval);	break;
-		case DBTimeStepMinute:	stepDate.Set (0,0,0,0,interval);	break;
+		case DBTimeStepYear:   stepDate.Set (interval);         break;
+		case DBTimeStepMonth:  stepDate.Set (0,interval);       break;
+		case DBTimeStepDay:    stepDate.Set (0,0,interval);     break;
+		case DBTimeStepHour:   stepDate.Set (0,0,0,interval);   break;
+		case DBTimeStepMinute: stepDate.Set (0,0,0,0,interval); break;
 		}
 	if (year == DBDefaultMissingIntVal) //if the user hasnt entered a specific year
 		{
-		if (((stepDate.Year () > 0)	&& (gridIO->LayerNum () > 1)) ||
-		((stepDate.Month () > 0)	&& (gridIO->LayerNum () > (12 / interval))) ||
-		((stepDate.Day () > 0)	&& (gridIO->LayerNum () > (365 / interval))) ||
-		((stepDate.Hour () > 0)	&& (gridIO->LayerNum () > (365 * 24 / interval))) ||
-		((stepDate.Minute () > 0) && (gridIO->LayerNum () > 365 * 24 * 60 / interval)))
+		if (((stepDate.Year   () > 0) && (gridIO->LayerNum () > 1)) ||
+		    ((stepDate.Month  () > 0) && (gridIO->LayerNum () > (12 / interval))) ||
+		    ((stepDate.Day    () > 0) && (gridIO->LayerNum () > (365 / interval))) ||
+		    ((stepDate.Hour   () > 0) && (gridIO->LayerNum () > (365 * 24 / interval))) ||
+		    ((stepDate.Minute () > 0) && (gridIO->LayerNum () > 365 * 24 * 60 / interval)))
 			{
 			//todo: handle this better!
 			printf("(Climatology)There seems to be more than a year's worth of layers!\n"); 
