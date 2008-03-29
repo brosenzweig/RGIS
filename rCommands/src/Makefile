@@ -25,6 +25,7 @@ UTILS = $(BIN)/dsAggregate\
         $(BIN)/grdZoneHist\
         $(BIN)/grdNoNeg\
         $(BIN)/grdAppendLayers\
+        $(BIN)/grdBoxAggr\
         $(BIN)/grdExtractLayers\
         $(BIN)/grdOperation\
         $(BIN)/grdCalculate\
