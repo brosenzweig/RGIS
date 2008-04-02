@@ -1,5 +1,5 @@
 include ./common.mk
-all: rgis_target rcommands_target tfcommands_target
+all: rgis_target rcommands_target rgisPlot_target tfcommands_target
 
 install: $(INSTALLDIR)/bin $(INSTALLDIR)/XResources/bitmaps $(INSTALLDIR)/Messages $(INSTALLDIR)/Scripts $(INSTALLDIR)/f
 	$(UNIXMAKE) -C rGIS       install
