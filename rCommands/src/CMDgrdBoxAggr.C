@@ -33,7 +33,7 @@ int main (int argc,char *argv [])
 
 	for (argPos = 1;argPos < argNum; )
 		{
-		if (CMargTest (argv [argPos],"-s","--size"))
+		if (CMargTest (argv [argPos],"-z","--size"))
 			{
 			if ((argNum = CMargShiftLeft (argPos,argv,argNum)) <= argPos)
 				{ CMmsgPrint (CMmsgUsrError,"Missing kernel size!\n");  return (CMfailed); }
