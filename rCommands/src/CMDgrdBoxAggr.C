@@ -15,10 +15,12 @@ balazs.fekete@unh.edu
 #include <DBio.H>
 #include <RG.H>
 
+typedef enum { CMDboxAverage, CMDboxMinimum, CMDboxMaximum } CMDboxMethod;
 int main (int argc,char *argv [])
 
 	{
 	int argPos, argNum = argc, ret, verbose = false;
+	CMDboxMethod method = CMDboxAverage;
 	DBInt kernelSize = 2, layerID, *count = (DBInt *) NULL, row, col;
 	char *title  = (char *) NULL, *subject = (char *) NULL;
 	char *domain = (char *) NULL, *version = (char *) NULL;
@@ -42,6 +44,22 @@ int main (int argc,char *argv [])
 			if ((argNum = CMargShiftLeft (argPos,argv,argNum)) <= argPos) break;
 			continue;
 			}
+		if (CMargTest(argv[argPos],"-m","--method")) {
+			if ((argNum = CMargShiftLeft(argPos,argv,argNum)) <= argPos)
+				{ CMmsgPrint (CMmsgUsrError, "Missing aggregate method!\n"); return (CMfailed); }
+			else {
+				const char *options [] = { "average", "minimum", "maximum", (char *) NULL };
+				CMDboxMethod methods [] = { CMDboxAverage, CMDboxMinimum, CMDboxMaximum };
+				DBInt code;
+
+				if ((code = CMoptLookup (options,argv [argPos],false)) == CMfailed) {
+					CMmsgPrint (CMmsgWarning,"Ignoring illformed aggregate method [%s]!\n",argv [argPos]);
+				}
+				else method = methods [code];
+			}
+			if ((argNum = CMargShiftLeft(argPos,argv,argNum)) <= argPos) break;
+			continue;
+		}
 		if (CMargTest (argv [argPos],"-t","--title"))
 			{
 			if ((argNum = CMargShiftLeft (argPos,argv,argNum)) <= argPos)
@@ -99,8 +117,9 @@ int main (int argc,char *argv [])
 			}
 		if (CMargTest (argv [argPos],"-h","--help"))
 			{
-			CMmsgPrint (CMmsgInfo,"%s [options] <output file>\n",CMprgName(argv[0]));
-			CMmsgPrint (CMmsgInfo,"     -s,--size      [box size]\n");
+			CMmsgPrint (CMmsgInfo,"%s [options] <input file> <output file>\n",CMprgName(argv[0]));
+			CMmsgPrint (CMmsgInfo,"     -z,--size      [box size]\n");
+			CMmsgPrint (CMmsgInfo,"     -m,--method    [average|minimum|maximum]\n");
 			CMmsgPrint (CMmsgInfo,"     -t,--title     [dataset title]\n");
 			CMmsgPrint (CMmsgInfo,"     -u,--subject   [subject]\n");
 			CMmsgPrint (CMmsgInfo,"     -d,--domain    [domain]\n");
@@ -175,7 +194,20 @@ int main (int argc,char *argv [])
 				 	inGridIO->Pos2Coord  (pos,coord);
 				 	outGridIO->Coord2Pos (coord,pos);
 					count [pos.Row * outGridIO->ColNum () + pos.Col] += 1;
-					array [pos.Row * outGridIO->ColNum () + pos.Col] += var;				 	
+					switch (method)
+						{
+						case CMDboxAverage:
+							array [pos.Row * outGridIO->ColNum () + pos.Col] += var;
+							break;
+						case CMDboxMinimum:
+							array [pos.Row * outGridIO->ColNum () + pos.Col] = var < array [pos.Row * outGridIO->ColNum () + pos.Col] ?
+						                                                       var : array [pos.Row * outGridIO->ColNum () + pos.Col];				 	
+							break;
+						case CMDboxMaximum:
+							array [pos.Row * outGridIO->ColNum () + pos.Col] = var > array [pos.Row * outGridIO->ColNum () + pos.Col] ?
+						                                                       var : array [pos.Row * outGridIO->ColNum () + pos.Col];
+							break;
+						}
 					}
 				}
 		for (pos.Row = 0;pos.Row < outGridIO->RowNum (); ++pos.Row)
@@ -183,7 +215,9 @@ int main (int argc,char *argv [])
 				{
 				if (count [pos.Row * outGridIO->ColNum () + pos.Col] > 0)
 					{
-					var = array [pos.Row * outGridIO->ColNum () + pos.Col] / (DBFloat) count [pos.Row * outGridIO->ColNum () + pos.Col];
+					var = array [pos.Row * outGridIO->ColNum () + pos.Col];
+					if (method == CMDboxAverage)
+						var = var / (DBFloat) count [pos.Row * outGridIO->ColNum () + pos.Col];
 					outGridIO->Value (outLayerRec,pos,var);
 					}
 				else
@@ -192,7 +226,7 @@ int main (int argc,char *argv [])
 		outGridIO->RecalcStats (outLayerRec);
 		}
 
-	ret = (argNum > 2) && (strcmp (argv [1],"-") != 0) ? outData->Write (argv [2]) : outData->Write (stdout);
+	ret = (argNum > 2) && (strcmp (argv [2],"-") != 0) ? outData->Write (argv [2]) : outData->Write (stdout);
 
 	if (verbose) RGlibPauseClose ();
 	if (count != (DBInt *)   NULL) free (count);

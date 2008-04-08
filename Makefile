@@ -4,6 +4,7 @@ all: rgis_target rcommands_target rgisPlot_target tfcommands_target
 install: $(INSTALLDIR)/bin $(INSTALLDIR)/XResources/bitmaps $(INSTALLDIR)/Messages $(INSTALLDIR)/Scripts $(INSTALLDIR)/f
 	$(UNIXMAKE) -C rGIS       install
 	$(UNIXMAKE) -C rCommands  install
+	$(UNIXMAKE) -C rgisPlot   install
 	$(UNIXMAKE) -C tfCommands install
 	cp XResources/bitmaps/* $(INSTALLDIR)/XResources/bitmaps/
 	cp XResources/ghaas     $(INSTALLDIR)/XResources/
@@ -14,6 +15,7 @@ install: $(INSTALLDIR)/bin $(INSTALLDIR)/XResources/bitmaps $(INSTALLDIR)/Messag
 uninstall:
 	$(UNIXMAKE) -C rGIS       uninstall
 	$(UNIXMAKE) -C tfCommands uninstall
+	$(UNIXMAKE) -C rgisPlot   uninstall
 	$(UNIXMAKE) -C rCommands  uninstall
 	rm -rf $(INSTALLDIR)/XResources
 	rm -rf $(INSTALLDIR)/Messages
@@ -25,6 +27,7 @@ uninstall:
 clean:
 	$(UNIXMAKE) -C rGIS       clean
 	$(UNIXMAKE) -C rCommands  clean
+	$(UNIXMAKE) -C rgisPlot   clean
 	$(UNIXMAKE) -C tfCommands clean
 	$(UNIXMAKE) -C CMlib      clean
 	$(UNIXMAKE) -C DBlib      clean
