@@ -151,7 +151,7 @@ class DBVPolyIO : public DBVLineIO
 		DBFloat Area (const DBObjRecord *polyRec) const { return (AreaFLD->Float (polyRec)); }
 		void FourColoring ();
 	};
-	
+
 class DBGridIO
 	{
 	private:
@@ -178,8 +178,11 @@ class DBGridIO
 		DBFloat CellHeightVAR;
 		DBInt ValueTypeVAR;
 		DBInt ValueSizeVAR;
+		bool Flat;
 	public:
-		DBGridIO (DBObjData *);
+		DBGridIO (DBObjData *data,bool flat) { Initialize (data, flat);  }
+		DBGridIO (DBObjData *data)           { Initialize (data, false); }
+		void Initialize (DBObjData *, bool);
 		void RenameLayer (DBObjRecord *,char *);
 		void RenameLayer (char *name) { RenameLayer (LayerTable->Item (),name); }
 		DBObjRecord *AddLayer (char *);

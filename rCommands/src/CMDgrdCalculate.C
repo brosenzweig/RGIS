@@ -41,7 +41,7 @@ class CMDgrdVariable
 			delete data;
 			}
 		}
-	DBInt Configure (DBObjTable *table)
+	DBInt Configure (DBObjTable *table, bool flat)
 		{
 		DBInt i;
 		char *dataName;
@@ -82,7 +82,7 @@ class CMDgrdVariable
 				{ CMmsgPrint (CMmsgUsrError,"Continuous grid field is referenced!\n"); free (dataName); return (CMfailed); }
 			}
 		table->AddField (TargetFLD);
-		GridIO = new DBGridIO (data);
+		GridIO = new DBGridIO (data, flat);
 		free (dataName);
 		return (DBSuccess);
 		}
@@ -179,7 +179,7 @@ int main (int argc,char *argv [])
 	char *domain = (char *) NULL, *version = (char *) NULL;
 	char *layerName;
 	int shadeSet = DBDataFlagDispModeContGreyScale;
-	int shrink   = true;
+	bool shrink = true, flat = false;
 	DBFloat var;
 	DBRegion extent;
 	DBPosition pos;
@@ -230,14 +230,27 @@ int main (int argc,char *argv [])
 			}
 		if (CMargTest (argv [argPos],"-x","--extent"))
 			{
-			int extentCodes [] = {	true, false };
-			const char *extentNames [] = { "minimum","maximum", (char *) NULL };
+			int codes [] = { true, false };
+			const char *names [] = { "minimum","maximum", (char *) NULL };
 
 			if ((argNum = CMargShiftLeft (argPos,argv,argNum)) <= argPos)
-				{ CMmsgPrint (CMmsgUsrError,"Missing shadeset!\n");     return (CMfailed); }
-			if ((shrink = CMoptLookup (extentNames,argv [argPos],true)) == CMfailed)
-				{ CMmsgPrint (CMmsgUsrError,"Invalid shadeset!\n");     return (CMfailed); }
-			shrink = extentCodes [shrink];
+				{ CMmsgPrint (CMmsgUsrError,"Missing extent mode!\n");     return (CMfailed); }
+			if ((ret = CMoptLookup (names,argv [argPos],true)) == CMfailed)
+				{ CMmsgPrint (CMmsgUsrError,"Invalid extent mode!\n");     return (CMfailed); }
+			shrink = codes [ret];
+			if ((argNum = CMargShiftLeft (argPos,argv,argNum)) <= argPos) break;
+			continue;
+			}
+		if (CMargTest (argv [argPos],"-n","--interpolate"))
+			{
+			int codes [] = { false, true };
+			const char *names [] = { "surface","flat", (char *) NULL };
+
+			if ((argNum = CMargShiftLeft (argPos,argv,argNum)) <= argPos)
+				{ CMmsgPrint (CMmsgUsrError,"Missing interpolation mode!\n");     return (CMfailed); }
+			if ((ret = CMoptLookup (names,argv [argPos],true)) == CMfailed)
+				{ CMmsgPrint (CMmsgUsrError,"Invalid interpolation mode!\n");     return (CMfailed); }
+			flat = codes [ret];
 			if ((argNum = CMargShiftLeft (argPos,argv,argNum)) <= argPos) break;
 			continue;
 			}
@@ -334,7 +347,7 @@ int main (int argc,char *argv [])
 		grdVar = (CMDgrdVariable **) realloc (grdVar,sizeof (CMDgrdVariable *) * (varNum + 1));
 		if (grdVar == (CMDgrdVariable **) NULL) { perror ("Memory Allocation Error!\n"); return (CMfailed); }
 		grdVar [varNum] = new CMDgrdVariable (obj->Name ());
-		if (grdVar [varNum]->Configure (table) == DBFault)
+		if (grdVar [varNum]->Configure (table,flat) == DBFault)
 			{
 			for (i = 0;i <= varNum;++i) delete grdVar [i];
 			free (grdVar);

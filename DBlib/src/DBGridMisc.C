@@ -13,7 +13,7 @@ balazs.fekete@unh.edu
 #include <DB.H>
 #include <DBio.H>
 
-DBGridIO::DBGridIO (DBObjData *data)
+void DBGridIO::Initialize (DBObjData *data, bool flat)
 	{
 	DBObjTableField *rowNumFLD;
 	DBObjTableField *colNumFLD;
@@ -72,6 +72,7 @@ DBGridIO::DBGridIO (DBObjData *data)
 	CellHeightVAR = cellHeightFLD->Float (layerRec);
 	ValueTypeVAR  = valueTypeFLD->Int (layerRec);
 	ValueSizeVAR  = valueSizeFLD->Int (layerRec);
+	Flat = flat;
 	}
 	
 void DBGridIO::RenameLayer (DBObjRecord *layerRec,char *name)
@@ -369,8 +370,9 @@ DBInt DBGridIO::Value (DBObjRecord *layerRec,DBCoordinate coord,DBFloat *value) 
 	precision = pow ((double) 10.0,(double) DataPTR->Precision ());
 	Coord2Pos (coord,cellPos);
 	Pos2Coord (cellPos,cellCoord);
-	if ((fabs (coord.X - cellCoord.X) < precision) &&
-		 (fabs (coord.Y - cellCoord.Y) < precision))
+	if (Flat ||
+	    ((fabs (coord.X - cellCoord.X) < precision) &&
+		 (fabs (coord.Y - cellCoord.Y) < precision)))
 		{
 		j = DimensionVAR.Col * (DimensionVAR.Row - cellPos.Row - 1) + cellPos.Col;
 		switch (ValueTypeVAR)
