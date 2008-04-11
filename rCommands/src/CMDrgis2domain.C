@@ -22,6 +22,7 @@ int main (int argc,char *argv [])
 	FILE *outFile;
 	DBInt argPos, argNum = argc, ret;
 	int objID, size;
+	DBFloat lCorrection = 1.0;
 	MFDomain_t *domain = (MFDomain_t *) NULL;
 	DBCoordinate coord;
 	DBObjRecord *objRec;
@@ -29,6 +30,15 @@ int main (int argc,char *argv [])
 
 	for (argPos = 1;argPos < argNum; )
 		{
+		if (CMargTest (argv [argPos],"-lc","--lengthcorrection"))
+			{
+			if ((argNum = CMargShiftLeft (argPos,argv,argNum)) <= argPos)
+				{ CMmsgPrint (CMmsgUsrError,"Missing length correction!\n");  return (CMfailed); }
+			if (sscanf (argv [argPos],"%lf", &lCorrection) != 1) 
+				{ CMmsgPrint (CMmsgUsrError, "Invalid length correction!\n"); return (CMfailed); }
+			if ((argNum = CMargShiftLeft (argPos,argv,argNum)) <= argPos) break;
+			continue;
+			}
 		if (CMargTest (argv [argPos],"-h","--help"))
 			{
 			CMmsgPrint (CMmsgInfo,"%s [options] <input rgisdata> <output domain>\n",CMprgName(argv[0]));
@@ -103,7 +113,7 @@ int main (int argc,char *argv [])
 					domain->Objects [objID].XCoord = domain->Objects [objID].Lon = coord.X;
 					domain->Objects [objID].YCoord = domain->Objects [objID].Lat = coord.Y;
 					domain->Objects [objID].Area   = netIO->CellArea   (objRec);
-					domain->Objects [objID].Length = netIO->CellLength (objRec);
+					domain->Objects [objID].Length = netIO->CellLength (objRec) *lCorrection;
 					if ((nextCell = netIO->ToCell (objRec)) != (DBObjRecord *) NULL)
 					{
 						size = (domain->Objects [objID].DLinkNum + 1) * sizeof (size_t);

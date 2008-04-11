@@ -49,16 +49,17 @@ function _fwState()
 
 function FwArguments()
 {
-	     _fwSPINUP="on"
-	   _fwFINALRUN="on"
-	_fwPOSTPROCESS="on"
-    _fwPREPROCESS="auto"
-    _fwPURGEFILES="on"
-	    FwWARNINGS="on"
-	   _fwTESTONLY="off"
-  _fwOPTIONSPRINT="off"
-   _fwDAILYOUTPUT="off"
-	     FwVERBOSE="off"
+	          _fwSPINUP="on"
+	        _fwFINALRUN="on"
+	_fwLENGTHCORRECTION=""
+	     _fwPOSTPROCESS="on"
+          _fwPREPROCESS="auto"
+          _fwPURGEFILES="on"
+	         FwWARNINGS="on"
+	        _fwTESTONLY="off"
+	    _fwOPTIONSPRINT="off"
+	     _fwDAILYOUTPUT="off"
+	          FwVERBOSE="off"
 	while [ "${1}" != "" ]
 	do
 		case ${1} in
@@ -83,6 +84,10 @@ function FwArguments()
 						echo "Invalid --finalrun argument [${1}]"
 					;;
 				esac
+			;;
+			(-l|--lengthcorrection)
+				shift
+				_fwLENGTHCORRECTION="-lc ${1}"	
 			;;
 			(-n|--passnum)
 				shift
@@ -390,7 +395,7 @@ function _fwPreprocess()
 	(( fwPROC = 0 ))
 	[ -e "${_fwGDSDomainDIR}"        ] || mkdir -p "${_fwGDSDomainDIR}"
 	[ "${_fwPREPROCESS}" == "forced" ] && rm -f "${_fwGDSDomainFILE}";
-	[ -e "${_fwGDSDomainFILE}"       ] || ${_fwRGISBIN}rgis2domain "${_fwRGISDomainFILE}" "${_fwGDSDomainFILE}";
+	[ -e "${_fwGDSDomainFILE}"       ] || ${_fwRGISBIN}rgis2domain ${_fwLENGTHCORRECTION} "${_fwRGISDomainFILE}" "${_fwGDSDomainFILE}";
 
 	if [ "${fwDOSTATE}" == "dostate" ]
 	then
