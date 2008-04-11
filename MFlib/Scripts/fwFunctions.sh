@@ -167,6 +167,7 @@ function FwArguments()
 				echo "${_fwPROGNAME} [-s on|off] [-f on|off] [-p on|off] -W on|off -T -V"
 				echo "           -s, --spinup      on|off"
 				echo "           -f, --finalrun    on|off"
+				echo "           -l, --lengthcorrection    [value]"
 				echo "           -n, --passnum     [num]"
 				echo "           -r, --preprocess  auto|forced"
 				echo "           -p, --postprocess on|off"

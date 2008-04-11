@@ -30,7 +30,7 @@ int main (int argc,char *argv [])
 
 	for (argPos = 1;argPos < argNum; )
 		{
-		if (CMargTest (argv [argPos],"-lc","--lengthcorrection"))
+		if (CMargTest (argv [argPos],"-l","--lengthcorrection"))
 			{
 			if ((argNum = CMargShiftLeft (argPos,argv,argNum)) <= argPos)
 				{ CMmsgPrint (CMmsgUsrError,"Missing length correction!\n");  return (CMfailed); }
@@ -42,6 +42,7 @@ int main (int argc,char *argv [])
 		if (CMargTest (argv [argPos],"-h","--help"))
 			{
 			CMmsgPrint (CMmsgInfo,"%s [options] <input rgisdata> <output domain>\n",CMprgName(argv[0]));
+			CMmsgPrint (CMmsgInfo,"     -l,--lengthcorrection\n");
 			CMmsgPrint (CMmsgInfo,"     -h,--help\n");
 			return (DBSuccess);
 			}
