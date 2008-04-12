@@ -16,26 +16,26 @@ balazs.fekete@unh.edu
 #include <string.h>
 
 int main(int argc,char *argv []) {
-	int argPos, argNum = argc, ret = CMfailed, itemSize, i, id, idNum;
-	FILE *itemFile = (FILE *) NULL, *inFile = stdin, *outFile = stdout;
-	char *fileName = (char *) NULL;
+	int argPos, argNum = argc, ret = CMfailed, itemSize, itemID;
+	FILE *inFile = stdin, *outFile = stdout;
 	void *items    = (void *) NULL;
-	int  *ids      = (int *)  NULL;
 	MFVarHeader_t header;
 
 	if (argNum < 2) goto Help;
 
 	for (argPos = 1;argPos < argNum;) {
-		if (CMargTest(argv[argPos],"-i","--itemlist")) {
-			if ((argNum = CMargShiftLeft(argPos,argv,argNum)) <= argPos) break;
-			fileName = argv [argPos];
+		if (CMargTest(argv[argPos],"-i","--item")) {
+			if ((argNum = CMargShiftLeft(argPos,argv,argNum)) <= argPos)
+				{ CMmsgPrint (CMmsgUsrError,"Missing sampling item!\n");  return (CMfailed); }
+			if ((sscanf (argv [argPos],"%d",&itemID)) != 1)
+				{ CMmsgPrint (CMmsgUsrError,"Invalid sampling item\n");      return (CMfailed); }
 			if ((argNum = CMargShiftLeft(argPos,argv,argNum)) <= argPos) break;
 			continue;
 		}
 Help:	if (CMargTest(argv[argPos],"-h","--help")) {
 			if ((argNum = CMargShiftLeft(argPos,argv,argNum)) < argPos) break;
 			CMmsgPrint (CMmsgUsrError,"%s [options] <in datastream> <out datastream>\n",CMprgName(argv[0]));
-			CMmsgPrint (CMmsgUsrError,"  -i, --itemlist [itemlist]\n");
+			CMmsgPrint (CMmsgUsrError,"  -i, --item [item]\n");
 			CMmsgPrint (CMmsgUsrError,"  -h,--help\n");
 			ret = CMsucceeded;
 			goto Stop;
@@ -48,7 +48,6 @@ Help:	if (CMargTest(argv[argPos],"-h","--help")) {
 	}
 	if (argNum > 3) { CMmsgPrint (CMmsgUsrError,"Extra arguments!\n"); goto Stop; }
 
-	if (fileName == (char *) NULL) { CMmsgPrint (CMmsgUsrError, "Missing itemlist!\n"); goto Stop; }
 	if ((inFile  = (argNum > 1) && (strcmp (argv [1],"-") != 0) ? fopen (argv [1],"r") : stdin)  == (FILE *) NULL) {
 		CMmsgPrint (CMmsgAppError, "Input file opening error\n");
 		perror (":");
@@ -59,23 +58,6 @@ Help:	if (CMargTest(argv[argPos],"-h","--help")) {
 		perror (":");
 		goto Stop;
 	}
-	if ((itemFile = fopen (fileName,"r")) == (FILE *) NULL) {
-		CMmsgPrint (CMmsgAppError, "Itemlist file opening error\n");
-		perror (":");
-		goto Stop;
-	}
-	idNum = 0;
-	while (fscanf (itemFile,"%d", &id) == 1) {
-		if ((ids = (int *) realloc (ids,(idNum + 1) * sizeof (int))) == (int *) NULL) {
-			CMmsgPrint (CMmsgSysError, "Memory allocation error in: %s:%d\n",__FILE__,__LINE__);
-			perror (":");
-			goto Stop;
-		}
-		ids [idNum] = id;
-		idNum++;
-	}
-	fclose (itemFile);
-	itemFile = (FILE *) NULL;
 
 	while (MFVarReadHeader (&header,inFile)) {
 		if (items == (void *) NULL) {
@@ -91,53 +73,49 @@ Help:	if (CMargTest(argv[argPos],"-h","--help")) {
 			perror (":");
 			goto Stop;
 		}
-		for(i = 0; i < idNum; i++) {
-			if ((ids [i] < 0) || (ids [i] >= header.ItemNum)) {
-				CMmsgPrint (CMmsgAppError, "Invalid Item id [%d]\n",ids [i]);
-				continue;
-			}
-			switch (header.DataType) {
-				case MFByte:
-					if (((char *)   items) [ids [i]] != header.Missing.Int)
-						fprintf (outFile,"%d\t%s\t%d\n",ids [i],header.Date, (int)    ((char *)   items) [ids [i]]); 
-					else
-						fprintf (outFile,"%d\t%s\t\n",  ids [i],header.Date); 
-					break;
-				case MFShort:
-					if (header.Swap != 1) MFSwapHalfWord (((short *)  items) + ids [i]);
-					if (((short *)  items) [ids [i]] != header.Missing.Int)
-						fprintf (outFile,"%d\t%s\t%d\n",ids [i],header.Date, (int)    ((short *)  items) [ids [i]]); 
-					else
-						fprintf (outFile,"%d\t%s\t\n",  ids [i],header.Date); 
-					break;
-				case MFInt:
-					if(header.Swap != 1) MFSwapWord     (((int *)    items) + ids [i]);
-					if (((int *)    items) [ids [i]] != header.Missing.Int)
-						fprintf (outFile,"%d\t%s\t%d\n",ids [i],header.Date, (int)    ((int *)    items) [ids [i]]); 
-					else
-						fprintf (outFile,"%d\t%s\t\n",  ids [i],header.Date); 
-					break;
-				case MFFloat:
-					if (header.Swap != 1) MFSwapWord     (((float *)  items) + ids [i]);
-					if (MFMathEqualValues (((float *)   items) [ids [i]],header.Missing.Float) == false)
-						fprintf (outFile,"%d\t%s\t%f\n",ids [i],header.Date, (float)  ((float *)  items) [ids [i]]); 
-					else
-						fprintf (outFile,"%d\t%s\t\n",  ids [i],header.Date); 
-					break;
-				case MFDouble:
-					if (header.Swap != 1) MFSwapLongWord (((double *) items) + ids [i]);
-					if (MFMathEqualValues (((double *)  items) [ids [i]],header.Missing.Float) == false)
-						fprintf (outFile,"%d\t%s\t%lf\n",ids [i],header.Date,(double) ((double *) items) [ids [i]]); 
-					else
-						fprintf (outFile,"%d\t%s\t\n",ids [i],header.Date); 
+		if ((itemID < 0) || (itemID >= header.ItemNum)) {
+			CMmsgPrint (CMmsgAppError, "Invalid Item id [%d]\n",itemID);
+			continue;
+		}
+		switch (header.DataType) {
+			case MFByte:
+				if (((char *)   items) [itemID] != header.Missing.Int)
+					fprintf (outFile,"%s\t%d\n",header.Date, (int)    ((char *)   items) [itemID]); 
+				else
+					fprintf (outFile,"%s\t\n", header.Date);
 				break;
-			}
+			case MFShort:
+				if (header.Swap != 1) MFSwapHalfWord (((short *)  items) + itemID);
+				if (((short *)  items) [itemID] != header.Missing.Int)
+					fprintf (outFile,"%s\t%d\n",header.Date, (int)    ((short *)  items) [itemID]); 
+				else
+					fprintf (outFile,"%s\t\n", header.Date);
+				break;
+			case MFInt:
+				if(header.Swap != 1) MFSwapWord     (((int *)    items) + itemID);
+				if (((int *)    items) [itemID] != header.Missing.Int)
+					fprintf (outFile,"%s\t%d\n",header.Date, (int)    ((int *)    items) [itemID]); 
+				else
+					fprintf (outFile,"%s\t\n",  header.Date); 
+				break;
+			case MFFloat:
+				if (header.Swap != 1) MFSwapWord     (((float *)  items) + itemID);
+				if (MFMathEqualValues (((float *)   items) [itemID],header.Missing.Float) == false)
+					fprintf (outFile,"%s\t%f\n",header.Date, (float)  ((float *)  items) [itemID]); 
+				else
+					fprintf (outFile,"%s\t\n",  header.Date); 
+				break;
+			case MFDouble:
+				if (header.Swap != 1) MFSwapLongWord (((double *) items) + itemID);
+				if (MFMathEqualValues (((double *)  items) [itemID],header.Missing.Float) == false)
+					fprintf (outFile,"%s\t%lf\n",header.Date,(double) ((double *) items) [itemID]); 
+				else
+					fprintf (outFile,"%s\t\n", header.Date); 
+			break;
 		}
 	}
 	ret = CMsucceeded;
 Stop:
-	if (ids      != (int *)  NULL) free   (ids);
-	if (itemFile != (FILE *) NULL) fclose (itemFile);
 	if (inFile   != stdin)         fclose (inFile);
 	if (outFile  != stdout)        fclose (outFile);
 	return (ret);
