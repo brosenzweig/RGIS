@@ -312,14 +312,15 @@ int main (int argc,char *argv [])
 		if (CMargTest (argv [argPos],"-h","--help"))
 			{
 			CMmsgPrint (CMmsgInfo,"%s [options] <output file>\n",CMprgName(argv[0]));
-			CMmsgPrint (CMmsgInfo,"     -c,--calculate [expression]\n");
-			CMmsgPrint (CMmsgInfo,"     -r,--variable  [variable expression]\n");
-			CMmsgPrint (CMmsgInfo,"     -x,--extent    [maximum minimum]\n");
-			CMmsgPrint (CMmsgInfo,"     -t,--title     [dataset title]\n");
-			CMmsgPrint (CMmsgInfo,"     -u,--subject   [subject]\n");
-			CMmsgPrint (CMmsgInfo,"     -d,--domain    [domain]\n");
-			CMmsgPrint (CMmsgInfo,"     -v,--version   [version]\n");
-			CMmsgPrint (CMmsgInfo,"     -s,--shadeset  [standard|grey|blue|blue-to-red|elevation]\n");
+			CMmsgPrint (CMmsgInfo,"     -c,--calculate   [expression]\n");
+			CMmsgPrint (CMmsgInfo,"     -r,--variable    [variable expression]\n");
+			CMmsgPrint (CMmsgInfo,"     -n,--interpolate [surface|flat]\n");
+			CMmsgPrint (CMmsgInfo,"     -x,--extent      [maximum minimum]\n");
+			CMmsgPrint (CMmsgInfo,"     -t,--title       [dataset title]\n");
+			CMmsgPrint (CMmsgInfo,"     -u,--subject     [subject]\n");
+			CMmsgPrint (CMmsgInfo,"     -d,--domain      [domain]\n");
+			CMmsgPrint (CMmsgInfo,"     -v,--version     [version]\n");
+			CMmsgPrint (CMmsgInfo,"     -s,--shadeset    [standard|grey|blue|blue-to-red|elevation]\n");
 			CMmsgPrint (CMmsgInfo,"     -V,--verbose\n");
 			CMmsgPrint (CMmsgInfo,"     -h,--help\n");
 			return (DBSuccess);
