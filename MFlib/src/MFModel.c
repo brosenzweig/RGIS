@@ -255,7 +255,7 @@ static int _MFModelParse (int argc, char *argv [],int argNum, int (*conf) ()) {
 			if ((strncmp (var->Name,"__",2) != 0) || var->Initial)
 				CMmsgPrint (CMmsgInfo, "%3i %10s %30s[%10s] %6s %5s %5d %3s %4s %8s %6s\n",
 					varID,var->Header.Date,var->Name,var->Unit,MFVarTypeString (var->Header.DataType),MFDateTimeStepString (var->TStep),var->NStep,
-					MFYesNoString (var->Set),MFYesNoString (var->Flux),MFYesNoString (var->Initial), MFYesNoString (var->OutPath != (char *) NULL));
+					CMyesNoString (var->Set),CMyesNoString (var->Flux),CMyesNoString (var->Initial), CMyesNoString (var->OutPath != (char *) NULL));
 		return (CMfailed);
 	}
 
@@ -347,7 +347,7 @@ static int _MFModelParse (int argc, char *argv [],int argNum, int (*conf) ()) {
 		if ((strncmp (var->Name,"__",2) != 0) || var->Initial)
 			CMmsgPrint (CMmsgInfo, "%3i %10s %30s[%10s] %6s %5s %5d %3s %4s %8s %6s\n",
 				varID,var->Header.Date,var->Name,var->Unit,MFVarTypeString (var->Header.DataType),MFDateTimeStepString (var->TStep),var->NStep,
-				MFYesNoString (var->Set),MFYesNoString (var->Flux),MFYesNoString (var->Initial), MFYesNoString (var->OutPath != (char *) NULL));
+				CMyesNoString (var->Set),CMyesNoString (var->Flux),CMyesNoString (var->Initial), CMyesNoString (var->OutPath != (char *) NULL));
 	if (ret == CMfailed) return (CMfailed);
 	_MFOptionTestInUse ();
 	return (ret);

@@ -42,10 +42,6 @@ enum { MFTimeStepDay    = (0x01 << 0x00),
 
 enum { MFDateStringLength = 24, MFNameLength = 64 };
 
-#define MFMinimum(a,b) (((a) < (b)) ? (a) : (b))
-#define MFMaximum(a,b) (((a) > (b)) ? (a) : (b))
-#define MFYesNoString(cond) (cond ? "yes" : "no")
-
 void MFSwapHalfWord (void *);
 void MFSwapWord     (void *);
 void MFSwapLongWord (void *);
