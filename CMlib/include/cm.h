@@ -39,6 +39,10 @@ char *CMbufStripChar    (char *, char);
 
 #define CMmathEpsilon 0.000001
 bool    CMmathEqualValues (double,double);
+#define CMmathMinimum(a,b) (((a) < (b)) ? (a) : (b))
+#define CMmathMaximum(a,b) (((a) > (b)) ? (a) : (b))
+#define CMyesNoString(cond) (cond ? "yes" : "no")
+
 
 #if defined(__cplusplus)
 }
