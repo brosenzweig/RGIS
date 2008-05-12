@@ -37,6 +37,9 @@ char *CMbufStripChar    (char *, char);
 #define CMbufStripDQuotes(buffer) (CMbufStripChar (buffer,'\"'))
 #define CMbufStripSQuotes(buffer) (CMbufStripChar (buffer,'\''))
 
+#define CMmathEpsilon 0.000001
+bool    CMmathEqualValues (double,double);
+
 #if defined(__cplusplus)
 }
 #endif
