@@ -17,8 +17,6 @@ balazs.fekete@unh.edu
 extern "C" {
 #endif
 
-#define MFMathEpsilon	 		0.000001
-
 enum { MFStop     = false,
        MFContinue = true,
        MFState    = false,
@@ -125,7 +123,6 @@ float  MFModelGet_dt       ();
 void   MFDefEntering       (char *);
 void   MFDefLeaving        (char *);
 
-bool   MFMathEqualValues (double,double);
 int    MFVarItemSize (int);
 bool   MFVarReadHeader  (MFVarHeader_t *,FILE *);
 bool   MFVarWriteHeader (MFVarHeader_t *,FILE *);

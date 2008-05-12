@@ -15,11 +15,6 @@ balazs.fekete@unh.edu
 #include <cm.h>
 #include <MF.h>
 
-bool MFMathEqualValues (double var0,double var1) {
-	if (fabs (var0) + fabs (var1) == (double) 0.0) return (true);
-	return (fabs (var0 - var1) / (fabs (var0) + fabs (var1)) < MFMathEpsilon);
-}
-
 static float _MFRungeKuttaTest (float t, float dt,float (*deltaFunc) (float,float),float *y) {
 	float a2  =     1.0 /      5.0;
 	float a3  =     3.0 /     10.0;

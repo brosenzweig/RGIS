@@ -187,9 +187,9 @@ static bool _MFVarTestMissingVal (MFVariable_t *var,int itemID)
 		case MFShort:	return ((int) (((short *) var->Data) [itemID]) == var->Header.Missing.Int);
 		case MFInt:		return ((int) (((int *)   var->Data) [itemID]) == var->Header.Missing.Int);
 		case MFFloat:
-			return (MFMathEqualValues ((((float *)  var->Data) [itemID]),var->Header.Missing.Float));
+			return (CMmathEqualValues ((((float *)  var->Data) [itemID]),var->Header.Missing.Float));
 		case MFDouble:
-			return (MFMathEqualValues ((((double *) var->Data) [itemID]),var->Header.Missing.Float));
+			return (CMmathEqualValues ((((double *) var->Data) [itemID]),var->Header.Missing.Float));
 	}
 	CMmsgPrint (CMmsgAppError,"Error: Invalid variable [%s,%d] type [%d] in %s:%d\n",var->Name, itemID, var->Header.DataType,__FILE__,__LINE__);
 	return (true);

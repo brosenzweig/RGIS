@@ -102,7 +102,7 @@ int MFDataStreamRead (MFVariable_t *var) {
 					CMmsgPrint (CMmsgAppError,"Error: Reading constant [%s]!\n",var->Name);
 					return (CMfailed);
 				}
-				var->Header.Missing.Float = MFMathEqualValues (var->InStream->Handle.Float,MFDefaultMissingFloat) ?
+				var->Header.Missing.Float = CMmathEqualValues (var->InStream->Handle.Float,MFDefaultMissingFloat) ?
 					(float) 0.0 : MFDefaultMissingFloat;
 			}
 		}
