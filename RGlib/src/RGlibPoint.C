@@ -37,7 +37,7 @@ DBInt RGlibPointSTNCoordinates (DBObjData *dbData,DBObjTableField *field)
 		if (netIO->Coord2Pos (coord,pos) == DBFault) continue;
 		netIO->Pos2Coord (pos,coord);
 		if ((field != (DBObjTableField *) NULL) &&
-			 (!DBMathEqualValues (field->Float (pntRec),field->FloatNoData ())) &&
+			 (!CMmathEqualValues (field->Float (pntRec),field->FloatNoData ())) &&
 			 ((cellRec = netIO->Cell (coord,field->Float (pntRec))) != (DBObjRecord *) NULL))
 			coord = netIO->Center (cellRec);
 		pointIO->Coordinate (pntRec,coord);

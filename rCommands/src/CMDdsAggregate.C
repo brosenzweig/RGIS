@@ -179,7 +179,7 @@ Help:	if (CMargTest(argv[argPos],"-h","--help")) {
 				break;
 				case MFFloat:
 					if (header.Swap != 1)   MFSwapWord      (((float *)  items) + i);
-					if (MFMathEqualValues (((float *)   items) [i],header.Missing.Float) == false) {
+					if (CMmathEqualValues (((float *)   items) [i],header.Missing.Float) == false) {
 						array [i]  += ((float *)  items) [i];
 						obsNum [i] += 1;
 						if (obsNum [i] > maxObs) maxObs = obsNum [i];
@@ -187,7 +187,7 @@ Help:	if (CMargTest(argv[argPos],"-h","--help")) {
 				break;
 				case MFDouble:
 					if (header.Swap != 1)   MFSwapLongWord  (((double *) items) + i);
-					if (MFMathEqualValues (((double *)  items) [i],header.Missing.Float) == false) {
+					if (CMmathEqualValues (((double *)  items) [i],header.Missing.Float) == false) {
 						array [i]  += ((double *) items) [i];
 						obsNum [i] += 1;
 						if (obsNum [i] > maxObs) maxObs = obsNum [i];

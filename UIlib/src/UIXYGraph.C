@@ -79,15 +79,15 @@ UIDataSeries::UIDataSeries (char *name,DBObjTable *table,DBObjTableField *idFLD,
 				{
 				((DBCoordinate *) DataPTR) [varNum - 1].X = xAxisFLD->Float (record);
 				((DBCoordinate *) DataPTR) [varNum - 1].Y = yAxisFLD->Float (record);
-				if (DBMathEqualValues (((DBCoordinate *) DataPTR) [varNum - 1].X,xAxisFLD->FloatNoData ())) continue;
-				if (DBMathEqualValues (((DBCoordinate *) DataPTR) [varNum - 1].Y,yAxisFLD->FloatNoData ())) continue;
+				if (CMmathEqualValues (((DBCoordinate *) DataPTR) [varNum - 1].X,xAxisFLD->FloatNoData ())) continue;
+				if (CMmathEqualValues (((DBCoordinate *) DataPTR) [varNum - 1].Y,yAxisFLD->FloatNoData ())) continue;
 				XYRangeVAR.Expand (((DBCoordinate *) DataPTR) [varNum - 1]);
 				}
 			else
 				{
 				((DBObservation *) DataPTR) [varNum - 1].Date  = xAxisFLD->Date (record);
 				((DBObservation *) DataPTR) [varNum - 1].Value = yAxisFLD->Float (record);
-				if (DBMathEqualValues (((DBObservation *) DataPTR) [varNum - 1].Value,yAxisFLD->FloatNoData ())) continue;
+				if (CMmathEqualValues (((DBObservation *) DataPTR) [varNum - 1].Value,yAxisFLD->FloatNoData ())) continue;
 				ObsRangeVAR.Expand (((DBObservation *) DataPTR) [varNum - 1]);
 				}
 			varNum++;
@@ -329,7 +329,7 @@ void UIXYGraph::DrawSeries (int clear)
 			for (i = 1;i < series->ObsNum ();++i)
 				{
 				coord = series->XYData (i);
-				if (DBMathEqualValues (coord.Y,series->NoData ())) continue;
+				if (CMmathEqualValues (coord.Y,series->NoData ())) continue;
 				x1 = yAxisWidth  + (DBInt) ((coord.X - XYRangeVAR.LowerLeft.X) * (width * 100 / ViewPercentVAR) / (XYRangeVAR.UpperRight.X - XYRangeVAR.LowerLeft.X)) - 1;
 				x1 -= width * ViewOffsetVAR / ViewPercentVAR;
 				y1 = yAxisHeight - (DBInt) ((coord.Y - XYRangeVAR.LowerLeft.Y) * yAxisHeight / (XYRangeVAR.UpperRight.Y - XYRangeVAR.LowerLeft.Y));
@@ -367,7 +367,7 @@ void UIXYGraph::DrawSeries (int clear)
 			for (i = 1;i < series->ObsNum ();++i)
 				{
 				obs = series->ObsData (i);
-				if (DBMathEqualValues (obs.Value,series->NoData ())) continue;
+				if (CMmathEqualValues (obs.Value,series->NoData ())) continue;
 				x1 = (DBInt) ((width * 100 / ViewPercentVAR) * ((DBFloat) (obs.Date.MinutesAD () - ObsRangeVAR.Min.Date.MinutesAD ())) / (ObsRangeVAR.Max.Date.MinutesAD () - ObsRangeVAR.Min.Date.MinutesAD ())) - 1;
 				x1 -= width * ViewOffsetVAR / ViewPercentVAR;
 				x1 += yAxisWidth;

@@ -48,7 +48,7 @@ DBInt RGlibGenFuncFieldCompare (DBObjTable *table,char *f0Text,char *f1Text,char
 				else
 					{
 					val [i] = field [i]->Float (record);
-					ret = DBMathEqualValues (val [i],field [i]->FloatNoData ());
+					ret = CMmathEqualValues (val [i],field [i]->FloatNoData ());
 					}
 			if (ret) result->Float (record,result->FloatNoData ());
 			else switch (diffMethod)
@@ -105,7 +105,7 @@ DBInt RGlibGenFuncFieldCalculate (DBObjTable *table,char *f0Text,char *f1Text,ch
 					else
 						{
 						val [i] = field [i]->Float (record);
-						ret = DBMathEqualValues (val [i],field [i]->FloatNoData ());
+						ret = CMmathEqualValues (val [i],field [i]->FloatNoData ());
 						}
 					if (ret)
 						{
@@ -169,8 +169,8 @@ DBInt RGlibGenFuncTopoAccum (DBObjTable *table,char *nextStnFldName,char *srcFld
 			if (nextRec == record) { record->Flags (DBObjectFlagSelected,DBSet); break; }
 			if ((nextRec->Flags () & DBObjectFlagIdle) != DBObjectFlagIdle)
 				{
-				if (DBMathEqualValues (dstField->Float (nextRec),dstField->FloatNoData ()) ||
-					 DBMathEqualValues (srcField->Float (record),srcField->FloatNoData ()))
+				if (CMmathEqualValues (dstField->Float (nextRec),dstField->FloatNoData ()) ||
+					 CMmathEqualValues (srcField->Float (record),srcField->FloatNoData ()))
 			 		dstField->Float (nextRec,dstField->FloatNoData ());
 				else
 			 		dstField->Float (nextRec,dstField->Float (nextRec) + srcField->Float (record));
@@ -215,8 +215,8 @@ DBInt RGlibGenFuncTopoSubtract (DBObjTable *table,char *nextStnFldName,char *src
 			  nextRec = table->Item (nextField->Int (nextRec) - 1))
 			if ((nextRec->Flags () & DBObjectFlagIdle) != DBObjectFlagIdle)
 				{
-				if (DBMathEqualValues (dstField->Float (nextRec),dstField->FloatNoData ()) ||
-					 DBMathEqualValues (srcField->Float (record),srcField->FloatNoData ()))
+				if (CMmathEqualValues (dstField->Float (nextRec),dstField->FloatNoData ()) ||
+					 CMmathEqualValues (srcField->Float (record),srcField->FloatNoData ()))
 			 		dstField->Float (nextRec,dstField->FloatNoData ());
 				else
 					dstField->Float (nextRec,dstField->Float (nextRec) - srcField->Float (record));

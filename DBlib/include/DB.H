@@ -15,6 +15,7 @@ balazs.fekete@unh.edu
 #include <string.h>
 #include <unistd.h>
 #include <math.h>
+#include <cm.h>
 
 #define DBNull			0x0L
 #define DBSuccess	 	 0
@@ -1491,8 +1492,6 @@ class DBDataset
 		DBObjectLIST<DBObjData>			*DataList ()		{ return (DataLIST); }
 		DBRegion Extent () { return (ExtentVAR); }
 	};
-	
-#define DBMathEpsilon	 		0.000001
 
 #define DBMathOperandConst			0x0010
 #define DBMathOperandVar			0x0020
@@ -1585,11 +1584,11 @@ int DBPause (int);
 #define DBMathMin(a,b) ((a) <= (b) ? (a) : (b))
 #define DBMathRegressionMin 4
 
-void  DBMathSetGlobeRadius  (DBFloat);
-char *DBMathIntAutoFormat   (DBInt);
-char *DBMathFloatAutoFormat (DBFloat);
-DBInt DBMathGuessProjection (DBRegion);
-DBInt DBMathGuessPrecision  (DBRegion);
+void    DBMathSetGlobeRadius  (DBFloat);
+char   *DBMathIntAutoFormat   (DBInt);
+char   *DBMathFloatAutoFormat (DBFloat);
+DBInt   DBMathGuessProjection (DBRegion);
+DBInt   DBMathGuessPrecision  (DBRegion);
 DBInt	DBMathTestCoordinateInRange (DBCoordinate *,DBRegion *);
 DBInt	DBMathTestGeoDataBoundary   (DBObjData *,DBRegion *);
 
@@ -1607,15 +1606,14 @@ DBFloat DBMathRectangleArea (DBInt,DBCoordinate, DBCoordinate);
 DBFloat DBMathRectangleArea (DBInt,DBRegion);
 DBFloat DBMathRectangleArea (DBInt,DBCoordinate, DBCoordinate);
 DBFloat DBMathRectangleArea (DBObjData *data,DBRegion);
-DBInt DBMathCoordinateXCompare (const DBCoordinate *,const DBCoordinate *);
-DBInt DBMathCoordinateXCompare (const DBCoordinate *,const DBCoordinate *);
-DBInt DBMathObservationTimeCompare (const DBObservation *,const DBObservation *);
-DBInt DBMathObservationValueCompare (const DBObservation *,const DBObservation *);
+DBInt   DBMathCoordinateXCompare (const DBCoordinate *,const DBCoordinate *);
+DBInt   DBMathCoordinateXCompare (const DBCoordinate *,const DBCoordinate *);
+DBInt   DBMathObservationTimeCompare (const DBObservation *,const DBObservation *);
+DBInt   DBMathObservationValueCompare (const DBObservation *,const DBObservation *);
 
 DBFloat DBMathVectorByVector (DBCoordinate *,DBCoordinate *,DBCoordinate *);
 DBFloat DBMathVectorXVector (DBCoordinate *,DBCoordinate *,DBCoordinate *);
-void  DBMathGauss ();
-DBInt DBMathEqualValues (double,double);
+void    DBMathGauss ();
 DBFloat DBMathStudentsT(DBFloat);
 
 

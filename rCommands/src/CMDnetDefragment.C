@@ -171,7 +171,7 @@ static DBInt _RGlibNetworkDefragCompare (const void *leftID,const void *rightID)
 	{
 	DBFloat leftVal  = _RGlibNetworkBasinElev [*((DBInt *) leftID)];
 	DBFloat rightVal = _RGlibNetworkBasinElev [*((DBInt *) rightID)];
-	if (DBMathEqualValues (leftVal, rightVal) == true) return (0);
+	if (CMmathEqualValues (leftVal, rightVal) == true) return (0);
 	return (leftVal < rightVal ? -1 : 1);
 	}
 
@@ -234,7 +234,7 @@ DBInt RGlibNetworkDefragment (DBObjData *netData, DBObjData *elevData,DBFloat ma
 			cBasinID  = _RGlibNetworkBasinIDX  [basin];
 			if (basinIDs [_RGlibNetworkBasinIDX  [basin]] != cBasinID) printf ("Ezt nem ertem\n");
 			pourElev = _RGlibNetworkBasinElev [cBasinID] + maxClimb;
-			if (DBMathEqualValues (_RGlibNetworkBasinElev [cBasinID],grdIO->Minimum ())) continue;
+			if (CMmathEqualValues (_RGlibNetworkBasinElev [cBasinID],grdIO->Minimum ())) continue;
 			toCell = pourCell = mouthCell = netIO->MouthCell (netIO->Basin (cBasinID));
 			if (netIO->CellDirection (mouthCell) != 0x0)         continue; 
 

@@ -169,8 +169,8 @@ int main (int argc,char *argv [])
 
 	for (tblRec = table->First ();tblRec != (DBObjRecord *) NULL;tblRec = table->Next ())
 		{
-		if (DBMathEqualValues (coord.X = xField->Float (tblRec),xField->FloatNoData ())) continue;
-		if (DBMathEqualValues (coord.Y = yField->Float (tblRec),yField->FloatNoData ())) continue;
+		if (CMmathEqualValues (coord.X = xField->Float (tblRec),xField->FloatNoData ())) continue;
+		if (CMmathEqualValues (coord.Y = yField->Float (tblRec),yField->FloatNoData ())) continue;
 		if (nField == (DBObjTableField *) NULL) pntRec = pntTable->Add (tblRec->Name ());
 		else pntRec = pntTable->Add (nField->String (tblRec));
 		coordFLD->Coordinate (pntRec,coord);
@@ -188,8 +188,8 @@ int main (int argc,char *argv [])
 			pntRec = pntTable->First ();
 			for (tblRec = table->First ();tblRec != (DBObjRecord *) NULL;tblRec = table->Next ())
 				{
-				if (DBMathEqualValues (coord.X = xField->Float (tblRec),xField->FloatNoData ())) continue;
-				if (DBMathEqualValues (coord.Y = yField->Float (tblRec),yField->FloatNoData ())) continue;
+				if (CMmathEqualValues (coord.X = xField->Float (tblRec),xField->FloatNoData ())) continue;
+				if (CMmathEqualValues (coord.Y = yField->Float (tblRec),yField->FloatNoData ())) continue;
 				switch (tblFLD->Type ())
 					{
 					case DBTableFieldString:	pntFLD->String	(pntRec,tblFLD->String (tblRec));	break;

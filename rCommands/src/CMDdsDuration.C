@@ -163,7 +163,7 @@ Help:		CMmsgPrint (CMmsgUsrError,"%s [options] <out datastream>\n",CMprgName(arg
 			case MFFloat:
 				for(i = 0; i < header.ItemNum; i++) {
 					if (header.Swap != 1) MFSwapWord     (((float *)  items) + i);
-					if (MFMathEqualValues (((float *)   items) [i],header.Missing.Float) == true)  continue;
+					if (CMmathEqualValues (((float *)   items) [i],header.Missing.Float) == true)  continue;
 					value = (double) (((float *)  items) [i]);
 					if (max [i] < value) max [i] = value;
 					if (min [i] > value) min [i] = value;
@@ -172,7 +172,7 @@ Help:		CMmsgPrint (CMmsgUsrError,"%s [options] <out datastream>\n",CMprgName(arg
 			case MFDouble:
 				for(i = 0; i < header.ItemNum; i++) {
 					if (header.Swap != 1) MFSwapLongWord  (((double *) items) + i);
-					if (MFMathEqualValues (((double *)  items) [i],header.Missing.Float) == true) continue;
+					if (CMmathEqualValues (((double *)  items) [i],header.Missing.Float) == true) continue;
 					value = (double) (((double *) items) [i]);
 					if (max [i] < value) max [i] = value;
 					if (min [i] > value) min [i] = value;
@@ -191,7 +191,7 @@ Help:		CMmsgPrint (CMmsgUsrError,"%s [options] <out datastream>\n",CMprgName(arg
 			case MFByte:
 				for(i = 0; i < header.ItemNum; i++) {
 					if (((char *)   items) [i] == header.Missing.Int) continue;
-					if (!MFMathEqualValues (max [i],min [i])) {
+					if (!CMmathEqualValues (max [i],min [i])) {
 						value = (double) (((char *)   items) [i]);
 						bin = (int) floor ((double) (binNum - 1) * (value - min [i]) / (max [i] - min [i]));
 						for (  ;bin >= 0; bin--) bins [bin * header.ItemNum + i] += 1;
@@ -202,7 +202,7 @@ Help:		CMmsgPrint (CMmsgUsrError,"%s [options] <out datastream>\n",CMprgName(arg
 				for(i = 0; i < header.ItemNum; i++) {
 					if (header.Swap != 1) MFSwapHalfWord (((short *)  items) + i);
 					if (((short *)  items) [i] == header.Missing.Int) continue;
-					if (!MFMathEqualValues (max [i],min [i])) {
+					if (!CMmathEqualValues (max [i],min [i])) {
 						value = (double) (((short *)  items) [i]);
 						bin = (int) floor ((double) (binNum - 1) * (value - min [i]) / (max [i] - min [i]));
 						for (  ;bin >= 0; bin--) bins [bin * header.ItemNum + i] += 1;
@@ -213,7 +213,7 @@ Help:		CMmsgPrint (CMmsgUsrError,"%s [options] <out datastream>\n",CMprgName(arg
 				for(i = 0; i < header.ItemNum; i++) {
 					if(header.Swap != 1) MFSwapWord      (((int *)    items) + i);
 					if (((int *)    items) [i] == header.Missing.Int) continue;
-					if (!MFMathEqualValues (max [i],min [i])) {
+					if (!CMmathEqualValues (max [i],min [i])) {
 						value = (double) (((int *)    items) [i]);
 						bin = (int) floor ((double) (binNum - 1) * (value - min [i]) / (max [i] - min [i]));
 						for (  ;bin >= 0; bin--) bins [bin * header.ItemNum + i] += 1;
@@ -223,8 +223,8 @@ Help:		CMmsgPrint (CMmsgUsrError,"%s [options] <out datastream>\n",CMprgName(arg
 			case MFFloat:
 				for(i = 0; i < header.ItemNum; i++) {
 					if (header.Swap != 1) MFSwapWord     (((float *)  items) + i);
-					if (MFMathEqualValues (((float *)   items) [i],header.Missing.Float) == true)  continue;
-					if (!MFMathEqualValues (max [i],min [i])) {
+					if (CMmathEqualValues (((float *)   items) [i],header.Missing.Float) == true)  continue;
+					if (!CMmathEqualValues (max [i],min [i])) {
 						value = (double) (((float *)  items) [i]);
 						bin = (int) floor ((double) (binNum - 1) * (value - min [i]) / (max [i] - min [i]));
 						for (  ;bin >= 0; bin--) bins [bin * header.ItemNum + i] += 1;
@@ -234,8 +234,8 @@ Help:		CMmsgPrint (CMmsgUsrError,"%s [options] <out datastream>\n",CMprgName(arg
 			case MFDouble:
 				for(i = 0; i < header.ItemNum; i++) {
 					if (header.Swap != 1) MFSwapLongWord  (((double *) items) + i);
-					if (MFMathEqualValues (((double *)  items) [i],header.Missing.Float) == true) continue;
-					if (!MFMathEqualValues (max [i],min [i])) {
+					if (CMmathEqualValues (((double *)  items) [i],header.Missing.Float) == true) continue;
+					if (!CMmathEqualValues (max [i],min [i])) {
 						value = (double) (((double *) items) [i]);
 						bin = (int) floor ((double) (binNum - 1) * (value - min [i]) / (max [i] - min [i]));
 						for (  ;bin >= 0; bin--) bins [bin * header.ItemNum + i] += 1;
@@ -248,7 +248,7 @@ Help:		CMmsgPrint (CMmsgUsrError,"%s [options] <out datastream>\n",CMprgName(arg
 		for (percent = 0;percent < 100; ++percent) {
 			for(i = 0; i < header.ItemNum; i++) {
 				binSize = (max [i] - min [i]) / (float) binNum;
-				if (MFMathEqualValues (binSize, 0.0)) output [i] = min [i];
+				if (CMmathEqualValues (binSize, 0.0)) output [i] = min [i];
 				else {
 					for (bin = 0;bin < binNum; ++bin) {
 						percentMin = bins [bin * header.ItemNum + i] / bins [i] * 100.0;
@@ -321,7 +321,7 @@ Help:		CMmsgPrint (CMmsgUsrError,"%s [options] <out datastream>\n",CMprgName(arg
 				case MFFloat:
 					for(i = 0; i < header.ItemNum; i++) {
 						if (header.Swap != 1) MFSwapWord     (((float *)  items) + i);
-						if (MFMathEqualValues (((float *)   items) [i],header.Missing.Float) == true) output [i] = outHeader.Missing.Float;
+						if (CMmathEqualValues (((float *)   items) [i],header.Missing.Float) == true) output [i] = outHeader.Missing.Float;
 						else if (bins [i] > 0) {
 							value = (double) (((float *)  items) [i]);
 							bin = (int) floor ((double) (binNum - 1) * (value - min [i]) / (max [i] - min [i]));
@@ -333,7 +333,7 @@ Help:		CMmsgPrint (CMmsgUsrError,"%s [options] <out datastream>\n",CMprgName(arg
 				case MFDouble:
 					for(i = 0; i < header.ItemNum; i++) {
 						if (header.Swap != 1) MFSwapLongWord  (((double *) items) + i);
-						if (MFMathEqualValues (((double *)  items) [i],header.Missing.Float) == true) output [i] = outHeader.Missing.Float;
+						if (CMmathEqualValues (((double *)  items) [i],header.Missing.Float) == true) output [i] = outHeader.Missing.Float;
 						else if (bins [i] > 0) {
 							value = (double) (((double *) items) [i]);
 							bin = (int) floor ((double) (binNum - 1) * (value - min [i]) / (max [i] - min [i]));

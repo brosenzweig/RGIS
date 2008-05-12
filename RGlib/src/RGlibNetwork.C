@@ -53,7 +53,7 @@ DBInt RGlibNetworkToGrid (DBObjData *netData,DBObjTableField *field, DBObjData *
 				else
 					{
 					floatVal = field->Float (cellRec);
-					if (DBMathEqualValues (floatVal,field->FloatNoData ()))
+					if (CMmathEqualValues (floatVal,field->FloatNoData ()))
 						grdIO->Value (layerRec,netIO->CellPosition (cellRec),grdIO->MissingValue ());
 					else	grdIO->Value (layerRec,netIO->CellPosition (cellRec),floatVal);
 					}
@@ -543,7 +543,7 @@ DBInt RGlibNetworkAccumulate (DBObjData *netData,
 					coord = stnIO->Coordinate (pointRec);
 					if ((cellRec = netIO->Cell (coord)) == (DBObjRecord *) NULL) continue;
 					value = dischargeFLD->Float (dischRec);
-					if (DBMathEqualValues (value,dischargeFLD->FloatNoData ()) == false)
+					if (CMmathEqualValues (value,dischargeFLD->FloatNoData ()) == false)
 						{
 						tmpDischFLD->Float  (pointRec,value);
 						netAccum.StnIDFLD->Int (cellRec,pointRec->RowID ());

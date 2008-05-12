@@ -230,7 +230,7 @@ static void _RGISToolsExportNetworkCBK (Widget widget,RGISWorkspace *workspace,X
 					else	fprintf (outFILE,"%c%d",DBASCIISeparator,fields [fieldID]->Int (cellRec));
 					break;
 				case DBTableFieldFloat:
-					if (DBMathEqualValues (fields [fieldID]->Float (cellRec),fields [fieldID]->FloatNoData ()))
+					if (CMmathEqualValues (fields [fieldID]->Float (cellRec),fields [fieldID]->FloatNoData ()))
 						fprintf (outFILE,"%c",DBASCIISeparator);
 					else	fprintf (outFILE,"%c%f",DBASCIISeparator,fields [fieldID]->Float (cellRec));
 					break;

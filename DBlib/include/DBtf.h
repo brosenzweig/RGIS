@@ -8,4 +8,4 @@ typedef float				DBFloat4;
 typedef long long			DBAddress;
 
 DBFloat DBMathStudentsT (DBFloat);
-DBInt DBMathEqualValues (double,double);
+DBInt CMmathEqualValues (double,double);

@@ -341,7 +341,7 @@ char *DBObjTableField::String (const DBObjRecord *record) const
 		case DBTableFieldFloat:
 			{
 			DBFloat ret = Float (record);
-			if (DBMathEqualValues (ret,FloatNoData ()))	return ("");
+			if (CMmathEqualValues (ret,FloatNoData ()))	return ("");
 			sprintf (retString,Format (),ret);	return (retString);
 			}
 		case DBTableFieldDate:

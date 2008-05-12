@@ -55,7 +55,7 @@ DBInt DBExportASCIITable (DBObjTable *table, FILE *fp)
 						else	fprintf (fp,"%c%d",DBASCIISeparator,field->Int (record));
 						break;
 					case DBTableFieldFloat:
-						if (DBMathEqualValues (field->Float (record),field->FloatNoData ()))
+						if (CMmathEqualValues (field->Float (record),field->FloatNoData ()))
 								fprintf (fp,"%c",DBASCIISeparator);
 						else	fprintf (fp,"%c%f",DBASCIISeparator,field->Float (record));
 						break;

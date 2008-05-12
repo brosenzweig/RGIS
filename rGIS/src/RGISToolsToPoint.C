@@ -233,8 +233,8 @@ void RGISToolsConvertToPointCBK (Widget widget,RGISWorkspace *workspace,XmAnyCal
 			XtFree (nText);	XtFree (xText);	XtFree (yText);
 			for (tblRec = itemTable->First ();tblRec != (DBObjRecord *) NULL;tblRec = itemTable->Next ())
 				{
-				if (DBMathEqualValues (coord.X = xField->Float (tblRec),xField->FloatNoData ())) continue;
-				if (DBMathEqualValues (coord.Y = yField->Float (tblRec),yField->FloatNoData ())) continue;
+				if (CMmathEqualValues (coord.X = xField->Float (tblRec),xField->FloatNoData ())) continue;
+				if (CMmathEqualValues (coord.Y = yField->Float (tblRec),yField->FloatNoData ())) continue;
 				if (nField == (DBObjTableField *) NULL) pntRec = pntTable->Add (tblRec->Name ());
 				else pntRec = pntTable->Add (nField->String (tblRec));
 				coordFLD->Coordinate (pntRec,coord);
@@ -252,8 +252,8 @@ void RGISToolsConvertToPointCBK (Widget widget,RGISWorkspace *workspace,XmAnyCal
 					pntRec = pntTable->First ();
 					for (tblRec = itemTable->First ();tblRec != (DBObjRecord *) NULL;tblRec = itemTable->Next ())
 						{
-						if (DBMathEqualValues (coord.X = xField->Float (tblRec),xField->FloatNoData ())) continue;
-						if (DBMathEqualValues (coord.Y = yField->Float (tblRec),yField->FloatNoData ())) continue;
+						if (CMmathEqualValues (coord.X = xField->Float (tblRec),xField->FloatNoData ())) continue;
+						if (CMmathEqualValues (coord.Y = yField->Float (tblRec),yField->FloatNoData ())) continue;
 						switch (tblFLD->Type ())
 							{
 							case DBTableFieldString:	pntFLD->String	(pntRec,tblFLD->String (tblRec));	break;

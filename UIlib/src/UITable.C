@@ -21,6 +21,7 @@ balazs.fekete@unh.edu
 #include <Xm/ScrollBar.h>
 #include <Xm/Protocols.h>
 #include <Xm/TextF.h>
+#include <cm.h>
 #include <UI.H>
 
 #define UITableTitle "GHAAS Table"
@@ -299,9 +300,9 @@ static void _UITableFieldSelectCBK (Widget widget,DBInt select,XmAnyCallbackStru
 					if (field != (DBObjTableField *) NULL )
 						{
 						floatVal = field->Float (record);
-						if (DBMathEqualValues (floatVal,field->FloatNoData ()))	nullVal = true;
+						if (CMmathEqualValues (floatVal,field->FloatNoData ()))	nullVal = true;
 						}
-					if (DBMathEqualValues (dbField->Float (record),dbField->FloatNoData ())) nullVal = true;
+					if (CMmathEqualValues (dbField->Float (record),dbField->FloatNoData ())) nullVal = true;
 					else
 						{
 						if (dbField->Float (record) > floatVal)		ret = 1;
@@ -403,7 +404,7 @@ static void _UITableFieldUniqueCBK (Widget widget,void *data,XmAnyCallbackStruct
 				else	select = false;
 				break;
 			case DBTableFieldFloat:
-				if (DBMathEqualValues (dbField->Float (record),floatVal))
+				if (CMmathEqualValues (dbField->Float (record),floatVal))
 					{
 					floatVal = dbField->Float (record);
 					select = true;

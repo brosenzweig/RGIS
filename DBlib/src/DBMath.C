@@ -45,13 +45,6 @@ char *DBMathFloatAutoFormat (DBFloat maxVal)
 	return (format);
 	}
 
-DBInt DBMathEqualValues (double var0,double var1)
-
-	{
-	if (fabs (var0) + fabs (var1) == (double) 0.0) return (true);
-	return (fabs (var0 - var1) / (fabs (var0) + fabs (var1)) < DBMathEpsilon);
-	}
-
 DBInt DBMathGuessProjection (DBRegion extent)
    {
    if (extent.LowerLeft.X < -180.0) return (DBProjectionCartesian);
@@ -465,15 +458,15 @@ DBInt DBMathExpression::Int (DBObjRecord *record)
 			lVar = LeftPTR->Float (record);
 			rVar = RightPTR->Float (record);
 			if ((OperVAR != DBMathOperatorEqu) && (OperVAR != (DBMathOperatorSml | DBMathOperatorGrt)) &&
-			    ((DBMathEqualValues (lVar,DBDefaultMissingFloatVal) ||
-				 	DBMathEqualValues (rVar,DBDefaultMissingFloatVal))))
+			    ((CMmathEqualValues (lVar,DBDefaultMissingFloatVal) ||
+				 	CMmathEqualValues (rVar,DBDefaultMissingFloatVal))))
 				return (DBDefaultMissingIntVal);
 			switch (OperVAR)
 				{
 				case (DBMathOperatorGrt): 								return (lVar >  rVar ? true : false);
 				case (DBMathOperatorGrt | DBMathOperatorEqu):	return (lVar >= rVar ? true : false);
-				case (DBMathOperatorEqu): 								return ( DBMathEqualValues (lVar,rVar));
-				case (DBMathOperatorSml | DBMathOperatorGrt):	return (!DBMathEqualValues (lVar,rVar));
+				case (DBMathOperatorEqu): 								return ( CMmathEqualValues (lVar,rVar));
+				case (DBMathOperatorSml | DBMathOperatorGrt):	return (!CMmathEqualValues (lVar,rVar));
 				case (DBMathOperatorSml | DBMathOperatorEqu):	return (lVar <= rVar ? true : false);
 				case (DBMathOperatorSml):								return (lVar <  rVar ? true : false);
 				case (DBMathOperatorAdd):								return ((DBInt) (lVar + rVar));
@@ -498,7 +491,7 @@ DBFloat DBMathExpression::Float (DBObjRecord *record)
 		DBFloat var;
 		double (*func) (double) = (double (*) (double)) RightPTR;
 		var = LeftPTR->Float (record);
-		return (DBMathEqualValues (var, DBDefaultMissingFloatVal) ?
+		return (CMmathEqualValues (var, DBDefaultMissingFloatVal) ?
 				  DBDefaultMissingFloatVal : ((DBFloat) ((*func) ((double) var))));
 		}
 	if (OperVAR == DBMathOperatorCond)
@@ -531,8 +524,8 @@ DBFloat DBMathExpression::Float (DBObjRecord *record)
 			lVar = LeftPTR->Float (record);
 			rVar = RightPTR->Float (record);
 			if ((OperVAR != DBMathOperatorEqu) && (OperVAR != (DBMathOperatorSml | DBMathOperatorGrt)) &&
-			    (DBMathEqualValues (lVar,DBDefaultMissingFloatVal) ||
-			    DBMathEqualValues (rVar,DBDefaultMissingFloatVal)))
+			    (CMmathEqualValues (lVar,DBDefaultMissingFloatVal) ||
+			    CMmathEqualValues (rVar,DBDefaultMissingFloatVal)))
 				return (DBDefaultMissingFloatVal);
 			switch (OperVAR)
 				{
@@ -813,7 +806,7 @@ DBInt DBMathOperand::Int (DBObjRecord *record)
 				case DBVariableString:	return (DBDefaultMissingIntVal);
 				case DBVariableInt:		return (Var.Int);
 				case DBVariableFloat:
-					return (DBMathEqualValues (Var.Float,DBDefaultMissingFloatVal) ?
+					return (CMmathEqualValues (Var.Float,DBDefaultMissingFloatVal) ?
 							  DBDefaultMissingIntVal : (DBInt) Var.Float);
 				}
 		case DBMathOperandVar:			return (Var.FldPTR->Int (record));

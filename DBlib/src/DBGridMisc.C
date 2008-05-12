@@ -320,7 +320,7 @@ DBInt DBGridIO::Value (DBObjRecord *layerRec,DBPosition pos,DBFloat *value) cons
 				}
 			break;
 		}
-	return (DBMathEqualValues (*value,missingValue) ? false : true);
+	return (CMmathEqualValues (*value,missingValue) ? false : true);
 	}
 
 DBInt DBGridIO::Value (DBObjRecord *layerRec,DBPosition pos,DBFloat value)
@@ -393,7 +393,7 @@ DBInt DBGridIO::Value (DBObjRecord *layerRec,DBCoordinate coord,DBFloat *value) 
 					}
 				break;
 			}
-		if (!DBMathEqualValues (retVal,missingValue)) { *value = retVal;	return (true); }
+		if (!CMmathEqualValues (retVal,missingValue)) { *value = retVal;	return (true); }
 		}
 	pos [0].Col = cellPos.Col;
 	pos [0].Row = cellPos.Row;
@@ -483,7 +483,7 @@ DBInt DBGridIO::Value (DBObjRecord *layerRec,DBCoordinate coord,DBFloat *value) 
 					}
 				break;
 			}
-		if (DBMathEqualValues (retVal,missingValue))
+		if (CMmathEqualValues (retVal,missingValue))
 			{
 			if ((pos [i].Col == cellPos.Col) && (pos [i].Row == cellPos.Row)) return (false);
 			else continue;

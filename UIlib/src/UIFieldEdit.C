@@ -497,7 +497,7 @@ DBObjTableField *UITableFieldEdit (DBObjTableField *field)
 					if (retField->IntNoData () != field->IntNoData ())		changed = true;
 					break;
 				case DBTableFieldFloat:
-					if (DBMathEqualValues (retField->FloatNoData (),field->FloatNoData ()))	changed = true;
+					if (CMmathEqualValues (retField->FloatNoData (),field->FloatNoData ()))	changed = true;
 					break;
 				}
 		XtSetSensitive (UIDialogFormGetOkButton (dShell),changed);

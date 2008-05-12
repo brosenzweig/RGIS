@@ -338,6 +338,9 @@ static DBInt _DBExportNetCDFGridDefine (DBObjData *dbData,int ncid, int dimids [
 	str = "level";
 	if ((status = nc_put_att_text (ncid,levelid,"standard_name",strlen (str),str)) != NC_NOERR)
 		{ fprintf(stderr, "NC Error: %s\n", nc_strerror(status)); nc_close (ncid); return (DBFault); }
+	str = "z";
+	if ((status = nc_put_att_text (ncid,levelid,"axis",strlen (str),str)) != NC_NOERR)
+		{ fprintf(stderr, "NC Error: %s\n", nc_strerror(status)); nc_close (ncid); return (DBFault); }
 	/* End Defining Level Variable */
 
 	if ((status = nc_enddef (ncid)) != NC_NOERR)
@@ -345,12 +348,12 @@ static DBInt _DBExportNetCDFGridDefine (DBObjData *dbData,int ncid, int dimids [
 
 	if ((record = (double *) calloc (rowNum > colNum ? rowNum : colNum,sizeof (double))) == (double *) NULL)
 		{ fprintf (stderr,"Memory allocation error in: DBExportNetCDF ()\n"); return (DBFault); }
-	for (i = 0;i < rowNum;i++) record [i] = (dbData->Extent ()).LowerLeft.Y + i * cellHeight;
+	for (i = 0;i < rowNum;i++) record [i] = (dbData->Extent ()).LowerLeft.Y + i * cellHeight + cellHeight / 2.0;
 	start = 0;
 	count = rowNum;
 	if ((status = nc_put_vara_double (ncid,latid,&start,&count,record)) != NC_NOERR)
 		{ fprintf(stderr, "NC Error: %s\n", nc_strerror(status)); free (record); return (DBFault); }
-	for (i = 0;i < colNum;i++) record [i] = (dbData->Extent ()).LowerLeft.X + i * cellWidth;
+	for (i = 0;i < colNum;i++) record [i] = (dbData->Extent ()).LowerLeft.X + i * cellWidth + cellWidth / 2.0;
 	count = colNum;
 	if ((status = nc_put_vara_double (ncid,lonid,&start,&count,record)) != NC_NOERR)
 		{ fprintf(stderr, "NC Error: %s\n", nc_strerror(status)); free (record); return (DBFault); }
@@ -1180,7 +1183,7 @@ DBInt DBImportNetCDF (DBObjData *data,const char *filename)
 				{
 				extent.LowerLeft.X   = extent.LowerLeft.X  < longitudes [i] ? extent.LowerLeft.X  : longitudes [i];
 				extent.UpperRight.X  = extent.UpperRight.X > longitudes [i] ? extent.UpperRight.X : longitudes [i];
-				if (DBMathEqualValues (cellSize.X,fabs (longitudes [i] - longitudes [i - 1])) != true)
+				if (CMmathEqualValues (cellSize.X,fabs (longitudes [i] - longitudes [i - 1])) != true)
 					{
 					fprintf (stderr,"Longitude has irregular spacing in: DBImportNetCDF ()\n");
 					free (vector);
@@ -1245,7 +1248,7 @@ DBInt DBImportNetCDF (DBObjData *data,const char *filename)
 				{
 				extent.LowerLeft.Y   = extent.LowerLeft.Y  < latitudes [i] ? extent.LowerLeft.Y  : latitudes [i];
 				extent.UpperRight.Y  = extent.UpperRight.Y > latitudes [i] ? extent.UpperRight.Y : latitudes [i];
-				if (DBMathEqualValues (cellSize.Y,fabs (latitudes [i - 1] - latitudes [i])) != true)
+				if (CMmathEqualValues (cellSize.Y,fabs (latitudes [i - 1] - latitudes [i])) != true)
 					{
 					fprintf (stderr,"Latitude has irregular spacing in: DBImportNetCDF ()\n");
 					free (vector);

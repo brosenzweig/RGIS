@@ -100,14 +100,14 @@ Help:	if (CMargTest(argv[argPos],"-h","--help")) {
 				break;
 			case MFFloat:
 				if (header.Swap != 1) MFSwapWord     (((float *)  items) + itemID);
-				if (MFMathEqualValues (((float *)   items) [itemID],header.Missing.Float) == false)
+				if (CMmathEqualValues (((float *)   items) [itemID],header.Missing.Float) == false)
 					fprintf (outFile,"%s\t%f\n",header.Date, (float)  ((float *)  items) [itemID]); 
 				else
 					fprintf (outFile,"%s\t\n",  header.Date); 
 				break;
 			case MFDouble:
 				if (header.Swap != 1) MFSwapLongWord (((double *) items) + itemID);
-				if (MFMathEqualValues (((double *)  items) [itemID],header.Missing.Float) == false)
+				if (CMmathEqualValues (((double *)  items) [itemID],header.Missing.Float) == false)
 					fprintf (outFile,"%s\t%lf\n",header.Date,(double) ((double *) items) [itemID]); 
 				else
 					fprintf (outFile,"%s\t\n", header.Date); 

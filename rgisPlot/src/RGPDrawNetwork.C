@@ -149,7 +149,7 @@ DBInt RGPDrawNetwork (DBInt mode, DBInt *entryNum, DBObjData *netData)
 		{
 		cellRec = netIO->Cell (recID);
 		wValue = widthFLD->Float (cellRec);
-		if (DBMathEqualValues (wValue,widthFLD->FloatNoData ())) continue;
+		if (CMmathEqualValues (wValue,widthFLD->FloatNoData ())) continue;
 		if (wValue <= minValue) continue;
 		if (wValue > maxValue) wValue = maxValue; 
 

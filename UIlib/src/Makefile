@@ -3,7 +3,7 @@ INC    = ../include
 SRC    = ../src
 OBJ    = ../obj
 LIB    = ../lib
-CPP    = $(UNIXCPP) $(UNIXCPPOPS) -I$(INC) -I../../DBlib/include
+CPP    = $(UNIXCPP) $(UNIXCPPOPS) -I$(INC) -I../../CMlib/include -I../../DBlib/include
 TARGET = $(LIB)/libUI21.a
 
 INCLUDES = $(INC)/UI.H

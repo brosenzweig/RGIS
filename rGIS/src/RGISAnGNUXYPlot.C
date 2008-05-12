@@ -190,7 +190,7 @@ void RGISAnGNUXYPlotCBK (Widget widget,RGISWorkspace *workspace,XmAnyCallbackStr
 			else
 				{
 				val = field0->Float (record);
-				if (DBMathEqualValues (val,field0->FloatNoData ())) continue;
+				if (CMmathEqualValues (val,field0->FloatNoData ())) continue;
 				sprintf (buffer + strlen (buffer),"\t%f",val);
 				}
 			if (field1->Type () == DBTableFieldInt) 
@@ -202,7 +202,7 @@ void RGISAnGNUXYPlotCBK (Widget widget,RGISWorkspace *workspace,XmAnyCallbackStr
 			else
 				{
 				val = field1->Float (record);
-				if (DBMathEqualValues (val,field1->FloatNoData ())) continue;
+				if (CMmathEqualValues (val,field1->FloatNoData ())) continue;
 				sprintf (buffer + strlen (buffer),"\t%f",val);
 				}
 			fprintf (file,"%s\n",buffer);

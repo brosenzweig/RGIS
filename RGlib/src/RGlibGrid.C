@@ -312,7 +312,7 @@ DBInt RGlibGridUniformRunoff (DBObjData *gridData,DBObjData *tsData, char *grdRe
 		for (grdRec = grdTBL->First ();grdRec != (DBObjRecord *) NULL;grdRec = grdTBL->Next ())
 			if (DBTableFieldMatch (grdRelateFLD,grdRec,tsJoinFLD,tsRec))
 				{
-				if (DBMathEqualValues (tsVarFLD->Float (tsRec),tsVarFLD->FloatNoData ()) != true)
+				if (CMmathEqualValues (tsVarFLD->Float (tsRec),tsVarFLD->FloatNoData ()) != true)
 					{
 					grdRec->Flags (DBObjectFlagLocked,DBSet);
 					grdTmpValueFLD->Float (grdRec,tsVarFLD->Float (tsRec));
@@ -441,7 +441,7 @@ DBInt RGlibGridUniformGrid (DBObjData *gridData,DBObjData *tabData, char *relate
 		for (grdRec = grdTBL->First ();grdRec != (DBObjRecord *) NULL;grdRec = grdTBL->Next ())
 			if (DBTableFieldMatch (relateFLD,grdRec,joinFLD,datRec))
 				{
-				if (DBMathEqualValues (valueFLD->Float (datRec),valueFLD->FloatNoData ()) != true)
+				if (CMmathEqualValues (valueFLD->Float (datRec),valueFLD->FloatNoData ()) != true)
 					tmpValueFLD->Float (grdRec,valueFLD->Float (datRec));
 				break;
 				}
@@ -612,7 +612,7 @@ DBInt RGlibGridReclassContinuous (DBObjData *srcData,char *srcFieldName,DBObjDat
 								break;
 							case DBTableFieldFloat:
 								value = srcField->Float (srcGrdRec);
-								if (DBMathEqualValues (value,srcField->FloatNoData ()))
+								if (CMmathEqualValues (value,srcField->FloatNoData ()))
 									value = dstIO->MissingValue (dstLayerRec);
 								break;
 							default:	break;
@@ -1072,7 +1072,7 @@ DBInt RGlibGridCellStats (DBObjData *srcData,DBObjData *statData)
 				statIO->Value (statIO->Layer (layerID++),pos,min);
 				statIO->Value (statIO->Layer (layerID++),pos,max);
 				statIO->Value (statIO->Layer (layerID++),pos,(max - min));
-				statIO->Value (statIO->Layer (layerID++),pos,(max - min) / (fabs (max) + fabs (min) >  DBMathEpsilon ? fabs (max) + fabs (min) : 1.0));
+				statIO->Value (statIO->Layer (layerID++),pos,(max - min) / (fabs (max) + fabs (min) >  CMmathEpsilon ? fabs (max) + fabs (min) : 1.0));
 				statIO->Value (statIO->Layer (layerID++),pos,sqrt (dev));
 				statIO->Value (statIO->Layer (layerID++),pos,obsNum);
 				if (obsNum > DBMathRegressionMin)

@@ -563,7 +563,7 @@ int main (int argc,char *argv [])
 							}
 						else
 							{
-							if (!DBMathEqualValues(field->Float(inRecord),field->FloatNoData()))
+							if (!CMmathEqualValues(field->Float(inRecord),field->FloatNoData()))
 								p->field->Int(outRecord,p->field->Int(outRecord) + 1);
 							}
 						break;
@@ -579,9 +579,9 @@ int main (int argc,char *argv [])
 							}
 						else
 							{
-							if (!DBMathEqualValues(field->Float(inRecord),field->FloatNoData()))
+							if (!CMmathEqualValues(field->Float(inRecord),field->FloatNoData()))
 								{
-								if (!DBMathEqualValues(p->field->Float(inRecord),p->field->FloatNoData()))
+								if (!CMmathEqualValues(p->field->Float(inRecord),p->field->FloatNoData()))
 									{ if (field->Float(inRecord) < p->field->Float(outRecord)) p->field->Float(outRecord,field->Float(inRecord)); }
 								else { p->field->Float(outRecord,field->Float(inRecord)); }
 								}
@@ -599,9 +599,9 @@ int main (int argc,char *argv [])
 							}
 						else
 							{
-							if (!DBMathEqualValues(field->Float(inRecord),field->FloatNoData()))
+							if (!CMmathEqualValues(field->Float(inRecord),field->FloatNoData()))
 								{
-								if (!DBMathEqualValues(p->field->Float(inRecord),p->field->FloatNoData()))
+								if (!CMmathEqualValues(p->field->Float(inRecord),p->field->FloatNoData()))
 									{ if (field->Float(inRecord) > p->field->Float(outRecord)) p->field->Float(outRecord,field->Float(inRecord)); }
 								else { p->field->Float(outRecord,field->Float(inRecord)); }
 								}
@@ -615,7 +615,7 @@ int main (int argc,char *argv [])
 							}
 							else
 							{
-							if (!DBMathEqualValues(field->Float(inRecord),field->FloatNoData()))
+							if (!CMmathEqualValues(field->Float(inRecord),field->FloatNoData()))
 								p->field->Float(outRecord,p->field->Float(outRecord) + field->Float(inRecord));
 							}
 						break;
@@ -628,7 +628,7 @@ int main (int argc,char *argv [])
 						break;
 					case MOD:
 						Values *cur = p->getHead();
-						while(cur->next && !DBMathEqualValues(cur->val,field->Float(inRecord))) cur = cur->next;
+						while(cur->next && !CMmathEqualValues(cur->val,field->Float(inRecord))) cur = cur->next;
 						if(cur->next) cur->occur++;
 						else
 							{
@@ -680,7 +680,7 @@ int main (int argc,char *argv [])
 							}
 						else
 							{
-							if (!DBMathEqualValues(field->Float(inRecord),field->FloatNoData())) p->field->Int(outRecord,1);
+							if (!CMmathEqualValues(field->Float(inRecord),field->FloatNoData())) p->field->Int(outRecord,1);
 							else p->field->Int(outRecord,0);
 							}
 						break;
@@ -689,7 +689,7 @@ int main (int argc,char *argv [])
 							{ p->setInt(); if (field->Int(inRecord) != field->IntNoData()) p->field->Int(outRecord,field->Int(inRecord)); }
 						else
 							{
-							if(!DBMathEqualValues(field->Float(inRecord),field->FloatNoData()))
+							if(!CMmathEqualValues(field->Float(inRecord),field->FloatNoData()))
 								p->field->Float(outRecord,field->Float(inRecord));
 							}
 						break;
@@ -698,7 +698,7 @@ int main (int argc,char *argv [])
 							{ p->setInt(); if (field->Int(inRecord) != field->IntNoData()) p->field->Int(outRecord,field->Int(inRecord)); }
 						else
 							{
-							if(!DBMathEqualValues(field->Float(inRecord),field->FloatNoData()))
+							if(!CMmathEqualValues(field->Float(inRecord),field->FloatNoData()))
 								p->field->Float(outRecord,field->Float(inRecord));
 							}
 						break;
@@ -711,7 +711,7 @@ int main (int argc,char *argv [])
 							}
 						else
 							{
-							if(!DBMathEqualValues(field->Float(inRecord),field->FloatNoData())) p->field->Float(outRecord,field->Float(inRecord));
+							if(!CMmathEqualValues(field->Float(inRecord),field->FloatNoData())) p->field->Float(outRecord,field->Float(inRecord));
 							else p->field->Float(outRecord,0.0);
 							}
 						break;
