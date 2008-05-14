@@ -1675,3 +1675,5 @@ DBObjData *DBGridCreate (char *,DBRegion,DBCoordinate);
 DBInt DBGridAppend (DBObjData *,DBObjData *);
 DBInt DBPointToGrid (DBObjData *,DBObjData *, DBFloat);
 DBInt DBPointToGrid (DBObjData *,DBObjData *,DBObjData *);
+
+DBInt DBNumberOfDays (DBInt, DBInt);

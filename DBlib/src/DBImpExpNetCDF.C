@@ -237,8 +237,8 @@ static DBInt _DBExportNetCDFGridDefine (DBObjData *dbData,int ncid, int dimids [
 	{
 	char *str;
 	int rowNum, colNum, i;
-	int status, levelid, latid,  lonid;
-	size_t start, count;
+	int status, levelid, latid, lonid, latbndid, lonbndid, bdimids[2];
+	size_t start [2], count [2];
 	double extent [2], cellWidth, cellHeight, *record;
 
 	switch (dbData->Type ())
@@ -299,6 +299,9 @@ static DBInt _DBExportNetCDFGridDefine (DBObjData *dbData,int ncid, int dimids [
 	extent [1] = (dbData->Extent ()).UpperRight.Y;
 	if ((status = nc_put_att_double (ncid,latid,"actual_range",NC_DOUBLE,2,extent)) != NC_NOERR)
 		{ fprintf(stderr, "NC Error: %s\n", nc_strerror(status)); nc_close (ncid); return (DBFault); }
+	str = "latitude_bnds";
+	if ((status = nc_put_att_text (ncid,latid,"bounds",strlen (str),str)) != NC_NOERR)
+		{ fprintf(stderr, "NC Error: %s\n", nc_strerror(status)); nc_close (ncid); return (DBFault); }
 	str = "y";
 	if ((status = nc_put_att_text (ncid,latid,"axis",strlen (str),str)) != NC_NOERR)
 		{ fprintf(stderr, "NC Error: %s\n", nc_strerror(status)); nc_close (ncid); return (DBFault); }
@@ -324,11 +327,28 @@ static DBInt _DBExportNetCDFGridDefine (DBObjData *dbData,int ncid, int dimids [
 	extent [1] = (dbData->Extent ()).UpperRight.X;
 	if ((status = nc_put_att_double (ncid,lonid,"actual_range",NC_DOUBLE,2,extent)) != NC_NOERR)
 		{ fprintf(stderr, "NC Error: %s\n", nc_strerror(status)); nc_close (ncid); return (DBFault); }
+	str = "longitude_bnds";
+	if ((status = nc_put_att_text (ncid,latid,"bounds",strlen (str),str)) != NC_NOERR)
+		{ fprintf(stderr, "NC Error: %s\n", nc_strerror(status)); nc_close (ncid); return (DBFault); }
 	str = "x";
 	if ((status = nc_put_att_text (ncid,lonid,"axis",strlen (str),str)) != NC_NOERR)
 		{ fprintf(stderr, "NC Error: %s\n", nc_strerror(status)); nc_close (ncid); return (DBFault); }
 	/* End Defining Longitude Variable */
 
+	/* Begin Defining Latitude_bounds Variable */
+	bdimids [0] = dimids[DIMLat];
+	bdimids [1] = 2;
+	if ((status = nc_def_var (ncid,"latitude_bnds",  NC_DOUBLE, (int) 2,bdimids, &latbndid))  != NC_NOERR)
+		{ fprintf(stderr, "NC Error: %s\n", nc_strerror(status)); nc_close (ncid); return (DBFault); }
+	/* End Defining Latitude_bounds Variable */
+
+	/* Begin Defining Longitude_bounds Variable */
+	bdimids [0] = dimids[DIMLon];
+	bdimids [1] = 2;
+	if ((status = nc_def_var (ncid,"longitude_bnds",  NC_DOUBLE, (int) 2,bdimids, &lonbndid))  != NC_NOERR)
+		{ fprintf(stderr, "NC Error: %s\n", nc_strerror(status)); nc_close (ncid); return (DBFault); }
+	/* End Defining Longitude_bounds Variable */
+	
 	/* Begin Defining Level Variable */
 	if ((status = nc_def_var (ncid,"level",  NC_DOUBLE, (int) 1,dimids + DIMLevel, &levelid))  != NC_NOERR)
 	 	{ fprintf(stderr, "NC Error: %s\n", nc_strerror(status)); nc_close (ncid); return (DBFault); }
@@ -346,16 +366,31 @@ static DBInt _DBExportNetCDFGridDefine (DBObjData *dbData,int ncid, int dimids [
 	if ((status = nc_enddef (ncid)) != NC_NOERR)
 		{ fprintf(stderr, "NC Error: %s\n", nc_strerror(status)); nc_close (ncid); return (DBFault); }
 
-	if ((record = (double *) calloc (rowNum > colNum ? rowNum : colNum,sizeof (double))) == (double *) NULL)
+	if ((record = (double *) calloc ((rowNum > colNum ? rowNum : colNum) * 2,sizeof (double))) == (double *) NULL)
 		{ fprintf (stderr,"Memory allocation error in: DBExportNetCDF ()\n"); return (DBFault); }
+
+	start[0] = start[1] =0;
+	count[0] = rowNum;
+	count[1] = 2;
 	for (i = 0;i < rowNum;i++) record [i] = (dbData->Extent ()).LowerLeft.Y + i * cellHeight + cellHeight / 2.0;
-	start = 0;
-	count = rowNum;
-	if ((status = nc_put_vara_double (ncid,latid,&start,&count,record)) != NC_NOERR)
+	if ((status = nc_put_vara_double (ncid,latid,start,count,record)) != NC_NOERR)
 		{ fprintf(stderr, "NC Error: %s\n", nc_strerror(status)); free (record); return (DBFault); }
+	for (i = 0;i < rowNum;i++) {
+		record [i * 2]     = (dbData->Extent ()).LowerLeft.Y + i       * cellHeight;
+		record [i * 2 + 1] = (dbData->Extent ()).LowerLeft.Y + (i + 1) * cellHeight;
+	}
+	if ((status = nc_put_vara_double (ncid,latbndid,start,count,record)) != NC_NOERR)
+		{ fprintf(stderr, "NC Error: %s\n", nc_strerror(status)); free (record); return (DBFault); }
+	
+	count[0] = colNum;
 	for (i = 0;i < colNum;i++) record [i] = (dbData->Extent ()).LowerLeft.X + i * cellWidth + cellWidth / 2.0;
-	count = colNum;
-	if ((status = nc_put_vara_double (ncid,lonid,&start,&count,record)) != NC_NOERR)
+	if ((status = nc_put_vara_double (ncid,lonid,start,count,record)) != NC_NOERR)
+		{ fprintf(stderr, "NC Error: %s\n", nc_strerror(status)); free (record); return (DBFault); }
+	for (i = 0;i < colNum;i++) {
+		record [i * 2]     = (dbData->Extent ()).LowerLeft.X + i       * cellWidth;
+		record [i * 2 + 1] = (dbData->Extent ()).LowerLeft.X + (i + 1) * cellWidth;
+	}
+	if ((status = nc_put_vara_double (ncid,lonbndid,start,count,record)) != NC_NOERR)
 		{ fprintf(stderr, "NC Error: %s\n", nc_strerror(status)); free (record); return (DBFault); }
 	free (record);
 	return (DBSuccess);
@@ -364,12 +399,12 @@ static DBInt _DBExportNetCDFGridDefine (DBObjData *dbData,int ncid, int dimids [
 static DBInt _DBExportNetCDFTimeDefine (DBObjData *dbData,int ncid,int dimids [])
 	{
 	char *str, timeStr [DBStringLength], unitStr [NC_MAX_NAME];
-	int status, timeid, i;
+	int status, timeid, timebndid, i, tdimids[2];
 	int bYear, bMonth, bDay, bHour, bMinute;
 	int eYear, eMonth, eDay, eHour, eMinute;
 	utUnit unit;
 	double extent [2];
-	size_t start, count;
+	size_t start[2], count[2];
 	double *record;
 	DBInt layerID;
 	DBGridIO	*gridIO = new DBGridIO (dbData);
@@ -459,34 +494,42 @@ static DBInt _DBExportNetCDFTimeDefine (DBObjData *dbData,int ncid,int dimids []
 
 	if ((status = nc_put_att_text (ncid,timeid,"units",strlen (unitStr),unitStr)) != NC_NOERR)
 		{ fprintf(stderr, "NC Error: %s\n", nc_strerror(status)); delete gridIO; return (DBFault); }
-	if ((status = nc_put_att_text (ncid,timeid,"delta_t",strlen (str),str)) != NC_NOERR)
-		{ fprintf(stderr, "NC Error: %s\n", nc_strerror(status)); delete gridIO; return (DBFault); }
-	if ((status = nc_put_att_text (ncid,timeid,"avg_period",strlen (str),str)) != NC_NOERR)
+	str = "time_bnds";
+	if ((status = nc_put_att_text (ncid,timeid,"bounds",strlen (str),str)) != NC_NOERR)
 		{ fprintf(stderr, "NC Error: %s\n", nc_strerror(status)); delete gridIO; return (DBFault); }
 	str = "t";
 	if ((status = nc_put_att_text (ncid,timeid,"axis",strlen (str),str)) != NC_NOERR)
 		{ fprintf(stderr, "NC Error: %s\n", nc_strerror(status)); delete gridIO; return (DBFault); }
 	/* End Defining Time Variable */
 
+	/* Begin Defining Time_bounds Variable */
+	tdimids[0] = dimids [DIMTime];
+	tdimids[1] = 2;
+	if ((status = nc_def_var (ncid,"time_bnds", NC_DOUBLE,(int) 2,tdimids,&timebndid)) != NC_NOERR)
+		{ fprintf(stderr, "NC Error: %s\n", nc_strerror(status)); delete gridIO; return (DBFault); }
+
 	if ((status = nc_enddef (ncid)) != NC_NOERR)
 		{ fprintf(stderr, "%s\n", nc_strerror(status)); delete gridIO; return (DBFault); }
 
-	if ((record = (double *) calloc (gridIO->LayerNum (),sizeof (double))) == (double *) NULL)
+	if ((record = (double *) calloc (gridIO->LayerNum () * 2,sizeof (double))) == (double *) NULL)
 		{
 		fprintf (stderr,"Memory allocation error in: DBExportNetCDF ()\n");
 		delete gridIO;
 		return (DBFault);
 		}
+	start[0] = start[1] = 0;
+	count[0] = gridIO->LayerNum ();
+	count[1] = 2;
 	for (layerID = 0;layerID < gridIO->LayerNum ();layerID++)
 		{
 		strcpy (timeStr,(gridIO->Layer (layerID))->Name ());
 		if (strncmp (timeStr,"XXXX",4) == 0) for (i = 0;i < 4;i++) timeStr [i] = '0';
 		switch (strlen (timeStr))
 			{
-			case  4: sscanf (timeStr,"%4d",&bYear); break;
-			case  7: sscanf (timeStr,"%4d-%2d",&bYear,&bMonth); break;
-			case 10: sscanf (timeStr,"%4d-%2d-%2d",&bYear,&bMonth,&bDay); break;
-			case 13: sscanf (timeStr,"%4d-%2d-%2d %2d",&bYear,&bMonth,&bDay,&bHour); break;
+			case  4: sscanf (timeStr,"%4d",                &bYear);                               break;
+			case  7: sscanf (timeStr,"%4d-%2d",            &bYear,&bMonth);                       break;
+			case 10: sscanf (timeStr,"%4d-%2d-%2d",        &bYear,&bMonth,&bDay);                 break;
+			case 13: sscanf (timeStr,"%4d-%2d-%2d %2d",    &bYear,&bMonth,&bDay,&bHour);          break;
 			case 16: sscanf (timeStr,"%4d-%2d-%2d %2d:%2d",&bYear,&bMonth,&bDay,&bHour,&bMinute); break;
 			}
 		if (utInvCalendar (bYear,bMonth,bDay,bHour,bMinute,(double) 0.0,&unit,record + layerID) != 0)	
@@ -497,9 +540,78 @@ static DBInt _DBExportNetCDFTimeDefine (DBObjData *dbData,int ncid,int dimids []
 			return (DBFault);
 			}
 		}
-	start = 0;
-	count = gridIO->LayerNum ();
-	if ((status = nc_put_vara_double (ncid,timeid,&start,&count,record)) != NC_NOERR)
+	if ((status = nc_put_vara_double (ncid,timeid,start,count,record)) != NC_NOERR)
+		{
+		fprintf(stderr, "%s\n", nc_strerror(status));
+		delete gridIO;
+		free (record);
+		return (DBFault);
+		}
+
+	bMonth  = 1;
+	eMonth  = 12;
+	bDay    = 1;
+	eDay    = 31;
+	bHour   = 0;
+	eHour   = 23;
+	bMinute = 0;
+	eMinute = 59;
+	for (layerID = 0;layerID < gridIO->LayerNum ();layerID++)
+		{
+		strcpy (timeStr,(gridIO->Layer (layerID))->Name ());
+		if (strncmp (timeStr,"XXXX",4) == 0) for (i = 0;i < 4;i++) timeStr [i] = '0';
+		switch (strlen (timeStr))
+			{
+			case  4:
+				sscanf (timeStr,"%4d", &bYear);
+				eYear = bYear;
+				break;
+			case  7:
+				sscanf (timeStr,"%4d-%2d", &bYear, &bMonth);
+				eYear  = bYear;
+				eMonth = bMonth;
+				eDay   = DBNumberOfDays (eYear,eMonth);
+				break;
+			case 10:
+				sscanf (timeStr,"%4d-%2d-%2d", &bYear,&bMonth,&bDay);
+				eYear  = bYear;
+				eMonth = bMonth;
+				eDay   = bDay;
+				eHour  = 23;
+				break;
+			case 13:
+				sscanf (timeStr,"%4d-%2d-%2d %2d", &bYear,&bMonth,&bDay,&bHour);
+				eYear   = bYear;
+				eMonth  = bMonth;
+				eDay    = bDay;
+				eHour   = bHour;
+				eMinute = 59;
+				break;
+			case 16:
+				sscanf (timeStr,"%4d-%2d-%2d %2d:%2d",&bYear,&bMonth,&bDay,&bHour,&bMinute);
+				eYear   = bYear;
+				eMonth  = bMonth;
+				eDay    = bDay;
+				eHour   = bHour;
+				eMinute = bMinute;
+				break;
+			}
+		if (utInvCalendar (bYear,bMonth,bDay,bHour,bMinute,(double) 0.0,&unit,record + layerID * 2) != 0)	
+			{
+			fprintf (stderr,"Invalid time [%s] in: DBImportNetCDF ()",timeStr);
+			delete gridIO;
+			free (record);
+			return (DBFault);
+			}
+		if (utInvCalendar (eYear,eMonth,eDay,eHour,eMinute,(double) 59.999,&unit,record + layerID * 2 + 1) != 0)	
+			{
+			fprintf (stderr,"Invalid time [%s] in: DBImportNetCDF ()",timeStr);
+			delete gridIO;
+			free (record);
+			return (DBFault);
+			}
+		}
+	if ((status = nc_put_vara_double (ncid,timebndid,start,count,record)) != NC_NOERR)
 		{
 		fprintf(stderr, "%s\n", nc_strerror(status));
 		delete gridIO;

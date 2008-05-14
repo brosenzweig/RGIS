@@ -30,6 +30,11 @@ DBInt DBDateIsLeapYear (DBInt year)
 	return (leapYear);
 	}
 
+int DBNumberOfDays (DBInt year, DBInt month) {
+	_DBSetFebruary(DBDateIsLeapYear (year));
+	return (_DBNumberOfDays[month - 1]);
+}
+
 DBInt DBDateIsLeapYear (DBDate date) { return ( DBDateIsLeapYear (date.Year ())); }
 
 void DBDate::Set (DBInt year,DBInt month,DBInt day,DBInt hour,DBInt min)
