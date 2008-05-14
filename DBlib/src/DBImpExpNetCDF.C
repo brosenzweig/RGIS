@@ -277,6 +277,8 @@ static DBInt _DBExportNetCDFGridDefine (DBObjData *dbData,int ncid, int dimids [
 		{ fprintf(stderr, "NC Error: %s\n", nc_strerror(status)); return (DBFault); }
 	if ((status = nc_def_dim (ncid,"longitude",colNum,dimids + DIMLon))   != NC_NOERR)
 		{ fprintf(stderr, "NC Error: %s\n", nc_strerror(status)); return (DBFault); }
+	if ((status = nc_def_dim (ncid,"bnds",     2,    bdimids + 1))        != NC_NOERR)
+		{ fprintf(stderr, "NC Error: %s\n", nc_strerror(status)); return (DBFault); }
 	/* End Defining Dimensions */
 
 	/* Begin Defining Latitude Variable */
@@ -337,14 +339,12 @@ static DBInt _DBExportNetCDFGridDefine (DBObjData *dbData,int ncid, int dimids [
 
 	/* Begin Defining Latitude_bounds Variable */
 	bdimids [0] = dimids[DIMLat];
-	bdimids [1] = 2;
 	if ((status = nc_def_var (ncid,"latitude_bnds",  NC_DOUBLE, (int) 2,bdimids, &latbndid))  != NC_NOERR)
 		{ fprintf(stderr, "NC Error: %s\n", nc_strerror(status)); nc_close (ncid); return (DBFault); }
 	/* End Defining Latitude_bounds Variable */
 
 	/* Begin Defining Longitude_bounds Variable */
 	bdimids [0] = dimids[DIMLon];
-	bdimids [1] = 2;
 	if ((status = nc_def_var (ncid,"longitude_bnds",  NC_DOUBLE, (int) 2,bdimids, &lonbndid))  != NC_NOERR)
 		{ fprintf(stderr, "NC Error: %s\n", nc_strerror(status)); nc_close (ncid); return (DBFault); }
 	/* End Defining Longitude_bounds Variable */
@@ -409,6 +409,9 @@ static DBInt _DBExportNetCDFTimeDefine (DBObjData *dbData,int ncid,int dimids []
 	DBInt layerID;
 	DBGridIO	*gridIO = new DBGridIO (dbData);
 
+	if ((status = nc_inq_dimid (ncid, "bnds", tdimids + 1))       != NC_NOERR)
+		{ fprintf(stderr, "NC Error: %s\n", nc_strerror(status)); delete gridIO; return (DBFault); }
+
 	/* Begin Defining Dimensions */
 	if ((status = nc_redef (ncid)) != NC_NOERR)
 		{ fprintf(stderr, "NC Error: %s\n", nc_strerror(status)); delete gridIO; return (DBFault); }
@@ -427,70 +430,55 @@ static DBInt _DBExportNetCDFTimeDefine (DBObjData *dbData,int ncid,int dimids []
 		{ fprintf(stderr, "NC Error: %s\n", nc_strerror(status)); delete gridIO; return (DBFault); }
 	strcpy (timeStr,(gridIO->Layer (gridIO->LayerNum () - 1))->Name ());
 	if (strncmp (timeStr,"XXXX",4) == 0) for (i = 0;i < 4;i++) timeStr [i] = '0';
+	bMonth  = 6;
+	bDay    = 15;
+	bHour   = 12;
+	bMinute = 30;
 	switch (strlen (timeStr))
 		{
 		case  4:
-			strcat (timeStr,"-01-01 00:00:00");
 			sscanf (timeStr,"%4d",&eYear);
-			eMonth = eDay = eHour = eMinute = 0;
 			strcpy (timeStr,(gridIO->Layer (0))->Name ());
 			if (strncmp (timeStr,"XXXX",4) == 0) for (i = 0;i < 4;i++) timeStr [i] = '0';
 			sscanf (timeStr,"%4d",&bYear);
-			bMonth = bDay = bHour = bMinute = 0;
-			sprintf (unitStr,"years since %s", timeStr);
+			sprintf (unitStr,"days since %s-01-01 00:00:00", timeStr);
 			str = "0001-00-00 00:00:00";
 			break;
 		case  7:
-			strcat (timeStr,"-01 00:00:00");
 			sscanf (timeStr,"%4d-%2d",&eYear,&eMonth);
-			eDay = eHour = eMinute = 0;
 			strcpy (timeStr,(gridIO->Layer (0))->Name ());
 			if (strncmp (timeStr,"XXXX",4) == 0) for (i = 0;i < 4;i++) timeStr [i] = '0';
 			sscanf (timeStr,"%4d-%2d",&bYear,&bMonth);
-			bDay = bHour = bMinute = 0;
-			sprintf (unitStr,"months since %s", timeStr);
+			sprintf (unitStr,"days since %s-01 00:00:00", timeStr);
 			str = "0000-01-00 00:00:00";
 			break;
 		case 10:
-			strcat (timeStr," 00:00:00");
 			sscanf (timeStr,"%4d-%2d-%2d",&eYear,&eMonth,&eDay);
-			eHour = eMinute = 0;
 			strcpy (timeStr,(gridIO->Layer (0))->Name ());
 			if (strncmp (timeStr,"XXXX",4) == 0) for (i = 0;i < 4;i++) timeStr [i] = '0';
 			sscanf (timeStr,"%4d-%2d-%2d",&bYear,&bMonth,&bDay);
-			bHour = bMinute = 0;
-			sprintf (unitStr,"days since %s",   timeStr);
+			sprintf (unitStr,"days since %s 00:00:00",   timeStr);
 			str = "0000-00-01 00:00:00";
 			break;
 		case 13:
-			strcat (timeStr,":00:00");
 			sscanf (timeStr,"%4d-%2d-%2d %2d",&eYear,&eMonth,&eDay,&eHour);
-			eMinute = 0;
 			strcpy (timeStr,(gridIO->Layer (0))->Name ());
 			if (strncmp (timeStr,"XXXX",4) == 0) for (i = 0;i < 4;i++) timeStr [i] = '0';
 			sscanf (timeStr,"%4d-%2d-%2d %2d",&bYear,&bMonth,&bDay,&bHour);
-			bMinute = 0;
-			sprintf (unitStr,"hours since %s",  timeStr);
+			sprintf (unitStr,"hours since %s:00:00",  timeStr);
 			str = "0000-00-00 01:00:00";
 			break;
 		case 16:
-			strcat (timeStr,":00");
 			sscanf (timeStr,"%4d-%2d-%2d %2d:%2d",&eYear,&eMonth,&eDay,&eHour,&eMinute);
 			strcpy (timeStr,(gridIO->Layer (0))->Name ());
 			if (strncmp (timeStr,"XXXX",4) == 0) for (i = 0;i < 4;i++) timeStr [i] = '0';
 			sscanf (timeStr,"%4d-%2d-%2d %2d:%2d",&bYear,&bMonth,&bDay,&bHour,&bMinute);
-			sprintf (unitStr,"minutes since %s",timeStr);
+			sprintf (unitStr,"minutes since %s:00",timeStr);
 			str = "0000-00-00 00:01:00";
 			break;
 		}
 	if (utScan (unitStr,&unit) != 0)
 		{ fprintf (stderr,"Invalid time Unit [%s] in: DBImportNetCDF ()",unitStr); delete gridIO; return (DBFault); }
-	if (utInvCalendar (bYear,bMonth,bDay,bHour,bMinute,(double) 0.0,&unit,extent) != 0)	
-		{ fprintf (stderr,"Invalid time [%s] in: DBImportNetCDF ()",timeStr); delete gridIO; return (DBFault); }
-	if (utInvCalendar (eYear,eMonth,eDay,eHour,eMinute,(double) 0.0,&unit,extent + 1) != 0)	
-		{ fprintf (stderr,"Invalid time [%s] in: DBImportNetCDF ()",timeStr); delete gridIO; return (DBFault); }
-	if ((status = nc_put_att_double (ncid,timeid,"actual_range",NC_DOUBLE,2,extent)) != NC_NOERR)
-		{ fprintf(stderr, "NC Error: %s\n", nc_strerror(status)); delete gridIO; return (DBFault); }
 
 	if ((status = nc_put_att_text (ncid,timeid,"units",strlen (unitStr),unitStr)) != NC_NOERR)
 		{ fprintf(stderr, "NC Error: %s\n", nc_strerror(status)); delete gridIO; return (DBFault); }
@@ -504,7 +492,6 @@ static DBInt _DBExportNetCDFTimeDefine (DBObjData *dbData,int ncid,int dimids []
 
 	/* Begin Defining Time_bounds Variable */
 	tdimids[0] = dimids [DIMTime];
-	tdimids[1] = 2;
 	if ((status = nc_def_var (ncid,"time_bnds", NC_DOUBLE,(int) 2,tdimids,&timebndid)) != NC_NOERR)
 		{ fprintf(stderr, "NC Error: %s\n", nc_strerror(status)); delete gridIO; return (DBFault); }
 
@@ -520,6 +507,10 @@ static DBInt _DBExportNetCDFTimeDefine (DBObjData *dbData,int ncid,int dimids []
 	start[0] = start[1] = 0;
 	count[0] = gridIO->LayerNum ();
 	count[1] = 2;
+	bMonth  = 6;
+	bDay    = 15;
+	bHour   = 12;
+	bMinute = 30;
 	for (layerID = 0;layerID < gridIO->LayerNum ();layerID++)
 		{
 		strcpy (timeStr,(gridIO->Layer (layerID))->Name ());
@@ -618,6 +609,17 @@ static DBInt _DBExportNetCDFTimeDefine (DBObjData *dbData,int ncid,int dimids []
 		free (record);
 		return (DBFault);
 		}
+	/* End Defining Time Bounds Variable */
+
+	if ((status = nc_redef (ncid)) != NC_NOERR)
+		{ fprintf(stderr, "NC Error: %s\n", nc_strerror(status)); delete gridIO; return (DBFault); }
+	extent[0] = record[0];
+	extent[1] = record[layerID * 2 - 1];
+	if ((status = nc_put_att_double (ncid,timeid,"actual_range",NC_DOUBLE,2,extent)) != NC_NOERR)
+		{ fprintf(stderr, "NC Error: %s\n", nc_strerror(status)); delete gridIO; return (DBFault); }
+	if ((status = nc_enddef (ncid)) != NC_NOERR)
+		{ fprintf(stderr, "%s\n", nc_strerror(status)); delete gridIO; return (DBFault); }
+
 	delete gridIO;
 	free (record);
 	return (DBSuccess);
@@ -868,7 +870,7 @@ DBInt DBExportNetCDF (DBObjData *dbData,const char *fileName)
 
 	if ((status = nc_create (fileName,NC_CLOBBER,&ncid)) != NC_NOERR)
 		{ fprintf(stderr, "NC Error: %s\n", nc_strerror(status)); return (DBFault); }
-	if ((status = nc_put_att_text (ncid,NC_GLOBAL,"Conventions",strlen ("COARDS-NCghaas"),"COARDS-NCghaas")) != NC_NOERR)
+	if ((status = nc_put_att_text (ncid,NC_GLOBAL,"Conventions",strlen ("CF-1.2"),"CF-1.2")) != NC_NOERR)
 		{ fprintf(stderr, "NC Error: %s\n", nc_strerror(status)); nc_close (ncid); return (DBFault); }
 	if ((status = nc_put_att_text (ncid,NC_GLOBAL,"title",strlen (dbData->Name ()),dbData->Name ())) != NC_NOERR)
 		{ fprintf(stderr, "NC Error: %s\n", nc_strerror(status)); nc_close (ncid); return (DBFault); }
