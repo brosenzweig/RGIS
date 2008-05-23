@@ -2,7 +2,7 @@
 
 GHAAS RiverGIS Utilities V1.0
 Global Hydrologic Archive and Analysis System
-Copyright 1994-2004, University of New Hampshire
+Copyright 1994-2008, University of New Hampshire
 
 CMDgrdRenameLayers.C
 
@@ -121,6 +121,8 @@ int main(int argc, char* argv[])
 	ret = (argNum > 2) && (strcmp (argv [2],"-") != 0) ? dbData->Write (argv [2]) : dbData->Write (stdout);
 
 	if (renameCLS != (RenameCLS *) NULL) { renameCLS->DeleteLink (); delete renameCLS; }
+
+	delete gridIO;
 	delete dbData;
 	if (verbose) RGlibPauseClose ();
 	return (ret);

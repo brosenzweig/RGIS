@@ -2,7 +2,7 @@
 
 GHAAS RiverGIS Utilities V1.0
 Global Hydrologic Archive and Analysis System
-Copyright 1994-2004, University of New Hampshire
+Copyright 1994-2008, University of New Hampshire
 
 CMDgrdCycleMean.C
 
@@ -130,11 +130,11 @@ int main (int argc,char *argv [])
 
 	data = DBGridToGrid (tsData);
 
-	if (title	== (char *) NULL)	title   = tsData->Name ();
+	if (title	== (char *) NULL) title   = tsData->Name ();
 	if (subject == (char *) NULL) subject = tsData->Document (DBDocSubject);
 	if (domain  == (char *) NULL) domain  = tsData->Document (DBDocGeoDomain);
 	if (version == (char *) NULL) version = tsData->Document (DBDocVersion);
-	if (shadeSet == DBFault)		shadeSet = DBDataFlagDispModeContGreyScale;
+	if (shadeSet == DBFault)     shadeSet = DBDataFlagDispModeContGreyScale;
 
 	data->Name (title);
 	data->Document (DBDocSubject,subject);

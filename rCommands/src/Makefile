@@ -33,6 +33,7 @@ UTILS = $(BIN)/dsAggregate\
         $(BIN)/grdCellStats\
         $(BIN)/grdDifference\
         $(BIN)/grdReclassDisc\
+        $(BIN)/grdRunningMean\
         $(BIN)/grdTimeSeries\
         $(BIN)/grdTSAggr\
         $(BIN)/grdSeasonAggr\
