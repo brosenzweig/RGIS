@@ -227,6 +227,7 @@ static int _MFModelParse (int argc, char *argv [],int argNum, int (*conf) ()) {
 			CMmsgPrint (CMmsgInfo,"     -p, --option   [option=content]\n");
 			CMmsgPrint (CMmsgInfo,"     -r, --route    [variable]\n");
 			CMmsgPrint (CMmsgInfo,"     -T, --testonly\n");
+			CMmsgPrint (CMmsgInfo,"     -m, --message [sys_error|app_error|usr_error|debug|warning|info]=[on|off|file=<filename>]\n");
 			CMmsgPrint (CMmsgInfo,"     -h, --help\n");
 			break;
 		}
