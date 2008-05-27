@@ -1,0 +1,793 @@
+<!doctype html public "-//w3c//dtd html 4.0 transitional//en">
+<html>
+<head>
+   <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+   <meta name="Author" content="kcb">
+   <meta name="GENERATOR" content="Mozilla/4.51 [en] (WinNT; I) [Netscape]">
+   <title>model_doc</title>
+</head>
+<body>
+
+<center><a NAME="DA Documentation"></a><b><font face="Arial,Helvetica">&nbsp;&nbsp;&nbsp;
+DA Documentation</font></b></center>
+<b><font face="Arial,Helvetica"><font size=-1><a href="#Overview">Overview</a></font></font></b>
+<p><b><font face="Arial,Helvetica"><font size=-1>Menus</font></font></b>
+<ul>
+<li>
+<b><font face="Arial,Helvetica"><font size=-1><a href="#Model Menu">Model</a></font></font></b></li>
+
+<li>
+<b><font face="Arial,Helvetica"><font size=-1><a href="#GeoExtent Menu">GeoExtent</a></font></font></b></li>
+
+<li>
+<b><font face="Arial,Helvetica"><font size=-1><a href="#Log Menu">Log</a></font></font></b></li>
+
+<li>
+<b><font face="Arial,Helvetica"><font size=-1><a href="#State Menu">State</a></font></font></b></li>
+
+<li>
+<b><font face="Arial,Helvetica"><font size=-1><a href="#Run Menu">Run</a></font></font></b></li>
+
+<li>
+<b><font face="Arial,Helvetica"><font size=-1><a href="#Browser Menu">Browser</a></font></font></b></li>
+</ul>
+<b><font face="Arial,Helvetica"><font size=-1><a href="#Deleting Models">Deleting
+/ Moving Models</a></font></font></b>
+<p><b><font face="Arial,Helvetica"><font size=-1><a href="#DA Version 1.3 Update Notes">DA
+Version 1.3 Update Notes</a></font></font></b>
+<p><b><font face="Arial,Helvetica"><font size=-1><a href="#Components:">Model
+Components</a></font></font></b>
+<p><b><font face="Arial,Helvetica"><font size=-1><a href="#Compiling C Models">Compiling
+C Models</a></font></font></b>
+<p><b><font face="Arial,Helvetica"><font size=-1><a href="#Compiling Fortran Models">Compiling
+Fortran Models</a></font></font></b>
+<p><b><font face="Arial,Helvetica"><font size=-1><a href="#Model Description File Directives">File
+Directives Reference</a></font></font></b>
+<p><b><font face="Arial,Helvetica"><font size=-1><a href="#Model Description File Directives">C
+Interface Reference</a></font></font></b>
+<p><b><font face="Arial,Helvetica"><font size=-1><a href="#Fortran Interface Library Routines">Fortran
+Interface Reference</a></font></font></b>
+<br>
+<hr WIDTH="100%">
+<br><a NAME="Overview"></a><b><font face="Arial,Helvetica"><font size=-1>Overview</font></font></b>
+<br><font face="Arial,Helvetica"><font size=-1>&nbsp;&nbsp;&nbsp; The Data
+Assembler is a cell based modeling environment designed to free model developers
+from the non-scientific aspects of software development such as file input
+and output, data point geo-referencing,</font></font>
+<br><font face="Arial,Helvetica"><font size=-1>missing data value registration,
+and parameter input.&nbsp; These model independent tasks are performed
+iternal to the Data Assembler, reducing model code to its scientific functionality.&nbsp;
+In addition, the Data Assembler provides a means to integrate discrete
+cell based models written in standard C or Fortran into a versatile graphical
+modeling environment.</font></font>
+<br><font face="Arial,Helvetica"><font size=-1>&nbsp;&nbsp;&nbsp;&nbsp;
+A model in the Data Assembler environment uses a small set of interface
+routines callable from C or Fortran to access model data and parameters.&nbsp;
+Each model is compiled as a separate executable which is</font></font>
+<br><font face="Arial,Helvetica"><font size=-1>accessed through the Data
+Assembler.&nbsp; During execution of the model, all data preparation tasks
+are performed by the Data Assembler.&nbsp; In addition, the Data Assembler
+allows for cascaded execution of models</font></font>
+<br><font face="Arial,Helvetica"><font size=-1>enabling model output to
+be used as input by other models.&nbsp; The entire chain of execution is
+controlled by the Data Assembler.&nbsp; The remainder of this help file
+describes the usage of various functions in the main</font></font>
+<br><font face="Arial,Helvetica"><font size=-1>interface window of the
+Data Assembler.</font></font>
+<br>
+<hr WIDTH="100%">
+<br><a NAME="Model Menu"></a><b><font face="Arial,Helvetica"><font size=-1>Model
+Menu</font></font></b>
+<blockquote><font face="Arial,Helvetica"><font size=-1><b>Load Model</b>
+- Used to load a model into the current workspace.&nbsp; The model is appended
+to the current list of loaded models, however it can be moved to any desired
+location (see the 'Moving Models'&nbsp; section below)</font></font>
+<p><font face="Arial,Helvetica"><font size=-1><b>Clear Models</b> - Used
+to reset the Data Assembler to startup conditions. All models are deleted
+and the Data Assembler is placed in its startup state.</font></font>
+<p><font face="Arial,Helvetica"><font size=-1><b>Exit</b> - Used to exit
+from the Data Assembler.</font></font></blockquote>
+<a NAME="GeoExtent Menu"></a><b><font face="Arial,Helvetica"><font size=-1>GeoExtent
+Menu</font></font></b>
+<blockquote><font face="Arial,Helvetica"><font size=-1><b>Set To Maximum
+Common Extent</b> - Used to set the geographic extent (the region over
+which the models will be run) to the maximum area common to all input data
+sets.&nbsp; Selection of this option is denoted by a depressed diamond
+to the left of the menu option</font></font>
+<p><font face="Arial,Helvetica"><font size=-1><b>Set To Maximum Extent</b>
+- Used to set the geographic extent to the maximum area of covered by any
+input data set.</font></font>
+<p><font face="Arial,Helvetica"><font size=-1><b>Set Extent Manually</b>
+- Used to manually set the coordinates of the geographic extent.&nbsp;
+This option can be used if the model is to be run over a small portion
+of the input data sets.</font></font>
+<p><font face="Arial,Helvetica"><font size=-1><b>Set Cell Size</b> - Used
+to set the cell size used for the model run. The cell size of all input
+data sets must be consistent with the cell size entered here.&nbsp; By
+default, the cell size is 1/2 degree square.</font></font></blockquote>
+<a NAME="Log Menu"></a><b><font face="Arial,Helvetica"><font size=-1>Log
+Menu</font></font></b>
+<blockquote><font face="Arial,Helvetica"><font size=-1><b>Set Log File</b>
+- Used to set the log file to be created when the models are run.&nbsp;
+The log file is an optional ascii file which provides a detailed description
+of the model run including the models which were executed, the inputs,
+outputs, and parameters used.&nbsp; The append option allows the user to
+append the entries from several model runs to the save log file.</font></font>
+<p><font face="Arial,Helvetica"><font size=-1><b>Set Autodescribe</b> -
+if this feature is set to "on" then it will record input and model information
+into the documentation field of all outputs in all models, including time/date
+stamps of these files.&nbsp; The default setting for this feature is "on".</font></font></blockquote>
+<a NAME="State Menu"></a><b><font face="Arial,Helvetica"><font size=-1>State
+Menu</font></font></b>
+<blockquote><font face="Arial,Helvetica"><font size=-1><b>Save State</b>
+- This option is used to create a record of the current state of the Data
+Assembler for later usage.</font></font>
+<p><font face="Arial,Helvetica"><font size=-1><b>Load State</b> - This
+option loads a state file created by the 'Save State' option above.&nbsp;
+The state of the Data Assembler is set to the state which was saved.&nbsp;
+This includes: models, inputs, outputs, parameters, and the geographic
+extent.</font></font></blockquote>
+<a NAME="Run Menu"></a><b><font face="Arial,Helvetica"><font size=-1>Run
+Menu</font></font></b>
+<blockquote><font face="Arial,Helvetica"><font size=-1><b>Go </b>- This
+option begins execution of the currently loaded hierarchy of models</font></font></blockquote>
+<a NAME="Browser Menu"></a><b><font face="Arial,Helvetica"><font size=-1>Browser
+Menu</font></font></b>
+<blockquote><font face="Arial,Helvetica"><font size=-1><b>Add Entry</b>
+- This routine is used to add an entry to the data set browser lookup table.</font></font>
+<p><font face="Arial,Helvetica"><font size=-1><b>Edit Entries</b> - This
+routine enables the user to modify and delete entries in the browser table.</font></font>
+<p><font face="Arial,Helvetica"><font size=-1><b>Delete All Entries</b>
+- This option is used to reinitialize the data set browser.&nbsp; All entries
+are deleted.</font></font></blockquote>
+
+<p><br>
+<hr WIDTH="100%">
+<br><a NAME="Deleting Models"></a><b><font face="Arial,Helvetica"><font size=-1>Deleting
+Models</font></font></b>
+<br><font face="Arial,Helvetica"><font size=-1>It is possible to delete
+a single loaded model from the sequence of currently loaded models.&nbsp;
+To do so, press the right mouse button while the cursor is over the dark
+gray background of the model which is to be deleted and select the 'Delete'
+option from the popup menu that appears.&nbsp; When a model is deleted,
+all inputs which were linked to one of the model's outputs are automatically
+unset.</font></font>
+<p><b><font face="Arial,Helvetica"><font size=-1>Moving Models</font></font></b>
+<br><font face="Arial,Helvetica"><font size=-1>It is possible to move a
+model to a different position in the sequence of currently loaded models.&nbsp;
+To do so, press the left mouse button while the cursor is over the dark
+gray background of the model which is to be moved.&nbsp; Then drag the
+model to the desired position.</font></font>
+<p><b><font face="Arial,Helvetica"><font size=-1>Browse Model Outputs</font></font></b>
+<br><font face="Arial,Helvetica"><font size=-1>This routine provides a
+means for setting all outputs of a model simultaneously.&nbsp; To specify
+that a particular model output is to be saved, place the file name for
+the output file in the text field and selected the desired data format
+(Tabular = L:, Matrix = M:). If the entered data set name does not have
+a prefix (or has an</font></font>
+<br><font face="Arial,Helvetica"><font size=-1>incorrect prefix) the appropriate
+prefix will be added to the file name.</font></font>
+<p>
+<hr WIDTH="100%">
+<br><a NAME="DA Version 1.3 Update Notes"></a><b><font face="Arial,Helvetica"><font size=-1>DA
+Version 1.3 Update Notes</font></font></b>
+<p><font face="Arial,Helvetica"><font size=-1>1. Background Model Execution</font></font>
+<br><font face="Arial,Helvetica"><font size=-1>The DA can be used to perform
+background model execution from a state file description.&nbsp; In this
+manner, the model run can be performed without the need for displaying
+the GUI.</font></font>
+<p><font face="Arial,Helvetica"><font size=-1>The syntax is :&nbsp; da
+statefile [logfile]</font></font>
+<p><font face="Arial,Helvetica"><font size=-1>where statefile is the name
+of the state file which is to be run and logfile is the optional specification
+for a log file name to be created for the model run.</font></font>
+<p><font face="Arial,Helvetica"><font size=-1>A few notes:</font></font>
+<br><font face="Arial,Helvetica"><font size=-1>&nbsp; a) all output files
+are automatically overwritten</font></font>
+<br><font face="Arial,Helvetica"><font size=-1>&nbsp; b) error messages
+go to stderr</font></font>
+<br><font face="Arial,Helvetica"><font size=-1>&nbsp; c) the status of
+the auto describe option is specified by</font></font>
+<br><font face="Arial,Helvetica"><font size=-1>&nbsp;&nbsp;&nbsp;&nbsp;
+the state file.&nbsp; If an older state file is used which</font></font>
+<br><font face="Arial,Helvetica"><font size=-1>&nbsp;&nbsp;&nbsp;&nbsp;
+does not contain this option, the auto describe option</font></font>
+<br><font face="Arial,Helvetica"><font size=-1>&nbsp;&nbsp;&nbsp;&nbsp;
+will default to being on. (see next note)</font></font>
+<br><font face="Arial,Helvetica"><font size=-1>&nbsp; d) the geographic
+extent for the model run will be as</font></font>
+<br><font face="Arial,Helvetica"><font size=-1>&nbsp;&nbsp;&nbsp;&nbsp;
+specified in the state file.&nbsp; If an older state file</font></font>
+<br><font face="Arial,Helvetica"><font size=-1>&nbsp;&nbsp;&nbsp;&nbsp;
+is used which does not have a saved geo extent, then</font></font>
+<br><font face="Arial,Helvetica"><font size=-1>&nbsp;&nbsp;&nbsp;&nbsp;
+the geo extent will default to the maximum common extent.</font></font>
+<br><font face="Arial,Helvetica"><font size=-1>&nbsp;&nbsp;&nbsp;&nbsp;
+(see next note).</font></font>
+<p><font face="Arial,Helvetica"><font size=-1>2. State File</font></font>
+<br><font face="Arial,Helvetica"><font size=-1>The geographic extent selection
+(Max. extent, Max. common extent,&nbsp; or entered coordinates) and the
+state of the auto describe flag are now saved to the state file.&nbsp;
+Older state files which do not save&nbsp; these options will default to
+the geo extent option 'maximum common extent' and will have the auto describe
+option on.</font></font>
+<p><font face="Arial,Helvetica"><font size=-1>3. PARAMETER_LABEL</font></font>
+<br><font face="Arial,Helvetica"><font size=-1>There is a new parameter
+type for use in the model definition file. It is the PARAMETER_LABEL.&nbsp;
+It is used to place a comment in the parameters window.&nbsp; This can
+be used to comment on a particular group of parameters or just to provide
+more information to the user. (see TEM/tem.mdl for example).</font></font>
+<p>
+<hr WIDTH="100%">
+<br><a NAME="Components:"></a><b><font face="Arial,Helvetica"><font size=-1>Model
+Components:</font></font></b>
+<ul>
+<li>
+<b><font face="Arial,Helvetica"><font size=-1><a href="#Grand_PET">Grand
+PET</a></font></font></b></li>
+
+<li>
+<b><font face="Arial,Helvetica"><font size=-1><a href="#Gross Irradiance">Gross
+Irradiance</a></font></font></b></li>
+
+<li>
+<b><font face="Arial,Helvetica"><font size=-1><a href="#Net Irradiance">Net
+Irradiance</a></font></font></b></li>
+
+<li>
+<b><font face="Arial,Helvetica"><font size=-1><a href="#Shuttleworth-Wallace-Gurney PET">Shuttleworth-Wallace-Gurney
+PET</a></font></font></b></li>
+
+<li>
+<b><font face="Arial,Helvetica"><font size=-1><a href="#Unit Conversion">Unit
+Conversion</a></font></font></b></li>
+
+<li>
+<b><font face="Arial,Helvetica"><font size=-1><a href="#WBM version">WBM
+version 1.1</a></font></font></b></li>
+</ul>
+<a NAME="Grand_PET"></a><b><font face="Arial,Helvetica"><font size=-1>Grand_PET</font></font></b>
+<p><font face="Arial,Helvetica"><font size=-1>This model will generate
+all eleven PET outputs. It must be loaded with the cover type lookup table
+model and the Thornthwiate Heat Index model. There should be an apropriate
+state file for this in default_states.</font></font>
+<br><font face="Arial,Helvetica"><font size=-1>It is recommended that this
+model be used with a temporary directory for mass production work.</font></font>
+<br><font face="Arial,Helvetica"><font size=-1><a href="#Components:">Back
+to List</a></font></font>
+<br>
+<hr WIDTH="100%">
+<p><a NAME="Gross Irradiance"></a><b><font face="Arial,Helvetica"><font size=-1>Gross
+Irradiance Model</font></font></b>
+<p><font face="Arial,Helvetica"><font size=-1>This model creates gross
+irradiance using the standard integrating algorithm.</font></font>
+<p><font face="Arial,Helvetica"><font size=-1>jcc@ecos.unh.edu</font></font>
+<br><font face="Arial,Helvetica"><font size=-1>June 1, 1995</font></font>
+<br><font face="Arial,Helvetica"><font size=-1><a href="#Components:">Back
+to List</a></font></font>
+<br>
+<hr WIDTH="100%">
+<p><a NAME="Net Irradiance"></a>
+<br><b><font face="Arial,Helvetica"><font size=-1>Net Irradiance Model</font></font></b>
+<p><font face="Arial,Helvetica"><font size=-1>net irradiance calculation
+using the angstrom relationship and sunshine hours (cf. Otto et al., 1995)</font></font>
+<br><font face="Arial,Helvetica"><font size=-1><a href="#Components:">Back
+to List</a></font></font>
+<br>
+<hr WIDTH="100%">
+<p><a NAME="Shuttleworth-Wallace-Gurney PET"></a><b><font face="Arial,Helvetica"><font size=-1>Shuttleworth-Wallace-Gurney
+PET model</font></font></b>
+<p><font face="Arial,Helvetica"><font size=-1>Because of the detail in
+model sdn a description file is appropriate.</font></font>
+<br><font face="Arial,Helvetica"><font size=-1>People involved with this
+model: Tony Federer, Annette, Balazs, Tim Golden.</font></font>
+<br><font face="Arial,Helvetica"><font size=-1>There are 9 variable inputs
+to this model.</font></font>
+<br><font face="Arial,Helvetica"><font size=-1>There are 13 parameter inputs
+to this model.</font></font>
+<br><font face="Arial,Helvetica"><font size=-1>There are 9 fortran sourced
+subprograms called from this model.</font></font>
+<br><font face="Arial,Helvetica"><font size=-1>This model is being implemented
+for use with the Data Assembler, developed by John Canfield and the Hydrology
+group. sdn is the daily Shuttleworth-Wallace-Gurney (1985, 1990) PET model.
+It calculates a daily figure for the amount of water evaporating from plants
+and soil.&nbsp; The current DA implementation converts the daily model
+to a monthly model by calculating an average day in the month and multiplying
+by thirty.</font></font>
+<br><font face="Arial,Helvetica"><font size=-1><a href="#Components:">Back
+to List</a></font></font>
+<br>
+<hr WIDTH="100%">
+<p><a NAME="Unit Conversion"></a><b><font face="Arial,Helvetica"><font size=-1>Unit
+Conversion Model</font></font></b>
+<p><font face="Arial,Helvetica"><font size=-1>The units conversion model
+can perform any conversion of the form:</font></font>
+<br><font face="Arial,Helvetica"><font size=-1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+Y = AX + B.</font></font>
+<br><font face="Arial,Helvetica"><font size=-1>A and B can be set automatically
+for standard conversions by selecting from the Conversion Type selection
+box.</font></font>
+<br><font face="Arial,Helvetica"><font size=-1><a href="#Components:">Back
+to List</a></font></font>
+<br>
+<hr WIDTH="100%">
+<p><a NAME="WBM version"></a><font face="Arial,Helvetica"><font size=-1><b>WBM
+version 1.1&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+rev 7-11-96 by A. Schloss</font></font>
+<br><font face="Arial,Helvetica"><font size=-1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+annette.schloss@unh.edu</font></font>
+<br>&nbsp;
+<p><font face="Arial,Helvetica"><font size=-1>**********************************</font></font>
+<br><font face="Arial,Helvetica"><font size=-1>This version should be run
+with laivac_v1.1mdl, which converts mean monthly</font></font>
+<br><font face="Arial,Helvetica"><font size=-1>air temperature to leaf
+on/off according to cover type.</font></font>
+<br><font face="Arial,Helvetica"><font size=-1>**********************************</font></font>
+<br>&nbsp;
+<br>&nbsp;
+<br>&nbsp;
+<p><font face="Arial,Helvetica"><font size=-1>this version includes an
+input for root zone (in m) which can be either</font></font>
+<p><font face="Arial,Helvetica"><font size=-1>1) set as a single value
+across all grid-cells</font></font>
+<p><font face="Arial,Helvetica"><font size=-1>2) generated using rootz_lut.mdl
+and rootz_lut.dat</font></font>
+<p><font face="Arial,Helvetica"><font size=-1>&nbsp;rootz_lut.dat is the
+same data found in GetRootZ.c&nbsp; which is</font></font>
+<br><font face="Arial,Helvetica"><font size=-1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+a TEM/STEM subroutine (as of TEM33, and maybe also TEM4.0)</font></font>
+<br><font face="Arial,Helvetica"><font size=-1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+called by smxclm</font></font>
+<p><font face="Arial,Helvetica"><font size=-1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+rootzone values are in meters and are based on 8 cover types and</font></font>
+<br><font face="Arial,Helvetica"><font size=-1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+8 FAO soil texture types as follows:</font></font>
+<p><font face="Arial,Helvetica"><font size=-1>C note icovers have been
+changed to match Tony Federer's&nbsp;&nbsp;&nbsp; 12/1/94 by A.Grace</font></font>
+<p><font face="Arial,Helvetica"><font size=-1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+1 forest(conifer)</font></font>
+<br><font face="Arial,Helvetica"><font size=-1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+2 forest(broadleaf)</font></font>
+<br><font face="Arial,Helvetica"><font size=-1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+3 savanna/shrubland</font></font>
+<br><font face="Arial,Helvetica"><font size=-1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+4 grassland</font></font>
+<br><font face="Arial,Helvetica"><font size=-1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+5 tundra/non-forested wetlands</font></font>
+<br><font face="Arial,Helvetica"><font size=-1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+6 cultivation</font></font>
+<br><font face="Arial,Helvetica"><font size=-1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+7 desert</font></font>
+<br><font face="Arial,Helvetica"><font size=-1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+8 lake, open water</font></font>
+<p><font face="Arial,Helvetica"><font size=-1>Soil Texture designations:</font></font>
+<p><font face="Arial,Helvetica"><font size=-1>&nbsp;&nbsp; FAO texture&nbsp;&nbsp;&nbsp;
+TEM texture</font></font>
+<br><font face="Arial,Helvetica"><font size=-1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+curve used</font></font>
+<br><font face="Arial,Helvetica"><font size=-1>1&nbsp; coarse&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+sand</font></font>
+<br><font face="Arial,Helvetica"><font size=-1>2&nbsp; medium&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+loam</font></font>
+<br><font face="Arial,Helvetica"><font size=-1>3&nbsp; fine&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+clay</font></font>
+<br><font face="Arial,Helvetica"><font size=-1>4&nbsp; c + m&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+sandy loam</font></font>
+<br><font face="Arial,Helvetica"><font size=-1>5&nbsp; c + f&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+loam</font></font>
+<br><font face="Arial,Helvetica"><font size=-1>6&nbsp; m + f&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+clay loam</font></font>
+<br><font face="Arial,Helvetica"><font size=-1>7&nbsp; c + m + f&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+loam</font></font>
+<br><font face="Arial,Helvetica"><font size=-1>8&nbsp; lithosol&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+loam</font></font>
+<p><font face="Arial,Helvetica"><font size=-1>(cf.&nbsp; Saxton et al.,
+1986, Soil Sci. Soc. Am. J., 50:1031-1036)</font></font>
+<p><font face="Arial,Helvetica"><font size=-1>NOTE:&nbsp; some old texture
+files may contain textures of 0:</font></font>
+<br><font face="Arial,Helvetica"><font size=-1>these are lithosol (8) and
+should be changed to 8 for consistency with</font></font>
+<br><font face="Arial,Helvetica"><font size=-1>other data sets.</font></font>
+<p><font face="Arial,Helvetica"><font size=-1>*********************************************************</font></font>
+<br><font face="Arial,Helvetica"><font size=-1>this version can be changed
+to input soil variables calculated in GetECDParams.c by using the soil_lut.mdl
+program and making the appropriate changes to wbmv1.1.c and smxclm.c (ie.
+remove call to GetECDParams and add input statements for the soil_lut parameters
+and adding the soil_lut parameter variables/dimensions/var_types&nbsp;
+as arguments to smxclm (in 3 places in code).</font></font>
+<br><font face="Arial,Helvetica"><font size=-1><a href="#Components:">Back
+to List</a></font></font>
+<br>
+<hr WIDTH="100%">
+<br><a NAME="Compiling C Models"></a><b><font face="Arial,Helvetica"><font size=-1>Compiling
+C Models</font></font></b>
+<p><font face="Arial,Helvetica"><font size=-1>A C language model is compiled
+in the usual manner except for the inclusion of two libraries: libDM.a
+and libDA.a.&nbsp; The libDA.a library contains the data assembler interface
+routines and the libDM.a library contains the standard DM data set manipulation
+routines.&nbsp; The main C routine should include the header file DAinterface.h.&nbsp;
+This declares the function prototypes for the interface routines, allowing
+argument type matching.&nbsp; The following example is for the case where
+all model code is contained in the&nbsp; file 'model.c' and compilation
+is performed on the alpha architecture.</font></font>
+<p><font face="Arial,Helvetica"><font color="#006600"><font size=-1>cc
+-o model model.c /nettools/da/lib/libDA.a /nettools/dm/lib/libDM.a</font></font></font>
+<br><font face="Arial,Helvetica"><font color="#006600"><font size=-1>&nbsp;&nbsp;&nbsp;
+-lm -ieee_with_no_inexact</font></font></font>
+<br>
+<hr WIDTH="100%">
+<br><a NAME="Compiling Fortran Models"></a><b><font face="Arial,Helvetica"><font size=-1>Compiling
+Fortran Models</font></font></b>
+<p><font face="Arial,Helvetica"><font size=-1>A Fortran model is compiled
+in the usual manner except for the inclusion of two libraries: libDM.a
+and libDA.a.&nbsp; The libDA.a library contains the data assembler interface
+routines and the libDM.a library contains the standard DM data set manipulation
+routines.&nbsp; The main Fortran routine should include the header</font></font>
+<br><font face="Arial,Helvetica"><font size=-1>file DAinterfacef77.h.&nbsp;
+This file declares the function prototypes for the interface routines.&nbsp;
+The following example is for the case where all model code is contained
+in the file 'model.f' and compilation is performed on the alpha architecture.</font></font>
+<p><font face="Arial,Helvetica"><font color="#006600"><font size=-1>f77
+-o model model.f /nettools/da/lib/libDA.a /nettools/dm/lib/libDM.a</font></font></font>
+<br>
+<hr WIDTH="100%">
+<br><a NAME="Model Description File Directives"></a><b><font face="Arial,Helvetica"><font size=-1>Model
+Description File Directives</font></font></b>
+<p><font face="Arial,Helvetica"><font size=-1>This is a reference section
+which provides a listing&nbsp; of all directives which can be used in building
+a model</font></font>
+<br><font face="Arial,Helvetica"><font size=-1>definition file.&nbsp; Every
+model description file must include the directives .MODELNAME and .EXECUTABLE.&nbsp;
+In addition, every model must declare at least one output data set.</font></font>
+<p><b><font face="Arial,Helvetica"><font color="#006600"><font size=-1>.MODELNAME
+'model name'</font></font></font></b>
+<p><font face="Arial,Helvetica"><font size=-1>This directive specifies
+the name of the model.&nbsp; The specified name is used for labelling the
+model button in the model interface.&nbsp; It does not have to correspond
+to the name of the model executable or the model description file. The
+model name must be enclosed in single quotation marks.</font></font>
+<p><b><font face="Arial,Helvetica"><font color="#006600"><font size=-1>.EXECUTABLE
+executable</font></font></font></b>
+<p><font face="Arial,Helvetica"><font size=-1>This directive is used to
+specify the name of the executable file for the model.&nbsp; The executable
+must be in the user's path or the entire path of the executable must be
+specified. The executable file must be compiled using standard compilation
+techniques used for the Data Set Assembler.</font></font>
+<p><b><font face="Arial,Helvetica"><font color="#006600"><font size=-1>.DESCRIPTIONFILE
+descriptionfile</font></font></font></b>
+<p><font face="Arial,Helvetica"><font size=-1>This directive is used to
+specify an ascii description file for the model.&nbsp; The description
+file can then be displayed from the model interface window.</font></font>
+<p><b><font face="Arial,Helvetica"><font color="#006600"><font size=-1>.INPUT
+'variable name'&nbsp; { numvariables | VARIABLE } ['units'] [SECONDARY]</font></font></font></b>
+<p><font face="Arial,Helvetica"><font size=-1>The INPUT directive is used
+to declare a data input to the model.&nbsp; The 'variable name' specification
+is used as a description for the type of input which is expected. It does
+not correspond to any specific data set.&nbsp; The numvariables parameter
+is an integer specifying the number of variables which must be contained
+in the data source. In place of specifying the number of variables contained
+in the input, the keyword VARIABLE can be used.&nbsp; This allows a variable
+number of input variables in the file.&nbsp; The model can retrieve the
+actual number of variables in the data set at run-time via the DAgetinputnumvars()
+procedure. This is useful for time series data which can contain an arbitrary
+number of time steps.&nbsp; The units argument isoptional and is used to
+specify the units required of the input variable.&nbsp; If present, it
+must be enclosed in single</font></font>
+<br><font face="Arial,Helvetica"><font size=-1>quotes.&nbsp; The optional
+keyword SECONDARY is used to denote an input variable of lesser importance.&nbsp;
+This provides a visual categorization of the input variables for the user.</font></font>
+<p><b><font face="Arial,Helvetica"><font color="#006600"><font size=-1>.MULTI_INPUT
+'label'&nbsp; { numvariables | VARIABLE } ['units'] [SECONDARY]</font></font></font></b>
+<p><font face="Arial,Helvetica"><font size=-1>The MULTI_INPUT directive
+is used to declare a special data input to a model.&nbsp; It allows the
+user to vary the number of inputs fed to amodel interactively.&nbsp; The
+data must be pre-existing matrix-type files.&nbsp; All inputs must have
+the same number of layers unless the VARIABLE option is used.&nbsp; Only
+one MULTI_INPUT statement is allowed per model and it must follow all INPUT&nbsp;
+statements.</font></font>
+<p><b><font face="Arial,Helvetica"><font color="#006600"><font size=-1>.OUTPUT
+'variable name' { numvariables | MATCHINPUT inputnumber } ['units']</font></font></font></b>
+<p><font face="Arial,Helvetica"><font size=-1>The OUTPUT directive is used
+to declare a data output produced by the model.&nbsp; The 'variable name'
+specification is a description of the type of data produced.&nbsp; The
+numvariables parameter specifies the number of data variables which are
+to be produced in this data output.&nbsp; In place of specifying the</font></font>
+<br><font face="Arial,Helvetica"><font size=-1>number of variables in the
+output data set, the keyword MATCHINPUT can be used to set the number of
+layers equal to the number of layers in an input data set.&nbsp; This is
+useful if the input declarations have been made with the VARIABLE keyword
+and the output requires as many variables as the input.&nbsp; The units
+argument is optional and is used to specify the units of the output variable.&nbsp;
+If present, it must be enclosed in single quotes.</font></font>
+<p><b><font face="Arial,Helvetica"><font color="#006600"><font size=-1>.PARAMETER_STRING
+'parameter name' 'default value'</font></font></font></b>
+<p><font face="Arial,Helvetica"><font size=-1>This directive declares a
+string parameter for the model. The 'parameter name' argument supplies
+a description of the parameter contents.&nbsp; The 'default value' provides
+a default value for the parameter if the user enters no value.&nbsp; For
+this parameter, DAgetparameter() returns a pointer to a string containing
+the string entered by the user.</font></font>
+<p><b><font face="Arial,Helvetica"><font color="#006600"><font size=-1>.PARAMETER_FILE
+'parameter name' { READ | WRITE } ['default value']</font></font></font></b>
+<p><font face="Arial,Helvetica"><font size=-1>This directive is used to
+declare a file name parameter for the current model.&nbsp; This option
+is useful when the</font></font>
+<br><font face="Arial,Helvetica"><font size=-1>model requires a file containing
+a series of data parameters from a data file, or when the model exports
+a series of statistics to a file.&nbsp; The first argument is a string
+specifying the name of the parameter.&nbsp; The second option is either
+'READ' or 'WRITE' specifying the access required of the file.&nbsp; The
+third argument is an optional specification for a default file name.&nbsp;
+For this parameter, DAgetparameter() returns a pointer to a string containing
+the file name specification for the file entered by the user.</font></font>
+<p><b><font face="Arial,Helvetica"><font color="#006600"><font size=-1>.PARAMETER_FLOAT
+'parameter name' default</font></font></font></b>
+<p><font face="Arial,Helvetica"><font size=-1>This directive is used to
+declare a floating point parameter in the current model.&nbsp; The first
+argument specifies the name of the parameter.&nbsp; The second argument
+is a floating point number specifying the default value of the parameter.
+For this parameter, DAgetparameter() returns a pointer to a string containing
+the entered floating point number.</font></font>
+<p><b><font face="Arial,Helvetica"><font color="#006600"><font size=-1>.PARAMETER_TOGGLE
+'parameter name' {1 | 0}</font></font></font></b>
+<p><font face="Arial,Helvetica"><font size=-1>This directive is used to
+specify a binary option parameter for the current model.&nbsp; Such a parameter
+is used to specify whether an option is on or off.&nbsp; The parameter
+is represented in the model interface by a toggle button which assumes
+the name specified by the first argument in the directive. The second argument
+is used to specify the initial state of the toggle button (1 for set, 0
+for not set).&nbsp; For this parameter, DAgetparameter() returns a string
+containing the digit '1' if the toggle is set and '0' if the toggle is
+not set.</font></font>
+<p><b><font face="Arial,Helvetica"><font color="#006600"><font size=-1>.PARAMETER_INT
+'parameter name' default min max</font></font></font></b>
+<p><font face="Arial,Helvetica"><font size=-1>This parameter is used to
+specify an integer parameter of the current model.&nbsp; The parameter
+is represented in the model interface by a scroll bar with the label specified
+by the first argument of the directive.&nbsp; The min and max arguments
+specify the range of acceptable integers.&nbsp; The default value specifies
+the initial setting of the scroll bar.&nbsp; For this parameter, DAgetparameter()
+returns a string containing an integer indicating the current setting of
+the scroll bar.</font></font>
+<p><b><font face="Arial,Helvetica"><font color="#006600"><font size=-1>.PARAMETER_CHOICE
+'parameter name' 'choice 1' 'choice 2' [ 'choice 3' ... ]</font></font></font></b>
+<p><font face="Arial,Helvetica"><font size=-1>This parameter is used to
+specify a one of many choice parameter of the current model.&nbsp; The
+parameter is represented in the model interface by an option menu with
+the label specified by the first argument of the directive.&nbsp; The menu
+options are specified by the strings following the parameter name.&nbsp;
+There must be at least two menu choices.&nbsp; For this parameter, DAgetparameter()
+returns a string containing an integer which represents the index of the
+selected choice.&nbsp; For example, if the first choice was set then DAgetparameter()
+would return a string containing the digit one.&nbsp; The default menu
+choice is the first choice specified in the directive.</font></font>
+<p><b><font face="Arial,Helvetica"><font color="#006600"><font size=-1>.PARAMETER_LABEL
+'label string'</font></font></font></b>
+<p><font face="Arial,Helvetica"><font size=-1>This directive is not a true
+parameter.&nbsp; Instead, it merely creates a label entry in the parameters
+window.&nbsp; This can be used to provide the user with extra information
+or to group sets of parameters.Newline characters ('\n') can be embedded
+in the string to create multiline comments.</font></font>
+<br>
+<hr WIDTH="100%">
+<br><b><font face="Arial,Helvetica"><font size=-1>C Interface Library Routines</font></font></b><font face="Arial,Helvetica"><font size=-1></font></font>
+<p><b><font face="Arial,Helvetica"><font color="#006600"><font size=-1>void
+DAinitialize( int argc, char **argv )</font></font></font></b><font face="Arial,Helvetica"><font size=-1></font></font>
+<p><font face="Arial,Helvetica"><font size=-1>This routine must be called
+with the argc and argv parameters of the main() routine for the model executable.&nbsp;
+This opens the input and output data sets and fetches the set of parameters</font></font>
+<br><font face="Arial,Helvetica"><font size=-1>associated with the model.&nbsp;
+Upon error, DAinitialize() exits the process with return code seven.</font></font><font face="Arial,Helvetica"><font size=-1></font></font>
+<p><b><font face="Arial,Helvetica"><font color="#006600"><font size=-1>int
+DAgetparameter( char **parameter )</font></font></font></b><font face="Arial,Helvetica"><font size=-1></font></font>
+<p><font face="Arial,Helvetica"><font size=-1>This routine fetches the
+next sequential parameter associatedwith the model.&nbsp; The returned
+parameter string must then be interpreted based on its type declared in
+the model description file.&nbsp; For a description of the returned value
+for each type of parameter, see Model Description File Directives.&nbsp;
+If there are no remaining parameters, DAgetparameter() returns FALSE.&nbsp;
+Normally, the constant TRUE is returned.</font></font><font face="Arial,Helvetica"><font size=-1></font></font>
+<p><b><font face="Arial,Helvetica"><font color="#006600"><font size=-1>int
+DAgetcell( float *longitude, float *latitude )</font></font></font></b><font face="Arial,Helvetica"><font size=-1></font></font>
+<p><font face="Arial,Helvetica"><font size=-1>This routine retrieves data
+for the next cell from all input data set files and places it in an internal
+buffer. The longitude and latitude arguments are set to the coordinates
+of the current cell (center reference).&nbsp; If there are no further cells
+to be processed, DAgetcell() returns FALSE. At all other times, TRUE is
+returned.&nbsp; If an error occurs, DAgetcell() exits the process with
+an error code identifiable by the Data Set Assembler.</font></font><font face="Arial,Helvetica"><font size=-1></font></font>
+<p><b><font face="Arial,Helvetica"><font color="#006600"><font size=-1>float
+DAgetdata( int datasetnumber, int variablenumber)</font></font></font></b><font face="Arial,Helvetica"><font size=-1></font></font>
+<p><font face="Arial,Helvetica"><font size=-1>This function retrieves a
+particular data value from the buffer filled by DAgetcell().&nbsp; The
+parameter datasetnumber specifies the data set from which data will be
+retrieved. The numbering of data sets corresponds to their relative order
+in the model definition file.&nbsp; The first data set specified in the
+model definition file is specified as data set number one.&nbsp; The parameter
+variablenumber specifies which variable from the given data set is to be
+retrieved. Variables are numbered in the order they appear in the data
+set file.&nbsp; Upon error, the appropriate error message will be displayed
+to stderr and the process will terminate</font></font>
+<br><font face="Arial,Helvetica"><font size=-1>with exit code seven.</font></font><font face="Arial,Helvetica"><font size=-1></font></font>
+<p><b><font face="Arial,Helvetica"><font color="#006600"><font size=-1>void
+DAputdata( int datasetnumber, int variablenumber, float value)</font></font></font></b><font face="Arial,Helvetica"><font size=-1></font></font>
+<p><font face="Arial,Helvetica"><font size=-1>This function places a single
+data value into the output cell buffer.&nbsp; The datasetnumber parameter
+specifies which output data set is to be accessed.&nbsp; The data set number
+is assigned by the order in which the output data set is declared in the
+model definition file.&nbsp; The first output data set declared in the
+model definition file is referred to by the number one.&nbsp; The variablenumber
+parameter specifies which variable is written to within the output data
+set.&nbsp; The number one specifies the first variable in the data set.&nbsp;
+Upon error, a message will be written to stderr and the model process will
+be terminated with exit code seven.</font></font><font face="Arial,Helvetica"><font size=-1></font></font>
+<p><b><font face="Arial,Helvetica"><font color="#006600"><font size=-1>void
+DAputcell()</font></font></font></b><font face="Arial,Helvetica"><font size=-1></font></font>
+<p><font face="Arial,Helvetica"><font size=-1>This function writes data
+in the output cell buffer to the appropriate output data set files.&nbsp;
+This should be</font></font>
+<br><font face="Arial,Helvetica"><font size=-1>called once all data values
+for the current point have been placed in the output buffer with calls
+to DAputdata().</font></font><font face="Arial,Helvetica"><font size=-1></font></font>
+<p><b><font face="Arial,Helvetica"><font color="#006600"><font size=-1>void
+DAgetgeographicextent( float *n, float *s, float *e, float *w, float *dy,
+float *dx)</font></font></font></b><font face="Arial,Helvetica"><font size=-1></font></font>
+<p><font face="Arial,Helvetica"><font size=-1>This function returns the
+geographic extent over which the model is being executed.&nbsp; It is useful
+for any model which must precompute data using knowledge of the region
+being processed.</font></font><font face="Arial,Helvetica"><font size=-1></font></font>
+<p><b><font face="Arial,Helvetica"><font color="#006600"><font size=-1>int
+DAgetinputnumvars( int datasetnumber )</font></font></font></b><font face="Arial,Helvetica"><font size=-1></font></font>
+<p><font face="Arial,Helvetica"><font size=-1>This function returns the
+number of variables in the specified input data set.&nbsp; Although this
+routine can be used with any input data set, it is most useful for determining
+the number of layers in data sets which have been specified as having a
+variable number of layers (see Model File Directives).</font></font><font face="Arial,Helvetica"><font size=-1></font></font>
+<p><b><font face="Arial,Helvetica"><font color="#006600"><font size=-1>int
+DAgetoutputnumvars( int datasetnumber )</font></font></font></b><font face="Arial,Helvetica"><font size=-1></font></font>
+<p><font face="Arial,Helvetica"><font size=-1>This function returns the
+number of variables in the specifiedoutput data set.&nbsp; Although this
+routine can be used with any output data set, it is most useful for data
+sets which do not have an explicit number of layers (see Model File Directives).</font></font><font face="Arial,Helvetica"><font size=-1></font></font>
+<p><b><font face="Arial,Helvetica"><font color="#006600"><font size=-1>int
+DAgetnuminputsinmodel( void )</font></font></font></b><font face="Arial,Helvetica"><font size=-1></font></font>
+<p><font face="Arial,Helvetica"><font size=-1>This function returns the
+number of inputs that exist for a given model. It is necessary to call
+this routine when using the .MULTI_INPUT type. As the user changes the
+number of inputs with the .MULTI_INPUT statement, the executable must have
+some way of knowing how many inputs exist. DAgetoutputnumvars() may also
+be used in any model executable.</font></font><font face="Arial,Helvetica"><font size=-1></font></font>
+<p><b><font face="Arial,Helvetica"><font color="#006600"><font size=-1>void
+DAexit()</font></font></font></b><font face="Arial,Helvetica"><font size=-1></font></font>
+<p><font face="Arial,Helvetica"><font size=-1>This routine must be used
+to exit from the model once all data has been processed.&nbsp; The DAexit()
+routine closes all files used and exits with code three.</font></font><font face="Arial,Helvetica"><font size=-1></font></font>
+<p><b><font face="Arial,Helvetica"><font color="#006600"><font size=-1>void
+DAerrorexit()</font></font></font></b><font face="Arial,Helvetica"><font size=-1></font></font>
+<p><font face="Arial,Helvetica"><font size=-1>This routine provides a means
+to terminate the model if an error condition occurs.&nbsp; Specifically,
+DAerrorexit()</font></font>
+<br><font face="Arial,Helvetica"><font size=-1>cleans up all input and
+output data&nbsp; sets used and exits with failure code seven.</font></font>
+<br>
+<hr WIDTH="100%">
+<br><a NAME="Fortran Interface Library Routines"></a><b><font face="Arial,Helvetica"><font size=-1>Fortran
+Interface Library Routines</font></font></b>
+<br>&nbsp;
+<p><b><font face="Arial,Helvetica"><font color="#006600"><font size=-1>SUBROUTINE
+DAINITIALIZE</font></font></font></b>
+<br><font face="Arial,Helvetica"><font size=-1>This subroutine opens the
+input and output data sets and fetches the set of parameters associated
+with the model. It is necessary to call this routine before accessing any
+data or parameters.&nbsp; Upon error, the process will be exited and an
+error message will be displayed to stderr.</font></font>
+<p><b><font face="Arial,Helvetica"><font color="#006600"><font size=-1>INTEGER
+FUNCTION DAGETPARAMETER( parameterstring ) CHARACTER * (*) parameterstring</font></font></font></b>
+<br><font face="Arial,Helvetica"><font size=-1>This routine fetches the
+next sequential parameter associated with the model.&nbsp; The returned
+parameter string must then be interpreted based on its type declared in
+the model description file.&nbsp; For a description of the returned value
+for each type of parameter, see Model Description File Directives.&nbsp;
+If there are no remaining parameters, DAGETPARAMETER returns 0.&nbsp; Normally,
+the constant 1 is returned.</font></font>
+<p><b><font face="Arial,Helvetica"><font color="#006600"><font size=-1>INTEGER
+FUNCTION DAGETCELL( longitude, latitude )</font></font></font></b>
+<br><font face="Arial,Helvetica"><font color="#000099"><font size=-1>REAL
+longitude</font></font></font>
+<br><font face="Arial,Helvetica"><font color="#000099"><font size=-1>REAL
+latitude</font></font></font>
+<br><font face="Arial,Helvetica"><font size=-1>This routine retrieves data
+for the next cell from all input data set files and places it in an internal
+buffer.</font></font>
+<br><font face="Arial,Helvetica"><font size=-1>The longitude and latitude
+arguments are set to the coordinates of the current cell (center reference).&nbsp;
+If there are no further cells to be processed, DAgetcell() returns FALSE.
+At all other times, TRUE is returned.&nbsp; If an error occurs, DAgetcell()
+exits the process with an error code identifiable by the Data Set Assembler.</font></font>
+<p><b><font face="Arial,Helvetica"><font color="#006600"><font size=-1>REAL
+FUNCTION DAGETDATA( datasetnumber, variablenumber )</font></font></font></b>
+<br><font face="Arial,Helvetica"><font color="#000099"><font size=-1>INTEGER
+datasetnumber</font></font></font>
+<br><font face="Arial,Helvetica"><font color="#000099"><font size=-1>INTEGER
+variablenumber</font></font></font>
+<br><font face="Arial,Helvetica"><font size=-1>This function retrieves
+a particular data value from the buffer filled by DAGETCELL.&nbsp; The
+parameter datasetnumber specifies the data set from which data will be
+retrieved. The numbering of data sets corresponds to their relative order
+in the model definition file.&nbsp; The first data set specified in the
+model definition file is specified as data set number one.&nbsp; The parameter
+variablenumber specifies which variable from the given data set is to be
+retrieved. Variables are numbered in the order they appear in the data
+set file.&nbsp; Upon error, the appropriate error message will be displayed
+to stderr and the process will terminate</font></font>
+<br><font face="Arial,Helvetica"><font size=-1>with exit code seven.</font></font>
+<p><b><font face="Arial,Helvetica"><font color="#006600"><font size=-1>SUBROUTINE
+DAPUTDATA( datasetnumber, variablenumber, value )</font></font></font></b>
+<br><font face="Arial,Helvetica"><font color="#000099"><font size=-1>INTEGER
+datasetnumber</font></font></font>
+<br><font face="Arial,Helvetica"><font color="#000099"><font size=-1>INTEGER
+variablenumber</font></font></font>
+<br><font face="Arial,Helvetica"><font color="#000099"><font size=-1>REAL
+value</font></font></font>
+<br><font face="Arial,Helvetica"><font size=-1>This function places a single
+data value into the output cell buffer.&nbsp; The datasetnumber parameter
+specifies which output data set is to be accessed.&nbsp; The data set number
+is assigned by the order in which the output data set is declared in the
+model definition file.&nbsp; The first output data set declared in the
+model definition file is referred to by the number one.&nbsp; The variablenumber
+parameter specifies which variable is written to within the output data
+set. The number one specifies the first variable in the data set.&nbsp;
+Upon error, a message will be written to stderr and the model process will
+be terminated with exit code seven.</font></font>
+<p><b><font face="Arial,Helvetica"><font color="#006600"><font size=-1>SUBROUTINE
+DAPUTCELL</font></font></font></b>
+<br><font face="Arial,Helvetica"><font size=-1>This function writes data
+in the output cell buffer to the appropriate output data set files.&nbsp;
+This should be</font></font>
+<br><font face="Arial,Helvetica"><font size=-1>called once all data values
+for the current point have been placed in the output buffer with calls
+to DAPUTDATA.</font></font>
+<p><b><font face="Arial,Helvetica"><font color="#006600"><font size=-1>SUBROUTINE
+DAGETGEOGRAPHICEXTENT( n, s, e, w, dy, dx)</font></font></font></b>
+<br><font face="Arial,Helvetica"><font color="#000099"><font size=-1>REAL
+n,s,e,w,dy,dx</font></font></font>
+<br><font face="Arial,Helvetica"><font size=-1>This function returns the
+geographic extent over which the model is being executed.&nbsp; It is useful
+for any model which must precompute data using knowledge of the region
+being processed.</font></font>
+<p><b><font face="Arial,Helvetica"><font color="#006600"><font size=-1>INTEGER
+FUNCTION DAGETINPUTNUMVARS( datasetnumber )</font></font></font></b>
+<br><font face="Arial,Helvetica"><font color="#000099"><font size=-1>INTEGER
+datasetnumber</font></font></font>
+<br><font face="Arial,Helvetica"><font size=-1>This function returns the
+number of variables in the specified input data set.&nbsp; Although this
+routine can be used with any input data set, it is most useful for determining
+the number of layers in data sets which have been specified as having a
+variable number of layers (see Model File Directives).</font></font>
+<p><b><font face="Arial,Helvetica"><font color="#006600"><font size=-1>INTEGER
+FUNCTION DAGETOUTPUTNUMVARS( datasetnumber )</font></font></font></b>
+<br><font face="Arial,Helvetica"><font color="#000099"><font size=-1>INTEGER
+datasetnumber</font></font></font>
+<br><font face="Arial,Helvetica"><font size=-1>This function returns the
+number of variables in the specified output data set.&nbsp; Although this
+routine can be used with any output data set, it is most useful for data
+sets which do not have an explicit number of layers (see Model File Directives).</font></font>
+<p><b><font face="Arial,Helvetica"><font color="#006600"><font size=-1>INTEGER
+FUNCTION DAGETNUMINPUTSINMODEL( )</font></font></font></b>
+<br><font face="Arial,Helvetica"><font size=-1>This function returns the
+number of inputs that exist for the model. It should be used when a .MULTI_INPUT
+statement is in the model definition. It can be used by any model.</font></font>
+<p><b><font face="Arial,Helvetica"><font color="#006600"><font size=-1>SUBROUTINE
+DAEXIT</font></font></font></b>
+<br><font face="Arial,Helvetica"><font size=-1>This routine must be used
+to exit from the model once all data has been processed.&nbsp; The DAEXIT
+routine closes all files used and exits with code three.</font></font>
+<p><b><font face="Arial,Helvetica"><font color="#006600"><font size=-1>SUBROUTINE
+DAERROREXIT</font></font></font></b>
+<br><font face="Arial,Helvetica"><font size=-1>This routine provides a
+means to terminate the model if an error condition occurs.&nbsp; Specifically,
+DAERROREXIT cleans up all input and output data&nbsp; sets used and exits
+with failure code seven.</font></font>
+<br>&nbsp;
+</body>
+</html>

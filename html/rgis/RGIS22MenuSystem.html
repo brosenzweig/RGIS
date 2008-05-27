@@ -1,0 +1,854 @@
+<!doctype html public "-//w3c//dtd html 4.0 transitional//en">
+<html>
+<head>
+   <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+   <meta name="Author" content="kcb">
+   <meta name="GENERATOR" content="KWrite, Linux (Mandrake 6.1)">
+	<meta name="Description" content="GHAAS - RiverGIS online help">
+	<meta name="Keywords" content="Hydrology,global,large scale modeling">
+   <title>GHAAS - RiverGIS Online Manual (Menu System)</title>
+</head>
+<body background="../Images/Background.gif">
+<a NAME="Top"></a>
+<center>
+<p><font size=-1><a href="./RGIS21ControlPanel.html#Bottom">previous section</a></font></p>
+</center>
+
+<h2>2.2. Menu System</h2>
+
+<p>The most important feature of the <font color="red">RiverGIS</font> menu system is that it is <font
+color="red">dynamic</font>. The available menu options and their sensitivity, change depending on various
+conditions. The visibility of menu options is normally determined by the type of the current data object, while
+sensitivity of a particular menu option generally depends on the state of the current data object. Data type independent
+menu items are generally listed at the beginning of the menus, and the data type dependent ones are listed
+after.</p>
+
+<p>The main menu options are, <a href="#File">File</a>, <a href="#Edit">Edit</a>, <a
+href="#Analyse">Analyse</a>, <a href="#Tools">Tools</a>, <a href="#MetaDB">MetaDB</a>,
+<a href="#Display">Display</a> and <a href="#Help">Help</a></p>
+
+<h3><a NAME="File"></a>2.2.1. File</h3>
+
+<h4><a NAME="File_Project"></a>2.2.1.1. Project</h4>
+
+<ul>
+<b><a NAME="File_Project_New"></a>New -</b><br>
+<b><a NAME="File_Project_Open"></a>Open -</b><br>
+<b><a NAME="File_Project_Save"></a>Save -</b><br>
+<b><a NAME="File_Project_Save"></a>Save As -</b>
+</ul>
+
+<h4><a NAME="File_OpenData"></a>2.2.1.2. Open Data</h4>
+
+<p>The Open data option loads a data object from the <a
+href="./RGIS10BasicConcepts.html#MetaDatabase">meta database</a> list. The Open data menu option starts a <a
+href="#OpenDataDialog">selection dialog window</a> with the data object names from the user's <a
+href="./RGIS10BasicConcepts.html#MetaDatabase">meta database.</a> When the user makes a selection, it loads this data object
+into memory and adds the data object to the active data list as the current data object on the <a
+href="#ControlPanel">control panel window</a>.</p>
+
+<center><a NAME="OpenDataDialog"></a>
+<table BORDER=2>
+<tr><td><img SRC="./Images/221aOpenData.gif"></td></tr>
+<caption ALIGN=BOTTOM><i>Open Data Dialog</i></caption>
+</table>
+</center>
+
+<h4><a NAME="File_OpenFile"></a>2.2.1.3. Open File</h4>
+
+<p>The Open file option starts a regular Motif file selection dialog window and lists the files with <font
+color="red">.gdb?</font> extensions. The ? is an optional letter, that can be used to distinguish the data type from the
+file name. However RiverGIS does not depend on the file name extension, it is probably a good practice to use different
+extensions for different data types. For instance, I normally use the following extensions:</p>
+
+<ul>
+<table BORDER=0>
+<tr><td>.gdbp</td><td>- point coverage</td></tr>
+<tr><td>.gdbl</td><td>- line coverage</td></tr>
+<tr><td>.gdbp</td><td>- polygon coverage</td></tr>
+<tr><td>.gdbc</td><td>- continuous grid</td></tr>
+<tr><td>.gdbd</td><td>- discrete grid</td></tr>
+<tr><td>.gdbn</td><td>- STNetwork</td></tr>
+<tr><td>.gdbt</td><td>- tabular data</td></tr>
+</table>
+</ul>
+
+<h4><a NAME="File_Reload"></a>2.2.1.4. Reload</h4>
+
+<p>Reload allows the user to delete all edits that have not been saved.</p>
+
+<h4><a NAME="File_Close"></a>2.2.1.5. Close</h4>
+
+<p>The Close menu option closes the file that is currently highlighted in the Active Data file list. After closing a
+file, the file is removed form the Active Data list, and this data layer will no longer be displayed in the rgis display
+window. The open file or open data menu option must be used in order to work with a file that has been closed, because
+it is no longer part of the current rgis session.</p>
+
+<h4><a NAME="File_Save"></a>2.2.1.6. Save</h4>
+
+</p>The Save menu option must be used in order to retain any changes made during the current RiverGIS edit session. All
+changes made prior to using the Save menu option are stored in memory only, and will be lost upon exiting the session.
+It is recommended that the user save at frequent, periodic intervals while editing to avoid the inadvertent loss of
+data. In the case of editing river networks, the build menu option should first be invoked, prior to saving.</p>
+
+<h4><a NAME="File_SaveAs"></a>2.2.1.7. Save as</h4>
+
+<p>The Save as menu option allows the highlighted selection in the Active
+Data list to be saved under a new name or location. Invoking this option brings up a <a href="#SaveAsDialog">file
+selection dialog</a> in which a filter can be specified and a new name can be selected with the mouse or entered from
+the keyboard.</p>
+
+<center><a NAME="SaveAsDialog"></a>
+<table BORDER=2>
+<tr><td><img SRC="./Images/221bSaveAs.gif"></td></tr>
+<caption ALIGN=BOTTOM><i>Save As</i></caption>
+</table>
+</center>
+
+<h4><a NAME="File_HeaderInfo"></a>2.2.1.8. Header Info</h4>
+
+<p>The Header info menu option opens a <a href="#HeaderInfoDialog">Header Info Dialog</a> in which you can enter or edit
+header information.Only the <b>Name</b> field is mandatory, but it is strongly recommended that the <b>Subject</b> and
+<b>Geographic Domain</b> fields are filled out as well. These fields can be utilized by RiverGIS's <b><i><u><a
+href="./RGIS10BasicConcepts.html#MetaDatabase">Meta Database</a></u></i></b> capabilities. The Select buttons next to the
+<b>Subject</b> and <b>Geographic Domain</b> text input fields allow loading predefined names from the user's <b><i><u><a
+href="./RGIS10BasicConcepts.html#MetaDatabase">Meta Database</a></u></i></b>. The data type can be changed only when
+RiverGIS creates a new data object. Other fields are for data documentation purposes. RiverGIS and further GHAAS
+components (yet to be developed) probably won't use them, but it may prove to be useful if the documentation fields are
+filled out properly for archived data objects.</p>
+
+<center>
+<table BORDER=2><a NAME="HeaderInfoDialog"></a>
+<tr><td><img SRC="./Images/221cHeaderInfo.gif"></td></tr>
+<caption ALIGN=BOTTOM><i>Header Info Dialog</i></caption>
+</table>
+</center>
+
+<p>When naming a new data file, be sure to use different names as using the same name will result in the earlier file
+being overwritten. When accessing data through the meta database the most recently saved version of a file will be
+loaded.</p>
+
+<ul>
+<li>It is important to use different names for each data set.</li>
+<li>Avoid duplicate entries by opening data rather than opening file.</li>
+</ul>
+
+<h4><a NAME="File_Properties"></a>2.2.1.9. Properties</h4>
+
+<p>Geographical data objects are made up of common, class and sub-class specific properties, which can be viewed and
+edited with the <b><i>Properties dialog</i></b> window. Some of the properties are characteristic of the data object and
+can not be changed such as map extent, others can be changed like precision, which will impact the computation of the
+data object. The upper part of the <b><i>Properties dialog</i></b> window shows the Geographic <b><i>extent
+</i></b>(Lower Left, Upper Right, Horizontal, Vertical) of the data set. It also displays the <b><i>precision</i></b>,
+the <b><i>minimum</i></b> and the <b><i>maximum scale</i></b>.</p>
+
+<p>The <font color="red"><b><i>extent</i></b> properties can not be modified directly</font>. It is determined
+by the overall extent of the item objects within the data set.</p>
+
+<p>Precision - the radius at which coordinates are considered to be the same, used in data conversions. The
+<b><i>precision</i></b> resource is used in computation as a tolerance in determining whether two coordinates are equal.
+When the absolute value of the difference between two coordinate values is less than the precision, RiverGIS
+assumes they are equal. For grid and network data objects RiverGIS defaults the precision to some fraction of the cell
+size, which normally does not need to be changed. Vector data are more problematic, since the extent of the smallest
+distance between objects does not necessarily have any relevance to the precision of the data, therefore it is <font
+color="red">strongly advised to check and set the precision field for vector data</font>.</p>
+
+<p>The <b><i>maximum and minimum scale</i></b> properties are not used in this version of RiverGIS. These are for
+later version, where these properties will help to specify ranges of scale over which the given data object can be
+used.</p>
+
+<p>Projection -</p>
+
+<center>
+<table BORDER=2>
+<tr><td><img SRC="./Images/221dGeoProperties.gif" BORDER=0></td></tr>
+<caption ALIGN=BOTTOM><i>Properties Dialog Window<br>(Geographic Properties)</i></caption>
+</table>
+</center>
+
+<p>The the lower part of the <b><i>Properties dialog</i></b> window contains data class specific properties. Generally
+the data class specific properties are characteristics of the internal data structure and can not be modified from the
+<b><i>Properties dialog window</i></b>. Only continuous grid data objects have user adjustable property.</p>
+
+<a NAME="File_VectorProp"></a><b>Vector Data Object Properties</b>
+
+<p>Vector data objects may contain different items (for instance, line data objects have node and line items), but every
+data set, has primary items (for instance, the primary items in a line data set are the lines). The <b><i>Number of
+Items</i></b> field in the <b><i>Properties Dialog</i></b> window shows the number of primary
+items.</p>
+
+<center>
+<table BORDER=2>
+<tr><td><img SRC="./Images/221eVectorProperties.gif"></td></tr>
+<caption ALIGN=BOTTOM><i>Vector Data Properties Dialog Window</i></caption>
+</table>
+</center>
+
+<p>RiverGIS organizes any data object by a varying number of tables (which are partly visible to the user), and
+data arrays, which are always hidden. Items have a single record entry in the corresponding item table, and a different
+number of attribute fields. Some of the attribute fields are mandatory (for instance the to-node and from-node fields of
+line records) while others are optional. The number of fields displayed in the dialog window show the total number
+of fields, including the hidden ones which are exclusively used by the
+system.</p>
+
+<b><a NAME="File_CGridProp"></a>Continuous Grid Properties</b>
+
+<p>Color code (i.e. shade set) is the only property of continuous grids that the user can modify. <font
+color="red">Note:</font>These color schemes change dynamically when an area of the display window is zoomed in or
+out.</p>
+
+<center>
+<table BORDER=2>
+<tr><td><center><img SRC="./Images/221fCGridProperties.gif"></center></td></tr>
+<caption ALIGN=BOTTOM><i>Continuous Grid Properties Dialog Window</i></caption>
+</table>
+</center>
+
+<p>There are five coloring schemes (<b><i>Standard</i></b>, <b><i>Gray Scale</i></b>, <b><i>Blue Scale</i></b>,
+<b><i>Blue to Red</i></b> and <b><i>Elevation</i></b>). Each color shade set has a specific number of color
+shades. RiverGIS uses these shades to color continuous grids by bining the grid values intoas many classes as the color
+shade set has. The colors and the number of colors in shade sets are currently hard coded, but can vary
+from shade to shade.</p>
+
+<p>The <b><i>Standard</i></b> shade has very distinct colors with no color gradient. This is the least esthetic color
+set, but might be useful, when distinct representation of the bined value groups is needed.</p>
+
+<p>The <b><i>Gray</i></b> and <b><i>Blue scale</i></b> shade sets are simple shade sets with one color gradient
+(from black to white, and dark blue to light blue respectively). When a continuous grid is displayed with a simple shade
+set, the grid values from minimum to maximum will be spanned over the color range and bined into as many groups as there
+are colors in the shade set.</p>
+
+<p>The <b><i>Blue to Red</i></b> and <b><i>Elevation</i></b> shade sets are dual color gradient shade sets, which are
+used to color shade negative and positive values within grids separately. The <b><i>Blue to Red</i></b> shade set will
+color negative values as shades of blues (from dark blue to white) and positive values as shades of red (from white to
+dark red), where values around zero will be shaded as white. The <b><i>Elevation</i></b> shade set has a gradient of
+blue shades from dark blue to light blue for negative values, and topographical colors from dark green through light
+green and from light yellow to dark brown.</p>
+
+<b><a NAME="File_DGridProp"></a>Discrete Grid Properties</b>
+
+<p>Discrete grid has no data type specific properties.</p>
+
+<center>
+<table BORDER=2>
+<tr><td><center><img SRC="./Images/221gDGridProperties.gif"></center></td></tr>
+<caption ALIGN=BOTTOM><i>Discrete Grid Properties Dialog Window</i></caption>
+</table>
+</center>
+
+<b><a NAME="File_NetProp"></a>Network Properties</b>
+
+<p>Networks have no user modifiable properties. The number of basins and the number of cells are set when RiverGIS
+builds network topology. <font color="red">Make sure, the precision field is set to be smaller than half of the
+cell size</font>, if you plan to convert the STNetwork into stream lines (<a href="#AnalyzeNet_StreamLines">
+Analyze->Stream Lines</a>)</p>
+
+<center>
+<table BORDER=2>
+<tr><td><center><img SRC="./Images/221hNetworkProperties.gif"></center></td></tr>
+<caption ALIGN=BOTTOM><i>Network Properties Dialog Window</i></caption>
+</table>
+</center>
+
+<h4><a NAME="File_History"></a>2.2.1.10. History</h4>
+
+<h4><a NAME="File_Relate"></a>2.2.1.11. Relate</h4>
+
+<p>Relates two datasets through the DBItems tables. Useful for display of time series data. Relate point coverage of
+station locations (discharge, climate, nutrient) to table of time series data. Give relate a name and specify the relate
+field and the join field. Relates are saved in the DBRelations table of the point coverage (necessary to save point
+coverage to save relate)</p>
+
+<h4><a NAME="File_Link"></a>2.2.1.12. Link</h4>
+
+<p>Linkage of data sets for analysis and processing purposes. Select Dataset for analysis, File->Link, select dataset to
+be linked to the active (original) dataset. This is a one way link.</p>
+
+<h4><a NAME="File_Unlink"></a>2.2.1.13. Unlink</h4>
+
+<p>Unlink datasets.</p>
+
+<h4><a NAME="File_Exit"></a>2.2.1.14. Exit</h4>
+
+<p>The Exit menu option terminates the RiverGIS session. Any changes made to the data layers, that were not saved will
+be lost. At the closure of the session the user's meta database file is updated to include any new data objects that
+were opened during the current session.</p>
+
+<h3><a NAME="EditAll"></a>2.2.2. Edit (All Data Types)</h3>
+
+<p>The Edit menu options will vary by data type. Fields submenu offers function to manipulate table structures of any
+data, and as such is data type independent, however it requires some data loaded.</p>
+
+<h4><a NAME="EditAll_NameField"></a>2.2.2.1. Name Field</h4>
+
+<p>Copies attribute to record name</p>
+
+<h4><a NAME="EditAll_JoinTable"></a>2.2.2.2. Join Table</h4>
+
+<p>Join tables together (ie: join the DBItems table to the symbol table)</p>
+
+<p><b>When using with unlinked dataset</b>: allows join of any table to the DBItems table<p>
+
+<p><b>When using with linked dataset</b>: join any of the tables from linked dataset to the DBItems table of the active
+dataset (Relate field - field in active dataset DBItems table, Join field - field to be linked to DBItems table)
+Unspecified field - RGIS defaults to linear join of field with same data type. If Integer field blank - Record_Id
+is assumed. If Character field blank - Record Name assumed. Does not allow
+for join of float attributes.</p>
+
+<h4><a NAME="EditAll_Fields"></a>2.2.2.3. Fields</h4>
+
+RiverGIS data  objects are organized in varying number of <a href="./RGIS10BasicConcepts.html#TableStructures">tables</a>
+with mandatory and optional fields. The optional fields can be manipulated by using the functions under the Edit->Fields
+menu options. These functions allows to create (<a href="#EditAll_Fields_add">Edit->Fields->Add</a>) modify (<a
+href="#EditAll_Fields_Redefine">Edit->Fields->Redefine</a>) or delete (<a
+href="#EditAll_Fields_Delete">Edit->Fields->Delete</a>)  fields. The field types are:
+
+<b>Character width</b> - signifies # of bytes</font><br>
+<b>Interger width</b> - signifies the field format width<br>
+<b>Float width</b> - signifies the field format width<br>
+<b>Size options</b> - byte, short, long<br>
+<b>Date width</b> - signifies # of bytes</br>
+
+<p>Date is stored in the yyyy-mm-dd hr:mi format. This is necessary for the time series
+function</p>
+
+<b><a NAME="EditAll_Fields_Add"></a>Add</b>
+
+<p>Allows the addition of field to a table structure. The menu option opens a dialog window in which, the user can
+specify the</p>
+
+<b><a NAME="EditAll_Fields_Redefine"></a>Redefine</b>
+
+<p>Redefine menu options provides the mean to restructure existing tables. It will open a dialog window, with subwindows
+for each field in the selected table showing the field properties (such as name, type, data size, output
+width decimals, missing value). Available properties will vary by the field type.</p>
+
+<b><a NAME="EditAll_Fields_Delete"></a>Delete</b>
+
+<h4><a NAME="EditAll_DeleteSelection"></a>2.2.2.4. Delete Selection</h4>
+
+<p>Works with point data sets and network cells select items in table and then delete the selected items using
+delete selection.</p>
+
+<h4><a NAME="EditAll_SymbolField"></a>2.2.2.5. Symbol Field</h4>
+
+<p>set symbol color 1 time parsing of data set point, line, polygon, network, discrete grid)</p>
+
+
+<h4><a NAME="EditAll_Symbols"></a>2.2.2.6. Symbols</h4>
+
+<p>(point, line, polygon, network, discrete grid, table)</p>
+
+<h3><a NAME="EditPoint"></a>2.2.3. Edit (Point)</h3>
+
+<h4><a NAME="EditPoint_AddXY"></a>2.2.3.1. Add XY</b>
+
+<p>adds point location xy coordinates to the DBItems table</p>
+
+<h4><a NAME="EditPoint_STNCoord"></a>2.2.3.1. STN Coordinates</h4>
+
+<p>Prompts for field name (area field) and conducts 3x3 search for best match for station, places station
+in center of grid cell. If field name is left empty it moves point to the center of grid cell without neighbourhood
+search.</p>
+
+<h3><a NAME="EditLine"></a>2.2.4. Edit (Line)</h3>
+
+<h4><a NAME="EditLine_RiverDirection"></a>2.2.4.1. River Directions</h4>
+
+<p>(grid linked to line) -</p>
+
+<h3><a NAME="EditPoly"></a>2.2.5. Edit (Polygon)</h3>
+
+<h4><a NAME="EditPoly_FourColor"></a>2.2.5.1. Four Color</h4>
+
+<h3><a NAME="EditGrid"></a>2.2.6. Edit (Grid)</h3>
+
+<h4><a NAME="EditGrid_DateLayers"></a>2.2.6.1. Date Layers</h4>
+
+<p>(point, polygon, continuous grid, discrete grid) - Simplifies the process
+of entering the date attribute of time series data. Specify start year
+(rgis assumes that year starts with Jan). If dataset is climatology - give
+a fictious year.</p>
+
+<h4><a NAME="EditGrid_RenameLayer"></a>2.2.6.2. Rename Layer</h4>
+
+<p>(continuous grid, discrete grid) - Brings up a dialog box where the new name
+of the current data layer can be entered.</p>
+
+<h4><a NAME="EditGrid_GridStats"></a>2.2.6.3. Grid Statistics</h4>
+
+<p>(continuous grid, discrete grid) - Recalculates the basic grid statistics
+for each layer</p>
+
+<h4><a NAME="EditGrid_RemovePits"></a>2.2.6.4. Remove Pits</h4>
+
+<p>(network linked to grid) - Makes Elevation Coverage Consistent with an editted network (fill function)</p>
+
+<h4><a NAME="EditGrid_NetworkFilter"></a>2.2.6.5. Network Filter</h4>
+
+<p>(network linked to grid) - Not Current -- Elevation smoother</p>
+
+<h3><a NAME="EditNet"></a>2.2.7. Edit (Network)</h3>
+
+<h4><a NAME="EditNet_Build"></a>2.2.7.1. Build</h4>
+
+<p>creates or updates the attribute table for the network</p>
+
+<h4><a NAME="EditNet_Trim"></a>2.2.7.2. Trim</h4>
+
+<p>trims network to the actual extent</p>
+
+<h4><a NAME="EditNet_AddCellXY"></a>2.2.7.3. Add Cell XY</h4>
+
+<p>Adds cell xy coordinates to the DBCell table.</p>
+
+<h4><a NAME="EditNet_AddBasinXY"></a>2.2.7.4. Add Basin XY</h4>
+
+<p>Adds basin mouth xy coordinates to the DBItems table</p>
+
+<h4><a NAME="EditNet_Magnitude"></a>2.2.7.5. Magnitude</h4>
+
+<p>Adds (Shreeve) )magnitude field to DBCells table.</p>
+
+<h4><a NAME="EditNet_DistMouth"></a>2.2.7.6. Distance to Mouth</h4>
+
+<p>Adds distance to mouth (higher order stream) field to DBCells table.</p>
+
+<h4><a NAME="EditNet_DistOcean"></a>2.2.7.7. Distance to Ocean</h4>
+
+<p>Adds distance to basin outlet field to DBCells table.</p>
+
+<h4><a NAME="EditNet_Adjust"></a>2.2.7.8. Adjust Network</b>
+
+<p>Adjust location of the network based on linked data set</p>
+
+
+<h3><a NAME="AnalyzeAll"></a>2.2.8. Analyze (All Data Types)</h3>
+
+<p>All of the Analyze menu options are listed below. Please note that the menu options that are available will depend on
+the type of object currently selected in the active layer list. <font color="red">Note: All statistics are computed as
+cell area weighted statistics.</font></p>
+
+<h4><a NAME="AnalyzeAll_Equation"></a>2.2.8.1. Equation</h4>
+
+<h4><a NAME="AnalyzeAll_Calculate"></a>2.2.8.2. Calculate</h4>
+
+<h4><a NAME="AnalyzeAll_GNUXY-Plot"></a>2.2.8.3. GNU XY-Plot</h4>
+
+<p>plots fields from tables, unselected points are displayed in red, selected points are displayed in green</p>
+
+<h4><a NAME="AnalyzeAll_Fields"></a>2.2.8.4. Fields</h4>
+
+
+<p><a NAME="AnalyzeAll_Fields_Add"><b>Add</b></a></p>
+
+<p><a NAME="AnalyzeAll_Fields_Substract"><b>Substract</b></a></p>
+
+<p><a NAME="AnalyzeAll_Fields_Multiply"><b>Multiply</b></a></p>
+
+<p><a NAME="AnalyzeAll_Fields_Divide"><b>Divide</b></a></p>
+
+<p><a NAME="AnalyzeAll_Fields_SetValue"><b>Set Value</b></a> - set field values from another field or as a single value
+(this will write the record ID or Record Name into numeric or character string field if the value field is left
+empty).</p>
+
+<p><a NAME="AnalyzeAll_Fields_Compare"><b>Compare</b></a> - useful for calculating error between reported and estimated
+catchment area, several error calculation methods are available.</p>
+<p>(2nd field can be an integer - allows scaling of data)</p>
+
+<h4><a NAME="AnalyzeAll_TopoAccumulation">2.2.8.5. Topo Accumulation</a></h4>
+
+<p>Calculates accumulation between stations (
+ie: accumulation of discharge) Accumulate assumes mm/timestep and accumulates with a conversion to cubic km. Every layer
+is accumulated, thus the number of output layers equals the number of input layers. Negative numbers are accumulated.
+Accumulate includes the data in the cell which is being reported.</p>
+
+<h4><a NAME="AnalyzeAll_TopoSubstraction">2.2.8.6. Topo Substraction</a></h4>
+
+<p>Calculates interstation values - disaggregation (ie: interstation discharge)</p>
+
+<h3><a NAME="AnalyzePoint">2.2.9. Analyze (Point)</a></h3>
+
+<h4><a NAME="AnalyzePoint_STNcharacteristics"></a>2.2.9.1. STN Characteristics</h4>
+
+<p>calculates basin attributes for point coverage based on network</p>
+
+<h4><a NAME="AnalyzePoint_STNPoints"></a>2.2.9.2. STN Points</h4>
+
+<p>Matches stations to network (combined functions of STN Coordinates/STN Characteristics) - not maintained</p>
+
+<h4><a NAME="AnalyzePoint_SubbasinGrid">2.2.9.3. Subbasin Grid</a></h4>
+
+<p>Creates sub basin grid for each point along the network. (<font color="red">Make sure to run STN Characteristics
+first so that topology is clean</font>)</p>
+
+<h4><a NAME="AnalyzePoint_SubbasinCenter"></a>2.2.9.4. Subbasin Center</h4>
+
+<p>Calculates the mass center coordinates of the subbasin and adds to attribute table of point coverage</p>
+
+<h4><a NAME="AnalyzePoint_InterstatTS"></a>2.2.9.5. Interstation TS [time series]</h4>
+
+<p>Not Current</p>
+
+<h4><a NAME="AnalyzePoint_GridSampling"></a>2.2.9.6. Grid Sampling</h4>
+
+<p>Samples grid at the point locations. 
+
+<b>single layer</b> - samples the default layer. The result of sampling continuous grid is stored in the DBItems
+table of the point coverage using the layername as fieldname. If the field exists it contents will be overwritten
+otherwise the function will create a new float table field. When discrete grid is sampled, the function will create
+a string table field named as the current layer and store the record name of the category from the DBItems table of
+the discrete grid. Furthermore it will copy all the attribute fields from the discrete grid.</p>
+
+<p><b>multiple layers</b> - samples all layers and creates new table with values for each layer</p>
+
+<h4><a NAME="AnalyzePoint_SubbasinStats"></a>2.2.9.7. Subbasins Statistiscs</h4>
+
+<p>Creates new table for each layer of subbasin statistics</p>
+
+<h4><a NAME="AnalyzePoint_SubbasinHist">2.2.9.8. Subbasin Histogram</a></h4>
+
+<p>(Calculates the distribution of categories for each layer</p>
+
+<h3><a NAME="AnalyzeLine">2.2.10. Analyze (Line)</a></h3>
+
+<h3><a NAME="AnalyzePoly">2.2.11. Analyze (Polygon)</a></h3>
+
+<h3><a NAME="AnalyzeCGrid">2.2.12. Analyze (Continuous Grid)</a></h3>
+
+<h4><a NAME="AnalyzeCGrid_Resample">2.2.12.1. Resample</a></h4>
+
+<h4><a NAME="AnalyzeCGrid_FindPits">2.2.12.2. Find Pits</a></h4>
+
+<p>using editted network and elevation grid, pits and pour points are identified, calculations are done for pour
+points of volume, area etc.</p>
+
+<h4><a NAME="AnalyzeCGrid_CreateNetwork">2.2.12.3. Create Network</a></h4>
+
+<p>Creates network based on flow direction between grid cells, uses all layers (mean, max, min to incorporate scaled
+data)</p>
+
+<h4><a NAME="AnalyzeCGrid_Merge">2.2.12.4. Merge</a></h4>
+
+<p>Merges contiguous grids (different domains) to create one large domain (May be able to handle multiple resolutions -
+see Balazs for more info)</p>
+
+<h4><a NAME="AnalyzeCGrid_Abs">2.2.12.5. Absolute</a></h4>
+
+<p>(continuous grid) - Eliminates negatives</p>
+
+<h4><a NAME="AnalyzeCGrid_NoNeg">2.2.12.6. No Negative</a></h4>
+
+<p>(continuous grid) - Sets negative values to either zero or nodata.</p>
+
+<h4><a NAME="AnalyzeCGrid_Operations">2.2.12.7 Operations</a></h4>
+
+<p>
+<a NAME="AnalyzeCGrid_Operations_Add"><b>Add</b></a>,
+<a NAME="AnalyzeCGrid_Operations_Substract"><b>Substract</b></a>,
+<a NAME="AnalyzeCGrid_Operations_Multiply"><b>Multiply</b></a>,
+<a NAME="AnalyzeCGrid_Operations_Divide"><b>Divide</b></a>
+</p>
+
+<p>If the grids have different numbers of layers the linked
+grid will wrap to allow for calculations on all of the layers of the active grid (ie: if the active grid has 36 layers,
+and the linked grid has 12 layers the linked grid layers will be used 3 times each in the operation with the active
+grid) Layers can be idled and will be skipped when operations are calculated.</p>
+
+<h4><a NAME="AnalyzeCGrid_MakeDiscrete">2.2.12.8. Make Discrete</a></h4>
+
+<p>(continuous grid) - Converts continuous grids to discrete by bin according to the provided breakpoints.</p>
+
+<h4><a NAME="AnalyzeCGrid_CellStats">2.2.12.9. Cell Statistics</a></h4>
+
+<p>(continuous grid) - Calculates grid cell statistics (average, minimum, maximum, standard deviation across all layers.</p>
+
+<h3><a NAME="AnalyzeDGrid">2.2.13. Analyze (Discrete Grid)</a></h3>
+
+<h4><a NAME="AnalyzeDGrid_UniformRunoffFields">2.2.13.1. Uniform Runoff Fields</a></h4>
+
+<p>(discrete grid) - Not Current</p>
+
+<h4><a NAME="AnalyzeDGrid_ReclassDGrid">2.2.13.2. Reclass Discrete</a></h4>
+
+<p> (discrete grid) - All integer and string fields</p>
+
+<h4><a NAME="AnalyzeDGrid_ReclassCGrid">2.2.13.3. Reclass Continuous</a></h4>
+
+<p>(discrete grid) - All numeric fields</p>
+
+<h4><a NAME="AnalyzeDGrid_ZoneHist"></a>2.2.1.3.4. Zone Histogram</a></h4>
+
+<p>(discrete grid linked to discrete grid)</p>
+
+<h4><a NAME="AnalyzeDGrid_ZoneStats"></a>2.2.1.3.5. Zone Statistics</a></h4>
+
+<p>(discrete grid linked to continuous grid)</p>
+
+
+<h3><a NAME="AnalyzeNet">2.2.14. Analyze (Network)</a></h3>
+
+<h4><a NAME="AnalyzeNet_Convert2Grid"></a>2.2.14.1. Convert to grid</a></h4>
+
+<p>Converts any of the network cell attributes from DBCell table to a grid.</p>
+
+<h4><a NAME="AnalyzeNet_StationPts"></a>2.2.14.2. Station points</h4>
+
+<h4><a NAME="AnalyzeNet_Accumulate"></a>2.2.14.3. Accumulate</a></h4>
+
+<h4><a NAME="AnalyzeNet_UpstreamAvg"></a>2.2.14.4. Upstream Average</h4>
+
+<p>equals Accumulation/Catchment Area upstream</p>
+
+<h4><a NAME="AnalyzeNet_CellSlopes"></a>2.2.14.5. Cell Slopes</h4>
+
+<p>(network linked to grid) - Samples the slope of a grid using the network gradient&nbsp; (Create a distribution of
+slopes for a grid using Cell Slopes followed by Cell Sampling.)</p>
+
+<h4><a NAME="AnalyzeNet_BasinProfile"></a>2.2.14.6. Basin Profile</h4>
+
+<p>Uses main stem for basin - calculates upstream search, sampling grid at each cell of mainstem. Table of values is
+created.</p>
+
+<h4><a NAME="AnalyzeNet_GridSampling"></a>2.2.14.7. Grid Sampling</h4>
+
+<p>Samples grid at the mouth cell of the basins. 
+<b>single layer</b> - samples the default layer. The result of sampling continuous grid is stored in the DBItems
+table of the network coverage using the layername as fieldname. If the field exists it contents will be overwritten
+otherwise the function will create a new float table field. When discrete grid is sampled, the function will create
+a string table field named as the current layer and store the record name of the category from the DBItems table of
+the discrete grid. Furthermore it will copy all the attribute fields from the discrete grid.</p>
+
+<p><b>multiple layers</b> - samples all layers and creates new table with values for each layer</p>
+<p><b>cell</b> - samples at cell</p>
+
+<h4><a NAME="AnalyzeNet_Stats"></a>2.2.14.8. Statistics</h4>
+
+<p>Basin statistics (min, max, mean, SD); Headwater (cells without input) statistics (min, max, mean); Histogram
+(frequency curve of grid values)</p>
+
+<h4><a NAME="AnalyzeNet_StreamLines"></a>2.2.14.9. Stream Lines</h4>
+
+<p>(network) - converts network to vector coverage based on RiverGIS stream order. <font color="red"><b>Caution:</b> It
+is important to set the <a href="#File_Properties">precision</a> appropriately for this conversion.</font></p>
+
+<h3><a NAME="Tools">2.2.15. Tools</a></h3>
+
+<h4><a NAME="Tools_Import">2.2.15.1 Import</a></h4>
+
+<p>The import menu option allows data to be brought into RiverGIS from a number of supported formats. (<font
+color="red">Always save after import</font>)<p>
+
+<a NAME="Tools_Import_ASCII"><b>ASCII table</b></a><br>
+<p><b>Arc/Info (Vector)</b></p>
+<p><b>Grid Matrix</b></p>
+
+<p>Grid Matrix flexibly imports a wide variety of <i>raster data</i> data whose format
+does not conform to the other import methods.  This function will allow the import of multiple
+data layers at once.  When run a window pops up
+allowing the user to select a number of options describing the data set to be imported.
+</p>
+<center>
+<IMG SRC="./Images/2215aGridImport.gif">
+</center>
+
+<p><b>Dimensions:</b> The number of grid cells in a column and row</p>
+
+<p><b>Grid Layout</b>
+This lets RGIS know how the matrix was saved into the file.
+Options are 'by Row' and 'by Column'.
+Layout by row tends to be more common. </p>
+
+<p><b>Row Order</b>
+This tells RGIS if the raster data is saved with north as the top row (Top-Down) or saved with north
+as the bottom row (Bottom-Up)?</p>
+
+<p><b>File Type</b>
+ASCII or Binary files can be imported.
+As a general rule, if you can read the file with a simple text editor
+then the file is ASCII if not then the file is likely Binary</p>
+
+<p><b>Binary Type</b>
+If 'Binary' is selected as the <b>File Type</b> then the type of binary file must
+be selected here.  The naming corresponds to the sizeof() operator in the C programming
+language and represents the number of bytes for a single grid cell.
+On most systems:
+  <ul>
+  <i>Byte</i> is a single byte integer
+  <br>
+  <i>Short Integer</i> is a 2 byte integer
+  <br>
+  <i>Long Integer</i> is a 4 byte integer
+  <br>
+  <i>Single Float</i> is a 4 byte floating point number
+  <br>
+  <i>Double Float</i> is an 8 byte floating point number
+ </ul>
+When in doubt as to the number of bytes divide the size of the file in bytes by the product of the
+number of rows and columns.  This will give the byte size of each grid element.</p>
+
+<p><b>Byte Order</b> Different machines represent floating point numbers in different
+ways.  The two most common ways are known as 'Big-Endian' and 'Little-Endian'.  These
+are the types of floating point representations for a variety of machines.  Currently
+RGIS only reads IEEE floating point values.
+  <ul>
+  Big-Endian; IEEE floating point
+     <ul>
+     SUN and HP workstations <br>
+     NeXT and Silicon Graphics workstations <br>
+     Amiga PCs <br>
+     Macintosh PCs
+     </ul>
+<br>
+  Little-Endian; IEEE floating point
+    <ul>
+    Ultrix DECstations and DEC Alphas with OSF/1 <br>
+    IBM PCs
+    </ul>
+<br>
+  Little-Endian; proprietary floating point
+    <ul>
+    VAX/VMS <br>
+    DEC Alpha with OpenVMS
+    </ul>
+<br>
+  Big-Endian; proprietary floating point
+    <ul>
+    IBM mainframes <br>
+    Cray supercomputers
+    </ul>
+  </ul>
+Linux is Little-Endian if it is installed on an IBM compatible PC. IRIX and IRIX64 operating
+systems use Big-Endian.
+</p>
+
+<p><b>LL Cell:</b>
+Column and row of the lower left cell cell in the raster matrix. Often this will be 0 for the column and the
+total number of rows - 1 for the row since indexing starts counting at 0 (remember, RGIS is written in C++).
+By selecting a different grid cell for the lower left corner, the user can
+effectively shift the matrix as if on a horizontal and vertical cylinder.</p>
+
+<p><b>Cell Size</b>
+This is the size of a single grid cell in units the same as the <b>LL Corner:</b> option.
+For a raster file with 30 minute grid cells the values would be 0.5 for both the Width and Height.</p>
+
+<p><b>LL Corner:</b>
+The coordinates of the lower left corner of the matrix (as given by the <b>LL Cell:</b> option)
+in the same units as the <b>Cell Size</b> option.
+For a global data set, Horizontal is likely -180.0 and Vertical is likely -90.0.</p>
+
+<p><b>File Name</b>
+This is the filename of a <i>single</i> raster file to be imported or, if the <b>List File</b>
+toggle is selected, an ASCII file specifying multiple filenames for the input of more than 1 raster file.
+See the <b>List File</b> toggle below for more information on this option.</p>
+
+<p><b>Header</b>
+This tells RGIS if there is a header to be stripped from the file before reading the data.
+If the <b>File Type</b> is ASCII then this option represents the number of lines to strip
+off the top of the file.  If the <b>File Type</b> is Binary then this option repesents the number
+bytes to strip.  A value of 0 indicates no header.</p>
+
+<p><b>Record Padding</b> <font color=red>(Balazs is this before the record or after??)</font></p>
+
+<p><b>List File</b>When this option is selected the <b>File Name</b> is an ASCII file containing
+a list of filenames representing the raster files to be imported.  The ASCII file should contain 1 filename
+per line and no other information.  All files imported will be used to form a single multi-layer RGIS data set.</p>
+
+<a NAME="Tools_Import_DM"><b>DM (Grid)</b></a><br>
+<a NAME="Tools_Import_IDRISI"><b>IDRISI (Grid)</b></a><br>
+<a NAME="Tools_Import_Network"><b>Network</b></a><br>
+
+<h4><a NAME="Tools_Export"></a>2.2.15.2. Export </h4>
+
+<p>Best to export to an empty directory</p>
+
+<a NAME="Tools_Export_ASCII"><b>ASCII table</b></a><br>
+
+<a NAME="Tools_Import_ARCINFO"><b>Arc/Info (Vector)</b></a><br>
+
+<p>RGIS will attempt to truncate the file name to 11 characters, uses grid layer names to name
+Arc/Grids. Export of networks will result in two vector coverages and a number of grids that correspond with the network
+attributes. Export should be directed to an empty directory with the naming convention w_*.</p>
+
+<ul>
+g_basin -- Basin grid with basin attributes<br>
+g_celllength -- Grid cell length[km] grid<br>
+g_cumularea -- Upstream catchment area[km2] grid<br>
+g_distmouth -- Distance [km] to mouth of river defined as the confluence with equal or higher order stream<br>
+g_distocean -- Distance [km] to the outlet of river basins<br>
+g_network -- Flow - direction grid<br>
+g_order - Strahler stream order grid<br>
+c_basin -- Basin polygon coverage with the same basin attributes as the basin grid.<br>
+c_network -- Arc/point coverage representing river segments and basin mouths.</br>
+</ul>
+
+<a NAME="Tools_Export_DM"><b>DM (Grid)</b></a><br>
+
+<a NAME="Tools_Export_IDRISI"><b>IDRISI (Grid)</b></a><br>
+
+<h4><a NAME="Tools_Duplicate">2.2.15.3. Duplicate</a></h4>
+
+<p>Creates duplicate dataset with RGIS - will prompt for new name - avoid using the same name (duplicate names will be
+overwritten by the Meta DataBase.</p>
+
+<h4><a NAME="Tools_Convert2Point">2.2.15.4. Convert to Point</a></h4>
+
+<p>If XY coordinate fields exist in the DBItems table this function can be used to convert any dataset to a point
+coverage<p>
+
+<h4><a NAME="Tools_CreateBasinMouth">2.2.15.5. Create Basin Mouth</a></h4>
+
+<p>(network) - Creates point coverage of basin mouths (pour points)</p>
+
+
+<h3><a NAME="MetaDB">2.2.16. MetaDB (All Data Types)</a></h3>
+
+<h4><a NAME="MetaDB_Refresh">2.2.16.1. Refresh</a></h4>
+<h4><a NAME="MetaDB_Edit">2.2.16.2. Edit</a></h4>
+<h4><a NAME="MetaDB_Delete">2.2.16.3. Delete</a></h4>
+
+<h3><a NAME="Display">2.2.17. Display</a></h3>
+
+<h4><a NAME="Display_2DView">2.2.17.1. 2DView</a></h4>
+
+<p>The 2DView menu option opens a graphical display window. All open data layers that have the display option enabled
+will be drawn in this window.</p>
+
+<h4><a NAME="Display_RedrawAll">2.2.17.2. Redraw All</a></h4>
+
+<p>The Redraw All menu option causes the 2DView window to be redrawn. Coosing this option has the same effect as
+clicking on the Redraw button located in the upper left corner of the 2DView window.</p>
+
+<h4><a NAME="Display_Attributes">2.2.17.3. Attributes</a></h4>
+
+</p>Choosing the Attributes menu option causes the attribute table of the currently selected data layer to come up on
+the screen. This table will be blank until the pointer is used to click on a location in the 2DViewer, with the user
+mode set to query. It is not necessary to open the Attributes table from the menu, as the table will automaticaly
+open the first time the mouse button is pressed, providing the previosly mentioned conditions are met (user mode is set
+to query, and the selection tool is the pointer).</p>
+
+<h4><a NAME="Display_AttribsClose">2.2.17.4. Attributes Close</a></h4>
+
+<p>The Attributes Close menu option can be used to close the Attribute
+window that is currently open. If the attributes menu is not open, this
+menu option has not effect.</p>
+
+<h4><a NAME="Display_OpenTable">2.2.17.5. Open Table</a></h4>
+
+<p>The Open Table menu option brings up a list of the available tables. Choosing a table from this list displays the
+table on the screen along with a number of tools that can be used to work with the table data.</p>
+
+<h4><a NAME="Display_OpenGraph"></a>2.2.17.6. Open Graph</a></h4>
+
+<h4><a NAME="Display_Close">2.2.17.7. Close</a></h4>
+
+<h4><a NAME="Display_CloseAll">2.2.17.8. Close All</a></h4>
+
+<h3><a NAME="Help">2.2.18. Help</a></h3>
+
+<center>
+<p><font size=-1><a href="./RGIS23DataVisualization.html#Top">next section</a></font></p>
+</center>
+<a NAME="Bottom"></a>
+</body>
+</html>

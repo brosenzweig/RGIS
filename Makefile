@@ -1,13 +1,14 @@
 include ./common.mk
 all: rgis_target rcommands_target rgisPlot_target tfcommands_target
 
-install: $(INSTALLDIR)/bin $(INSTALLDIR)/XResources/bitmaps $(INSTALLDIR)/Messages $(INSTALLDIR)/Scripts $(INSTALLDIR)/f
+install: $(INSTALLDIR)/bin $(INSTALLDIR)/XResources/bitmaps $(INSTALLDIR)/Messages $(INSTALLDIR)/html $(INSTALLDIR)/Scripts $(INSTALLDIR)/f
 	$(UNIXMAKE) -C rGIS       install
 	$(UNIXMAKE) -C rCommands  install
 	$(UNIXMAKE) -C rgisPlot   install
 	$(UNIXMAKE) -C tfCommands install
 	cp XResources/bitmaps/* $(INSTALLDIR)/XResources/bitmaps/
 	cp XResources/ghaas     $(INSTALLDIR)/XResources/
+	cp -rp html/*.*         $(INSTALLDIR)/html/
 	cp Messages/*.*         $(INSTALLDIR)/Messages/
 	cp Scripts/*.sh         $(INSTALLDIR)/Scripts/
 	cp f/*                  $(INSTALLDIR)/f/
@@ -19,6 +20,7 @@ uninstall:
 	$(UNIXMAKE) -C rCommands  uninstall
 	rm -rf $(INSTALLDIR)/XResources
 	rm -rf $(INSTALLDIR)/Messages
+	rm -rf $(INSTALLDIR)/html
 	rm -rf $(INSTALLDIR)/Scripts
 	rm -rf $(INSTALLDIR)/f
 	rmdir  $(INSTALLDIR)/bin
@@ -42,6 +44,8 @@ $(INSTALLDIR)/XResources/bitmaps:
 	mkdir -p $(INSTALLDIR)/XResources/bitmaps
 $(INSTALLDIR)/Messages:
 	mkdir -p $(INSTALLDIR)/Messages
+$(INSTALLDIR)/html:
+	mkdir -p $(INSTALLDIR)/html
 $(INSTALLDIR)/Scripts:
 	mkdir -p $(INSTALLDIR)/Scripts
 $(INSTALLDIR)/f:

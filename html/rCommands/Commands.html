@@ -1,0 +1,164 @@
+<!doctype html public "-//w3c//dtd html 4.0 transitional//en">
+<html>
+<head>
+   <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+   <meta name="GENERATOR" content="KWrite, Linux (Mandrake 7.0)">
+   <meta name="Author" content="Fekete, Balazs">
+   <meta name="Description" content="GGlobal Hydrological Archive and Analysis System RiverGIS online help">
+   <meta name="Keywords" content="Hydrology,global,large scale modeling,RiverGIS,STNetwork">
+   <title>GHAAS/RiverGIS Commans Online Manual</title>
+</head>
+<body background="../../html/Images/Background.gif" nosave>
+
+<center>
+<b><font size=+2>Global Hydrological Archive and Analysis System</font>
+</p><b><font size=+4>River GIS Commands V2.1</font></b></p>
+</center>
+
+<h1>Analyse Commands</h1>
+<h2>Point</h2>
+<center>
+<table BORDER=1 CELLSPACING=2 CELLPADDING=4>
+<tr>
+<td>
+<a href="../../rgis/html/RGIS22MenuSystem.html#AnalyzePoint_STNcharacteristics">STN Characteristics</a>
+</td>
+<td>ptnSTNChar &lt;point> &lt;network></td>
+</tr>
+<tr>
+<td>
+<a href="../../rgis/html/RGIS22MenuSystem.html#AnalyzePoint_SubbasinGrid">Subbasin Grid</a>
+</td>
+<td>ptnSubbasins &lt;point> &lt;network></td>
+</tr>
+<tr>
+<td>
+<a href="../../rgis/html/RGIS22MenuSystem.html#AnalyzePoint_SubbasinCenter">Subbasin Center</a>
+</td>
+<td>ptnSubbasCenter &lt;point> &lt;network></td>
+</tr>
+<tr>
+<td>
+<a href="../../rgis/html/RGIS22MenuSystem.html#AnalyzePoint_SubbasinStats">Subbasin Statistics</a>
+</td>
+<td>ptnSubbasStats &lt;point> &lt;network> &lt;continuous grid></td>
+</tr>
+<tr>
+<td>
+<a href="../../rgis/html/RGIS22MenuSystem.html#AnalyzePoint_SubbasinHist">Subbasin Histogram</a>
+</td>
+<td>ptnSubbasHist &lt;point> &lt;network> &lt;discrete grid></td>
+</tr>
+</table>
+</center>
+
+<h2>Grid</h2>
+<center>
+<table BORDER=1 CELLSPACING=2 CELLPADDING=4>
+<tr>
+<td>
+<a href="../../rgis/html/RGIS22MenuSystem.html#AnalyzeCGrid_NoNeg">No Negative</a>
+</td>
+<td>grdNoNeg &lt;continuous grid></td>
+</tr>
+<tr>
+<td>
+<a href="../../rgis/html/RGIS22MenuSystem.html#AnalyzeDGrid_ZoneHist">Zone Histogram</a>
+</td>
+<td>grdZoneHist &lt;discrete(zone) grid> &lt;discrete(category) grid></td>
+</tr>
+<tr>
+<td>
+<a href="../../rgis/html/RGIS22MenuSystem.html#AnalyzeDGrid_ZoneStats">Zone Statistics</a>
+</td>
+<td>grdZoneStats &lt;discrete(zone) grid> &lt;continuous grid></td>
+</tr>
+<tr>
+<td>
+Constant Grid Operation
+</td>
+<td>grdContOper ['"operator"'] [constant] &lt;continuous grid></td>
+</tr>
+<tr>
+<td>
+Cycle Mean
+</td>
+<td>grdCycleMean [number of cycle steps] [offset] &lt;continuous grid></td>
+</tr>
+</table>
+</center>
+
+<h2>Network</h2>
+<center>
+<table BORDER=1 CELLSPACING=2 CELLPADDING=4>
+<tr>
+<td>
+<a href="../../rgis/html/RGIS22MenuSystem.html#AnalyzeNet_Accumulate">Accumulate</a>
+</td>
+<td>netAccumulate &lt;network> &lt;continuous grid></td>
+</tr>
+<tr>
+<td>
+<a href="../../rgis/html/RGIS22MenuSystem.html#AnalyzeNet_UpstreamAvg">Upstream Average</a>
+</td>
+<td>netUpstreamAvg &lt;network> &lt;continuous grid></td>
+</tr>
+<tr>
+<td>
+<a href="../../rgis/html/RGIS22MenuSystem.html#AnalyzeNet_CellSlopes">Cell Slopes</a>
+</td>
+<td>netCellSlopes &lt;network> &lt;continuous grid></td>
+</tr>
+<tr>
+<td>
+<a href="../../rgis/html/RGIS22MenuSystem.html#AnalyzeNet_BasinProfile">Basin Profile</a>
+</td>
+<td>netBasinProf &lt;network> &lt;continuous grid></td>
+</tr>
+<tr>
+<td>
+<a href="../../rgis/html/RGIS22MenuSystem.html#AnalyzeNet_Stats">Statistics->Basin</a>
+</td>
+<td>netBasinStats &lt;network> &lt;continuous grid></td>
+</tr>
+<tr>
+<td>
+<a href="../../rgis/html/RGIS22MenuSystem.html#AnalyzeNet_Stats">Statistics->Headwater</a>
+</td>
+<td>netBasinHStats &lt;network> &lt;continuous grid></td>
+</tr>
+<tr>
+<td>
+<a href="../../rgis/html/RGIS22MenuSystem.html#AnalyzeNet_Stats">Statistics->Divide</a>
+</td>
+<td>netBasinDStats &lt;network> &lt;continuous grid></td>
+</tr>
+<tr>
+<td>
+<a href="../../rgis/html/RGIS22MenuSystem.html#AnalyzeNet_Stats">Statistics->Category Distribution</a>
+</td>
+<td>netBasinDistrib &lt;network> &lt;discrete grid></td>
+</tr>
+</table>
+</center>
+
+<h1>Miscellaneous Commands</h1>
+<center>
+<table BORDER=1 CELLSPACING=2 CELLPADDING=4>
+<tr>
+<td>DM to RiverGIS</td>
+<td>dm2rgis -t [title] -s [subject] -d [domain] -v [version] -o [rgis file] &lt;dmfile></td>
+</tr>
+<tr>
+<td>RiverGIS to ASCII table</td>
+<td>rgis2table &lt;table name></td>
+</tr>
+<tr>
+<td>Read RiverGIS data header</td>
+<td>getHeader [-tudvycisrpoh] &lt;rgis data></td>
+</tr>
+</table>
+</center>
+
+</body>
+</html>

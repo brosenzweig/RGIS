@@ -1,0 +1,297 @@
+<!doctype html public "-//w3c//dtd html 4.0 transitional//en">
+<html>
+
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+	<meta name="GENERATOR" content="KWrite, Linux (Mandrake 6.1)">
+	<meta name="Author" content="Fekete, Balazs">
+	<meta name="Description" content="GHAAS - RiverGIS online help">
+	<meta name="Keywords" content="Hydrology,global,large scale modeling">
+	<title>GHAAS - RiverGIS Online Manual (Data Visualization)</title>
+</head>
+<a NAME="Top"></a>
+<body background="../Images/Background.gif">
+<center>
+<p><font size=-1><a href="./RGIS22MenuSystem.html#Bottom">previous section</a></font></p>
+</center>
+
+<h2>
+2.3. Data Visualization
+</h2>
+
+<h3><a NAME="DisplayWindow"></a>
+2.3.1. Display Window
+</h3>
+
+<center>
+<table BORDER=2>
+<tr><td><img SRC="./Images/231aDisplayWindow.gif"></td></tr>
+<caption ALIGN=Bottom><i>Display window</i>
+</table>
+</center>
+
+<p><b>Scroll Bars</b></p>
+
+<p>There are three scroll bars located on the 2Dviewer. These scroll bars can
+be used to adjust what is seen in the viewer.</p>
+
+<ul>
+<li>
+<p><b>Left Scroll Bar</b><br>The scroll bar located on the left side of
+the viewer can be used to zoom in and out. Sliding the scroll bar up, zooms
+out from the center, and sliding the scroll bar down has the opposite
+effect</p>
+</li>
+
+<li>
+<p><b>Bottom Scroll Bar</b><br>The scroll bar located on the bottom of the
+viewer can be used to pan to the right or left. Sliding the scroll bar left,
+causes the display to pan to the left. Sliding the scroll bar to the right
+causes the display to pan to the right.</p>
+</li>
+
+<li>
+<p><b>Right Scroll Bar</b><br>
+The scroll bar located on the right hand side of
+the viewer can be used to pan up and down. Sliding the scroll bar up, causes
+the display to pan upward. Sliding the scroll bar down causes the display to
+pan downward.</p>
+</li>
+</ul>
+
+<p><b>Display Buttons</b></p>
+
+<center>
+<table BORDER CELLSPACING=4 CELLPADDING=4>
+<tr>
+<td WIDTH=130><img SRC="./Images/231bDraw.gif" BORDER=0 ALIGN=MIDDLE>Draw</td>
+<td WIDTH=130><img SRC="./Images/231cFullExtent.gif" BORDER=0 ALIGN=MIDDLE>Full-extent</td>
+<td WIDTH=130><img SRC="./Images/231dLayerExtent.gif" BORDER=0 ALIGN=MIDDLE>Layer-extent</td>
+<td WIDTH=130><img SRC="./Images/231eScreenGrab.gif" BORDER=0 ALIGN=MIDDLE>Screen Grab</td>
+</tr>
+</table>
+</center>
+
+<ul>
+
+<li>
+<p><b>Draw</b><br>
+The Draw button causes the display window to be redrawn. This is often
+necessary in order to update the dislay after turning on or off functions or
+data layers. The screen does not update until the user clicks this
+button.</p>
+</li>
+
+<li>
+<p><b>Full-extent</b><br>
+The full-extent button sets the display area such that all of the open data
+objects can drawn in their entirety within the display window. This can be of
+use when it is necessary to view all of the data at one time. It also makes a
+handy default extent to fall back on if the exact location of the cursor
+within the data is no longer known.</p>
+</li>
+
+<li>
+<p><b>Layer-extent</b><br>
+The Layer-extent button sets the display area to the maximum extent of the
+highlighted data object in the Active Data list. This is useful when it is
+desired to see the entire extent of the data layer currently being edited.</p>
+</li>
+
+<li>
+<b>Screen-grab</b><br>
+<p>The Screen-grab tool is not available in this version of RiverGIS.</p>
+</li>
+</ul>
+
+<p><b>Manipulation Buttons</b></p>
+
+<center>
+<table BORDER CELLSPACING=4 CELLPADDING=4>
+<tr>
+<td WIDTH=130><img SRC="./Images/231fMagnifyGlass.gif" BORDER=0 ALIGN=MIDDLE>Magnify</td>
+<td WIDTH=130><img SRC="./Images/231gPosition.gif" BORDER=0 ALIGN=MIDDLE>Pull</td>
+<td WIDTH=130><img SRC="./Images/231hWand.gif" BORDER=0 ALIGN=MIDDLE>Pointer</td>
+<td WIDTH=130><img SRC="./Images/231iMesh.gif" BORDER=0 ALIGN=MIDDLE>Graticule</td>
+</tr>
+</table>
+</center>
+
+<ul>
+<li>
+<p><b>Magnify</b><br>
+The Magnify tool is used to define the displayed area in the 2DViewer.
+When the Magnify checkbox is highlighted the mouse can be used to define a
+rectangle in the 2DViewer, which will become the new extent for the display
+window. To produce the rectangle, move the mouse in the display window to the
+location for the upper left corner. Press the left or right mouse button and
+drag until the box encloses the desired area. When the mouse button is
+released the rectangle will remain displayed in the viewer. If the desired
+area is not within the rectangle, it can be removed by clicking the left mouse
+button, and then a new rectangle can be produced. When the desired area is
+within the rectangle, click the right mouse button and the screen will be
+redrawn with this extent.</p>
+</li>
+
+<li>
+<p><b>Pull</b><br>
+The Pull tool is used to pan within the 2Dviewer in any direction. When the
+Pull checkbox is highlighted any mouse button can used to choose the point
+which is to be pulled to a new location. With the mouse over the location,
+press any button and drag to the new location. When the mouse button is
+released the display will redraw. The location in the data where the mouse
+button was first pressed is now located where the button was released. It can
+be thought of as attaching a rubber band to the first location and pulling to
+a new location.</p>
+</li>
+
+<li>
+<p><b>Pointer</b><br>
+When the pointer checkbox is highlighted the selection icon in the 2Dviewer
+is displayed as the cross-hair. When any mouse button is pressed a window pops
+up to display information about that particular location of the the currently
+highlighted data object in the Active Data list.<br>
+<b><font color="green">In order to edit networks the pointer checkbox
+must be enabled.</font></b></p>
+</li>
+
+<li>
+<p><b>Graticule</b><br>
+When this button is enabled, a graticule is displayed over the data
+displayed in the 2Dviewer. The resolution of the boxes is determined by the
+resolution of the data being displayed and the current extent of the
+display.</p> </li>
+</ul>
+
+<h3><a NAME="TableWindow"></a>
+2.3.2. Table Window
+</h3>
+
+<p>Some table manipulations are controlled from the RiverGIS control panel. In
+order to select records in a table the dataset must be active and the
+selection toggle must be set for single or multiple selections.</p>
+
+<center>
+<table BORDER=2>
+<tr><td><img SRC="./Images/232aTableWindow.gif"></td></tr>
+<caption ALIGN=Bottom><i>Table Window</i></caption>
+</table>
+</center>
+
+<center>
+<table>
+
+<tr>
+<td><b>Left Panel</b></td>
+<td>Record ID and Record Name Fields</td>
+</tr>
+
+<tr>
+<td><b>Right Panel</b></td>
+<td>Record Attributes<td>
+<tr>
+
+</table>
+</center>
+
+<p><b>Selection Buttons</b></p>
+
+<center>
+<table BORDER=2 CELLSPACING=4 CELLPADDING=4>
+<tr>
+<td><img SRC="./Images/232bTBVLoad.gif">Load Selection</td>
+<td><img SRC="./Images/232cTBVSave.gif">Save Selection</td>
+</tr>
+
+<tr>
+<td><img SRC="./Images/232dTBVClear.gif">Clear selections</td>
+<td><img SRC="./Images/232eTBVReverse.gif">Reverse selections</td>
+</tr>
+
+<tr>
+<td><img SRC="./Images/232fTBVSetIdle.gif">Idle selections</td>
+<td><img SRC="./Images/232gTBVReverseIdle.gif">Idle reverse</td>
+</tr>
+</table>
+</center>
+
+<ul>
+<li>
+<p><b>Load Selection</b><br>
+Loads saved selection group</p>
+</li>
+
+<li>
+<p><b>Save Selection</b><br>
+Writes out file with selection values (use to work wit category fields)</p>
+</li>
+
+<li>
+<p><b>ClearSelections</b><br>
+Clears all selections made in table</p>
+</li>
+
+<li>
+<p><b>Reverse Selections</b><br>
+Reverses selections in table - all selected records are
+unselected and all unselected records become the selected records</p>
+</li>
+
+<li>
+<p><b>Idle Selections</b><br>
+Makes the selected records idle, these records are not effected by calculations
+or plotted in xy plots</p>
+</li>
+
+<li>
+<p><b>Idle Reverse</b><br>
+Makes all of the idle items selected and all records active</p>
+</li>
+</ul>
+
+<p><b>Sort Options</b></p>
+<p>The table can be sorted by field by left clicking on the field name. Sort Options include:</p>
+
+<ul>
+<p><b>Ascending</b></p>
+<p><b>Decending</b></p>
+<p><b>Select</b> - Allows comparison of fields or comparison of a field against a constant value. Sequencing
+functionality.</p>
+
+<p><b>Unselect</b> - Unselect may also be done be criteria</p>
+
+<p><b>Unique</b> - Finds duplicates and selects the 1st record that is duplicated. can be used to find duplicate
+stations in a cell.</p>
+</ul>
+
+<p><b>Record Menu Items</b> -- To be developed</p>
+
+<h3><a NAME="GraphWindow"></a>
+2.3.3. Graph Window
+</h3>
+
+<center>
+<table BORDER=2>
+<tr><td><img SRC="./Images/233aGraphWindow.gif"></td></tr>
+<caption ALIGN=Bottom><i>Table Window</i></caption>
+</table>
+</center>
+
+<p><b>Scroll Bars</b></p>
+<li>
+<p><b>Left</b><br>
+</li>
+
+<li>
+<b>Bottom - </b>Scrolls through length of time series</p>
+</li>
+
+<p>This window is opened by choosing Display->Open Graph. Select time series relation (created using
+File->Relate, X-axis ( date), Y-axis (discharge, temperature, precipitation, nutrient concentration.</p>
+
+<center>
+<p><font size=-1><a href="./RGIS30Processes.html#Top">next section</a></font></p>
+</center>
+<a NAME="Bottom"></a>
+</body>
+</html>

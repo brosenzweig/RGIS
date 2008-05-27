@@ -1,0 +1,595 @@
+<!doctype html public "-//w3c//dtd html 4.0 transitional//en">
+<html>
+<head>
+   <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+   <meta name="Author" content="kcb">
+   <meta name="GENERATOR" content="Mozilla/4.61 [en] (X11; U; IRIX64 6.4 IP27) [Netscape]">
+   <title>DM_functions</title>
+</head>
+<body>
+
+<h1><a NAME="Introduction"></a>
+Introduction
+</h1>
+
+<p>The Data Set Manager is a comprehensive software tool designed for the manipulation, archival, and processing of
+various geographically referenced data.</p> <p>The Data Set Manager defines a binary, geo-referenced data set format.
+External data sets must be converted to this format in order to be used by the Data Set Manager.
+The Data Set Manager includes routines to handle this conversion.</p>
+<p>The basic functionality is subdivided into four groups. The input and output routines allow conversion between
+various external data sources, and the compact, geo-referenced format used by the Data Set Manager. The Utitility
+routines provide basic file manipulation and miscellaneous background tasks. Operation routines are procedures that are
+used interactively. These routines include visualization, documentation, and basic analysis capabilities. Finally, the
+Processes are routines which require a large amount of execution time. Such routines include interpolation and
+modelling. All Process routines<br> are executed in the background.</p>
+
+<h1><a NAME="BasicUsage"></a>
+1.0 Basic Usage
+</h2>
+
+<p>The Upper list in the main window shows the data sets which are present in the current directory. These can be
+selected using the left mouse button, and then the requested operation may be selected from the menu bar. The
+lower window shows any background data set manager processes that are currently operating.</p>
+
+<h1><a NAME="Routines"></a>
+2.0. Routines
+</h1>
+
+<li>
+<font face="Arial,Helvetica"><font size=-1><a href="#AreaWeightedAverage">Area
+Weighted Average</a></font></font></li>
+
+<li>
+<font face="Arial,Helvetica"><font size=-1><a href="#Average/Sum Layers">Average/Sum
+Layers</a></font></font></li>
+
+<li>
+<font face="Arial,Helvetica"><font size=-1><a href="#BilinearInterpolation">Bilinear
+Interpolation</a></font></font></li>
+
+<li>
+<font face="Arial,Helvetica"><font size=-1><a href="#Convert Matrix to Tabular">Convert
+Tabular to Matrix</a></font></font></li>
+
+<li>
+<font face="Arial,Helvetica"><font size=-1><a href="#ClipRectangular">Clip
+to Rectangular Region</a></font></font></li>
+
+<li>
+<font face="Arial,Helvetica"><font size=-1><a href="#Documentation">Documentation</a></font></font></li>
+
+<li>
+<font face="Arial,Helvetica"><font size=-1><a href="#Export to ArcGrid">Export
+to Arc Grid</a></font></font></li>
+
+<li>
+<font face="Arial,Helvetica"><font size=-1><a href="#Export to AsciiMatrix">Export
+to Ascii Martix</a></font></font></li>
+
+<li>
+<font face="Arial,Helvetica"><font size=-1><a href="#Export to AsciiTabular">Export
+to Ascii Tabular</a></font></font></li>
+
+<li>
+<font face="Arial,Helvetica"><font size=-1><a href="#Import From ArcGrid">Import
+from Arc Grid</a></font></font></li>
+
+<li>
+<font face="Arial,Helvetica"><font size=-1><a href="#Import AsciiMatrix">Import
+from Ascii Matrix</a></font></font></li>
+
+<li>
+<font face="Arial,Helvetica"><font size=-1><a href="#Import AsciiTabular">Import
+from Ascii Tabular</a></font></font></li>
+
+<li>
+<font face="Arial,Helvetica"><font size=-1><a href="#Matrix to Point Sampling">Martrix
+to Point Sampling</a></font></font></li>
+
+<li>
+<font face="Arial,Helvetica"><font size=-1><a href="#Merge MissingValues">Merge
+Missing Values</a></font></font></li>
+
+<li>
+<font face="Arial,Helvetica"><font size=-1><a href="#MoveColumns">Move
+Columns</a></font></font></li>
+
+<li>
+<font face="Arial,Helvetica"><font size=-1><a href="#Scale Data">Scale
+Data</a></font></font></li>
+
+<li>
+<font face="Arial,Helvetica"><font size=-1><a href="#SpheremapInterpolation">Spherical
+Interpolation</a></font></font></li>
+
+<li>
+<font face="Arial,Helvetica"><font size=-1><a href="#Statistics byRegion">Statistics
+By Region</a></font></font></li>
+</ul>
+
+<hr WIDTH="100%">
+<br><font face="Arial,Helvetica"><font size=-1>The&nbsp;<a NAME="AreaWeightedAverage"></a><b>Area
+Weighted Average</b> routine is used to interpolate matrix cell data.&nbsp;
+Each cell in the interpolated data set will be a combination of the partial
+areas of the individual cells of the original data set which overlap its
+area.</font></font>
+<p><font face="Arial,Helvetica"><font size=-1><b>Interpolate List</b>:
+This list is not editable.&nbsp; It shows the data sets which are to be
+interpolated, and the name of the interpolated version.</font></font>
+<p><font face="Arial,Helvetica"><font size=-1><b>Boundaries and Cell Size</b>:
+The North, South, East, and West entry boxes are used to set the bounds
+of the region to interpolate.&nbsp; The 'Dy' and 'Dx' entrys allow the
+user to specify the latitudinal and longitudinal cell size, respectively.</font></font>
+<br>&nbsp;
+<p><font face="Arial,Helvetica"><font size=-1><b>Cell Reference</b>: The
+'Cell Reference' toggles allow the user to indicate whether the supplied
+boundaries reference the center or the lower left hand cornter of the data
+cells.</font></font>
+<p><font face="Arial,Helvetica"><font size=-1><b>Missing Values Toggle</b>:&nbsp;
+Any missing data values in the original data set must not be interpreted
+as data.&nbsp; The 'Missing Values' toggle causes the area weighted average
+routine to explicitly exclude such points from the average.</font></font>
+<p><font face="Arial,Helvetica"><font size=-1><b>Minimum Valid Cell Area
+for Inclusion</b>:&nbsp; If missing values are present in the original
+data set, certain interpolated cells will not have valid data within their
+entire area.&nbsp; This entry controls how much of the</font></font>
+<br><font face="Arial,Helvetica"><font size=-1>cell's area must contain
+data in order for it to be included in the output.</font></font>
+<p><font face="Arial,Helvetica"><font size=-1><b>Maximum Boundaries Button:
+</b>The 'Maximum Boundaries' button creates the largest possible boundaries
+given the user specified cell size and boundaries of the original data
+set.&nbsp; If multiple data sets have been</font></font>
+<br><font face="Arial,Helvetica"><font size=-1>selected, only the first
+data set's boundary will be used for this calculation.</font></font>
+<p><font face="Arial,Helvetica"><font size=-1><b>Process Option: </b>Selecting
+'Process Sequentially' causes the interpolations to be performed one after
+another.&nbsp; Selecting 'Process in Parallel' causes all interpolations
+to be processed simultaneously in the background.&nbsp; Sequential processing
+lessens the load on the computer.</font></font>
+<p><font face="Arial,Helvetica"><font size=-1><b>Error Log File: </b>This
+text field allows the user to specify a name for the error log file.&nbsp;
+Since the interpolations are performed in the background, they cannot use
+windows or text to inform the user of an error condition.&nbsp; Instead,
+they write the errors to the specified log file.</font></font>
+<br><font face="Arial,Helvetica"><font size=-1><a href="#Routines:">Back
+to List</a></font></font>
+<br>
+<hr WIDTH="100%">
+<br><font face="Arial,Helvetica"><font size=-1>The&nbsp;<a NAME="Average/Sum Layers"></a><b>Average/Sum
+Layers</b> routine allows the user to create the average or sum of a group
+of layers within a matrix data set.</font></font>
+<p><font face="Arial,Helvetica"><font size=-1><b>File Creation Options:
+</b>If the 'Current Data Set' option is selected then the resultant layer
+(average or sum) is appended to the current data set.&nbsp; If 'A new data
+set' is selected, the resultant layer will be placed in its own data set
+with the supplied name.&nbsp; If 'Another data set' is selected, the resultant
+layer is appended to another data set.&nbsp; In this last case, the data
+set must be of the same size as the data set being averaged or summed.</font></font>
+<br><font face="Arial,Helvetica"><font size=-1><a href="#Routines:">Back
+to List</a></font></font>
+<br>
+<hr WIDTH="100%">
+<br><font face="Arial,Helvetica"><font size=-1>The&nbsp;<a NAME="BilinearInterpolation"></a><b>Bilinear
+Interpolation</b> routines gives the user the ability to resize the cells
+of a matrix data set.&nbsp; Each interpolated point is based on linear
+distance weightings of the four nearest data points in the original data
+set. The bilinear algorithm has no extrapolation capabilites, and therefore
+the region to interpolate must be completely contained by the original
+data set.</font></font>
+<p><font face="Arial,Helvetica"><font size=-1><b>Interpolate List:&nbsp;
+</b>This list is not editable.&nbsp; It shows the data sets which are to
+be interpolated, and the name of the interpolated version.</font></font>
+<p><font face="Arial,Helvetica"><font size=-1><b>Boundaries:&nbsp; </b>The
+North, South, East, and West entry boxes are used to specify the boundaries
+for the interpolation.&nbsp; These boundary values are set to the boundaries
+of the last selected data set upon entry into the routine.</font></font>
+<p><font face="Arial,Helvetica"><font size=-1><b>Cell Size:&nbsp; </b>The
+'Dy' and 'Dx' fields enable the user to specify the latitudinal and longitudinal
+cell sizes for the</font></font>
+<br><font face="Arial,Helvetica"><font size=-1>interpolation.</font></font>
+<p><font face="Arial,Helvetica"><font size=-1><b>Cell Reference: </b>The
+'Cell Reference' toggles indicate whether the boundaries specified by the
+user are referencing the center or lower left corner of the cells in the
+data set.&nbsp; If the 'Lower Left Corner' toggle is set then the boundaries
+are all increased by a half of a cell to convert them to center referenced
+coordinates.</font></font>
+<p><font face="Arial,Helvetica"><font size=-1><b>Process Option: </b>Selecting
+'Process Sequentially' causes the interpolations to be performed one after
+another.&nbsp; Selecting 'Process in Parallel' causes all interpolations
+to be processed simultaneously in the background.&nbsp; Sequential processing
+lessens the load on the computer.</font></font>
+<p><font face="Arial,Helvetica"><font size=-1><b>Error Log File: </b>This
+text field allows the user to specify a name for the error log file.&nbsp;
+Since the interpolations are performed in the background, they cannot use
+windows or text to inform the user of an error condition.&nbsp; Instead,
+they write the errors to the specified log file.</font></font>
+<br><font face="Arial,Helvetica"><font size=-1><a href="#Routines:">Back
+to List</a></font></font>
+<br>
+<hr WIDTH="100%">
+<br><font face="Arial,Helvetica"><font size=-1>The&nbsp;<a NAME="Convert Matrix to Tabular"></a><b>Convert
+Tabular to Martix</b> routine converts Data Set Manager tabular (lonlatdata)
+data sets into matrix data sets.</font></font>
+<p><font face="Arial,Helvetica"><font size=-1><b>Missing Values: </b>The
+entered value is used to fill cells in the matrix which are not contained
+within the data set being converted.</font></font>
+<br><font face="Arial,Helvetica"><font size=-1><a href="#Routines:">Back
+to List</a></font></font>
+<br>
+<hr WIDTH="100%">
+<br><font face="Arial,Helvetica"><font size=-1>The&nbsp;<a NAME="ClipRectangular"></a><b>Clip
+Rectangular</b> routine clips matrix data sets to a defined rectangular
+region.</font></font>
+<p><font face="Arial,Helvetica"><font size=-1><b>Region Selection: </b>The
+region to cut is selected from the scrolled list.&nbsp; Its actual boundaries
+appear in the boundary boxes on the right.&nbsp; If 'MANUAL ENTRY' is selected,
+the user is able to enter numeric boundaries in the boundary boxes to define
+the clip region.</font></font>
+<p><font face="Arial,Helvetica"><font size=-1><b>File Creation Options:
+</b>Selecting 'Transform the Current Data Set' causes the cutting to be
+performed directly on the data set.&nbsp; Selecting 'Create a New Data
+Set' causes no change to the original data set, and</font></font>
+<br><font face="Arial,Helvetica"><font size=-1>the cut version is stored
+in the named file.</font></font>
+<p><font face="Arial,Helvetica"><font size=-1><b>Setup:&nbsp; </b>The named
+regions are initialized from two setup files. The file $(DATAMAN_ROOT)/bin/.regions
+contains region definitions which are initialized for all users.&nbsp;
+In addition, upon startup, the Data Set Manager searches the user's home
+directory for a .regions file and if found, adds these definitions to the
+list.&nbsp; For information on the .regions file format see the master
+.regions file.</font></font>
+<br><font face="Arial,Helvetica"><font size=-1><a href="#Routines:">Back
+to List</a></font></font>
+<br>
+<hr WIDTH="100%">
+<br><font face="Arial,Helvetica"><font size=-1>The&nbsp;<a NAME="Documentation"></a><b>Documentation</b>
+routine allows you to create or modify the general documentation, and/or
+the layer names of a Data Set Manager data set.&nbsp; This documentation
+is stored as an intrinsic part of each data set, and is used by other Data
+Set Manager routines.</font></font>
+<p><font face="Arial,Helvetica"><font size=-1><b>Documentation:&nbsp; </b>This
+window allows the user to enter several lines of text to identify the data.</font></font>
+<p><font face="Arial,Helvetica"><font size=-1><b>Variable Names: </b>These
+fields are used to label the data contained in the different layers of
+the data set.&nbsp; The date fields should be set to all zeros of not used.</font></font>
+<br><font face="Arial,Helvetica"><font size=-1><a href="#Routines:">Back
+to List</a></font></font>
+<br>
+<hr WIDTH="100%">
+<br><font face="Arial,Helvetica"><font size=-1>The&nbsp;<a NAME="Export to ArcGrid"></a><b>Export
+to Arc Grid</b> routine creates an ascii Arc Gridfile from a binary Data
+Set Manager matrix data set.&nbsp; The output file contains a header and
+data in the prescribed fashion necessary for importation into Arc Grid.&nbsp;
+Each layer in the original matrix data set becomes a separate output file.&nbsp;
+The names for these files are created by appending the layer number onto
+the root supplied in the 'Output Name' text field.</font></font>
+<p><font face="Arial,Helvetica"><font size=-1>The ascii Grid files can
+then be imported to Grid with the following Arc Command.</font></font>
+<p><font face="Arial,Helvetica"><font color="#006600"><font size=-1>&nbsp;&nbsp;&nbsp;&nbsp;
+ASCIIGRID&nbsp; in_ascii_file out_grid</font></font></font>
+<p><font face="Arial,Helvetica"><font size=-1><b>Layers List:&nbsp; </b>The
+layers list allows the user to select any layers within the matrix which
+are not to be exported.</font></font>
+<p><font face="Arial,Helvetica"><font size=-1><b>Output Scaling: </b>Arc
+Grid is unable to import a data file with values over 9999. If the 'Scale
+Output' toggle is selected, then all values so that the largest value in
+the file is less than 9999.&nbsp; The scaling factor is always a multiple
+of ten.</font></font>
+<p><font face="Arial,Helvetica"><font size=-1><b>Output Name:&nbsp; </b>The
+name entered in this field is used as the root name for the ascii Grid
+files.</font></font>
+<br><font face="Arial,Helvetica"><font size=-1><a href="#Routines:">Back
+to List</a></font></font>
+<br>
+<hr WIDTH="100%">
+<br><font face="Arial,Helvetica"><font size=-1>The&nbsp;<a NAME="Export to AsciiMatrix"></a><b>Export
+to Ascii Matrix</b> routine exports the Data Set Manager's binary matrix
+and tabular (lonlatdata) data sets to standard ascii matrix files.&nbsp;
+The output matrix is stored sequentially by layer.&nbsp; Multiple data
+sets can be exported simultaneously by selecting several data sets before
+entering the routine.&nbsp; Multiple data sets can be selected by dragging
+the cursor through the list.&nbsp; Individual data sets can be added or
+removed from the current selection by holding &lt;Ctrl> and selecting those
+items with the mouse.</font></font>
+<p><font face="Arial,Helvetica"><font size=-1><b>Header Inclusion: </b>This
+option determines whether the output data file is prefixed by a header.&nbsp;
+The header contains the data set's boundaries, the cell size, number of
+cells, and the cell reference used.</font></font>
+<p><font face="Arial,Helvetica"><font size=-1><b>Cell Reference: </b>The
+cell reference option determines the coordinate reference scheme used in
+the header.&nbsp; If 'Center' is chosen, the header coordinates refer to
+the center of the border cells.&nbsp; If 'Lower Left Corner' is chosen,
+the header coordinates refer to the lower left corners of the border cells.</font></font>
+<p><font face="Arial,Helvetica"><font size=-1><b>Organization:&nbsp; </b>The
+'by Row' option causes the data to be output in a row- major organization.&nbsp;
+If 'by Column' is selected, the data is output in a column-major organization.&nbsp;
+In all but the rarest cases, the 'by Row' organization should be used.</font></font>
+<p><font face="Arial,Helvetica"><font size=-1><b>Decimal Places Options:
+</b>These
+options control the number of decimal places used in the output data and
+header.</font></font>
+<br><font face="Arial,Helvetica"><font size=-1><a href="#Routines:">Back
+to List</a></font></font>
+<br>
+<hr WIDTH="100%">
+<br><font face="Arial,Helvetica"><font size=-1>The&nbsp;<a NAME="Export to AsciiTabular"></a><b>Export
+to Ascii Tabular</b> routine outputs the Data Set Manager's binary matrix
+and tabular (lonlatdata) data sets to tabular ascii data files.&nbsp; Multiple
+data sets can be exported simultaneouly by selecting several data sets
+before entering the routine.&nbsp; Multiple data sets can be selected by
+dragging the</font></font>
+<br><font face="Arial,Helvetica"><font size=-1>cursor through the list.&nbsp;
+Individual data sets can be added or removed from the current selection
+by holding &lt;Ctrl> and selecting those items with the mouse.</font></font>
+<p><font face="Arial,Helvetica"><font size=-1><b>Header Inclusion: </b>This
+option determines whether the output data file is prefixed by a header.&nbsp;
+The header contains the data set's boundaries, the cell size, number of
+cells, and the cell reference used.</font></font>
+<p><font face="Arial,Helvetica"><font size=-1><b>Cell Reference: </b>The
+cell reference option determines the coordinate reference scheme used in
+the header.&nbsp; If 'Center' is chosen, the header coordinates refer to
+the center of the border cells.&nbsp; If 'Lower Left Corner' is chosen,
+the header coordinates refer to the lower left corners of the border cells.</font></font>
+<p><font face="Arial,Helvetica"><font size=-1><b>Decimal Places Options:
+</b>These
+options control the number of decimal places used in the output data and
+header.</font></font>
+<br><font face="Arial,Helvetica"><font size=-1><a href="#Routines:">Back
+to List</a></font></font>
+<br>
+<hr WIDTH="100%">
+<br><font face="Arial,Helvetica"><font size=-1>The&nbsp;<a NAME="Import From ArcGrid"></a><b>Import
+From Arc Grid</b> routine converts ascii Arc Grid files into Data Set Manager
+Data Sets.</font></font>
+<p><font face="Arial,Helvetica"><font size=-1><b>Creation options: </b>Select
+'Matrix' if a matrix data set is desired or 'Tabular' if the Arc Grid should
+be converted to a tabular DM data set.</font></font>
+<p><font face="Arial,Helvetica"><font size=-1><b>Data Type:&nbsp; </b>Select
+the appropriate data type for the new DM data set.</font></font>
+<p><font face="Arial,Helvetica"><font size=-1><b>Usage:&nbsp; </b>Select
+the files which are to be imported from the 'Files' list. Selected files
+must be ascii Arc Grid Files.&nbsp; In addition, all&nbsp; selected matrices
+must have common boundaries, cell size, cell&nbsp; reference,&nbsp; and
+must contain the same number of layers.</font></font>
+<p><font face="Arial,Helvetica"><font size=-1>Multiple files can be selected
+by dragging the cursor through the 'Files' list.&nbsp; Individual files
+can be selected or deselected by holding &lt;Ctrl> and then selecting files
+with the cursor.</font></font>
+<p><font face="Arial,Helvetica"><font size=-1><a href="#Routines:">Back
+to List</a></font></font>
+<br>
+<hr WIDTH="100%">
+<br><font face="Arial,Helvetica"><font size=-1>The&nbsp;<a NAME="Import AsciiMatrix"></a><b>Import
+Ascii Matrix</b> routine converts gridded ascii data sets into the Data
+Set Manager format.&nbsp; Input data sets must have a consistent cell size.</font></font>
+<p><font face="Arial,Helvetica"><font size=-1><b>Boundaries: </b>The North,
+South, East, and West entry fields must be filled with the appropriate
+boundaries of the data set which is to be imported.&nbsp; If the 'Center
+of Cells' (default) toggle is&nbsp; selected, than the boundaries should
+refer to the center of the cells.&nbsp; Otherwise, they should reference
+the lower left corner of the cells.</font></font>
+<p><font face="Arial,Helvetica"><font size=-1><b>Cell Size Information:
+</b>The
+user must select to enter either the cell size or the number of cells in
+the data set which is to be imported. The parameter which is not provided
+is calculated from the given parameter and the selected boundaries.</font></font>
+<p><font face="Arial,Helvetica"><font size=-1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+Dy&nbsp; = Cell Size in North-South direction</font></font>
+<br><font face="Arial,Helvetica"><font size=-1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+Dx&nbsp; = Cell Size in East-West direction</font></font>
+<br><font face="Arial,Helvetica"><font size=-1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+Ny&nbsp; = Number of cells from North to South</font></font>
+<br><font face="Arial,Helvetica"><font size=-1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+Nx&nbsp; = Number of cells from East to West</font></font>
+<p><font face="Arial,Helvetica"><font size=-1><b>Data Format:&nbsp; </b>If
+'by Row' option is selected, then the input data is read sequentially from
+the input file and the output file is filled by row from North to South
+(while each row is filled from&nbsp; West to East).&nbsp; However, if the
+'by Column' option is selected, the output file is filled by column from
+West to East (each column is filled from North to South).&nbsp; Data in
+the input file does not have to maintain a particular layout.&nbsp; In
+fact, the data can even be stored sequentially since the layout is not
+used in determining the structure of the matrix.</font></font>
+<p><font face="Arial,Helvetica"><font size=-1><b>Number of Layers: </b>This
+text field allows the user to specify the number of layers which are in
+the ascii matrix.&nbsp; Layers must all have the same size and must be
+stored sequentially within the file.</font></font>
+<p><font face="Arial,Helvetica"><font size=-1><b>Missing Data Values: </b>These
+textfields allow the user to enter any missing data values.&nbsp; These
+values are then converted to -99's when the file is imported.</font></font>
+<p><font face="Arial,Helvetica"><font size=-1><b>File Format Option: </b>This
+option selects the format of the data set which is created from the imported
+ascii data.&nbsp; If 'DM matrix' is selected the file will be stored as
+a Data Set Manager matrix.&nbsp; If 'DM lonlatdata' is selected, the file
+will be stored in a tabular Data Set Manager data set.</font></font>
+<p><font face="Arial,Helvetica"><font size=-1><b>Usage:</b>&nbsp; Select
+the files which are to be imported from the 'Files' list. Selected files
+must be organized as ascii matrices.&nbsp; In addition, all selected matrices
+must have common boundaries,cell size, cell reference,&nbsp; and must contain
+the same number of layers.</font></font>
+<p><font face="Arial,Helvetica"><font size=-1>Multiple files can be selected
+by dragging the cursor through the 'Files' list.&nbsp; Individual files
+can be selected or deselected by holding &lt;Ctrl> and then selecting files
+with the cursor.</font></font>
+<br><font face="Arial,Helvetica"><font size=-1><a href="#Routines:">Back
+to List</a></font></font>
+<br>
+<hr WIDTH="100%">
+<br><font face="Arial,Helvetica"><font size=-1>The&nbsp;<a NAME="Import AsciiTabular"></a><b>Import
+Ascii Tabular</b> routine imports tabular ascii data sets.&nbsp; The data
+files must be in the following format.</font></font>
+<p><font face="Arial,Helvetica"><font size=-1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+Longitude&nbsp;&nbsp; Latitude&nbsp;&nbsp; Value1 Value2 Value3&nbsp; ...</font></font>
+<br><font face="Arial,Helvetica"><font size=-1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+Longitude&nbsp;&nbsp; Latitude&nbsp;&nbsp; Value1 Value2 Value3&nbsp; ...</font></font>
+<br><font face="Arial,Helvetica"><font size=-1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+etc.</font></font>
+<p><font face="Arial,Helvetica"><font size=-1><b>Number of Data Columns:
+</b>Specify the number of values contained for each longitude/latitude
+entry.</font></font>
+<p><font face="Arial,Helvetica"><font size=-1><b>Missing Data Values: </b>These
+textfields allow the user to enter any missing data values.&nbsp; These
+values are then converted to -99's when the file is imported.</font></font>
+<p><font face="Arial,Helvetica"><font size=-1><b>File Format Option: </b>This
+option determines the type of data set that is created from the input data.&nbsp;
+If 'DM lonlatdata' is selected, a tabular Data Set Manager data set is
+created.&nbsp; If 'DM matrix' is selected, thedata is converted into a
+matrix Data Set Manager data set.&nbsp; In this case, the original data
+must be evenly spaced (uniform cell size).</font></font>
+<p><font face="Arial,Helvetica"><font size=-1><b>Cell Spacing Options:
+</b>If the input ascii data set has evenly spaced (gridded) data points,
+then the 'Uniform Cell Size' option should be selected. Missing values
+are permissible.</font></font>
+<p><font face="Arial,Helvetica"><font size=-1>If the input ascii data set
+has irregulary located data points (e.g. station data) then the 'Irregular
+Spacing' toggle should be selected.&nbsp; In this case, the Dy/Dx textfields,
+and cell reference options do not apply, and the data can not be automatically
+converted to a matrix data set.</font></font>
+<p><font face="Arial,Helvetica"><font size=-1><b>Cell Size: </b>If the
+data set has a uniform cell size it must be specified in the Dy and Dx
+entry boxes.&nbsp; Dy represents the cell size in the North/South direction
+while Dx represents the cell size in the East/West direction.&nbsp; These
+options are unused if the 'Irregular Spacing' option is selected.</font></font>
+<p><font face="Arial,Helvetica"><font size=-1><b>Cell Reference: </b>The
+'Center' option should be chosen if the longitude/latitude tags reference
+the center of the data cells.&nbsp; The 'Lower Left Corner' option should
+be selected if the longitude/latitude&nbsp; values refer to the lower left
+corners of the data cells.&nbsp; For irregular data this option is forced
+to the 'Center' option.</font></font>
+<p><font face="Arial,Helvetica"><font size=-1><b>Usage:&nbsp; </b>Select
+the files which are to be imported from the 'Files' list. Selected files
+must be in the following ascii tabular format.</font></font>
+<p><font face="Arial,Helvetica"><font size=-1>&nbsp;&nbsp; Longitude&nbsp;&nbsp;
+Latitude&nbsp;&nbsp; Value1&nbsp;&nbsp; Value2&nbsp;&nbsp; ...</font></font>
+<p><font face="Arial,Helvetica"><font size=-1>In addition, if multiple
+files are selected, they must all have the same number of data columns.</font></font>
+<p><font face="Arial,Helvetica"><font size=-1>Multiple files can be selected
+by dragging the cursor through the 'Files' list.&nbsp; Individual files
+can be selected or deselected by holding &lt;Ctrl> and then selecting files
+with the cursor.</font></font>
+<br><font face="Arial,Helvetica"><font size=-1><a href="#Routines:">Back
+to List</a></font></font>
+<br>
+<hr WIDTH="100%">
+<br><font face="Arial,Helvetica"><font size=-1>The&nbsp;<a NAME="Matrix to Point Sampling"></a><b>Matrix
+to Point Sampling </b>routine creates point data sets by sampling matrix
+data sets.&nbsp; A point</font></font>
+<br><font face="Arial,Helvetica"><font size=-1>data set is created for
+each matrix data set.&nbsp; Each point data set contains the points specified
+in the point coordinate data set.&nbsp; The data values for each point
+are set to the data value within the respective matrix for that geographic
+location.&nbsp; Notice that sampling an N layer matrix will result in a
+point data set with N data columns.</font></font>
+<p><font face="Arial,Helvetica"><font size=-1><b>Details&nbsp; </b>The
+points in each data set created will be in the same order as the points
+in the point coordinate file.&nbsp; Any data point which lies outside the
+matrix geographic extent will be placed in the point data set, but data
+values for all layers at that point will be set to the missing data value
+(-9999.0). Data points which lie on the boundary between cells are handled
+as follows.</font></font>
+<p><font face="Arial,Helvetica"><font size=-1>A data point on a boundary
+between cells in the east/west direction is given the value of the cell
+to the east of the boundary.</font></font>
+<p><font face="Arial,Helvetica"><font size=-1>A data point on a boundary
+between cells in the north/south direction is given the value of the cell
+to the south of the boundary.</font></font>
+<p><font face="Arial,Helvetica"><font size=-1>However, this behavior is
+not strictly guaranteed due to floating point imprecision.</font></font>
+<br><font face="Arial,Helvetica"><font size=-1><a href="#Routines:">Back
+to List</a></font></font>
+<br>
+<hr WIDTH="100%">
+<br><font face="Arial,Helvetica"><font size=-1>The&nbsp;<a NAME="Merge MissingValues"></a><b>Merge
+Missing Values</b> routine combines the missing values in two data sets.&nbsp;
+It is assumed that missing data values are consistent through all layers
+of a multi-layer data set.&nbsp; For this reason, only the first layer
+is used to determine where the missing data values are.&nbsp; Both data
+sets must have the same boundaries.</font></font>
+<p><font face="Arial,Helvetica"><font size=-1><b>Add Missing Values Option:
+</b>If selected, this option merges the missing data points from&nbsp;
+the other data set.</font></font>
+<p><font face="Arial,Helvetica"><font size=-1><b>File Creation Options:
+</b>If 'Modify Data Set' is selected then changes are made to the original
+data set.&nbsp; If 'Create a new Data Set' is chosen, then the revised
+data is saved in a new data set and the original is left unchanged.</font></font>
+<br><font face="Arial,Helvetica"><font size=-1><a href="#Routines:">Back
+to List</a></font></font>
+<br>
+<hr WIDTH="100%">
+<br><font face="Arial,Helvetica"><font size=-1>The&nbsp;<a NAME="MoveColumns"></a><b>Move
+Columns</b> routine is intended for use with data sets which circle the
+globe.&nbsp; It allows the user to move any number of columns from one
+edge of the matrix the other.&nbsp; The data set boundaries are updated
+to reflect the change.</font></font>
+<br><font face="Arial,Helvetica"><font size=-1><a href="#Routines:">Back
+to List</a></font></font>
+<br>
+<hr WIDTH="100%">
+<br><font face="Arial,Helvetica"><font size=-1>The&nbsp;<a NAME="Scale Data"></a><b>Scale
+Data </b>routine enables the user to scale data contained in a matrix data
+set.</font></font>
+<p><font face="Arial,Helvetica"><font size=-1><b>Layer Selection</b>: Any
+selected layers will not be scaled.</font></font>
+<p><font face="Arial,Helvetica"><font size=-1><b>Scale Factor:&nbsp; </b>The
+scale factor is the value by which every data value in all unselected layers
+will be multiplied.</font></font>
+<br><font face="Arial,Helvetica"><font size=-1><a href="#Routines:">Back
+to List</a></font></font>
+<br>
+<hr WIDTH="100%">
+<br><font face="Arial,Helvetica"><font size=-1>The&nbsp;<a NAME="SpheremapInterpolation"></a><b>Spheremap
+Interpolation</b> algorithm is used to create a matrix data set from an
+Irregular Lonlatdata data set.&nbsp; This interpolation weights neighboring
+data
+points by their respective distances.&nbsp; The routine can also be used
+to&nbsp; interpolate regular Lonlatdata data sets, when a more&nbsp; stringent
+interpolation than Bilinear is required.</font></font>
+<p><font face="Arial,Helvetica"><font size=-1><b>Boundaries:&nbsp; </b>The
+North, South, East, and West entry boxes are used to indicate the boundaries
+of the region which is to be interpolated.&nbsp; These boundaries default
+to the area of the original data set.</font></font>
+<p><font face="Arial,Helvetica"><font size=-1><b>Cell Size: </b>The 'Dy'
+and 'Dx' entry boxes allow the user to specify the latitudinal and longitudinal
+size of the interpolated cells, respectively.</font></font>
+<p><font face="Arial,Helvetica"><font size=-1><b>Nearest Neighbors Slide:
+</b>This parameter controls the number of surrounding data point from the
+original data set that are used to form each interpolated value.</font></font>
+<p><font face="Arial,Helvetica"><font size=-1><b>Distance Formula: </b>This
+toggle allows the user to select the means by which distances are calculated
+by the algorithm.&nbsp; Since the individual weighting of the data points
+is based on their distance fromthe point to interpolate, this option can
+have a considerable effect.</font></font>
+<p><font face="Arial,Helvetica"><font size=-1><b>Cell Reference: </b>The
+'Cell Reference' options allow the user to indicate the referencing used
+to indicated the boundaries of the interpolation region.&nbsp; If 'Center'
+is chosen, then the boundaries are assumed to reference the center of the
+data cells.&nbsp; If 'Lower Left Corner' is selected, then the boundaries
+are assumed to reference the lower left corner of the data cells.</font></font>
+<br>
+<hr WIDTH="100%">
+<br><font face="Arial,Helvetica"><font size=-1>The&nbsp;<a NAME="Statistics byRegion"></a><b>Statistics
+by Region</b> routine provides statistics (mean, min, max, standard deviation,
+and number of cells) by region for a data set.</font></font>
+<p><font face="Arial,Helvetica"><font size=-1><b>Region Data Set: </b>The
+region data set defines the regions over which statistics are to be computed.&nbsp;
+Regions are specified by an integer number in each cell belonging to a
+particular region.&nbsp; That is, all cells containing the integer, say,
+5 are considered to belong to region 5.&nbsp; The region data set can be
+specified using the 'Set' button.&nbsp; The region data set can be any
+matrix DM data set.&nbsp; The layer scale is used to select which layer
+within the region data set is to be used for obtaining the regions.</font></font>
+<p><font face="Arial,Helvetica"><font size=-1><b>Handling of Missing Data
+Values:&nbsp; </b>Any cell which has a missing data value (-9999.0) in
+the selected layer of the region data set or has a missing data value in
+any layer of the data set for which statistics are being computed is considered
+to be a missing data cell.&nbsp; No statistics (for any layer) are computed
+for missing data cells determined by the above criteria.&nbsp; Therefore,
+some data might not be used if the missing data values are not consistent
+throughout all layers in the data set.&nbsp; If this is the case, all data
+can be used by splitting the data set into separate data sets by layer
+using the Layer&nbsp; Manipulation routines.&nbsp; Then statistics can
+be computed for each layer individually.</font></font>
+<br><font face="Arial,Helvetica"><font size=-1><a href="#Routines:">Back
+to List</a></font></font>
+</body>
+</html>
