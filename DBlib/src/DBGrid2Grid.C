@@ -216,8 +216,8 @@ DBInt DBGridAppend (DBObjData *grdData, DBObjData *appData)
 	DBObjRecord *grdLayerRec, *appLayerRec;
 
 	if (((grdData->Type () != DBTypeGridDiscrete) && (grdData->Type () != DBTypeGridContinuous)) ||
-		 ((appData->Type () != DBTypeGridDiscrete) && (appData->Type () != DBTypeGridContinuous)) ||
-		 (grdData->Type () != appData->Type ()))
+		((appData->Type () != DBTypeGridDiscrete) && (appData->Type () != DBTypeGridContinuous)) ||
+		(grdData->Type () != appData->Type ()))
 		return (DBFault);
 
 	grdIO = new DBGridIO (grdData);
@@ -236,7 +236,7 @@ DBInt DBGridAppend (DBObjData *grdData, DBObjData *appData)
 					 	grdIO->Pos2Coord (pos,coord);
 						if (appIO->Value (appLayerRec,coord,&gridValue))
 								grdIO->Value (grdLayerRec,pos,gridValue);
-						else	grdIO->Value (grdLayerRec,pos,DBDefaultMissingFloatVal);
+						else	grdIO->Value (grdLayerRec,pos,grdIO->MissingValue());
 						}
 				grdIO->RecalcStats (grdLayerRec);
 				break;
