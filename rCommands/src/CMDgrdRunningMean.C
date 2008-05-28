@@ -19,7 +19,7 @@ int main(int argc, char* argv[])
 
 	{
 	int argPos, argNum = argc, ret, verbose = false;
-	int layerID, kernel = 3, offset = CMfailed, i, layerNum, beginLayerID, endLayerID, num;
+	int layerID, kernel = 3, offset = 0, i, layerNum, beginLayerID, endLayerID, num;
 	DBPosition pos;
 	char *title  = (char *) NULL, *subject = (char *) NULL;
 	char *domain = (char *) NULL, *version = (char *) NULL;
@@ -133,8 +133,6 @@ int main(int argc, char* argv[])
 		}
 	if (verbose) RGlibPauseOpen (argv[0]);
 
-	offset = offset == CMfailed ? offset : kernel >> 0x02;
-
 	inData = new DBObjData ();
 	ret = (argNum > 1) && (strcmp (argv [1],"-") != 0) ? inData->Read (argv [1]) : inData->Read (stdin);
 	if ((ret == DBFault) || ((inData->Type () != DBTypeGridContinuous) && (inData->Type () != DBTypeGridDiscrete)))
@@ -162,8 +160,9 @@ int main(int argc, char* argv[])
 			}
 		else outLayerRec = outGridIO->AddLayer (inLayerRec->Name ());
 
-		beginLayerID = layerID > offset ? layerID - offset : 0;
-		endLayerID   = layerID - offset + kernel < layerNum ? layerID - offset + kernel : layerNum;
+		beginLayerID = layerID >= offset ? layerID - offset : 0;
+		endLayerID   = (layerID - offset + kernel) < layerNum ? (layerID - offset + kernel) : layerNum;
+//		fprintf (stderr, "LayerID: %d Kernel: %d Offset: %d     Begin: %d  End: %d\n", layerID, kernel, offset, beginLayerID, endLayerID);
 		for (pos.Row = 0; pos.Row < inGridIO->RowNum (); pos.Row++)
 			{
 			for (pos.Col = 0; pos.Col < inGridIO->ColNum (); pos.Col++)
