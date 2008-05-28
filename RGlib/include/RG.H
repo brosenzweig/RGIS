@@ -1,20 +1,25 @@
-#define RGlibCycleMonthly	12
-#define RGlibCycleWeekly	52
-#define RGlibCycleDaily	365
+#define RGlibCycleMonthly 12
+#define RGlibCycleWeekly  52
+#define RGlibCycleDaily  365
+
+#define RGlibAggrMinimum 0
+#define RGlibAggrMaximum 1
+#define RGlibAggrAverage 2
+#define RGlibAggrSum     3
 
 #define RGlibCycleIncr(cycle,tStep) (tStep + 1 < cycle ? tStep + 1 : 0)
 #define RGlibCycleDecr(cycle,tStep) ((tStep > 0 ? tStep : cycle) - 1)
 #define RGlibCycleStep(cycle,tStep) ((tStep) % cycle)
 
-#define RGlibCellID			"CellID"
-#define RGlibBasinName		"BasinName"
-#define RGlibStreamOrder 	"Stream Order"
-#define RGlibColor			"Color"
-#define RGlibCellNum 		"NumberOfCells"
-#define RGlibLength 			"STNMainstemLength"
-#define RGlibArea 			"STNCatchmentArea"
-#define RGlibInterStation	"STNInterStationArea"
-#define RGlibNextStation 	"NextStation"
+#define RGlibCellID         "CellID"
+#define RGlibBasinName      "BasinName"
+#define RGlibStreamOrder    "Stream Order"
+#define RGlibColor          "Color"
+#define RGlibCellNum        "NumberOfCells"
+#define RGlibLength         "STNMainstemLength"
+#define RGlibArea           "STNCatchmentArea"
+#define RGlibInterStation   "STNInterStationArea"
+#define RGlibNextStation    "NextStation"
 
 #define RGlibMinSLOPE 0.01
 
@@ -50,7 +55,7 @@ DBInt RGlibGridBivarCellStats (DBObjData *,DBObjData *, DBObjData *);
 DBInt RGlibGridSampling (DBObjData *,DBObjData *,DBObjData *);
 DBInt RGlibCycleMean (DBObjData *,DBObjData *,DBInt,DBInt);
 DBInt RGlibLayerAggregate (DBObjData *,DBObjData *,DBInt,DBInt,DBInt);
-DBInt RGlibTSAggregate (DBObjData *,DBObjData *,DBInt,DBInt);
+DBInt RGlibTSAggregate (DBObjData *,DBObjData *,DBInt, DBInt);
 DBInt RGlibSeasonAggregate (DBObjData *,DBObjData *,DBInt,DBInt,DBInt);
 DBInt RGlibSeasonMean (DBObjData *,DBObjData *,DBInt,DBInt,DBInt);
 DBInt RGlibMinMax     (DBObjData *,DBObjData *,bool);

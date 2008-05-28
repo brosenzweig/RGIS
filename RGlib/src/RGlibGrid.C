@@ -1267,12 +1267,12 @@ Stop:
 	return (ret);
 	}
 
-DBInt RGlibLayerAggregate (DBObjData *tsData,DBObjData *data,DBInt cycleStepNum,DBInt offset,DBInt doSum)
+DBInt RGlibLayerAggregate (DBObjData *tsData,DBObjData *data,DBInt cycleStepNum,DBInt offset, DBInt aggrType)
 
 	{
 	char recordName [DBStringLength];
 	DBInt tsLayerID, *obsNum, step, ret = DBFault;
-	DBFloat value, *sum;
+	DBFloat value, *aggregate;
 	DBPosition pos;
 	DBGridIO *tsGridIO = new DBGridIO (tsData);
 	DBGridIO *gridIO   = new DBGridIO (data);
@@ -1288,7 +1288,7 @@ DBInt RGlibLayerAggregate (DBObjData *tsData,DBObjData *data,DBInt cycleStepNum,
 		gridIO->AddLayer (recordName);
 		}
 
-	if ((sum = (DBFloat *) calloc (gridIO->LayerNum (),sizeof (DBFloat))) == (DBFloat *) NULL)
+	if ((aggregate = (DBFloat *) calloc (gridIO->LayerNum (),sizeof (DBFloat))) == (DBFloat *) NULL)
 		{
 		perror ("Memory Allocation Error in: RGlibCycleMean ()");
 		delete tsGridIO;
@@ -1299,7 +1299,7 @@ DBInt RGlibLayerAggregate (DBObjData *tsData,DBObjData *data,DBInt cycleStepNum,
 	if ((obsNum = (DBInt *) calloc (gridIO->LayerNum (),sizeof (DBInt))) == (DBInt *) NULL)
 		{
 		perror ("Memory Allocation Error in: RGlibCycleMean ()");
-		free (sum);
+		free (aggregate);
 		delete tsGridIO;
 		delete gridIO;
 		return (DBFault);
@@ -1310,36 +1310,62 @@ DBInt RGlibLayerAggregate (DBObjData *tsData,DBObjData *data,DBInt cycleStepNum,
 		if (DBPause (100 * pos.Row / tsGridIO->RowNum ())) goto Stop;
 		for (pos.Col = 0;pos.Col < tsGridIO->ColNum ();pos.Col++)
 			{
-			for (step = 0;step < gridIO->LayerNum ();++step) { sum [step] = 0.0; obsNum [step] = 0; }
+			for (step = 0;step < gridIO->LayerNum ();++step)
+				{
+				switch (aggrType)
+					{
+					case RGlibAggrMinimum: aggregate [step] =  HUGE_VAL; break;
+					case RGlibAggrMaximum: aggregate [step] = -HUGE_VAL; break;
+					default:               aggregate [step] =       0.0; break;
+					}
+				obsNum [step] = 0;
+				}
 			for (tsLayerID = 0;tsLayerID < tsGridIO->LayerNum ();++tsLayerID)
 				if (tsGridIO->Value (tsGridIO->Layer (tsLayerID),pos,&value))
 					{
 					step = (DBInt) (floor ((tsLayerID + offset) / cycleStepNum));
 					while (step >= gridIO->LayerNum ()) step -= gridIO->LayerNum ();
-					sum [step] += value;
+					switch (aggrType)
+						{
+						case RGlibAggrMinimum: aggregate [step] = aggregate [step] < value ? aggregate [step] : value; break;
+						case RGlibAggrMaximum: aggregate [step] = aggregate [step] > value ? aggregate [step] : value; break;
+						default: aggregate [step] = aggregate [step] + value; break;
+						}
 					obsNum [step] += 1;
 					}
-			if (doSum)
-				for (step = 0;step < gridIO->LayerNum ();++step)
-					{
-					if (obsNum [step] > 0)
-						gridIO->Value (gridIO->Layer (step),pos,(sum [step] / (DBFloat) obsNum [step]) * (DBFloat) gridIO->LayerNum ());
-					else gridIO->Value (gridIO->Layer (step),pos,gridIO->MissingValue ());
-					}
-			else
-				for (step = 0;step < gridIO->LayerNum ();++step)
-					{
-					if (obsNum [step] > 0)
-						gridIO->Value (gridIO->Layer (step),pos,(sum [step] / (DBFloat) obsNum [step]));
-					else gridIO->Value (gridIO->Layer (step),pos,gridIO->MissingValue ());
-					}
+			switch (aggrType)
+				{
+				case RGlibAggrSum:
+					for (step = 0;step < gridIO->LayerNum ();++step)
+						{
+						if (obsNum [step] > 0)
+							gridIO->Value (gridIO->Layer (step),pos,(aggregate [step] / (DBFloat) obsNum [step]) * (DBFloat) gridIO->LayerNum ());
+						else gridIO->Value (gridIO->Layer (step),pos,gridIO->MissingValue ());
+						}
+					break;
+				case RGlibAggrAverage:
+					for (step = 0;step < gridIO->LayerNum ();++step)
+						{
+						if (obsNum [step] > 0)
+							gridIO->Value (gridIO->Layer (step),pos,(aggregate [step] / (DBFloat) obsNum [step]));
+						else gridIO->Value (gridIO->Layer (step),pos,gridIO->MissingValue ());
+						}
+					break;
+				default:
+					for (step = 0;step < gridIO->LayerNum ();++step)
+						{
+						if (obsNum [step] > 0)
+							gridIO->Value (gridIO->Layer (step),pos, aggregate [step]);
+						else gridIO->Value (gridIO->Layer (step),pos,gridIO->MissingValue ());
+						}
+				}
 			}
 		}
 	gridIO->RecalcStats ();
 
 	ret = DBSuccess;
 Stop:
-	free (sum);
+	free (aggregate);
 	free (obsNum);
 	delete tsGridIO;
 	delete gridIO;

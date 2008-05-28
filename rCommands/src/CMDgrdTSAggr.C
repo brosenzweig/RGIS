@@ -21,7 +21,8 @@ int main (int argc,char *argv [])
 	int argPos, argNum = argc, ret, verbose = false;
 	char *title  = (char *) NULL, *subject = (char *) NULL;
 	char *domain = (char *) NULL, *version = (char *) NULL;
-	DBInt timeStep, doSum = false;
+	DBInt timeStep;
+	DBInt aggregate = RGlibAggrAverage;
 	int shadeSet = DBFault;
 	DBObjData *tsData, *data;
 
@@ -29,14 +30,14 @@ int main (int argc,char *argv [])
 		{
 		if (CMargTest (argv [argPos],"-a","--aggregate"))
 			{
-			int sumCodes  [] = { false, true	};
-			const char *sumStrs [] = { "avg", "sum", (char *) NULL };
+			const char *sumStrs [] = { "avg", "min", "max", "sum", (char *) NULL };
+			DBInt opts [] = { RGlibAggrAverage, RGlibAggrMinimum, RGlibAggrMaximum, RGlibAggrSum };
 
 			if ((argNum = CMargShiftLeft (argPos,argv,argNum)) <= argPos)
 				{ CMmsgPrint (CMmsgUsrError,"Missing aggregation method!\n"); return (CMfailed); }
-			if ((doSum = CMoptLookup (sumStrs,argv [argPos],true)) == DBFault)
+			if ((ret = CMoptLookup (sumStrs,argv [argPos],true)) == DBFault)
 				{ CMmsgPrint (CMmsgUsrError,"Invalid aggregation method!\n"); return (CMfailed); }
-			doSum = sumCodes [doSum];
+			aggregate = opts [ret];
 			if ((argNum = CMargShiftLeft (argPos,argv,argNum)) <= argPos) break;
 			continue;
 			}
@@ -111,7 +112,7 @@ int main (int argc,char *argv [])
 		if (CMargTest (argv [argPos],"-h","--help"))
 			{
 			CMmsgPrint (CMmsgInfo,"%s [options] <input grid> <output grid>\n",CMprgName(argv[0]));
-			CMmsgPrint (CMmsgInfo,"     -a,--aggregate [avg|sum]\n");
+			CMmsgPrint (CMmsgInfo,"     -a,--aggregate [avg|max|min|sum]\n");
 			CMmsgPrint (CMmsgInfo,"     -e,--step      [year|month|day|hour]\n");
 			CMmsgPrint (CMmsgInfo,"     -t,--title     [dataset title]\n");
 			CMmsgPrint (CMmsgInfo,"     -u,--subject   [subject]\n");
@@ -148,7 +149,7 @@ int main (int argc,char *argv [])
 	data->Flags (DBDataFlagDispModeContShadeSets,DBClear);
 	data->Flags (shadeSet,DBSet);
 
-	if ((ret = RGlibTSAggregate (tsData, data, timeStep, doSum)) == DBSuccess)
+	if ((ret = RGlibTSAggregate (tsData, data, timeStep, aggregate)) == DBSuccess)
 		ret = (argNum > 2) && (strcmp (argv [2],"-") != 0) ? data->Write (argv [2]) : data->Write (stdout);
 
 	delete tsData;
