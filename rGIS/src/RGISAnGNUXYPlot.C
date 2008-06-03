@@ -23,6 +23,7 @@ void RGISAnGNUXYPlotCBK (Widget widget,RGISWorkspace *workspace,XmAnyCallbackStr
 	{
 	FILE *file;
 	char command [DBDataFileNameLen * 2 + DBStringLength]; 
+	const char *ghaasDir;
 	char *f0Text, *f1Text, fileName [12];
 	int allowOk, fd;
 	static int plot = false, logScale = false;
@@ -208,7 +209,8 @@ void RGISAnGNUXYPlotCBK (Widget widget,RGISWorkspace *workspace,XmAnyCallbackStr
 			fprintf (file,"%s\n",buffer);
 			}
 		fclose (file);
-		sprintf (command,"%s/Scripts/xy-plot.sh %s %s",getenv ("GHAAS_HOME"),fileName,logScale ? "log" : "normal");
+		ghaasDir = getenv ("GHAAS_DIR");
+		sprintf (command,"%s/Scripts/xy-plot.sh %s %s",ghaasDir != (const char *) NULL ? ghaasDir : ".",fileName,logScale ? "log" : "normal");
 		system (command);
 		unlink (fileName);
 		}
