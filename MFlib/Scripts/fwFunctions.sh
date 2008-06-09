@@ -365,7 +365,7 @@ function FwGDSFilename()
 	local     fwSTEP="${5}"
 	if [ "${fwYEAR}" == "" ]
 	then
-		local fwFILENAME="${_fwGDSDomainDIR}/${fwVERSION}/${_fwDomainNAME}_${fwMODE}_${fwVERSION}_${fwVARIABLE}_${fwSTEP}LTM_${FwDomainRES}.gds"
+		local fwFILENAME="${_fwGDSDomainDIR}/${fwVERSION}/${_fwDomainNAME}_${fwMODE}_${fwVERSION}_${fwVARIABLE}_${fwSTEP}LT_${FwDomainRES}.gds"
 	else
 		local fwFILENAME="${_fwGDSDomainDIR}/${fwVERSION}/${_fwDomainNAME}_${fwMODE}_${fwVERSION}_${fwVARIABLE}_${fwSTEP}TS${fwYEAR}_${FwDomainRES}.gds"
 	fi
@@ -380,7 +380,7 @@ function FwRGISFilename()
 	local     fwYEAR="${4}"
 	if [ "${fwYEAR}" == "" ]
 	then
-		local fwFILENAME="${_fwRGISResultsDIR}/${fwVARIABLE}/${_fwDomainNAME}_${fwVERSION}_${fwVARIABLE}_${fwSTEP}LTM_${FwDomainRES}.gdbc"
+		local fwFILENAME="${_fwRGISResultsDIR}/${fwVARIABLE}/${_fwDomainNAME}_${fwVERSION}_${fwVARIABLE}_${fwSTEP}LT_${FwDomainRES}.gdbc"
 	else
 		local fwFILENAME="${_fwRGISResultsDIR}/${fwVARIABLE}/${_fwDomainNAME}_${fwVERSION}_${fwVARIABLE}_${fwSTEP}TS${fwYEAR}_${FwDomainRES}.gdbc"
 	fi
@@ -481,7 +481,7 @@ function _fwPostprocess()
    local fwVERSION="${1}"
 	local    fwYEAR="${2}"
 	local fwPROC
-	if [ "${fwYEAR}" == "" ]; then local fwSUFFIX="LTM"; else local fwSUFFIX="TS${fwYEAR}"; fi
+	if [ "${fwYEAR}" == "" ]; then local fwSUFFIX="LT"; else local fwSUFFIX="TS${fwYEAR}"; fi
 	[ "${FwVERBOSE}" == "on" ] && { echo "      Postprocessing ${fwYEAR} started:  $(date '+%Y-%m-%d %H:%M:%S')"; }
 	(( fwPROC = 0 ))
 	for (( fwI = 0; fwI < ${#_fwOutputARRAY[@]} ; ++fwI ))
