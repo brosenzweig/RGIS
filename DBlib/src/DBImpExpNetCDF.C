@@ -400,8 +400,7 @@ static DBInt _DBExportNetCDFTimeDefine (DBObjData *dbData,int ncid,int dimids []
 	{
 	char *str, timeStr [DBStringLength], unitStr [NC_MAX_NAME];
 	int status, timeid, timebndid, i, tdimids[2];
-	int bYear, bMonth, bDay, bHour, bMinute;
-	int eYear, eMonth, eDay, eHour, eMinute;
+	int year, month, day, hour, minute;
 	utUnit unit;
 	double extent [2];
 	size_t start[2], count[2];
@@ -430,49 +429,44 @@ static DBInt _DBExportNetCDFTimeDefine (DBObjData *dbData,int ncid,int dimids []
 		{ fprintf(stderr, "NC Error: %s\n", nc_strerror(status)); delete gridIO; return (DBFault); }
 	strcpy (timeStr,(gridIO->Layer (gridIO->LayerNum () - 1))->Name ());
 	if (strncmp (timeStr,"XXXX",4) == 0) for (i = 0;i < 4;i++) timeStr [i] = '0';
-	bMonth  = 6;
-	bDay    = 15;
-	bHour   = 12;
-	bMinute = 30;
+	month  = 6;
+	day    = 15;
+	hour   = 12;
+	minute = 30;
 	switch (strlen (timeStr))
 		{
 		case  4:
-			sscanf (timeStr,"%4d",&eYear);
 			strcpy (timeStr,(gridIO->Layer (0))->Name ());
 			if (strncmp (timeStr,"XXXX",4) == 0) for (i = 0;i < 4;i++) timeStr [i] = '0';
-			sscanf (timeStr,"%4d",&bYear);
+			sscanf (timeStr,"%4d",&year);
 			sprintf (unitStr,"days since %s-01-01 00:00:00", timeStr);
 			str = "0001-00-00 00:00:00";
 			break;
 		case  7:
-			sscanf (timeStr,"%4d-%2d",&eYear,&eMonth);
 			strcpy (timeStr,(gridIO->Layer (0))->Name ());
 			if (strncmp (timeStr,"XXXX",4) == 0) for (i = 0;i < 4;i++) timeStr [i] = '0';
-			sscanf (timeStr,"%4d-%2d",&bYear,&bMonth);
+			sscanf (timeStr,"%4d-%2d",&year,&month);
 			sprintf (unitStr,"days since %s-01 00:00:00", timeStr);
 			str = "0000-01-00 00:00:00";
 			break;
 		case 10:
-			sscanf (timeStr,"%4d-%2d-%2d",&eYear,&eMonth,&eDay);
 			strcpy (timeStr,(gridIO->Layer (0))->Name ());
 			if (strncmp (timeStr,"XXXX",4) == 0) for (i = 0;i < 4;i++) timeStr [i] = '0';
-			sscanf (timeStr,"%4d-%2d-%2d",&bYear,&bMonth,&bDay);
+			sscanf (timeStr,"%4d-%2d-%2d",&year,&month,&day);
 			sprintf (unitStr,"days since %s 00:00:00",   timeStr);
 			str = "0000-00-01 00:00:00";
 			break;
 		case 13:
-			sscanf (timeStr,"%4d-%2d-%2d %2d",&eYear,&eMonth,&eDay,&eHour);
 			strcpy (timeStr,(gridIO->Layer (0))->Name ());
 			if (strncmp (timeStr,"XXXX",4) == 0) for (i = 0;i < 4;i++) timeStr [i] = '0';
-			sscanf (timeStr,"%4d-%2d-%2d %2d",&bYear,&bMonth,&bDay,&bHour);
+			sscanf (timeStr,"%4d-%2d-%2d %2d",&year,&month,&day,&hour);
 			sprintf (unitStr,"hours since %s:00:00",  timeStr);
 			str = "0000-00-00 01:00:00";
 			break;
 		case 16:
-			sscanf (timeStr,"%4d-%2d-%2d %2d:%2d",&eYear,&eMonth,&eDay,&eHour,&eMinute);
 			strcpy (timeStr,(gridIO->Layer (0))->Name ());
 			if (strncmp (timeStr,"XXXX",4) == 0) for (i = 0;i < 4;i++) timeStr [i] = '0';
-			sscanf (timeStr,"%4d-%2d-%2d %2d:%2d",&bYear,&bMonth,&bDay,&bHour,&bMinute);
+			sscanf (timeStr,"%4d-%2d-%2d %2d:%2d",&year,&month,&day,&hour,&minute);
 			sprintf (unitStr,"minutes since %s:00",timeStr);
 			str = "0000-00-00 00:01:00";
 			break;
@@ -507,23 +501,23 @@ static DBInt _DBExportNetCDFTimeDefine (DBObjData *dbData,int ncid,int dimids []
 	start[0] = start[1] = 0;
 	count[0] = gridIO->LayerNum ();
 	count[1] = 2;
-	bMonth  = 6;
-	bDay    = 15;
-	bHour   = 12;
-	bMinute = 30;
+	month  = 6;
+	day    = 15;
+	hour   = 12;
+	minute = 30;
 	for (layerID = 0;layerID < gridIO->LayerNum ();layerID++)
 		{
 		strcpy (timeStr,(gridIO->Layer (layerID))->Name ());
 		if (strncmp (timeStr,"XXXX",4) == 0) for (i = 0;i < 4;i++) timeStr [i] = '0';
 		switch (strlen (timeStr))
 			{
-			case  4: sscanf (timeStr,"%4d",                &bYear);                               break;
-			case  7: sscanf (timeStr,"%4d-%2d",            &bYear,&bMonth);                       break;
-			case 10: sscanf (timeStr,"%4d-%2d-%2d",        &bYear,&bMonth,&bDay);                 break;
-			case 13: sscanf (timeStr,"%4d-%2d-%2d %2d",    &bYear,&bMonth,&bDay,&bHour);          break;
-			case 16: sscanf (timeStr,"%4d-%2d-%2d %2d:%2d",&bYear,&bMonth,&bDay,&bHour,&bMinute); break;
+			case  4: sscanf (timeStr,"%4d",                &year);                               break;
+			case  7: sscanf (timeStr,"%4d-%2d",            &year,&month);                       break;
+			case 10: sscanf (timeStr,"%4d-%2d-%2d",        &year,&month,&day);                 break;
+			case 13: sscanf (timeStr,"%4d-%2d-%2d %2d",    &year,&month,&day,&hour);          break;
+			case 16: sscanf (timeStr,"%4d-%2d-%2d %2d:%2d",&year,&month,&day,&hour,&minute); break;
 			}
-		if (utInvCalendar (bYear,bMonth,bDay,bHour,bMinute,(double) 0.0,&unit,record + layerID) != 0)	
+		if (utInvCalendar (year,month,day,hour,minute,(double) 0.0,&unit,record + layerID) != 0)	
 			{
 			fprintf (stderr,"Invalid time [%s] in: DBImportNetCDF ()",timeStr);
 			delete gridIO;
@@ -539,68 +533,47 @@ static DBInt _DBExportNetCDFTimeDefine (DBObjData *dbData,int ncid,int dimids []
 		return (DBFault);
 		}
 
-	bMonth  = 1;
-	eMonth  = 12;
-	bDay    = 1;
-	eDay    = 31;
-	bHour   = 0;
-	eHour   = 23;
-	bMinute = 0;
-	eMinute = 59;
+	month  = day    = 1;
+	hour   = minute = 0;
 	for (layerID = 0;layerID < gridIO->LayerNum ();layerID++)
 		{
 		strcpy (timeStr,(gridIO->Layer (layerID))->Name ());
 		if (strncmp (timeStr,"XXXX",4) == 0) for (i = 0;i < 4;i++) timeStr [i] = '0';
 		switch (strlen (timeStr))
 			{
-			case  4:
-				sscanf (timeStr,"%4d", &bYear);
-				eYear = bYear;
-				break;
-			case  7:
-				sscanf (timeStr,"%4d-%2d", &bYear, &bMonth);
-				eYear  = bYear;
-				eMonth = bMonth;
-				eDay   = DBNumberOfDays (eYear,eMonth);
-				break;
-			case 10:
-				sscanf (timeStr,"%4d-%2d-%2d", &bYear,&bMonth,&bDay);
-				eYear  = bYear;
-				eMonth = bMonth;
-				eDay   = bDay;
-				eHour  = 23;
-				break;
-			case 13:
-				sscanf (timeStr,"%4d-%2d-%2d %2d", &bYear,&bMonth,&bDay,&bHour);
-				eYear   = bYear;
-				eMonth  = bMonth;
-				eDay    = bDay;
-				eHour   = bHour;
-				eMinute = 59;
-				break;
-			case 16:
-				sscanf (timeStr,"%4d-%2d-%2d %2d:%2d",&bYear,&bMonth,&bDay,&bHour,&bMinute);
-				eYear   = bYear;
-				eMonth  = bMonth;
-				eDay    = bDay;
-				eHour   = bHour;
-				eMinute = bMinute;
-				break;
+			case  4: sscanf (timeStr,"%4d",                &year);                               break;
+			case  7: sscanf (timeStr,"%4d-%2d",            &year,&month);                       break;
+			case 10: sscanf (timeStr,"%4d-%2d-%2d",        &year,&month,&day);                 break;
+			case 13: sscanf (timeStr,"%4d-%2d-%2d %2d",    &year,&month,&day,&hour);          break;
+			case 16: sscanf (timeStr,"%4d-%2d-%2d %2d:%2d",&year,&month,&day,&hour,&minute); break;
 			}
-		if (utInvCalendar (bYear,bMonth,bDay,bHour,bMinute,(double) 0.0,&unit,record + layerID * 2) != 0)	
+		if (utInvCalendar (year,month,day,hour,minute,(double) 0.0,&unit,record + layerID * 2) != 0)	
 			{
 			fprintf (stderr,"Invalid time [%s] in: DBImportNetCDF ()",timeStr);
 			delete gridIO;
 			free (record);
 			return (DBFault);
 			}
-		if (utInvCalendar (eYear,eMonth,eDay,eHour,eMinute,(double) 59.999,&unit,record + layerID * 2 + 1) != 0)	
-			{
-			fprintf (stderr,"Invalid time [%s] in: DBImportNetCDF ()",timeStr);
-			delete gridIO;
-			free (record);
-			return (DBFault);
-			}
+		if (layerID > 0) record [(layerID - 1) * 2 + 1] = record [layerID * 2];
+		}
+	switch (strlen (timeStr))
+		{
+		case  4: year   = year   + 1; break;
+		case  7: month  = month  + 1; break;
+		case 10: day    = day    + 1; break;
+		case 13: hour   = hour   + 1; break;
+		case 16: minute = minute + 1; break;
+		}
+	if (minute > 59) { minute = 0; hour = hour + 1; }
+	if (hour   > 23) { hour   = 0; day  = day  + 1; }
+	if (day    > DBNumberOfDays (year, month)) { day = 1; month = month + 1; }
+	if (month  > 12) { month  = 1; year = year + 1; }
+	if (utInvCalendar (year,month,day,hour,minute,(double) 0.0,&unit,record + layerID * 2 - 1) != 0)	
+		{
+		fprintf (stderr,"Invalid time [%s] in: DBImportNetCDF ()",timeStr);
+		delete gridIO;
+		free (record);
+		return (DBFault);
 		}
 	if ((status = nc_put_vara_double (ncid,timebndid,start,count,record)) != NC_NOERR)
 		{
