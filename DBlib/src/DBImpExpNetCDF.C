@@ -975,8 +975,6 @@ DBInt DBExportNetCDF (DBObjData *dbData,const char *fileName)
 				{ fprintf(stderr, "NC Error: %s\n", nc_strerror(status)); nc_close (ncid); return (DBFault); }
 			if ((status = nc_put_att_text (ncid,varid,"var_desc",strlen (str),str)) != NC_NOERR)
 				{ fprintf(stderr, "NC Error: %s\n", nc_strerror(status)); nc_close (ncid); return (DBFault); }
-			if ((status = nc_put_att_float (ncid,varid,"missing_value",NC_FLOAT,1,&fillVal)) != NC_NOERR)
-				{ fprintf(stderr, "NC Error: %s\n", nc_strerror(status)); nc_close (ncid); return (DBFault); }
 
 			gridIO = new DBGridIO (dbData);
 
@@ -985,6 +983,8 @@ DBInt DBExportNetCDF (DBObjData *dbData,const char *fileName)
 			dataOffset  = 0.0;
 			extent [0]  = gridIO->Minimum ();
 			extent [1]  = gridIO->Maximum ();
+			if ((status = nc_put_att_float (ncid,varid,"missing_value",NC_FLOAT,1,&fillVal)) != NC_NOERR)
+				{ fprintf(stderr, "NC Error: %s\n", nc_strerror(status)); nc_close (ncid); return (DBFault); }
 			if ((status = nc_put_att_float (ncid,varid,"_FillValue",   NC_FLOAT,1,&fillVal)) != NC_NOERR)
 				{ fprintf(stderr, "NC Error: %s\n", nc_strerror(status)); nc_close (ncid); return (DBFault); }
 			if ((status = nc_put_att_float (ncid,varid,"scale_factor",NC_FLOAT,1,&scaleFactor)) != NC_NOERR)
