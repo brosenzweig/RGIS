@@ -66,7 +66,7 @@ function FwArguments()
 		case ${1} in
 			(-a|--restart)
 				shift
-				case ($1) in
+				case ${1} in
 					(yes|no)
 						_fwRESTART="${1}"
 					;;
