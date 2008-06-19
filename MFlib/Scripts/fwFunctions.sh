@@ -2,6 +2,7 @@
 
 _fwMAXPROC=4
 _fwPASSNUM=5
+_fwRESTART="off"
 
 function _fwDataSource()
 {
@@ -63,6 +64,16 @@ function FwArguments()
 	while [ "${1}" != "" ]
 	do
 		case ${1} in
+			(-a|--restart)
+				shift
+				case ($1) in
+					(yes|no)
+						_fwRESTART="${1}"
+					;;
+					(*)
+						echo "Invalid --restart argument [${1}]"
+					;;
+				esac
 			(-s|--spinup)
 				shift
 				case ${1} in
@@ -165,6 +176,7 @@ function FwArguments()
 			(-h|--help)
 				_fwPROGNAME="${0##*/}" # I don't know how this one works.
 				echo "${_fwPROGNAME} [-s on|off] [-f on|off] [-p on|off] -W on|off -T -V"
+				echo "           -a, --restart     on|off"
 				echo "           -s, --spinup      on|off"
 				echo "           -f, --finalrun    on|off"
 				echo "           -l, --lengthcorrection    [value]"
@@ -620,7 +632,11 @@ function _fwRun()
 	[ "${FwVERBOSE}" == "on" ] && echo "Model run started:  $(date '+%Y-%m-%d %H:%M:%S')"
 	for (( fwYEAR = fwStartYEAR; fwYEAR <= fwEndYEAR; ++fwYEAR ))
 	do
-		if (( fwYEAR == fwStartYEAR )); then fwDOSTATE="dostate"; else fsDOSTATE="nostate"; fi
+		if (( fwYEAR == fwStartYEAR ))
+		then
+			if [[ "$_fwRESTART}" == "off" ]]; then fwDOSTATE="dostate"; else fsDOSTATE="nostate"; fi
+		else fsDOSTATE="nostate";
+		fi
 		_fwPreprocess "${fwDOSTATE}" "${fwYEAR}" || return -1
 
 		local fwOptionsFILE="${_fwGDSLogDIR}/Run${fwYEAR}_Options.log"
