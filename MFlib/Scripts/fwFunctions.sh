@@ -74,6 +74,7 @@ function FwArguments()
 						echo "Invalid --restart argument [${1}]"
 					;;
 				esac
+			;;
 			(-s|--spinup)
 				shift
 				case ${1} in
