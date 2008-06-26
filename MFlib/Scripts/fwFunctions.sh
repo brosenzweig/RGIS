@@ -194,6 +194,7 @@ function FwArguments()
 		esac
 		shift
 	done
+	if [ "${_fwRESTART}" == "on" ]; then _fwSPINUP="off"; fi
 	return 0
 }
 
@@ -635,7 +636,7 @@ function _fwRun()
 	do
 		if (( fwYEAR == fwStartYEAR ))
 		then
-			if [[ "$_fwRESTART}" == "off" ]]; then fwDOSTATE="dostate"; else fsDOSTATE="nostate"; fi
+			if [ "$_fwRESTART}" == "off" ]; then fwDOSTATE="dostate"; else fsDOSTATE="nostate"; fi
 		else fsDOSTATE="nostate";
 		fi
 		_fwPreprocess "${fwDOSTATE}" "${fwYEAR}" || return -1
