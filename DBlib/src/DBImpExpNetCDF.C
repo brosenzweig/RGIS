@@ -1107,6 +1107,7 @@ DBInt DBImportNetCDF (DBObjData *data,const char *filename)
 
 	{
 	char name [NC_MAX_NAME], varname [NC_MAX_NAME], timeString [NC_MAX_NAME], varUnit [NC_MAX_NAME], longName [NC_MAX_NAME], layerName [DBStringLength];
+	size_t attlen;
 	int ncid, status, id, i;
 	int ndims, nvars, natts, unlimdim;
 	int latdim = -1, londim = -1, levdim = -1, timedim = -1;
@@ -1206,11 +1207,14 @@ DBInt DBImportNetCDF (DBObjData *data,const char *filename)
 			nc_close (ncid);
 			return (DBFault);
 			}
-		if      (strncmp (name,"level",     strlen ("level"))     == 0) continue;
-		else if (strncmp (name,"time_bnds", strlen ("time_bnds")) == 0) continue;
-		else if (strncmp (name,"lon_bnds",  strlen ("lon_bnds"))  == 0) continue;
-		else if (strncmp (name,"lat_bnds",  strlen ("lat_bnds"))  == 0) continue;
-		else if (strncmp (name,"lon",strlen ("lon")) == 0)
+		if       (strcmp (name,"level")          == 0)  continue;
+		else if  (strcmp (name,"time_bnds")      == 0)  continue;
+		else if ((strcmp (name,"lon_bnds")       == 0) ||
+			     (strcmp (name,"longitude_bnds") == 0)) continue;
+		else if ((strcmp (name,"lat_bnds")       == 0) ||
+		         (strcmp (name,"latitude_bnds")  == 0)) continue;
+		else if ((strcmp (name,"lon")            == 0) ||
+		         (strcmp (name,"longitude")      == 0))
 			{
 			if ((status = nc_inq_varndims (ncid,id,&ndims)) != NC_NOERR)
 				{
@@ -1284,7 +1288,8 @@ DBInt DBImportNetCDF (DBObjData *data,const char *filename)
 			extent.LowerLeft.X  = extent.LowerLeft.X  - cellSize.X / 2.0;
 			extent.UpperRight.X = extent.UpperRight.X + cellSize.X / 2.0;
 			}
-		else if (strncmp (name,"lat", strlen ("lat")) == 0)
+		else if ((strcmp (name,"lat")      == 0) ||
+			     (strcmp (name,"latitude") == 0))
 			{
 			if ((status = nc_inq_varndims (ncid,id,&ndims)) != NC_NOERR)
 				{
@@ -1349,9 +1354,10 @@ DBInt DBImportNetCDF (DBObjData *data,const char *filename)
 			extent.LowerLeft.Y  = extent.LowerLeft.Y  - cellSize.Y / 2.0;
 			extent.UpperRight.Y = extent.UpperRight.Y + cellSize.Y / 2.0;
 			}
-		else if (strncmp (name,"time",     strlen (name)) == 0)
+		else if (strcmp (name,"time") == 0)
 			{
-			if ((status = nc_get_att_text (ncid,id,"units",timeString)) != NC_NOERR)
+			if (((status = nc_inq_attlen   (ncid, id, "units", &attlen))    != NC_NOERR) ||
+				((status = nc_get_att_text (ncid, id, "units", timeString)) != NC_NOERR))
 				{
 				fprintf(stderr, "NC Error: %s\n", nc_strerror(status));
 				free (vector);
@@ -1361,6 +1367,7 @@ DBInt DBImportNetCDF (DBObjData *data,const char *filename)
 				nc_close (ncid);
 				return (DBFault);
 				}
+			else timeString [attlen] = '\0';
 			if ((status = nc_inq_varndims (ncid,id,&ndims)) != NC_NOERR)
 				{
 				fprintf(stderr, "NC Error: %s\n", nc_strerror(status));
@@ -1427,8 +1434,11 @@ DBInt DBImportNetCDF (DBObjData *data,const char *filename)
 				return (DBFault);
 				}
 			if ((ndims < 3) || (ndims > 4)) continue;
-			if ((status = nc_get_att_text (ncid,id,"long_name",longName)) != NC_NOERR) strcpy (longName,"Noname");
-			if ((status = nc_get_att_text (ncid,id,"units", varUnit)) != NC_NOERR)
+			if (((status = nc_inq_attlen   (ncid,id,"long_name", &attlen)) != NC_NOERR) ||
+			    ((status = nc_get_att_text (ncid,id,"long_name",longName)) != NC_NOERR)) strcpy (longName,"Noname");
+			else longName [attlen] = '\0';
+			if (((status = nc_inq_attlen   (ncid,id,"units", &attlen)) != NC_NOERR) ||
+			    ((status = nc_get_att_text (ncid,id,"units", varUnit)) != NC_NOERR))
 				{
 				fprintf(stderr, "NC Error [%s,units]: %s\n", nc_strerror(status),varname);
 				free (vector);
@@ -1438,6 +1448,7 @@ DBInt DBImportNetCDF (DBObjData *data,const char *filename)
 				nc_close (ncid);
 				return (DBFault);
 				}
+			else varUnit [attlen] = '\0';
 			if ((status = nc_get_att_double (ncid,id, "missing_value", &missingValue)) != NC_NOERR) missingValue = -9999.0;
 			if ((status = nc_get_att_double (ncid,id, "scale_factor",  &scaleFactor))  != NC_NOERR) scaleFactor  = 1.0;
 			if ((status = nc_get_att_double (ncid,id, "add_offset",    &dataOffset))   != NC_NOERR) dataOffset   = 0.0;
