@@ -26,8 +26,20 @@ DBObjData *DBGridToGrid (DBObjData *srcGridData,DBInt type)
 		DBGridIO *gridIO;
 
 		gridIO = new DBGridIO (srcGridData);
-		valueType = gridIO->ValueType ();
-		valueSize = gridIO->ValueSize ();
+		switch (type)
+			{
+			case DBTypeGridContinuous:
+				valueType = DBTableFieldFloat;
+				valueSize = gridIO->ValueType () == DBTableFieldFloat ? gridIO->ValueSize () : sizeof (DBFloat4);
+				break;
+			case DBTypeGridDiscrete:
+				valueType = gridIO->ValueType ();
+				valueSize = gridIO->ValueSize ();
+				break;
+			default:
+				fprintf (stderr,"Invalid Data Type in: DBGridToGrid ()\n");
+				return ((DBObjData *) NULL);
+			}
 		delete gridIO;
 		}
 	else
