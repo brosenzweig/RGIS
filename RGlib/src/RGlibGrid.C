@@ -23,7 +23,7 @@ DBInt RGlibGridRemovePits (DBObjData *netData,DBObjData *grdData)
 	DBGridIO *gridIO = new DBGridIO (grdData);
 	DBNetworkIO *netIO = new DBNetworkIO (netData);
 	DBObjRecord *layerRec, *cellRec, *fromCell;
-	
+
 	maxProgress = netIO->CellNum () * gridIO->LayerNum ();
 	for (layerID = 0;layerID < gridIO->LayerNum (); ++layerID)
 		{
@@ -68,8 +68,8 @@ DBInt RGlibGridResampling (DBObjData *inGData, DBObjRecord *noDataRec, DBObjData
 	DBGridIO *inGridIO;
 	DBGridIO *outGridIO;
 	DBNetworkIO *netIO;
-	
-	inGridIO = new DBGridIO (inGData);	
+
+	inGridIO = new DBGridIO (inGData);
 	for (layerID = 0;layerID < inGridIO->LayerNum ();++layerID)
 		{
 		inLayerRec = inGridIO->Layer (layerID);
@@ -110,7 +110,7 @@ DBInt RGlibGridResampling (DBObjData *inGData, DBObjRecord *noDataRec, DBObjData
 							else outGridIO->Value (outLayerRec,pos,DBDefaultMissingFloatVal);
 							}
 					}
-				outGridIO->RecalcStats (outLayerRec);	
+				outGridIO->RecalcStats (outLayerRec);
 				break;
 			case DBTypeGridDiscrete:
 				{
@@ -140,7 +140,7 @@ DBInt RGlibGridResampling (DBObjData *inGData, DBObjRecord *noDataRec, DBObjData
 Stop:
 	delete inGridIO;
 	if (netIO != (DBNetworkIO *) NULL) delete netIO;
-	if (progress == maxProgress) 
+	if (progress == maxProgress)
 		{
 		if (outGData->Type () == DBTypeGridDiscrete)
 			{
@@ -153,7 +153,7 @@ Stop:
 			DBObjTable *outSymTBL = outGData->Table  (DBrNSymbols);
 			DBObjectLIST<DBObjTableField> *inFields  = inTable->Fields ();
 			DBObjTableField *inFLD, *outFLD;
-				
+
 			for (dataID = 0;dataID < inTable->ItemNum ();++dataID)
 				{
 				inDataRec = inTable->Item (dataID);
@@ -235,7 +235,7 @@ DBInt RGlibGridUniformRunoff (DBObjData *gridData,DBObjData *tsData, char *grdRe
 		{ fprintf (stderr,"Invalid Time Field!\n"); return (DBFault); }
 	if ((tsVarFLD = tsTBL->Field (tsVar)) == (DBObjTableField *) NULL)
 		{ fprintf (stderr,"Invalid Variable Field!\n"); return (DBFault); }
-	
+
 	fields = new DBObjectLIST<DBObjTableField> ("Field List");
 	fields->Add (new DBObjTableField (*tsTimeFLD));
 	fields->Add (new DBObjTableField (*tsJoinFLD));
@@ -485,7 +485,7 @@ DBInt RGlibGridReclassDiscrete (DBObjData *srcData,char *srcFieldName,DBObjData 
 	if ((srcField = srcItemTable->Field (srcFieldName)) == (DBObjTableField *) NULL)
 		{ fprintf (stderr,"Invalid source field in: RGlibGridReclassDiscrete ()\n"); return (DBFault); }
 
-	dstField = new DBObjTableField (*srcField);		
+	dstField = new DBObjTableField (*srcField);
 	dstItemTable->AddField (dstField);
 
 	srcIO = new DBGridIO (srcData);
@@ -588,7 +588,7 @@ DBInt RGlibGridReclassContinuous (DBObjData *srcData,char *srcFieldName,DBObjDat
 
 	srcIO = new DBGridIO (srcData);
 	dstIO = new DBGridIO (dstData);
-	
+
 	maxProgress = srcIO->LayerNum () * srcIO->RowNum ();
 	for (layerID = 0;layerID < srcIO->LayerNum ();++layerID)
 		{
@@ -658,7 +658,7 @@ DBInt RGlibGridMakeDiscrete (DBObjData *srcData, DBObjData *dstData, float binVa
 			sprintf (textFormat + dstBinField->FormatWidth ()," < %s",binFormat);
 			sprintf (binText,textFormat,binValues [bin]);
 			}
-		else 
+		else
 			{
 			sprintf (textFormat,"%s - %s",binFormat,binFormat);
 			sprintf (binText,textFormat,binValues [bin - 1], binValues [bin]);
@@ -726,7 +726,7 @@ DBInt RGlibGridZoneHistogram (DBObjData *zGrdData,DBObjData *cGrdData, DBObjData
 	DBObjTable *outTable = tblData->Table (DBrNItems);
 	DBObjectLIST<DBObjTableField> *fields;
 	DBObjRecord *zLayerRec, *zoneRec, *cLayerRec, *classRec, *outRec;
-		
+
 	for (zoneID = 0;zoneID < zoneTable->ItemNum ();++zoneID)
 		{
 		zoneRec = zoneTable->Item (zoneID);
@@ -780,7 +780,7 @@ DBInt RGlibGridZoneHistogram (DBObjData *zGrdData,DBObjData *cGrdData, DBObjData
 				{
 				if (DBPause (progress * 100 / maxProgress))	goto Stop;
 				progress++;
-		
+
 				for (pos.Col = 0;pos.Col < zGrdIO->ColNum ();++pos.Col)
 					{
 					zGrdIO->Pos2Coord (pos,coord);
@@ -1008,7 +1008,7 @@ DBInt RGlibGridNoNegatives (DBObjData *grdData,DBInt setZero)
 			}
 		gridIO->RecalcStats (layerRec);
 		}
-Stop:	
+Stop:
 	delete gridIO;
 	return (progress == maxProgress ? DBSuccess : DBFault);
 	}
@@ -1153,7 +1153,7 @@ DBInt RGlibGridBivarCellStats (DBObjData *xSrcData,DBObjData *ySrcData, DBObjDat
 				if ((yLayerRec = ySrcGridIO->Layer (xLayerRec->Name ())) == (DBObjRecord *) NULL) continue;
 				xSrcGridIO->Pos2Coord (pos,coord);
 				if (ySrcGridIO->Value (yLayerRec,coord,&yValue) == false) continue;
-				
+
 				obsNum += 1;
 				sumX   += xValue;
 				sumX2	 += xValue * xValue;
@@ -1207,7 +1207,7 @@ DBInt RGlibCycleMean (DBObjData *tsData,DBObjData *data,DBInt cycleStepNum,DBInt
 	DBPosition pos;
 	DBGridIO *tsGridIO = new DBGridIO (tsData);
 	DBGridIO *gridIO   = new DBGridIO (data);
-	
+
 	if ((tsGridIO->RowNum () != gridIO->RowNum ()) || (tsGridIO->ColNum () != gridIO->ColNum ()))
 		{ delete tsGridIO; delete gridIO; return (DBFault); }
 
@@ -1267,112 +1267,7 @@ Stop:
 	return (ret);
 	}
 
-DBInt RGlibLayerAggregate (DBObjData *tsData,DBObjData *data,DBInt cycleStepNum,DBInt offset, DBInt aggrType)
-
-	{
-	char recordName [DBStringLength];
-	DBInt tsLayerID, *obsNum, step, ret = DBFault;
-	DBFloat value, *aggregate;
-	DBPosition pos;
-	DBGridIO *tsGridIO = new DBGridIO (tsData);
-	DBGridIO *gridIO   = new DBGridIO (data);
-	
-	if ((tsGridIO->RowNum () != gridIO->RowNum ()) || (tsGridIO->ColNum () != gridIO->ColNum ()))
-		{ delete tsGridIO; delete gridIO; return (DBFault); }
-
-	sprintf (recordName,"Layer: %2d",0);
-	gridIO->RenameLayer (gridIO->Layer ((DBInt) 0),recordName);
-	for (step = 1;step < (int) (ceil ((float) tsGridIO->LayerNum () / (float) cycleStepNum));++step)
-		{
-		sprintf (recordName,"Layer: %2d",step);
-		gridIO->AddLayer (recordName);
-		}
-
-	if ((aggregate = (DBFloat *) calloc (gridIO->LayerNum (),sizeof (DBFloat))) == (DBFloat *) NULL)
-		{
-		perror ("Memory Allocation Error in: RGlibCycleMean ()");
-		delete tsGridIO;
-		delete gridIO;
-		return (DBFault);
-		}
-
-	if ((obsNum = (DBInt *) calloc (gridIO->LayerNum (),sizeof (DBInt))) == (DBInt *) NULL)
-		{
-		perror ("Memory Allocation Error in: RGlibCycleMean ()");
-		free (aggregate);
-		delete tsGridIO;
-		delete gridIO;
-		return (DBFault);
-		}
-
-	for (pos.Row = 0;pos.Row < tsGridIO->RowNum ();pos.Row++)
-		{
-		if (DBPause (100 * pos.Row / tsGridIO->RowNum ())) goto Stop;
-		for (pos.Col = 0;pos.Col < tsGridIO->ColNum ();pos.Col++)
-			{
-			for (step = 0;step < gridIO->LayerNum ();++step)
-				{
-				switch (aggrType)
-					{
-					case RGlibAggrMinimum: aggregate [step] =  HUGE_VAL; break;
-					case RGlibAggrMaximum: aggregate [step] = -HUGE_VAL; break;
-					default:               aggregate [step] =       0.0; break;
-					}
-				obsNum [step] = 0;
-				}
-			for (tsLayerID = 0;tsLayerID < tsGridIO->LayerNum ();++tsLayerID)
-				if (tsGridIO->Value (tsGridIO->Layer (tsLayerID),pos,&value))
-					{
-					step = (DBInt) (floor ((tsLayerID + offset) / cycleStepNum));
-					while (step >= gridIO->LayerNum ()) step -= gridIO->LayerNum ();
-					switch (aggrType)
-						{
-						case RGlibAggrMinimum: aggregate [step] = aggregate [step] < value ? aggregate [step] : value; break;
-						case RGlibAggrMaximum: aggregate [step] = aggregate [step] > value ? aggregate [step] : value; break;
-						default: aggregate [step] = aggregate [step] + value; break;
-						}
-					obsNum [step] += 1;
-					}
-			switch (aggrType)
-				{
-				case RGlibAggrSum:
-					for (step = 0;step < gridIO->LayerNum ();++step)
-						{
-						if (obsNum [step] > 0)
-							gridIO->Value (gridIO->Layer (step),pos,(aggregate [step] / (DBFloat) obsNum [step]) * (DBFloat) gridIO->LayerNum ());
-						else gridIO->Value (gridIO->Layer (step),pos,gridIO->MissingValue ());
-						}
-					break;
-				case RGlibAggrAverage:
-					for (step = 0;step < gridIO->LayerNum ();++step)
-						{
-						if (obsNum [step] > 0)
-							gridIO->Value (gridIO->Layer (step),pos,(aggregate [step] / (DBFloat) obsNum [step]));
-						else gridIO->Value (gridIO->Layer (step),pos,gridIO->MissingValue ());
-						}
-					break;
-				default:
-					for (step = 0;step < gridIO->LayerNum ();++step)
-						{
-						if (obsNum [step] > 0)
-							gridIO->Value (gridIO->Layer (step),pos, aggregate [step]);
-						else gridIO->Value (gridIO->Layer (step),pos,gridIO->MissingValue ());
-						}
-				}
-			}
-		}
-	gridIO->RecalcStats ();
-
-	ret = DBSuccess;
-Stop:
-	free (aggregate);
-	free (obsNum);
-	delete tsGridIO;
-	delete gridIO;
-	return (ret);
-	}
-
-DBInt RGlibTSAggregate (DBObjData *tsData,DBObjData *data,DBInt timeStep,DBInt doSum)
+DBInt RGlibTSAggregate (DBObjData *tsData,DBObjData *data,DBInt timeStep,DBInt aggrType)
 
 	{
 	DBDate sDate, eDate, stepDate, date;
@@ -1382,7 +1277,7 @@ DBInt RGlibTSAggregate (DBObjData *tsData,DBObjData *data,DBInt timeStep,DBInt d
 	DBObjRecord *layerRec;
 	DBGridIO *tsGridIO = new DBGridIO (tsData);
 	DBGridIO *gridIO   = new DBGridIO (data);
-	
+
 	if ((tsGridIO->RowNum () != gridIO->RowNum ()) || (tsGridIO->ColNum () != gridIO->ColNum ()))
 		{ delete tsGridIO; delete gridIO; return (DBFault); }
 
@@ -1417,7 +1312,7 @@ DBInt RGlibTSAggregate (DBObjData *tsData,DBObjData *data,DBInt timeStep,DBInt d
 		}
 
 	if (tsGridIO->LayerNum () < stepNum)	goto End;
-	
+
 	layerRec = gridIO->Layer (0);
 	gridIO->RenameLayer (layerRec,date.Get ());
 	for (step = 1;step < stepNum;++step)
@@ -1445,7 +1340,15 @@ DBInt RGlibTSAggregate (DBObjData *tsData,DBObjData *data,DBInt timeStep,DBInt d
 		if (DBPause (100 * pos.Row / tsGridIO->RowNum ())) goto Stop;
 		for (pos.Col = 0;pos.Col < tsGridIO->ColNum ();pos.Col++)
 			{
-			for (step = 0;step < stepNum;++step) { sum [step] = 0.0; obsNum [step] = 0; }
+			for (step = 0;step < stepNum;++step)
+				{
+					switch (aggrType)
+						{
+						default:               sum [step] = 0.0;       obsNum [step] = 0; break;
+						case RGlibAggrMinimum: sum [step] =  HUGE_VAL; obsNum [step] = 0; break;
+						case RGlibAggrMaximum: sum [step] = -HUGE_VAL; obsNum [step] = 0; break;
+						}
+				}
 			for (tsLayerID = 0;tsLayerID < tsGridIO->LayerNum ();++tsLayerID)
 				{
 				layerRec = tsGridIO->Layer (tsLayerID);
@@ -1454,27 +1357,32 @@ DBInt RGlibTSAggregate (DBObjData *tsData,DBObjData *data,DBInt timeStep,DBInt d
 					{
 					switch (timeStep)
 						{
-						case DBTimeStepHour:		step = date.HoursAD ()	- sDate.HoursAD ();	break;
-						case DBTimeStepDay:		step = date.DaysAD ()	- sDate.DaysAD ();	break;
-						case DBTimeStepMonth:	step = date.MonthsAD ()	- sDate.MonthsAD ();	break;
-						case DBTimeStepYear:		step = date.YearsAD ()	- sDate.YearsAD ();	break;
+						case DBTimeStepHour:	step = date.HoursAD ()	- sDate.HoursAD ();	 break;
+						case DBTimeStepDay:		step = date.DaysAD ()	- sDate.DaysAD ();	 break;
+						case DBTimeStepMonth:	step = date.MonthsAD ()	- sDate.MonthsAD (); break;
+						case DBTimeStepYear:	step = date.YearsAD ()	- sDate.YearsAD ();	 break;
 						}
-					sum [step] += value;
+					switch (aggrType)
+						{
+						default:               sum [step] += value;break;
+						case RGlibAggrMinimum: sum [step] = sum [step] < value ? sum [step] : value; break;
+						case RGlibAggrMaximum: sum [step] = sum [step] > value ? sum [step] : value; break;
+						}
 					obsNum [step] += 1;
 					}
 				}
-			if (doSum)
+			if (aggrType == RGlibAggrAverage)
 				for (step = 0;step < gridIO->LayerNum ();++step)
 					{
 					if (obsNum [step] > 0)
-							gridIO->Value (gridIO->Layer (step),pos,sum [step]);
+							gridIO->Value (gridIO->Layer (step),pos,(sum [step] / (DBFloat) obsNum [step]));
 					else	gridIO->Value (gridIO->Layer (step),pos,gridIO->MissingValue ());
 					}
 			else
 				for (step = 0;step < gridIO->LayerNum ();++step)
 					{
 					if (obsNum [step] > 0)
-							gridIO->Value (gridIO->Layer (step),pos,(sum [step] / (DBFloat) obsNum [step]));
+							gridIO->Value (gridIO->Layer (step),pos,sum [step]);
 					else	gridIO->Value (gridIO->Layer (step),pos,gridIO->MissingValue ());
 					}
 			}
@@ -1503,7 +1411,7 @@ DBInt RGlibSeasonAggregate (DBObjData *tsData,DBObjData *data,DBInt seasonLen, D
 	DBObjRecord *layerRec;
 	DBGridIO *tsGridIO = new DBGridIO (tsData);
 	DBGridIO *gridIO   = new DBGridIO (data);
-	
+
 	if ((seasonLen != 2) && (seasonLen != 3) && (seasonLen != 4) && (seasonLen != 6))
 		{
 		fprintf (stderr,"Invalid season length in: RGlibSeasonAggregate ()\n");
@@ -1525,7 +1433,7 @@ DBInt RGlibSeasonAggregate (DBObjData *tsData,DBObjData *data,DBInt seasonLen, D
 	stepNum = (eDate.MonthsAD () - sDate.MonthsAD () + 1) / seasonLen;
 
 	if (tsGridIO->LayerNum () < stepNum)	goto End;
-	
+
 	layerRec = gridIO->Layer (0);
 	startYear = year = sDate.Year ();
 	if (year != DBDefaultMissingIntVal) sprintf (layerName,"%4d-Season", year);
@@ -1628,7 +1536,7 @@ DBInt RGlibSeasonMean (DBObjData *tsData,DBObjData *data,DBInt seasonLen, DBInt 
 	DBObjRecord *layerRec;
 	DBGridIO *tsGridIO = new DBGridIO (tsData);
 	DBGridIO *gridIO   = new DBGridIO (data);
-	
+
 	if ((seasonLen != 2) && (seasonLen != 3) && (seasonLen != 4) && (seasonLen != 6))
 		{
 		fprintf (stderr,"Invalid season length in: RGlibSeasonAggregate ()\n");
@@ -1648,13 +1556,13 @@ DBInt RGlibSeasonMean (DBObjData *tsData,DBObjData *data,DBInt seasonLen, DBInt 
 	eDate.Set (layerRec->Name ());
 
 	if (tsGridIO->LayerNum () < seasonNum)	goto End;
-	
+
 	layerRec = gridIO->Layer (0);
 	sprintf (layerName,"XXXX-Season");
 	gridIO->RenameLayer (layerRec,layerName);
 	for (season = 1;season < seasonNum;++season)
 		{ sprintf (layerName,"XXXX-Season"); gridIO->AddLayer (layerName); }
-	
+
 	for (month = 0;month < 12;++month)
 		{
 		season = month / seasonLen;
@@ -1733,7 +1641,7 @@ DBInt RGlibMinMax (DBObjData *tsData,DBObjData *data,bool doMin)
 	DBObjRecord *layerRec;
 	DBGridIO *tsGridIO = new DBGridIO (tsData);
 	DBGridIO *gridIO   = new DBGridIO (data);
-	
+
 	if ((tsGridIO->RowNum () != gridIO->RowNum ()) || (tsGridIO->ColNum () != gridIO->ColNum ()))
 		{ delete tsGridIO; delete gridIO; return (DBFault); }
 
@@ -1815,7 +1723,7 @@ DBInt RGlibGridSampling (DBObjData *dbData, DBObjData *grdData, DBObjData *tblDa
 		case DBTypeGridContinuous:
 			{
 			DBFloat realValue;
-		
+
 			newField = new DBObjTableField (grdData->Document(DBDocSubject),DBTableFieldFloat,gridIO->ValueFormat (),sizeof (DBFloat4));
 			table->AddField (newField);
 			maxProgress = itemTable->ItemNum () * layerNum;
@@ -1953,7 +1861,7 @@ void RGlibGridSampling (DBObjData *splData,DBObjData *grdData)
 			{
 			DBFloat value;
 			DBObjRecord *layerRec;
-			
+
 			for (layerID = 0;layerID < gridIO->LayerNum ();++layerID)
 				{
 				layerRec = gridIO->Layer (layerID);
@@ -1973,7 +1881,7 @@ void RGlibGridSampling (DBObjData *splData,DBObjData *grdData)
 
 					if (gridIO->Value (layerRec,coord,&value))
 							newField->Float (record,value);
-					else	newField->Float (record,newField->FloatNoData ());			
+					else	newField->Float (record,newField->FloatNoData ());
 					}
 				}
 			} break;
