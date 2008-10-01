@@ -143,7 +143,7 @@ static const char *_DBExportNetCDFRename (const char *name)
 	return (name);
 	}
 
-enum { DIMTime, DIMLevel, DIMLat, DIMLon, };
+enum { DIMTime, DIMLat, DIMLon, };
 
 static DBInt _DBExportNetCDFPoint (DBObjData *dbData, int ncid)
 	{
@@ -237,7 +237,7 @@ static DBInt _DBExportNetCDFGridDefine (DBObjData *dbData,int ncid, int dimids [
 	{
 	char *str;
 	int rowNum, colNum, i;
-	int status, levelid, latid, lonid, latbndid, lonbndid, bdimids[2];
+	int status, latid, lonid, latbndid, lonbndid, bdimids[2];
 	size_t start [2], count [2];
 	double extent [2], cellWidth, cellHeight, *record;
 
@@ -271,8 +271,6 @@ static DBInt _DBExportNetCDFGridDefine (DBObjData *dbData,int ncid, int dimids [
 	if ((status = nc_redef (ncid)) != NC_NOERR)
 		{ fprintf(stderr, "NC Error: %s\n", nc_strerror(status)); return (DBFault); }
 	/* Begin Defining Dimensions */
-	if ((status = nc_def_dim (ncid,"level",    1,     dimids + DIMLevel)) != NC_NOERR)
-		{ fprintf(stderr, "NC Error: %s\n", nc_strerror(status)); return (DBFault); }
 	if ((status = nc_def_dim (ncid,"latitude", rowNum,dimids + DIMLat))   != NC_NOERR)
 		{ fprintf(stderr, "NC Error: %s\n", nc_strerror(status)); return (DBFault); }
 	if ((status = nc_def_dim (ncid,"longitude",colNum,dimids + DIMLon))   != NC_NOERR)
@@ -349,20 +347,6 @@ static DBInt _DBExportNetCDFGridDefine (DBObjData *dbData,int ncid, int dimids [
 		{ fprintf(stderr, "NC Error: %s\n", nc_strerror(status)); nc_close (ncid); return (DBFault); }
 	/* End Defining Longitude_bounds Variable */
 	
-	/* Begin Defining Level Variable */
-	if ((status = nc_def_var (ncid,"level",  NC_DOUBLE, (int) 1,dimids + DIMLevel, &levelid))  != NC_NOERR)
-	 	{ fprintf(stderr, "NC Error: %s\n", nc_strerror(status)); nc_close (ncid); return (DBFault); }
-	str = "Level";
-	if ((status = nc_put_att_text (ncid,levelid,"long_name",strlen (str),str)) != NC_NOERR)
-		{ fprintf(stderr, "NC Error: %s\n", nc_strerror(status)); nc_close (ncid); return (DBFault); }
-	str = "level";
-	if ((status = nc_put_att_text (ncid,levelid,"standard_name",strlen (str),str)) != NC_NOERR)
-		{ fprintf(stderr, "NC Error: %s\n", nc_strerror(status)); nc_close (ncid); return (DBFault); }
-	str = "z";
-	if ((status = nc_put_att_text (ncid,levelid,"axis",strlen (str),str)) != NC_NOERR)
-		{ fprintf(stderr, "NC Error: %s\n", nc_strerror(status)); nc_close (ncid); return (DBFault); }
-	/* End Defining Level Variable */
-
 	if ((status = nc_enddef (ncid)) != NC_NOERR)
 		{ fprintf(stderr, "NC Error: %s\n", nc_strerror(status)); nc_close (ncid); return (DBFault); }
 
@@ -830,8 +814,8 @@ DBInt DBExportNetCDF (DBObjData *dbData,const char *fileName)
 
 	{
 	const char *str;
-	int ncid, status, dimids [4], varid;
-	size_t start [4], count [4];
+	int ncid, status, dimids [3], varid;
+	size_t start [3], count [3];
 
 	switch (utInit (""))
 		{
@@ -927,7 +911,6 @@ DBInt DBExportNetCDF (DBObjData *dbData,const char *fileName)
 				{
 				layerRec = gridIO->Layer (layerID);
 				start [DIMTime]  = layerID; count [DIMTime]  = 1;
-				start [DIMLevel] = 0;       count [DIMLevel] = 1;
 				for (pos.Row = 0;pos.Row < gridIO->RowNum ();pos.Row++)
 					{
 					start [DIMLat] = pos.Row; count [DIMLat] = 1;
@@ -964,7 +947,7 @@ DBInt DBExportNetCDF (DBObjData *dbData,const char *fileName)
 			/* Begin Defining Core Variable */
 			if ((status = nc_redef (ncid)) != NC_NOERR)
 				{ fprintf(stderr, "NC Error: %s\n", nc_strerror(status)); nc_close (ncid); return (DBFault); }
-			if ((status = nc_def_var (ncid,_DBExportNetCDFRename (dbData->Document (DBDocSubject)),NC_FLOAT,(int) 4,dimids,&varid))  != NC_NOERR)
+			if ((status = nc_def_var (ncid,_DBExportNetCDFRename (dbData->Document (DBDocSubject)),NC_FLOAT,(int) 3,dimids,&varid))  != NC_NOERR)
 				{ fprintf(stderr, "NC Error: %s\n", nc_strerror(status)); nc_close (ncid); return (DBFault); }
 
 			str = dbData->Name ();
@@ -1008,7 +991,6 @@ DBInt DBExportNetCDF (DBObjData *dbData,const char *fileName)
 				{
 				layerRec = gridIO->Layer (layerID);
 				start [DIMTime]  = layerID; count [DIMTime]  = 1;
-				start [DIMLevel] = 0;       count [DIMLevel] = 1;
 				for (pos.Row = 0;pos.Row < gridIO->RowNum ();pos.Row++)
 					{
 					start [DIMLat] = pos.Row; count [DIMLat] = 1;
@@ -1078,7 +1060,6 @@ DBInt DBExportNetCDF (DBObjData *dbData,const char *fileName)
 				}
 			for (pos.Row = 0;pos.Row < netIO->RowNum ();pos.Row++)
 				{
-				start [DIMLevel] = 0;     count [DIMLevel] = 1;
 				start [DIMLat] = pos.Row; count [DIMLat]   = 1;
 				start [DIMLon] = 0;       count [DIMLon]   = netIO->ColNum ();
 				for (pos.Col = 0;pos.Col < netIO->ColNum ();pos.Col++)
