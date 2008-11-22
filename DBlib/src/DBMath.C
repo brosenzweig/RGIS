@@ -29,6 +29,7 @@ char *DBMathFloatAutoFormat (DBFloat maxVal)
 	static char format [12];
 	DBInt length, decimals, log10Val;
 
+	maxVal = fabs (maxVal);
 	log10Val = (DBInt) (rint (log10 (maxVal)));
 	if (log10Val >= 0)
 		{
@@ -279,7 +280,7 @@ static DBInt _DBMathOperator (char *str,DBInt *len)
 
 	if ((oper = CMoptLookup (operStr,str,false)) == DBFault) return (DBFault);
 
-	*len = operLen [oper];	
+	*len = operLen [oper];
 	return (operCodes [oper]);
 	}
 
@@ -343,7 +344,7 @@ DBInt DBMathExpression::Expand (DBObjectLIST<DBObject> *variables)
 	{
 	if (LeftPTR->Expand (variables) == DBFault) return (DBFault);
 	if ((OperVAR != DBMathOperatorFunc) && (OperVAR != DBMathOperatorCond))
-		return (RightPTR->Expand (variables));	
+		return (RightPTR->Expand (variables));
 	return (DBSuccess);
 	}
 
@@ -362,8 +363,8 @@ DBInt DBMathExpression::Configure (DBObjectLIST<DBObjTableField> *fieldList)
 		}
 	if ((rType = RightPTR->Configure (fieldList)) == DBFault) return (DBFault);
 	if ((OperVAR == DBMathOperatorOr) || (OperVAR == DBMathOperatorAnd)) TypeVAR = DBVariableInt;
-	else if ((lType == DBVariableString) || (rType == DBVariableString)) TypeVAR = DBVariableString; 
-	else if ((lType == DBVariableFloat)  || (rType == DBVariableFloat))	TypeVAR = DBVariableFloat; 
+	else if ((lType == DBVariableString) || (rType == DBVariableString)) TypeVAR = DBVariableString;
+	else if ((lType == DBVariableFloat)  || (rType == DBVariableFloat))	TypeVAR = DBVariableFloat;
 	else TypeVAR = DBVariableInt;
 	return (TypeVAR);
 	}
@@ -569,7 +570,7 @@ DBInt DBMathOperand::Expand (DBObjectLIST<DBObject> *variables)
 	if (expression == (char *) NULL) return (DBFault);
 
 	for (i = 0;i < strLen;++i)
-		{	
+		{
 		if (expression [i] == '(')
 			{
 			bracketNum = 0;
@@ -793,9 +794,9 @@ char *DBMathOperand::String (DBObjRecord *record)
 		default:	break;
 		}
 	return ((char *) NULL);
-	} 
+	}
 
-DBInt DBMathOperand::Int (DBObjRecord *record) 
+DBInt DBMathOperand::Int (DBObjRecord *record)
 
 	{
 	switch (OprTypeVAR)
@@ -815,9 +816,9 @@ DBInt DBMathOperand::Int (DBObjRecord *record)
 		default:	break;
 		}
 	return (DBDefaultMissingIntVal);
-	} 
+	}
 
-DBFloat DBMathOperand::Float (DBObjRecord *record) 
+DBFloat DBMathOperand::Float (DBObjRecord *record)
 
 	{
 	switch (OprTypeVAR)

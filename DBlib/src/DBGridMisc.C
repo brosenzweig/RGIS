@@ -22,7 +22,7 @@ void DBGridIO::Initialize (DBObjData *data, bool flat)
 	DBObjTableField *valueTypeFLD;
 	DBObjTableField *valueSizeFLD;
 	DBObjRecord *layerRec;
-	
+
 	DataPTR = data;
 	ItemTable = data->Table (DBrNItems);
 	switch (data->Type ())
@@ -41,7 +41,7 @@ void DBGridIO::Initialize (DBObjData *data, bool flat)
 			BackgroundFLD	= SymbolTable->Field (DBrNBackground);
 			StyleFLD 		= SymbolTable->Field (DBrNStyle);
 			break;
-		case DBTypeGridContinuous:	
+		case DBTypeGridContinuous:
 			SymbolTable = (DBObjTable *) NULL;
 			AverageFLD = ItemTable->Field (DBrNAverage);
 			StdDevFLD  = ItemTable->Field (DBrNStdDev);
@@ -74,7 +74,7 @@ void DBGridIO::Initialize (DBObjData *data, bool flat)
 	ValueSizeVAR  = valueSizeFLD->Int (layerRec);
 	Flat = flat;
 	}
-	
+
 void DBGridIO::RenameLayer (DBObjRecord *layerRec,char *name)
 
 	{
@@ -102,7 +102,7 @@ DBObjRecord *DBGridIO::AddLayer (char *layerName)
 	DBObjTableField *cellHeightFLD= LayerTable->Field (DBrNCellHeight);
 	DBObjTableField *valueTypeFLD = LayerTable->Field (DBrNValueType);
 	DBObjTableField *valueSizeFLD = LayerTable->Field (DBrNValueSize);
-	
+
 	firstLayer = LayerTable->First (&index);
 	LayerTable->Add (layerName);
 	if ((layerRec = LayerTable->Item ()) == (DBObjRecord *) NULL)
@@ -159,7 +159,7 @@ DBInt DBGridIO::DeleteLayers (char *firstLayer, char *lastLayer)
 		DeleteLayer (layerRec->Name());
 		if ((layerRec = LayerTable->Item (layerID)) == (DBObjRecord *) NULL) break;
 		}
-	
+
 	return (DBSuccess);
 	}
 
@@ -215,7 +215,7 @@ DBInt DBGridIO::Pos2Coord (DBPosition pos,DBCoordinate &coord) const
 	if (pos.Row < 0) ret = DBFault;
 	if (pos.Col >= ColNum ()) ret = DBFault;
 	if (pos.Row >= RowNum ()) ret = DBFault;
-	
+
 	coord.X = DataPTR->Extent ().LowerLeft.X + pos.Col * CellWidth  () + CellWidth  () / 2.0;
 	coord.Y = DataPTR->Extent ().LowerLeft.Y + pos.Row * CellHeight () + CellHeight () / 2.0;
 	return (ret);
@@ -241,7 +241,7 @@ DBInt DBGridIO::Value (DBObjRecord *layerRec,DBPosition pos,DBInt value)
 				case sizeof (DBFloat4): ((DBFloat4 *) (dataRec->Data ())) [j] = (DBFloat4) value; break;
 				case sizeof (DBFloat):  ((DBFloat *)  (dataRec->Data ())) [j] = (DBFloat) 	value; break;
 				}
-			break;	
+			break;
 		case DBTableFieldInt:
 			switch (ValueSizeVAR)
 				{
@@ -274,7 +274,7 @@ DBInt DBGridIO::Value (DBObjRecord *layerRec,DBPosition pos,DBInt *value) const
 				case sizeof (DBFloat4): *value = (DBInt) ((DBFloat4 *) (dataRec->Data ())) [j]; break;
 				case sizeof (DBFloat):  *value = (DBInt) ((DBFloat *)  (dataRec->Data ())) [j]; break;
 				}
-			break;	
+			break;
 		case DBTableFieldInt:
 			switch (ValueSizeVAR)
 				{
@@ -310,7 +310,7 @@ DBInt DBGridIO::Value (DBObjRecord *layerRec,DBPosition pos,DBFloat *value) cons
 				case sizeof (DBFloat4): *value = (DBFloat) ((DBFloat4 *) (dataRec->Data ())) [j]; break;
 				case sizeof (DBFloat):  *value = (DBFloat) ((DBFloat *)  (dataRec->Data ())) [j]; break;
 				}
-			break;	
+			break;
 		case DBTableFieldInt:
 			switch (ValueSizeVAR)
 				{
@@ -342,7 +342,7 @@ DBInt DBGridIO::Value (DBObjRecord *layerRec,DBPosition pos,DBFloat value)
 				case sizeof (DBFloat4): ((DBFloat4 *) (dataRec->Data ())) [j] = (DBFloat4) value; break;
 				case sizeof (DBFloat):  ((DBFloat *)  (dataRec->Data ())) [j] = value; break;
 				}
-			break;	
+			break;
 		case DBTableFieldInt:
 			switch (ValueSizeVAR)
 				{
@@ -383,7 +383,7 @@ DBInt DBGridIO::Value (DBObjRecord *layerRec,DBCoordinate coord,DBFloat *value) 
 					case sizeof (DBFloat4): retVal = (DBFloat) ((DBFloat4 *) (dataRec->Data ())) [j]; break;
 					case sizeof (DBFloat):  retVal = (DBFloat) ((DBFloat *)  (dataRec->Data ())) [j]; break;
 					}
-				break;	
+				break;
 			case DBTableFieldInt:
 				switch (ValueSizeVAR)
 					{
@@ -438,7 +438,7 @@ DBInt DBGridIO::Value (DBObjRecord *layerRec,DBCoordinate coord,DBFloat *value) 
 				pos [4].Row = pos [5].Row = pos [6].Row = pos [2].Row + 1;
 			else
 				pos [4].Row = pos [5].Row = pos [6].Row = pos [0].Row - 1;
-								
+
 			if (i > 0)
 				{
 				pos [4].Col = pos [0].Col;
@@ -463,7 +463,7 @@ DBInt DBGridIO::Value (DBObjRecord *layerRec,DBCoordinate coord,DBFloat *value) 
 		if (pos [i].Row < 0) continue;
 		if (pos [i].Col >= DimensionVAR.Col) continue;
 		if (pos [i].Row >= DimensionVAR.Row) continue;
-		
+
 		j = DimensionVAR.Col * (DimensionVAR.Row - pos [i].Row - 1) + pos [i].Col;
 		switch (ValueTypeVAR)
 			{
@@ -473,7 +473,7 @@ DBInt DBGridIO::Value (DBObjRecord *layerRec,DBCoordinate coord,DBFloat *value) 
 					case sizeof (DBFloat4): retVal = (DBFloat) ((DBFloat4 *) (dataRec->Data ())) [j]; break;
 					case sizeof (DBFloat):  retVal = (DBFloat) ((DBFloat *)  (dataRec->Data ())) [j]; break;
 					}
-				break;	
+				break;
 			case DBTableFieldInt:
 				switch (ValueSizeVAR)
 					{
@@ -518,7 +518,7 @@ char *DBGridIO::ValueFormat () const
 	switch (DataPTR->Type ())
 		{
 		case DBTypeGridDiscrete:	return ("%s");
-		case DBTypeGridContinuous:	return (DBMathFloatAutoFormat (Maximum ()));
+		case DBTypeGridContinuous:	return (DBMathFloatAutoFormat (fabs (Maximum ()) > fabs (Minimum ()) ? Maximum () : Minimum ()));
 		default: return ((char *) NULL);
 		}
 	}
@@ -549,7 +549,7 @@ void DBGridIO::RecalcStats (DBObjRecord *layerRec)
 	DBPosition pos;
 	DBFloat value, cellArea;
 	DBFloat sumWeight = 0.0, minimum = DBHugeVal, maximum = -DBHugeVal, average = 0.0, stdDev = 0.0;
-	
+
 	for (pos.Row = 0;pos.Row < RowNum ();++pos.Row)
 		for (pos.Col = 0;pos.Col < ColNum ();++pos.Col)
 			if (Value (layerRec,pos,&value))
@@ -621,12 +621,12 @@ DBFloat DBGridIO::CellArea (DBPosition pos) const
 
 	{
 	DBCoordinate coord0, coord1;
-	
+
 	coord0.X = DataPTR->Extent ().LowerLeft.X + pos.Col * CellWidth  ();
 	coord0.Y = DataPTR->Extent ().LowerLeft.Y + pos.Row * CellHeight ();
 	coord1.X = DataPTR->Extent ().LowerLeft.X + pos.Col * CellWidth  () + CellWidth  ();
 	coord1.Y = DataPTR->Extent ().LowerLeft.Y + pos.Row * CellHeight () + CellHeight ();
-	
+
 	return (DBMathRectangleArea (DataPTR->Projection (),coord0,coord1));
 	}
 
@@ -640,7 +640,7 @@ void DBGridOperation (DBObjData *leftGrd,DBObjData *rightGrd,DBInt oper,DBInt me
 	DBObjRecord *leftRec, *rightRec;
 	DBGridIO *leftIO = new DBGridIO (leftGrd);
 	DBGridIO *rightIO = new DBGridIO (rightGrd);
-		
+
 	for (leftID = 0;leftID < leftIO->LayerNum ();++leftID)
 		{
 		leftRec = leftIO->Layer (leftID);
@@ -653,12 +653,12 @@ void DBGridOperation (DBObjData *leftGrd,DBObjData *rightGrd,DBInt oper,DBInt me
 		if ((rightRec->Flags () & DBObjectFlagIdle) != DBObjectFlagIdle) break;
 		}
 	if (rightID == rightIO->LayerNum ()) { fprintf (stderr,"No Layer to Process in DBGridOperation ()\n"); return; }
-		
+
 	rightID = (DBInt) 0;
 	for (leftID = 0;leftID < leftIO->LayerNum ();++leftID)
 		{
 		leftRec = leftIO->Layer (leftID);
-		while ((leftRec->Flags () & DBObjectFlagIdle) == DBObjectFlagIdle)	
+		while ((leftRec->Flags () & DBObjectFlagIdle) == DBObjectFlagIdle)
 			{
 			++leftID;
 			if (leftID == leftIO->LayerNum ()) goto Stop;
@@ -672,7 +672,7 @@ void DBGridOperation (DBObjData *leftGrd,DBObjData *rightGrd,DBInt oper,DBInt me
 			if (rightID == rightIO->LayerNum ()) rightID = 0;
 			rightRec = rightIO->Layer (rightID);
 			}
-		
+
 		for (pos.Row = 0;pos.Row < leftIO->RowNum ();pos.Row++)
 			{
 			if (DBPause ((leftID * leftIO->RowNum () + pos.Row) * 100 / (leftIO->LayerNum () * leftIO->RowNum ())))
@@ -694,7 +694,7 @@ void DBGridOperation (DBObjData *leftGrd,DBObjData *rightGrd,DBInt oper,DBInt me
 								break;
 							}
 					else	if (mergeMissingVal)	leftIO->Value (leftRec,pos,leftIO->MissingValue ());
-					}							
+					}
 				}
 			}
 		++rightID;
@@ -712,7 +712,7 @@ void DBGridOperation (DBObjData *grdData,DBFloat constant,DBInt oper)
 	DBPosition pos;
 	DBObjRecord *layerRec;
 	DBGridIO *gridIO = new DBGridIO (grdData);
-		
+
 	for (layerID = 0;layerID < gridIO->LayerNum ();++layerID)
 		{
 		layerRec = gridIO->Layer (layerID);
@@ -724,7 +724,7 @@ void DBGridOperation (DBObjData *grdData,DBFloat constant,DBInt oper)
 		{
 		layerRec = gridIO->Layer (layerID);
 		if ((layerRec->Flags () & DBObjectFlagIdle) == DBObjectFlagIdle) continue;
-		
+
 		for (pos.Row = 0;pos.Row < gridIO->RowNum ();pos.Row++)
 			{
 			if (DBPause ((layerID * gridIO->RowNum () + pos.Row) * 100 / (gridIO->LayerNum () * gridIO->RowNum ())))
@@ -755,7 +755,7 @@ void DBGridOperationAbs (DBObjData *grdData)
 	DBPosition pos;
 	DBObjRecord *layerRec;
 	DBGridIO *gridIO = new DBGridIO (grdData);
-		
+
 	for (layerID = 0;layerID < gridIO->LayerNum ();++layerID)
 		{
 		layerRec = gridIO->Layer (layerID);
@@ -767,7 +767,7 @@ void DBGridOperationAbs (DBObjData *grdData)
 		{
 		layerRec = gridIO->Layer (layerID);
 		if ((layerRec->Flags () & DBObjectFlagIdle) == DBObjectFlagIdle) continue;
-		
+
 		for (pos.Row = 0;pos.Row < gridIO->RowNum ();pos.Row++)
 			{
 			if (DBPause ((layerID * gridIO->RowNum () + pos.Row) * 100 / (gridIO->LayerNum () * gridIO->RowNum ())))
