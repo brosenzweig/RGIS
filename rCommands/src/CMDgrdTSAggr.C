@@ -118,6 +118,7 @@ int main (int argc,char *argv [])
 			CMmsgPrint (CMmsgInfo,"     -u,--subject   [subject]\n");
 			CMmsgPrint (CMmsgInfo,"     -d,--domain    [domain]\n");
 			CMmsgPrint (CMmsgInfo,"     -v,--version   [version]\n");
+			CMmsgPrint (CMmsgInfo,"     -s,--shadeset  [standard|grey|blue|blue-to-red|elevation]\n");
 			CMmsgPrint (CMmsgInfo,"     -V,--verbose\n");
 			CMmsgPrint (CMmsgInfo,"     -h,--help\n");
 			return (DBSuccess);
@@ -138,14 +139,14 @@ int main (int argc,char *argv [])
 	if (title	== (char *) NULL)	title   = tsData->Name ();
 	if (subject == (char *) NULL)	subject = tsData->Document (DBDocSubject);
 	if (domain	== (char *) NULL)	domain  = tsData->Document (DBDocGeoDomain);
-	if (version == (char *) NULL) version = tsData->Document (DBDocVersion);	
+	if (version == (char *) NULL) version = tsData->Document (DBDocVersion);
 	if (shadeSet == DBFault)		shadeSet = DBDataFlagDispModeContGreyScale;
 
 	data = DBGridToGrid (tsData);
 	data->Name (title);
 	data->Document (DBDocSubject,subject);
 	data->Document (DBDocGeoDomain,domain);
-	data->Document (DBDocVersion,version);	
+	data->Document (DBDocVersion,version);
 	data->Flags (DBDataFlagDispModeContShadeSets,DBClear);
 	data->Flags (shadeSet,DBSet);
 
