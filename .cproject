@@ -5,7 +5,7 @@
 <storageModule moduleId="org.eclipse.cdt.core.settings">
 <cconfiguration id="preference.org.eclipse.cdt.managedbuilder.core.configurationDataProvider.2090464510">
 <storageModule moduleId="cdtBuildSystem" version="4.0.0">
-<configuration buildProperties="" description="Unmanaged Makefile configuration" id="preference.org.eclipse.cdt.managedbuilder.core.configurationDataProvider.2090464510" name="Makefile" parent="org.eclipse.cdt.build.core.prefbase.cfg">
+<configuration artifactName="RGIS" buildProperties="" description="Unmanaged Makefile configuration" id="preference.org.eclipse.cdt.managedbuilder.core.configurationDataProvider.2090464510" name="Makefile" parent="org.eclipse.cdt.build.core.prefbase.cfg">
 <folderInfo id="preference.org.eclipse.cdt.managedbuilder.core.configurationDataProvider.2090464510." name="/" resourcePath="">
 <toolChain id="org.eclipse.cdt.build.core.prefbase.toolchain.1596308491" name="No ToolChain" resourceTypeBasedDiscovery="false" superClass="org.eclipse.cdt.build.core.prefbase.toolchain">
 <targetPlatform id="org.eclipse.cdt.build.core.prefbase.toolchain.1596308491.2057384974" name=""/>
@@ -14,10 +14,14 @@
 <tool id="org.eclipse.cdt.build.core.settings.holder.908274627" name="GNU C++" superClass="org.eclipse.cdt.build.core.settings.holder">
 <option id="org.eclipse.cdt.build.core.settings.holder.undef.incpaths.1590279028" name="Undefined Include Paths" superClass="org.eclipse.cdt.build.core.settings.holder.undef.incpaths" valueType="undefIncludePath">
 <listOptionValue builtIn="false" value="/usr/include/c++/4.0.0/backward"/>
-<listOptionValue builtIn="false" value="/usr/include/c++/4.0.0"/>
 <listOptionValue builtIn="false" value="/usr/local/include"/>
+<listOptionValue builtIn="false" value="/usr/include/c++/4.0.0"/>
+<listOptionValue builtIn="false" value="/sw/include"/>
 <listOptionValue builtIn="false" value="/usr/lib/gcc/i686-apple-darwin9/4.0.1/include"/>
 <listOptionValue builtIn="false" value="/usr/include/c++/4.0.0/i686-apple-darwin9"/>
+<listOptionValue builtIn="false" value="/sw/lib/pgplot"/>
+</option>
+<option id="org.eclipse.cdt.build.core.settings.holder.incpaths.2053997294" name="Include Paths" superClass="org.eclipse.cdt.build.core.settings.holder.incpaths" valueType="includePath">
 <listOptionValue builtIn="false" value="/opt/local/include"/>
 </option>
 <inputType id="org.eclipse.cdt.build.core.settings.holder.inType.1412343868" languageId="org.eclipse.cdt.core.g++" languageName="GNU C++" sourceContentType="org.eclipse.cdt.core.cxxSource,org.eclipse.cdt.core.cxxHeader" superClass="org.eclipse.cdt.build.core.settings.holder.inType"/>
@@ -25,10 +29,14 @@
 <tool id="org.eclipse.cdt.build.core.settings.holder.1934079396" name="GNU C" superClass="org.eclipse.cdt.build.core.settings.holder">
 <option id="org.eclipse.cdt.build.core.settings.holder.undef.incpaths.363005039" name="Undefined Include Paths" superClass="org.eclipse.cdt.build.core.settings.holder.undef.incpaths" valueType="undefIncludePath">
 <listOptionValue builtIn="false" value="/usr/include/c++/4.0.0/backward"/>
-<listOptionValue builtIn="false" value="/usr/include/c++/4.0.0"/>
 <listOptionValue builtIn="false" value="/usr/local/include"/>
+<listOptionValue builtIn="false" value="/usr/include/c++/4.0.0"/>
+<listOptionValue builtIn="false" value="/sw/include"/>
 <listOptionValue builtIn="false" value="/usr/lib/gcc/i686-apple-darwin9/4.0.1/include"/>
 <listOptionValue builtIn="false" value="/usr/include/c++/4.0.0/i686-apple-darwin9"/>
+<listOptionValue builtIn="false" value="/sw/lib/pgplot"/>
+</option>
+<option id="org.eclipse.cdt.build.core.settings.holder.incpaths.794432290" name="Include Paths" superClass="org.eclipse.cdt.build.core.settings.holder.incpaths" valueType="includePath">
 <listOptionValue builtIn="false" value="/opt/local/include"/>
 </option>
 <inputType id="org.eclipse.cdt.build.core.settings.holder.inType.175791016" languageId="org.eclipse.cdt.core.gcc" languageName="GNU C" sourceContentType="org.eclipse.cdt.core.cSource,org.eclipse.cdt.core.cHeader" superClass="org.eclipse.cdt.build.core.settings.holder.inType"/>
@@ -36,10 +44,14 @@
 <tool id="org.eclipse.cdt.build.core.settings.holder.1464288362" name="Assembly" superClass="org.eclipse.cdt.build.core.settings.holder">
 <option id="org.eclipse.cdt.build.core.settings.holder.undef.incpaths.1717369074" name="Undefined Include Paths" superClass="org.eclipse.cdt.build.core.settings.holder.undef.incpaths" valueType="undefIncludePath">
 <listOptionValue builtIn="false" value="/usr/include/c++/4.0.0/backward"/>
-<listOptionValue builtIn="false" value="/usr/include/c++/4.0.0"/>
 <listOptionValue builtIn="false" value="/usr/local/include"/>
+<listOptionValue builtIn="false" value="/usr/include/c++/4.0.0"/>
+<listOptionValue builtIn="false" value="/sw/include"/>
 <listOptionValue builtIn="false" value="/usr/lib/gcc/i686-apple-darwin9/4.0.1/include"/>
 <listOptionValue builtIn="false" value="/usr/include/c++/4.0.0/i686-apple-darwin9"/>
+<listOptionValue builtIn="false" value="/sw/lib/pgplot"/>
+</option>
+<option id="org.eclipse.cdt.build.core.settings.holder.incpaths.193670243" name="Include Paths" superClass="org.eclipse.cdt.build.core.settings.holder.incpaths" valueType="includePath">
 <listOptionValue builtIn="false" value="/opt/local/include"/>
 </option>
 <inputType id="org.eclipse.cdt.build.core.settings.holder.inType.318078339" languageId="org.eclipse.cdt.core.assembly" languageName="Assembly" sourceContentType="org.eclipse.cdt.core.asmSource" superClass="org.eclipse.cdt.build.core.settings.holder.inType"/>
@@ -227,6 +239,7 @@
 </profile>
 </scannerConfigBuildInfo>
 </storageModule>
+<storageModule moduleId="org.eclipse.cdt.internal.ui.text.commentOwnerProjectMappings"/>
 </cconfiguration>
 </storageModule>
 <storageModule moduleId="cdtBuildSystem" version="4.0.0">
