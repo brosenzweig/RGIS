@@ -214,8 +214,9 @@ function FwInit()
 	if [ "${6}" != "" ]; then export _fwRGISBIN="${6}/"; else export _fwRGISBIN=""; fi
 
 	    _fwDomainTYPE="${_fwRGISDomainFILE##*.}"
-	      FwDomainRES="${_fwRGISDomainFILE##*_}"
-	      FwDomainRES="${FwDomainRES%_*.gdb?}"
+         FwDomainRES="${_fwRGISDomainFILE%.*}"
+         FwDomainRES="${FwDomainRES%_*}"
+         FwDomainRES="${FwDomainRES##*_}"
 	[ "${_fwRGISDomainFILE}" == "${FwDomainRES}" ] && FwDomainRES="unset"
 	case ${_fwDomainTYPE} in
 		(gdbn)
