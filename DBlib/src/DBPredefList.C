@@ -29,7 +29,7 @@ char *_DBPredefinedSubjetList [] = {
 	(char *) NULL};
 
 char *_DBPredefinedGeoDomainList [] = {
-		(char *) "Africa",
+	(char *) "Africa",
 	(char *) "Asia",
 	(char *) "Australia",
 	(char *) "Europe",
