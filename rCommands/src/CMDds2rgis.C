@@ -108,7 +108,7 @@ int main (int argc,char *argv [])
 			{ fprintf (stderr,"Unknown option: %s!\n",argv [argPos]); return (DBFault); }
 		argPos++;
 		}
-	
+
 	if (tmpName == (char *) NULL) { fprintf (stderr,"Missing template covarage!\n"); return (DBFault); }
 
 	if (argNum > 3) { fprintf (stderr,"Extra arguments!\n"); return (DBFault); }
@@ -126,7 +126,7 @@ int main (int argc,char *argv [])
 	if (title	== (char *) NULL) { fprintf (stderr,"Title is not set!\n"); return (DBFault); }
 	if (subject == (char *) NULL) subject = tmpData->Document (DBDocSubject);
 	if (domain  == (char *) NULL) domain  = tmpData->Document (DBDocGeoDomain);
-	if (version == (char *) NULL) version = "0.01pre";
+	if (version == (char *) NULL) version = (char *) "0.01pre";
 
 	switch (tmpData->Type ())
 		{
@@ -144,7 +144,7 @@ int main (int argc,char *argv [])
 		outData->Name (title);
 		outData->Document (DBDocSubject,subject);
 		outData->Document (DBDocGeoDomain,domain);
-		outData->Document (DBDocVersion,version);	
+		outData->Document (DBDocVersion,version);
 		if (shadeSet != DBFault)
 			{
 			outData->Flags (DBDataFlagDispModeContShadeSets,DBClear);

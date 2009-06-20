@@ -116,9 +116,9 @@ int main (int argc,char *argv [])
 	if (verbose) RGlibPauseOpen (argv[0]);
 
 	if (title	== (char *) NULL) { CMmsgPrint (CMmsgUsrError,"Title is not set!\n"); return (CMfailed); }
-	if (subject == (char *) NULL) subject = "Default Subject";
-	if (domain  == (char *) NULL) domain  = "Default Domain";
-	if (version == (char *) NULL) version = "0.01pre";
+	if (subject == (char *) NULL) subject = (char *) "Default Subject";
+	if (domain  == (char *) NULL) domain  = (char *) "Default Domain";
+	if (version == (char *) NULL) version = (char *) "0.01pre";
 	if (gridType == DBFault) gridType = DBTypeGridContinuous;
 
 	data = new DBObjData (title,gridType);
@@ -127,7 +127,7 @@ int main (int argc,char *argv [])
 
 	data->Document (DBDocSubject,subject);
 	data->Document (DBDocGeoDomain,domain);
-	data->Document (DBDocVersion,version);	
+	data->Document (DBDocVersion,version);
 	if (shadeSet != DBFault)
 		{
 		data->Flags (DBDataFlagDispModeContShadeSets,DBClear);

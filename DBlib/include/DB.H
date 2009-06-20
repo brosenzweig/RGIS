@@ -17,97 +17,97 @@ balazs.fekete@unh.edu
 #include <math.h>
 #include <cm.h>
 
-#define DBNull			0x0L
-#define DBSuccess	 	 0
-#define DBFault		-1 
-#define DBSet		 	 1
-#define DBClear		 0
-#define DBNone			-1
-#define DBForward		true
-#define DBBackward	false
-#define DBStringLength	0x20
-#define DBDataFileNameLen		0x100
+#define DBNull            0x0L
+#define DBSuccess         0
+#define DBFault          -1
+#define DBSet             1
+#define DBClear           0
+#define DBNone           -1
+#define DBForward         true
+#define DBBackward        false
+#define DBStringLength    0x20
+#define DBDataFileNameLen 0x100
 
-#define DBSystemNameLen 0x20
-#define DBLoginNameLen  0x20
-#define DBUserNameLen   0x40
-#define DBModulNameLen  0x50
-#define DBDefaultSymbol	1
-#define DBHugeVal			1.797693134862315708e308
-#define DBDefaultMissingFloatVal	-9999.00
-#define DBDefaultMissingIntVal	-9999
-#define DBDefaultMissingByteVal	255
-#define DBASCIISeparator '\t'
+#define DBSystemNameLen   0x20
+#define DBLoginNameLen    0x20
+#define DBUserNameLen     0x40
+#define DBModulNameLen    0x50
+#define DBDefaultSymbol   1
+#define DBHugeVal         1.797693134862315708e308
+#define DBDefaultMissingFloatVal  -9999.00
+#define DBDefaultMissingIntVal    -9999
+#define DBDefaultMissingByteVal    255
+#define DBASCIISeparator           '\t'
 
-#define DBProjectionSpherical					0x00
-#define DBProjectionCartesian					0x01
+#define DBProjectionSpherical      0x00
+#define DBProjectionCartesian      0x01
 
-#define DBByteOrderBIG							0x00
-#define DBByteOrderLITTLE						0x01
+#define DBByteOrderBIG             0x00
+#define DBByteOrderLITTLE          0x01
 
-#define DBTypeVector								((DBInt) 0x0100L)
-#define DBTypeVectorPoint						((DBInt) (DBTypeVector | 0x010L))
-#define DBTypeVectorLine						((DBInt) (DBTypeVector | 0x020L))
-#define DBTypeVectorPolygon					((DBInt) (DBTypeVector | 0x040L))
-#define DBTypeGrid								((DBInt) 0x0200L)
-#define DBTypeGridContinuous					((DBInt) (DBTypeGrid   | 0x010L))
-#define DBTypeGridDiscrete						((DBInt) (DBTypeGrid   | 0x020L))	
-#define DBTypeNetwork							((DBInt) 0x0400L)
-#define DBTypeTable								((DBInt) 0x0800L)	
+#define DBTypeVector               ((DBInt) 0x0100L)
+#define DBTypeVectorPoint          ((DBInt) (DBTypeVector | 0x010L))
+#define DBTypeVectorLine           ((DBInt) (DBTypeVector | 0x020L))
+#define DBTypeVectorPolygon        ((DBInt) (DBTypeVector | 0x040L))
+#define DBTypeGrid                 ((DBInt) 0x0200L)
+#define DBTypeGridContinuous       ((DBInt) (DBTypeGrid   | 0x010L))
+#define DBTypeGridDiscrete         ((DBInt) (DBTypeGrid   | 0x020L))
+#define DBTypeNetwork              ((DBInt) 0x0400L)
+#define DBTypeTable                ((DBInt) 0x0800L)
 
-#define DBDataFlagOwner							0x10000000L
-#define DBDataFlagChanged						0x20000000L
-#define DBDataFlagDisplay						0x40000000L
-#define DBDataFlagLinked						0x80000000L
+#define DBDataFlagOwner                   0x10000000L
+#define DBDataFlagChanged                 0x20000000L
+#define DBDataFlagDisplay                 0x40000000L
+#define DBDataFlagLinked                  0x80000000L
 
-#define DBDataFlagSelectMode					0x08000000L
+#define DBDataFlagSelectMode              0x08000000L
 
-#define DBDataFlagUserModeFlags				0x07000000L
-#define DBDataFlagUserModeQuery				0x00000000L
-#define DBDataFlagUserModeSelect				0x01000000L
-#define DBDataFlagUserModeIdentify			0x02000000L
-#define DBDataFlagUserModeAdd					0x03000000L
-#define DBDataFlagUserModeMove				0x04000000L
-#define DBDataFlagUserModeFlip				0x05000000L
-#define DBDataFlagUserModeDelete				0x06000000L
-#define DBDataFlagUserModeRotate				0x07000000L
+#define DBDataFlagUserModeFlags           0x07000000L
+#define DBDataFlagUserModeQuery           0x00000000L
+#define DBDataFlagUserModeSelect          0x01000000L
+#define DBDataFlagUserModeIdentify        0x02000000L
+#define DBDataFlagUserModeAdd             0x03000000L
+#define DBDataFlagUserModeMove            0x04000000L
+#define DBDataFlagUserModeFlip            0x05000000L
+#define DBDataFlagUserModeDelete          0x06000000L
+#define DBDataFlagUserModeRotate          0x07000000L
 
-#define DBDataFlagHideIdle						0x00800000L
+#define DBDataFlagHideIdle                0x00800000L
 
-#define DBDataFlagDispModeFlags				0x00700000L
+#define DBDataFlagDispModeFlags           0x00700000L
 
-#define DBDataFlagDispModeVecAnnotNone		0x00000000L
-#define DBDataFlagDispModeVecAnnotate		0x00100000L
-#define DBDataFlagDispModeVecAnnotSelect	0x00200000L
+#define DBDataFlagDispModeVecAnnotNone    0x00000000L
+#define DBDataFlagDispModeVecAnnotate     0x00100000L
+#define DBDataFlagDispModeVecAnnotSelect  0x00200000L
 
-#define DBDataFlagDispModeContShadeSets	0x00700000L
+#define DBDataFlagDispModeContShadeSets   0x00700000L
 
-#define DBDataFlagDispModeContStandard		0x00000000L
-#define DBDataFlagDispModeContGreyScale	0x00100000L
-#define DBDataFlagDispModeContBlueScale	0x00200000L
-#define DBDataFlagDispModeContBlueRed		0x00300000L
-#define DBDataFlagDispModeContElevation	0x00400000L
+#define DBDataFlagDispModeContStandard    0x00000000L
+#define DBDataFlagDispModeContGreyScale   0x00100000L
+#define DBDataFlagDispModeContBlueScale   0x00200000L
+#define DBDataFlagDispModeContBlueRed     0x00300000L
+#define DBDataFlagDispModeContElevation   0x00400000L
 
-#define DBDataFlagDispModeNetColors			0x00300000L
-#define DBDataFlagDispModeNetColorUniform	0x00000000L
-#define DBDataFlagDispModeNetColorBasin	0x00100000L
-#define DBDataFlagDispModeNetColorSymbol	0x00200000L
-#define DBDataFlagDispModeNetDirection		0x00400000L
+#define DBDataFlagDispModeNetColors       0x00300000L
+#define DBDataFlagDispModeNetColorUniform 0x00000000L
+#define DBDataFlagDispModeNetColorBasin   0x00100000L
+#define DBDataFlagDispModeNetColorSymbol  0x00200000L
+#define DBDataFlagDispModeNetDirection    0x00400000L
 
-#define DBDataFlagGroupControlMode			0x00080000L
+#define DBDataFlagGroupControlMode        0x00080000L
 
-#define DBObjectFlagSortReversed				((DBInt) (0x01 << 0x00))
-#define DBObjectFlagProcessed					((DBInt) (0x01 << 0x01))
-#define DBObjectFlagIdle						((DBInt) (0x01 << 0x02))
-#define DBObjectFlagSelected					((DBInt) (0x01 << 0x03))
-#define DBObjectFlagLocked						((DBInt) (0x01 << 0x04))
-#define DBObjectFlagChanged					((DBInt) (0x01 << 0x04))
+#define DBObjectFlagSortReversed          ((DBInt) (0x01 << 0x00))
+#define DBObjectFlagProcessed             ((DBInt) (0x01 << 0x01))
+#define DBObjectFlagIdle                  ((DBInt) (0x01 << 0x02))
+#define DBObjectFlagSelected              ((DBInt) (0x01 << 0x03))
+#define DBObjectFlagLocked                ((DBInt) (0x01 << 0x04))
+#define DBObjectFlagChanged               ((DBInt) (0x01 << 0x04))
 
-#define DBDataLISTFlagSmartSort				0x10000000L
+#define DBDataLISTFlagSmartSort           0x10000000L
 
-char *DBDataTypeString (int); 
+char *DBDataTypeString (int);
 
-#define DBVarUnitNoUnitClass		0x00	
+#define DBVarUnitNoUnitClass              0x00
 
 #define DBNetDirE  ((DBInt) (0x01 << 0x00))
 #define DBNetDirSE ((DBInt) (0x01 << 0x01))
@@ -118,54 +118,54 @@ char *DBDataTypeString (int);
 #define DBNetDirN  ((DBInt) (0x01 << 0x06))
 #define DBNetDirNE ((DBInt) (0x01 << 0x07))
 
-#define GHAASSubjAny						((char *) NULL)
-#define GHAASSubjNetwork				"STNetwork"
-#define GHAASSubjRunoff					"Runoff"
-#define GHAASSubjDischarge				"Discharge"
-#define GHAASSubjFlowHeight			"Flow Height"
-#define GHAASSubjFlowWidth				"Flow Width"
-#define GHAASSubjFlowVelocity			"Flow Velocity"
-#define GHAASSubjFlowSurfSlope		"Surface Slope"
-#define GHAASSubjRiverStorage			"River Storage"
-#define GHAASSubjFloodStorage			"Flood Storage"
-#define GHAASSubjFloodArea				"Flood Area"
-#define GHAASSubjOverlandStorage		"OLand Storage"
-#define GHAASSubjOverlandVelocity	"OLand Velocity"
-#define GHAASSubjPrecip					"Precipitation"
-#define GHAASSubjAirTemp				"Air Temperature"
-#define GHAASSubjHumidity				"Humidity"
-#define GHAASSubjVaporPres				"Vapor Pressure"
-#define GHAASSubjWindSpeed				"Wind Speed"
-#define GHAASSubjSolarRad				"Solar Radiation"
-#define GHAASSubjStations				"Stations"
-#define GHAASSubjReservoirs			"Reservoirs"
-#define GHAASSubjElevation				"Elevation"
-#define GHAASSubjPits					"STNPits"
+#define GHAASSubjAny                    ((char *) NULL)
+#define GHAASSubjNetwork                ((char *) "STNetwork")
+#define GHAASSubjRunoff                 ((char *) "Runoff")
+#define GHAASSubjDischarge              ((char *) "Discharge")
+#define GHAASSubjFlowHeight             ((char *) "Flow Height")
+#define GHAASSubjFlowWidth              ((char *) "Flow Width")
+#define GHAASSubjFlowVelocity           ((char *) "Flow Velocity")
+#define GHAASSubjFlowSurfSlope          ((char *) "Surface Slope")
+#define GHAASSubjRiverStorage           ((char *) "River Storage")
+#define GHAASSubjFloodStorage           ((char *) "Flood Storage")
+#define GHAASSubjFloodArea              ((char *) "Flood Area")
+#define GHAASSubjOverlandStorage        ((char *) "OLand Storage")
+#define GHAASSubjOverlandVelocity       ((char *) "OLand Velocity")
+#define GHAASSubjPrecip                 ((char *) "Precipitation")
+#define GHAASSubjAirTemp                ((char *) "Air Temperature")
+#define GHAASSubjHumidity               ((char *) "Humidity")
+#define GHAASSubjVaporPres              ((char *) "Vapor Pressure")
+#define GHAASSubjWindSpeed              ((char *) "Wind Speed")
+#define GHAASSubjSolarRad               ((char *) "Solar Radiation")
+#define GHAASSubjStations               ((char *) "Stations")
+#define GHAASSubjReservoirs             ((char *) "Reservoirs")
+#define GHAASSubjElevation              ((char *) "Elevation")
+#define GHAASSubjPits                   ((char *) "STNPits")
 
 /***********************************************************************************************************/
 
-typedef unsigned char	DBByte;
-typedef int					DBInt;
-typedef unsigned			DBUnsigned;
-typedef short				DBShort;
+typedef unsigned char   DBByte;
+typedef int             DBInt;
+typedef unsigned        DBUnsigned;
+typedef short           DBShort;
 typedef unsigned short	DBUShort;
-typedef double				DBFloat;
-typedef float				DBFloat4;
-typedef long long			DBAddress;
+typedef double          DBFloat;
+typedef float           DBFloat4;
+typedef long long       DBAddress;
 
 typedef int (*DBSortProcedure) (const void *,const void *);
 
-DBInt	DBByteOrder (void);
+DBInt DBByteOrder (void);
 DBInt DBByteOrder (DBInt);
-void	DBByteOrderSwapHalfWord	(void *);
-void	DBByteOrderSwapWord	(void *);
-void	DBByteOrderSwapLongWord	(void *);
+void  DBByteOrderSwapHalfWord (void *);
+void  DBByteOrderSwapWord     (void *);
+void  DBByteOrderSwapLongWord (void *);
 
 class DBVarString
 	{
 	private:
-		DBShort 		LengthVAR;
-		DBAddress	StringPTR;
+		DBShort   LengthVAR;
+		DBAddress StringPTR;
 	public:
 		DBVarString () { StringPTR = (DBAddress) NULL; LengthVAR = 0; }
 		DBVarString (const char *string) { StringPTR = (DBAddress) NULL; VString (string); }
@@ -305,7 +305,7 @@ class DBRegion
 			retRegion.UpperRight.Y = region.UpperRight.Y - coord.Y;
 			return (retRegion);
 			}
-		
+
 		void Expand (DBCoordinate coord)
 			{
 			if (LowerLeft.X  > coord.X) LowerLeft.X  = coord.X;
@@ -539,7 +539,7 @@ class DBObsRange
 		DBDate  Begin ()    const { return (Min.Date); }
 		DBDate  End ()      const { return (Max.Date); }
 	};
-	
+
 /***********************************************************************************************************/
 
 
@@ -556,7 +556,7 @@ class DBObjectHeader
 		void	_RowID (DBInt id)			{ RowIdVAR = id; }
 		DBInt	ListPos (void)		const	{ return (ListPosVAR); }
 		void	ListPos (DBInt listPos)	{ ListPosVAR = listPos; }
-		
+
 	};
 
 class DBObject : public DBObjectHeader
@@ -636,7 +636,7 @@ class DBObjRecord : public DBObject
 				LengthVAR = DataPTR == (DBAddress) NULL ? 0 : length;
 				}
 			else	{ free ((char *) NULL + DataPTR); DataPTR = (DBAddress) NULL; LengthVAR = 0; }
-			} 
+			}
 		int Read  (FILE *,int);
 		int Write (FILE *);
 	};
@@ -693,7 +693,7 @@ class DBObjectLIST : public DBObject
 			{
 			if ((rowID < 0) || (rowID > NumVAR - 1)) return ((Object *) NULL);
 			if (setCurrent) CurrentVAR = (DBUnsigned) rowID;
-			return (((Object **) ((char *) NULL + ItemsPTR)) [rowID]); 
+			return (((Object **) ((char *) NULL + ItemsPTR)) [rowID]);
 			}
 		Object *Item (DBInt rowID) { return (Item (rowID,false)); }
 		Object *Item (const char *name,DBInt setCurrent)
@@ -732,14 +732,14 @@ class DBObjectLIST : public DBObject
 			else	NumVAR = CurrentVAR = 0;
 			Flags (DBObjectFlagIdle,(NumVAR > 0) ? DBClear : DBSet);
 			}
-		
+
 		void Remove (Object *object)
 			{
 			DBInt i, rowID;
-			
+
 			if (object == (Object *) NULL) return;
 			rowID = object->RowID ();
-			if ((rowID < 0) || (rowID > (DBInt) NumVAR - 1)) return; 
+			if ((rowID < 0) || (rowID > (DBInt) NumVAR - 1)) return;
 
 			for (i = rowID;i < (DBInt) NumVAR - 1;++i)
 				{
@@ -747,7 +747,7 @@ class DBObjectLIST : public DBObject
 				((Object **) ((char *) NULL + ItemsPTR)) [i]->_RowID (i);
 				}
 			for (i = 0;i < (DBInt) NumVAR - 1; ++i)
-				if (((Object **) ((char *) NULL + ItemsPTR)) [i]->ListPos () > object->ListPos ()) 
+				if (((Object **) ((char *) NULL + ItemsPTR)) [i]->ListPos () > object->ListPos ())
 					{
 					((Object **) ((char *) NULL + ItemsPTR)) [i]->ListPos (((Object **) ((char *) NULL + ItemsPTR)) [i]->ListPos () - 1);
 					((Object **) ((char *) NULL + ListPTR)) [((Object **) ((char *) NULL + ItemsPTR)) [i]->ListPos ()] = ((Object **) ((char *) NULL + ItemsPTR)) [i];
@@ -891,8 +891,8 @@ class DBObjectLIST : public DBObject
 #define DBVariableDate			0x04
 
 #define DBTableFieldString		DBVariableString
-#define DBTableFieldInt			DBVariableInt	
-#define DBTableFieldFloat		DBVariableFloat	
+#define DBTableFieldInt			DBVariableInt
+#define DBTableFieldFloat		DBVariableFloat
 #define DBTableFieldDate		DBVariableDate
 #define DBTableFieldCoord		0x05
 #define DBTableFieldRegion		0x06
@@ -953,7 +953,7 @@ class DBTableFieldDefinition
 		DBUnsigned LengthVAR;
 		DBByte RequiredVAR;
 	public:
-		DBTableFieldDefinition (){ NameSTR = NULL; TypeVAR = DBFault; FormatSTR = "%8x"; LengthVAR = 0; RequiredVAR = false;}
+		DBTableFieldDefinition (){ NameSTR = (char *) NULL; TypeVAR = DBFault; FormatSTR = (char *) "%8x"; LengthVAR = 0; RequiredVAR = false;}
 		DBTableFieldDefinition (char *name,DBInt type,char *format, DBUnsigned length)
 			{ NameSTR = name; TypeVAR = type; FormatSTR = format; LengthVAR = length; RequiredVAR = false;}
 		DBTableFieldDefinition (char *name,DBInt type,char *format, DBUnsigned length,DBInt required)
@@ -1026,7 +1026,7 @@ class DBObjTableField : public DBObject
 			switch (LengthVAR)
 				{
 				case sizeof (DBByte):	return (BytePROP.NoData ());
-				case sizeof (DBShort):	return (ShortPROP.NoData ());	
+				case sizeof (DBShort):	return (ShortPROP.NoData ());
 				default:						return (IntPROP.NoData ());
 				}
 			}
@@ -1094,9 +1094,9 @@ class DBObjTable : public DBObjectLIST<DBObjRecord>
 			{ FieldPTR = new DBObjectLIST<DBObjTableField> ("Table Fields",sizeof (DBObjectLIST<DBObjTableField>)); RecordLengthVAR = 0; };
 		DBObjTable (DBObjTable &);
 		~DBObjTable () { DeleteAll (); delete FieldPTR; delete MethodPTR; }
-		void AddField (DBObjTableField *); 
-		void RedefineField (DBObjTableField *,DBObjTableField *); 
-		void DeleteField (DBObjTableField *); 
+		void AddField (DBObjTableField *);
+		void RedefineField (DBObjTableField *,DBObjTableField *);
+		void DeleteField (DBObjTableField *);
 		void DeleteAllFields ();
 		DBObjRecord *Add (DBObjRecord *newRec) { DBObjectLIST<DBObjRecord>::Add (newRec); return (newRec);}
 		DBObjRecord *Add ()
@@ -1110,7 +1110,7 @@ class DBObjTable : public DBObjectLIST<DBObjRecord>
 					case DBTableFieldInt: 	field->Int   (newRec,field->IntNoData ());	break;
 					case DBTableFieldFloat:	field->Float (newRec,field->FloatNoData ());	break;
 					}
-					
+
 			return (newRec);
 			}
 		DBObjRecord *Add (const char *name)
@@ -1146,7 +1146,7 @@ class DBObjTable : public DBObjectLIST<DBObjRecord>
 		void ListSort (DBInt reversed) { DBObjectLIST<DBObjRecord>::ListSort (reversed); }
 		int Read	 (FILE *,int);
 		int Write (FILE *);
-	};			
+	};
 
 DBInt DBTableFieldIsString	(const DBObject *);
 DBInt DBTableFieldIsInteger(const DBObject *);
@@ -1414,7 +1414,7 @@ class DBObjSubject : public DBObject
 		int Read  (FILE *,int);
 		int Write (FILE *);
 	};
-	
+
 class DBObjGeoDomain : public DBObject
 
 	{
@@ -1487,8 +1487,8 @@ class DBDataset
 		void RemoveMetaEntry (DBObjMetaEntry *);
 		void DeleteMetaEntry (DBObjMetaEntry *metaEntry)	{ RemoveMetaEntry (metaEntry); delete metaEntry;}
 		DBObjectLIST<DBObjMetaEntry>	*MetaList ()		{ return (MetaLIST); }
-		DBObjectLIST<DBObjSubject>		*SubjectList ()	{ return (SubjectLIST); } 
-		DBObjectLIST<DBObjGeoDomain>	*GeoDomainList (){ return (GeoDomainLIST); } 	
+		DBObjectLIST<DBObjSubject>		*SubjectList ()	{ return (SubjectLIST); }
+		DBObjectLIST<DBObjGeoDomain>	*GeoDomainList (){ return (GeoDomainLIST); }
 		DBObjectLIST<DBObjData>			*DataList ()		{ return (DataLIST); }
 		DBRegion Extent () { return (ExtentVAR); }
 	};

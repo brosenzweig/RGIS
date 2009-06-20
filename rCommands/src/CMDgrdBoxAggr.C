@@ -39,7 +39,7 @@ int main (int argc,char *argv [])
 			{
 			if ((argNum = CMargShiftLeft (argPos,argv,argNum)) <= argPos)
 				{ CMmsgPrint (CMmsgUsrError,"Missing kernel size!\n");  return (CMfailed); }
-			if (sscanf (argv [argPos],"%d", &kernelSize) != 1) 
+			if (sscanf (argv [argPos],"%d", &kernelSize) != 1)
 				{ CMmsgPrint (CMmsgUsrError, "Invalid kernel size!\n"); return (CMfailed); }
 			if ((argNum = CMargShiftLeft (argPos,argv,argNum)) <= argPos) break;
 			continue;
@@ -142,14 +142,14 @@ int main (int argc,char *argv [])
 	ret = (argNum > 1) && (strcmp (argv [1],"-") != 0) ? inData->Read (argv [1]) : inData->Read (stdin);
 	if ((ret == DBFault) || (inData->Type () != DBTypeGridContinuous)) { delete inData; return (CMfailed); }
 
-	if (title	== (char *) NULL)	title = "Box Aggregated";
+	if (title	== (char *) NULL)	title = (char *) "Box Aggregated";
 	if (subject == (char *) NULL) subject = inData->Document (DBDocSubject);
 	if (domain  == (char *) NULL) domain  = inData->Document (DBDocGeoDomain);
-	if (version == (char *) NULL) version = "0.01pre";
+	if (version == (char *) NULL) version = (char *) "0.01pre";
 	if (shadeSet == DBFault)     shadeSet = DBDataFlagDispModeContGreyScale;
 
 	inGridIO  = new DBGridIO (inData);
-	
+
 	cellSize.X = (DBFloat) kernelSize * inGridIO->CellWidth  ();
 	cellSize.Y = (DBFloat) kernelSize * inGridIO->CellHeight ();
 	extent = inData->Extent ();
@@ -188,7 +188,7 @@ int main (int argc,char *argv [])
 				{
 				pos.Row = row;
 				pos.Col = col;
-			 	
+
 				if (inGridIO->Value (inLayerRec,pos,&var))
 					{
 				 	inGridIO->Pos2Coord  (pos,coord);
@@ -201,7 +201,7 @@ int main (int argc,char *argv [])
 							break;
 						case CMDboxMinimum:
 							array [pos.Row * outGridIO->ColNum () + pos.Col] = var < array [pos.Row * outGridIO->ColNum () + pos.Col] ?
-						                                                       var : array [pos.Row * outGridIO->ColNum () + pos.Col];				 	
+						                                                       var : array [pos.Row * outGridIO->ColNum () + pos.Col];
 							break;
 						case CMDboxMaximum:
 							array [pos.Row * outGridIO->ColNum () + pos.Col] = var > array [pos.Row * outGridIO->ColNum () + pos.Col] ?

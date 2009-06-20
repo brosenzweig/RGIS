@@ -517,7 +517,7 @@ char *DBGridIO::ValueFormat () const
 	{
 	switch (DataPTR->Type ())
 		{
-		case DBTypeGridDiscrete:	return ("%s");
+		case DBTypeGridDiscrete:	return ((char *) "%s");
 		case DBTypeGridContinuous:	return (DBMathFloatAutoFormat (fabs (Maximum ()) > fabs (Minimum ()) ? Maximum () : Minimum ()));
 		default: return ((char *) NULL);
 		}
@@ -534,7 +534,7 @@ char *DBGridIO::ValueString (DBObjRecord *layerRec,DBPosition pos)
 		case DBTypeGridContinuous:
 			{
 			DBFloat cellVal;
-				if (Value (layerRec,pos,&cellVal) == false) return ("");
+				if (Value (layerRec,pos,&cellVal) == false) return ((char *) "");
 				sprintf (retString,ValueFormat (),cellVal);
 			} break;
 		default:	fprintf (stderr,"Invalid Data Type in: DBGridIO::ValueString ()\n"); return ((char *) NULL);
