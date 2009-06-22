@@ -938,10 +938,10 @@ void RGISAnGContMakeDiscreteCBK (Widget widget,RGISWorkspace *workspace,XmAnyCal
 		XtSetArg (wargs [argNum],	XmNselectionPolicy,			XmSINGLE_SELECT);	++argNum;
 		XtSetArg (wargs [argNum],	XmNtextColumns,				DBStringLength);	++argNum;
 		XtSetArg (wargs [argNum],	XmNuserData,					removeButton);		++argNum;
-		XtManageChild (list = XmCreateScrolledList (mainForm,"RGISAnGContMakeDiscreteList",wargs,argNum));
+		XtManageChild (list = XmCreateScrolledList (mainForm,(char *) "RGISAnGContMakeDiscreteList",wargs,argNum));
 		XtAddCallback (list,XmNsingleSelectionCallback,	(XtCallbackProc) RGISAnGContMakeDiscreteListCBK,(void *) textField);
 
-		string = XmStringCreate ("Save",UICharSetBold);
+		string = XmStringCreate ((char *) "Save",UICharSetBold);
 		saveButton = XtVaCreateManagedWidget ("RGISAnGContMakeDiscreteSaveButton",xmPushButtonWidgetClass,mainForm,
 								XmNleftAttachment,		XmATTACH_OPPOSITE_WIDGET,
 								XmNleftWidget,				removeButton,
@@ -957,7 +957,7 @@ void RGISAnGContMakeDiscreteCBK (Widget widget,RGISWorkspace *workspace,XmAnyCal
 								NULL);
 		XmStringFree (string);
 
-		string = XmStringCreate ("Load",UICharSetBold);
+		string = XmStringCreate ((char *) "Load",UICharSetBold);
 		loadButton = XtVaCreateManagedWidget ("RGISAnGContMakeDiscreteLoadButton",xmPushButtonWidgetClass,mainForm,
 								XmNleftAttachment,		XmATTACH_OPPOSITE_WIDGET,
 								XmNleftWidget,				removeButton,
@@ -1023,7 +1023,7 @@ void RGISAnGContMakeDiscreteCBK (Widget widget,RGISWorkspace *workspace,XmAnyCal
 				XmStringGetLtoR (items [item],UICharSetNormal,&fText);
 				sscanf (fText,"%f",binValues + item);
 				}
-			UIPauseDialogOpen ("Making Discrete Grid");
+			UIPauseDialogOpen ((char *) "Making Discrete Grid");
 			if (RGlibGridMakeDiscrete (srcData,dstData,binValues,itemCount) == DBSuccess)
 				workspace->CurrentData (dstData);
 			else	delete dstData;
@@ -1045,7 +1045,7 @@ void RGISAnGContGirdCellStatsCBK (Widget widget,RGISWorkspace *workspace,XmAnyCa
 
 	if (UIDataHeaderForm (statData))
 		{
-		UIPauseDialogOpen ("Calculating Cell Statistics");
+		UIPauseDialogOpen ((char *) "Calculating Cell Statistics");
 		if (((xSrcData = srcData->LinkedData ()) == (DBObjData *) NULL) || (xSrcData->Type () != DBTypeGridContinuous))
 			ret = RGlibGridCellStats (srcData,statData);
 		else

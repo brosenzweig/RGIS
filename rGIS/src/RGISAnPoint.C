@@ -36,7 +36,7 @@ void RGISAnalysePointSTNCharCBK (Widget widget, RGISWorkspace *workspace,XmAnyCa
 	UITable *tableCLS = (UITable *) dbData->Display (UITableName (dbData,pointTable));
 
 	widget = widget; workspace = workspace; callData = callData;
-	UIPauseDialogOpen ("STN Characteristics");
+	UIPauseDialogOpen ((char *) "STN Characteristics");
 	if ((RGlibPointSTNCharacteristics (dbData) == DBSuccess) && (tableCLS != (UITable *) NULL))
 		{
 		if (cellIDFLD 			== (DBObjTableField *) NULL) tableCLS->AddField (pointTable->Field (RGlibCellID));
@@ -67,15 +67,15 @@ void RGISAnalysePointSTNPointsCBK (Widget widget,RGISWorkspace *workspace,XmAnyC
 	static Widget srcTextF, dstTextF, cmpTextF, errTextF;
 	static Widget menu, mButton;
 	widget = widget; callData = callData;
-	
+
 	if (dShell == (Widget) NULL)
 		{
 		XmString string;
-		
-		dShell = UIDialogForm ("Area Field",false);
+
+		dShell = UIDialogForm ((char *) "Area Field",false);
 		mainForm = UIDialogFormGetMainForm (dShell);
-	
-		string = XmStringCreate ("Select",UICharSetBold);
+
+		string = XmStringCreate ((char *) "Select",UICharSetBold);
 		button = XtVaCreateManagedWidget ("RGISAnalysePointSTNPointsSrcButton",xmPushButtonWidgetClass,mainForm,
 								XmNtopAttachment,			XmATTACH_FORM,
 								XmNtopOffset,				10,
@@ -99,7 +99,7 @@ void RGISAnalysePointSTNPointsCBK (Widget widget,RGISWorkspace *workspace,XmAnyC
 								XmNcolumns,					DBStringLength / 2,
 								NULL);
 		XtAddCallback (button,XmNactivateCallback,(XtCallbackProc) UIAuxObjectSelectCBK,srcTextF);
-		string = XmStringCreate ("Area Field:",UICharSetBold);
+		string = XmStringCreate ((char *) "Area Field:",UICharSetBold);
 		XtVaCreateManagedWidget ("RGISAnalysePointSTNPointsSrcLabel",xmLabelWidgetClass,mainForm,
 								XmNtopAttachment,			XmATTACH_OPPOSITE_WIDGET,
 								XmNtopWidget,				button,
@@ -113,7 +113,7 @@ void RGISAnalysePointSTNPointsCBK (Widget widget,RGISWorkspace *workspace,XmAnyC
 								XmNlabelString,			string,
 								NULL);
 		XmStringFree (string);
-		string = XmStringCreate ("Select",UICharSetBold);
+		string = XmStringCreate ((char *) "Select",UICharSetBold);
 		button = XtVaCreateManagedWidget ("RGISAnalysePointSTNPointsSrcButton",xmPushButtonWidgetClass,mainForm,
 								XmNtopAttachment,			XmATTACH_WIDGET,
 								XmNtopWidget,				srcTextF,
@@ -138,7 +138,7 @@ void RGISAnalysePointSTNPointsCBK (Widget widget,RGISWorkspace *workspace,XmAnyC
 								XmNcolumns,					DBStringLength / 2,
 								NULL);
 		XtAddCallback (button,XmNactivateCallback,(XtCallbackProc) UIAuxObjectSelectCBK,dstTextF);
-		string = XmStringCreate ("Target Field:",UICharSetBold);
+		string = XmStringCreate ((char *) "Target Field:",UICharSetBold);
 		XtVaCreateManagedWidget ("RGISAnalysePointSTNPointsDstLabel",xmLabelWidgetClass,mainForm,
 								XmNtopAttachment,			XmATTACH_OPPOSITE_WIDGET,
 								XmNtopWidget,				button,
@@ -153,7 +153,7 @@ void RGISAnalysePointSTNPointsCBK (Widget widget,RGISWorkspace *workspace,XmAnyC
 								NULL);
 		XmStringFree (string);
 
-		string = XmStringCreate ("Select",UICharSetBold);
+		string = XmStringCreate ((char *) "Select",UICharSetBold);
 		button = XtVaCreateManagedWidget ("RGISAnalysePointSTNPointsErrorButton",xmPushButtonWidgetClass,mainForm,
 								XmNtopAttachment,			XmATTACH_WIDGET,
 								XmNtopWidget,				dstTextF,
@@ -179,7 +179,7 @@ void RGISAnalysePointSTNPointsCBK (Widget widget,RGISWorkspace *workspace,XmAnyC
 								NULL);
 		XtAddCallback (button,XmNactivateCallback,(XtCallbackProc) UIAuxObjectSelectCBK,cmpTextF);
 
-		string = XmStringCreate ("Compare Field:",UICharSetBold);
+		string = XmStringCreate ((char *) "Compare Field:",UICharSetBold);
 		XtVaCreateManagedWidget ("RGISAnalysePointSTNPointsDstLabel",xmLabelWidgetClass,mainForm,
 								XmNtopAttachment,			XmATTACH_OPPOSITE_WIDGET,
 								XmNtopWidget,				button,
@@ -194,7 +194,7 @@ void RGISAnalysePointSTNPointsCBK (Widget widget,RGISWorkspace *workspace,XmAnyC
 								NULL);
 		XmStringFree (string);
 
-		string = XmStringCreate ("Select",UICharSetBold);
+		string = XmStringCreate ((char *) "Select",UICharSetBold);
 		button = XtVaCreateManagedWidget ("RGISAnalysePointSTNPointsErrorButton",xmPushButtonWidgetClass,mainForm,
 								XmNtopAttachment,			XmATTACH_WIDGET,
 								XmNtopWidget,				cmpTextF,
@@ -219,7 +219,7 @@ void RGISAnalysePointSTNPointsCBK (Widget widget,RGISWorkspace *workspace,XmAnyC
 								XmNcolumns,					DBStringLength / 2,
 								NULL);
 		XtAddCallback (button,XmNactivateCallback,(XtCallbackProc) UIAuxObjectSelectCBK,errTextF);
-		string = XmStringCreate ("Error Field:",UICharSetBold);
+		string = XmStringCreate ((char *) "Error Field:",UICharSetBold);
 		XtVaCreateManagedWidget ("RGISAnalysePointSTNPointsDstLabel",xmLabelWidgetClass,mainForm,
 								XmNtopAttachment,			XmATTACH_OPPOSITE_WIDGET,
 								XmNtopWidget,				button,
@@ -234,29 +234,29 @@ void RGISAnalysePointSTNPointsCBK (Widget widget,RGISWorkspace *workspace,XmAnyC
 								NULL);
 		XmStringFree (string);
 
-		menu = XmCreatePulldownMenu (mainForm,"RGISAnalysePointSTNPointsMenu",NULL,0);
-		string = XmStringCreate ("Plain",UICharSetNormal);
+		menu = XmCreatePulldownMenu (mainForm,(char *) "RGISAnalysePointSTNPointsMenu",NULL,0);
+		string = XmStringCreate ((char *) "Plain",UICharSetNormal);
 		mButton = XtVaCreateManagedWidget ("RGISAnalysePointSTNPointsMenuButton",xmPushButtonWidgetClass,menu,
 								XmNlabelString,			string,
 								XmNuserData,				&diffMethod,
 								NULL);
-		XmStringFree (string);										
+		XmStringFree (string);
 		XtAddCallback (mButton,XmNactivateCallback,(XtCallbackProc) UIAuxSetIntegerCBK,(XtPointer) 0);
-		string = XmStringCreate ("Simple %",UICharSetNormal);
+		string = XmStringCreate ((char *) "Simple %",UICharSetNormal);
 		mButton = XtVaCreateManagedWidget ("RGISAnalysePointSTNPointsMenuButton",xmPushButtonWidgetClass,menu,
 								XmNlabelString,			string,
 								XmNuserData,				&diffMethod,
 								NULL);
-		XmStringFree (string);										
+		XmStringFree (string);
 		XtAddCallback (mButton,XmNactivateCallback,(XtCallbackProc) UIAuxSetIntegerCBK,(XtPointer) 1);
-		string = XmStringCreate ("Symmetric %",UICharSetNormal);
+		string = XmStringCreate ((char *) "Symmetric %",UICharSetNormal);
 		mButton = XtVaCreateManagedWidget ("RGISAnalysePointSTNPointsMenuButton",xmPushButtonWidgetClass,menu,
 								XmNlabelString,			string,
 								XmNuserData,				&diffMethod,
 								NULL);
-		XmStringFree (string);										
+		XmStringFree (string);
 		XtAddCallback (mButton,XmNactivateCallback,(XtCallbackProc) UIAuxSetIntegerCBK,(XtPointer) 2);
-		string = XmStringCreate ("Difference Method:",UICharSetBold);
+		string = XmStringCreate ((char *) "Difference Method:",UICharSetBold);
 		menu = XtVaCreateManagedWidget ("RGISAnalysePointSTNPointsMenu",xmRowColumnWidgetClass,mainForm,
 								XmNtopAttachment,			XmATTACH_WIDGET,
 								XmNtopWidget,				button,
@@ -273,7 +273,7 @@ void RGISAnalysePointSTNPointsCBK (Widget widget,RGISWorkspace *workspace,XmAnyC
 		XtAddCallback (UIDialogFormGetOkButton (dShell),XmNactivateCallback,(XtCallbackProc) UIAuxSetBooleanTrueCBK,&cont);
 		XtSetSensitive (UIDialogFormGetOkButton (dShell),true);
 		}
-	
+
 	dataset = UIDataset ();
 	dbData = dataset->Data ();
 	table = dbData->Table (DBrNItems);
@@ -299,7 +299,7 @@ void RGISAnalysePointSTNPointsCBK (Widget widget,RGISWorkspace *workspace,XmAnyC
 			}
 		else
 			{
-			XmTextFieldSetString (errTextF,"");
+			XmTextFieldSetString (errTextF,(char *) "");
 			XtSetSensitive (button,False);
 			XtSetSensitive (errTextF,False);
 			XtSetSensitive (menu,False);
@@ -320,7 +320,7 @@ void RGISAnalysePointSTNPointsCBK (Widget widget,RGISWorkspace *workspace,XmAnyC
 			char *dstText;
 			DBObjTable *groups;
 			DBObjRecord *pointRec;
-			
+
 			srcText = XmTextFieldGetString (srcTextF);
 			dbData->LinkedData (netData);
 			table = dbData->Table (DBrNItems);
@@ -333,11 +333,11 @@ void RGISAnalysePointSTNPointsCBK (Widget widget,RGISWorkspace *workspace,XmAnyC
 					table->Delete (pointRec);
 					pointRec = table->Next (DBBackward);
 					}
-				
+
 			field = table->Field (srcText);
 			XtFree (srcText);
 			RGlibPointSTNCoordinates (dbData,field);
-			UIPauseDialogOpen ("Moving Points");
+			UIPauseDialogOpen ((char *) "Moving Points");
 			RGlibPointSTNCharacteristics (dbData);
 			UIPauseDialogClose ();
 			srcText = XmTextFieldGetString (srcTextF);
@@ -376,7 +376,7 @@ void RGISAnalysePointSubbasinCenterCBK (Widget widget, RGISWorkspace *workspace,
 	UITable *tableCLS = (UITable *) pntData->Display (UITableName (pntData,pointTable));
 
 	widget = widget;	workspace = workspace; callData = callData;
-	UIPauseDialogOpen ("Subbasin Centers");
+	UIPauseDialogOpen ((char *) "Subbasin Centers");
 	if ((RGlibPointSubbasinCenter (pntData, netData) == DBSuccess) && (tableCLS != (UITable *) NULL))
 		{
 		if (massCoordXFLD == NULL) tableCLS->AddField (pointTable->Field (RGlibMassCoordX));
@@ -402,7 +402,7 @@ void RGISAnalysePointInterStationTSCBK (Widget widget, RGISWorkspace *workspace,
 
 	widget = widget; workspace = workspace; callData = callData;
 
-	if (selectWidget == (Widget) NULL) selectWidget = UISelectionCreate ("Select Time Series");
+	if (selectWidget == (Widget) NULL) selectWidget = UISelectionCreate ((char *) "Select Time Series");
 
 	if ((selection = UISelectObject (selectWidget,(DBObjectLIST<DBObject> *) relateTBL)) == (char *) NULL) return;
 	if ((relateRec = relateTBL->Item (selection)) == (DBObjRecord *) NULL)
@@ -421,7 +421,7 @@ void RGISAnalysePointInterStationTSCBK (Widget widget, RGISWorkspace *workspace,
 		}
 	workspace->CurrentData (tsData);
 
-	UIPauseDialogOpen ("Calculating");
+	UIPauseDialogOpen ((char *) "Calculating");
 	RGlibPointInterStationTS (pntData,tsData,relateFLD->String (relateRec),joinFLD->String (relateRec));
 	UIPauseDialogClose ();
 	}
@@ -440,7 +440,7 @@ void RGISAnalysePointSubbasinCBK (Widget widget, RGISWorkspace *workspace,XmAnyC
 	grdData->Document (DBDocSubject,"Subbasins");
 	if (UIDataHeaderForm (grdData))
 		{
-		UIPauseDialogOpen ("Creating Subbasin Grid");
+		UIPauseDialogOpen ((char *) "Creating Subbasin Grid");
 		if (DBPointToGrid (pntData,netData,grdData) == DBFault)	delete grdData;
 		else workspace->CurrentData (grdData);
 		UIPauseDialogClose ();
@@ -465,7 +465,7 @@ void RGISAnalysePointSubbasinStatsCBK (Widget widget, RGISWorkspace *workspace,X
 
 	widget = widget; callData = callData;
 
-	if (selectWidget == (Widget) NULL) selectWidget = UISelectionCreate ("Select Network");
+	if (selectWidget == (Widget) NULL) selectWidget = UISelectionCreate ((char *) "Select Network");
 	if ((selection = UISelectObject (selectWidget,(DBObjectLIST<DBObject> *) dataset->DataList (),_RGISAnalyseTestNetwork)) == (char *) NULL) return;
 	if ((netData = dataset->Data (selection)) == (DBObjData *) NULL) return;
 
@@ -474,7 +474,7 @@ void RGISAnalysePointSubbasinStatsCBK (Widget widget, RGISWorkspace *workspace,X
 	tblData->Document (DBDocSubject,"Subbasin Statistics");
 	if (UIDataHeaderForm (tblData))
 		{
-		UIPauseDialogOpen ("Calculating Statistics");
+		UIPauseDialogOpen ((char *) "Calculating Statistics");
 		if (RGlibPointSubbasinStats (pntData,netData,grdData,tblData) == DBSuccess)
 			workspace->CurrentData  (tblData);
 		else	delete tblData;
@@ -497,7 +497,7 @@ void RGISAnalysePointSubbasinHistCBK (Widget widget, RGISWorkspace *workspace,Xm
 
 	widget = widget; callData = callData;
 
-	if (selectWidget == (Widget) NULL) selectWidget = UISelectionCreate ("Select Network");
+	if (selectWidget == (Widget) NULL) selectWidget = UISelectionCreate ((char *) "Select Network");
 	if ((selection = UISelectObject (selectWidget,(DBObjectLIST<DBObject> *) dataset->DataList (),_RGISAnalyseTestNetwork)) == (char *) NULL) return;
 	if ((netData = dataset->Data (selection)) == (DBObjData *) NULL) {  return; }
 
@@ -506,7 +506,7 @@ void RGISAnalysePointSubbasinHistCBK (Widget widget, RGISWorkspace *workspace,Xm
 	tblData->Document (DBDocSubject,"Subbasin Histogram");
 	if (UIDataHeaderForm (tblData))
 		{
-		UIPauseDialogOpen ("Calculating Histogram");
+		UIPauseDialogOpen ((char *) "Calculating Histogram");
 		if (RGlibPointSubbasinHist (pntData,netData,grdData,tblData) == DBSuccess)
 			workspace->CurrentData  (tblData);
 		else	delete tblData;

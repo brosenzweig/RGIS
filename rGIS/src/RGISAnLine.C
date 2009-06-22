@@ -26,7 +26,7 @@ static void _RGIAnalyseLineSSampleGridSSelectCBK (Widget widget,Widget text,XmAn
 	int (*condFunc) (const DBObject *);
 
 	callData = callData;
-	if (select == NULL) select = UISelectionCreate ("Field Selection");
+	if (select == NULL) select = UISelectionCreate ((char *) "Field Selection");
 	XtVaGetValues (widget,XmNuserData, &condFunc, NULL);
 	if ((field = UISelectObject (select,(DBObjectLIST<DBObject> *) (_RGISAnLineSampleGridFields),condFunc)) != NULL)
 		XmTextFieldSetString (text,field);
@@ -51,10 +51,10 @@ void RGISAnalyseLineSSampleGridCBK (Widget widget, RGISWorkspace *workspace,XmAn
 		{
 		Widget button;
 
-		dShell = UIDialogForm ("Single Layer Grid Sampling",false);
+		dShell = UIDialogForm ((char *) "Single Layer Grid Sampling",false);
 		mainForm = UIDialogFormGetMainForm (dShell);
-		
-		string = XmStringCreate ("Select",UICharSetBold);
+
+		string = XmStringCreate ((char *) "Select",UICharSetBold);
 		button = XtVaCreateManagedWidget ("RGISAnalyseLineSSampleNameButton",xmPushButtonWidgetClass,mainForm,
 								XmNtopAttachment,			XmATTACH_FORM,
 								XmNtopOffset,				10,
@@ -78,7 +78,7 @@ void RGISAnalyseLineSSampleGridCBK (Widget widget, RGISWorkspace *workspace,XmAn
 								XmNcolumns,					DBStringLength / 2,
 								NULL);
 		XtAddCallback (button,XmNactivateCallback,(XtCallbackProc) _RGIAnalyseLineSSampleGridSSelectCBK,fromNameTextF);
-		string = XmStringCreate ("From Field:",UICharSetBold);
+		string = XmStringCreate ((char *) "From Field:",UICharSetBold);
 		XtVaCreateManagedWidget ("RGISAnalyseLineSSampleNameLabel",xmLabelWidgetClass,mainForm,
 								XmNtopAttachment,			XmATTACH_OPPOSITE_WIDGET,
 								XmNtopWidget,				button,
@@ -92,8 +92,8 @@ void RGISAnalyseLineSSampleGridCBK (Widget widget, RGISWorkspace *workspace,XmAn
 								XmNlabelString,			string,
 								NULL);
 		XmStringFree (string);
-		
-		string = XmStringCreate ("Select",UICharSetBold);
+
+		string = XmStringCreate ((char *) "Select",UICharSetBold);
 		button = XtVaCreateManagedWidget ("RGISAnalyseLineSSampleNameButton",xmPushButtonWidgetClass,mainForm,
 								XmNtopAttachment,			XmATTACH_WIDGET,
 								XmNtopWidget,				button,
@@ -120,7 +120,7 @@ void RGISAnalyseLineSSampleGridCBK (Widget widget, RGISWorkspace *workspace,XmAn
 								XmNcolumns,					DBStringLength / 2,
 								NULL);
 		XtAddCallback (button,XmNactivateCallback,(XtCallbackProc) _RGIAnalyseLineSSampleGridSSelectCBK,toNameTextF);
-		string = XmStringCreate ("To Field:",UICharSetBold);
+		string = XmStringCreate ((char *) "To Field:",UICharSetBold);
 		XtVaCreateManagedWidget ("RGISAnalyseLineSSampleNameLabel",xmLabelWidgetClass,mainForm,
 								XmNtopAttachment,			XmATTACH_OPPOSITE_WIDGET,
 								XmNtopWidget,				button,
@@ -144,14 +144,14 @@ void RGISAnalyseLineSSampleGridCBK (Widget widget, RGISWorkspace *workspace,XmAn
 		allowOk = false;
 		fText = XmTextFieldGetString (fromNameTextF);
 		if (strlen (fText) > 0) allowOk = true;
-		XtFree (fText);	
+		XtFree (fText);
 		fText = XmTextFieldGetString (toNameTextF);
 		if (strlen (fText) > 0) allowOk = true;
-		XtFree (fText);	
+		XtFree (fText);
 		XtSetSensitive (UIDialogFormGetOkButton (dShell),allowOk);
 		}
 	UIDialogFormPopdown (dShell);
-	
+
 	if (sample)
 		{
 		DBInt ret;
@@ -162,7 +162,7 @@ void RGISAnalyseLineSSampleGridCBK (Widget widget, RGISWorkspace *workspace,XmAn
 		DBObjTableField *fromField;
 		DBObjTableField *toField;
 		DBObjRecord *record;
-		
+
 		fText = XmTextFieldGetString (fromNameTextF);
 		if (strlen (fText) > 0)
 			{
@@ -180,7 +180,7 @@ void RGISAnalyseLineSSampleGridCBK (Widget widget, RGISWorkspace *workspace,XmAn
 		else	toField = (DBObjTableField *) NULL;
 		XtFree (fText);
 
-		UIPauseDialogOpen ("Sampling Grid");
+		UIPauseDialogOpen ((char *) "Sampling Grid");
 		for (record = itemTable->First ();record != (DBObjRecord *) NULL;record = itemTable->Next ())
 			{
 			if (UIPause (record->RowID () * 100 / itemTable->ItemNum ())) goto Stop;
@@ -274,7 +274,7 @@ void RGISAnalyseLineMSampleGridCBK (Widget widget, RGISWorkspace *workspace,XmAn
 	table->AddField (toValueFLD =		new DBObjTableField (RGISLineToNodeValue,DBTableFieldFloat,gridIO->ValueFormat (),sizeof (DBFloat4)));
 
 	grdData->Flags (DBObjectFlagProcessed,DBSet);
-	UIPauseDialogOpen ("Sampling Grid(s)");
+	UIPauseDialogOpen ((char *) "Sampling Grid(s)");
 	for (layerID = 0;layerID < gridIO->LayerNum ();++layerID)
 		{
 		layerRec = gridIO->Layer (layerID);

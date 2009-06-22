@@ -30,18 +30,18 @@ static int _RGISAnNetworkUpStreamAction (DBNetworkIO *netIO,DBObjRecord *cellRec
 
 	{
 	DBInt nextOrder [2];
-	
+
 	if (_RGISAnNetVertex < 1)
 		{
 		nextOrder[0] = _RGISAnNetOrderField->Int (cellRec);
-		nextOrder[1] = netIO->CellOrder (cellRec); 
+		nextOrder[1] = netIO->CellOrder (cellRec);
 		}
 	else
 		{
 		nextOrder[0] = _RGISAnNetOrderField->Int (netIO->ToCell (cellRec));
-		nextOrder[1] = netIO->CellOrder (netIO->ToCell(cellRec)); 
+		nextOrder[1] = netIO->CellOrder (netIO->ToCell(cellRec));
 		}
-		
+
 	if ((_RGISAnNetOrderField->Int (cellRec) == nextOrder[0]) && (netIO->CellOrder (cellRec) == nextOrder[1]))
 		{
 		_RGISAnNetStreamIDFLD->Int (cellRec,_RGISAnNetStreamID);
@@ -49,7 +49,7 @@ static int _RGISAnNetworkUpStreamAction (DBNetworkIO *netIO,DBObjRecord *cellRec
 		_RGISAnNetVertex += 1;
 		return (true);
 		}
-	return (false); 
+	return (false);
 	}
 
 static int _RGISAnNetworkDownStreamAction (DBNetworkIO *netIO,DBObjRecord *cellRec)
@@ -74,7 +74,7 @@ void RGISAnNetworkStreamLinesCBK (Widget widget,RGISWorkspace *workspace,XmAnyCa
 
 	widget = widget; callData = callData;
 
-	if (fieldSelect == (Widget) NULL)	fieldSelect = UISelectionCreate ("Select Field");
+	if (fieldSelect == (Widget) NULL)	fieldSelect = UISelectionCreate ((char *) "Select Field");
 	if ((selection = UISelectObject (fieldSelect,(DBObjectLIST<DBObject> *) cellTable->Fields (),DBTableFieldIsInteger)) == (char *) NULL)
 		return;
 	if ((_RGISAnNetOrderField = cellTable->Field (selection)) == (DBObjTableField *) NULL)
@@ -112,9 +112,9 @@ void RGISAnNetworkStreamLinesCBK (Widget widget,RGISWorkspace *workspace,XmAnyCa
 		lineTable->AddField (nextFLD);
 
 		cellTable->AddField (_RGISAnNetStreamIDFLD = new DBObjTableField ("StreamID",DBTableFieldInt,"%8d",sizeof (DBInt)));
-		
+
 		_RGISAnNetStreamID = 0;
-		UIPauseDialogOpen ("Creating Stream Lines");
+		UIPauseDialogOpen ((char *) "Creating Stream Lines");
 		cellID = netIO->CellNum () - 1;
 		cellRec = netIO->Cell (cellID);
 		if (lineIO->NewSymbol ("Default Symbol") == (DBObjRecord *) NULL)
@@ -163,7 +163,7 @@ void RGISAnNetworkStreamLinesCBK (Widget widget,RGISWorkspace *workspace,XmAnyCa
 			}
 Stop:	UIPauseDialogClose ();
 		if (_RGISAnNetCoord != (DBCoordinate *) NULL) free (_RGISAnNetCoord);
-		
+
 		delete lineIO;
 		if (cellID >= 0) delete arcData;
 		else	workspace->CurrentData (arcData);

@@ -22,7 +22,7 @@ void RGISAnalyseSingleSampleGridCBK (Widget widget, RGISWorkspace *workspace,XmA
 	{
 	widget = widget;	workspace = workspace; callData = callData;
 
-	if (UIYesOrNo ("You are about to sample grid. Are You sure?"))
+	if (UIYesOrNo ((char *) "You are about to sample grid. Are You sure?"))
 		{
 		DBDataset *dataset = UIDataset ();
 		DBObjData *dbData  = dataset->Data (), *grdData = dbData->LinkedData ();
@@ -35,8 +35,8 @@ void RGISAnalyseSingleSampleGridCBK (Widget widget, RGISWorkspace *workspace,XmA
 		DBNetworkIO *netIO = dbData->Type () == DBTypeNetwork		 ? new DBNetworkIO (dbData) : (DBNetworkIO *) NULL;
 		DBObjTableField *newField;
 		DBObjRecord *record;
-		
-		UIPauseDialogOpen ("Single Layer Grid Sampling");
+
+		UIPauseDialogOpen ((char *) "Single Layer Grid Sampling");
 		switch (grdData->Type ())
 			{
 			case DBTypeGridContinuous:
@@ -59,11 +59,11 @@ void RGISAnalyseSingleSampleGridCBK (Widget widget, RGISWorkspace *workspace,XmA
 
 					if (gridIO->Value (coord,&value))
 							newField->Float (record,value);
-					else	newField->Float (record,newField->FloatNoData ());			
+					else	newField->Float (record,newField->FloatNoData ());
 					}
 				} break;
 			case DBTypeGridDiscrete:
-				{	
+				{
 				DBObjTable *grdTable = grdData->Table (DBrNItems);
 				DBObjectLIST<DBObjTableField> *fields = grdTable->Fields ();
 				DBObjTableField *field;
@@ -112,7 +112,7 @@ void RGISAnalyseSingleSampleGridCBK (Widget widget, RGISWorkspace *workspace,XmA
 									case DBTableFieldDate:		newField->Date (record,field->Date (grdRec));		break;
 									}
 							}
-						}					
+						}
 				} break;
 			}
 		if (pntIO != (DBVPointIO *) NULL)  delete pntIO;
@@ -139,7 +139,7 @@ void RGISAnalyseMultiSampleGridCBK (Widget widget, RGISWorkspace *workspace,XmAn
 
 	if (UIDataHeaderForm (tblData) == false) { delete tblData; return; }
 
-	UIPauseDialogOpen ("Sampling Grid");
+	UIPauseDialogOpen ((char *) "Sampling Grid");
 	ret = RGlibGridSampling (dbData,grdData,tblData);
 	UIPauseDialogClose ();
 	if (ret == DBSuccess) workspace->CurrentData  (tblData);

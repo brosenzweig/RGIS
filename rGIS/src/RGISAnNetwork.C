@@ -20,13 +20,13 @@ void RGISAnNetworkBasinGridCBK (Widget widget,RGISWorkspace *workspace,XmAnyCall
 	DBDataset *dataset = UIDataset ();
 	DBObjData *netData = dataset->Data ();
 	DBObjData *grdData;
-	
+
 	grdData = DBNetworkToGrid (netData,DBTypeGridDiscrete);
 	grdData->Document (DBDocGeoDomain,netData->Document (DBDocGeoDomain));
 	grdData->Document (DBDocSubject,netData->Document (DBDocSubject));
 	if (UIDataHeaderForm (grdData))
 		{
-		UIPauseDialogOpen ("Converting Network to Basin Grid");
+		UIPauseDialogOpen ((char *) "Converting Network to Basin Grid");
 		if (RGlibNetworkBasinGrid (netData,grdData) == DBSuccess)
 			workspace->CurrentData (grdData);
 		else delete grdData;
@@ -46,8 +46,8 @@ void RGISAnNetworkToGridCBK (Widget widget,RGISWorkspace *workspace,XmAnyCallbac
 	DBObjTableField *field;
 	DBObjData *grdData;
 	static Widget select = NULL;
-	
-	if (select == NULL) select = UISelectionCreate ("Field Selection");
+
+	if (select == NULL) select = UISelectionCreate ((char *) "Field Selection");
 	selection = UISelectObject (select,(DBObjectLIST<DBObject> *) (cellTable->Fields ()),DBTableFieldIsSimple);
 	if (selection == (char *) NULL) return;
 	if ((field = cellTable->Field (selection)) == (DBObjTableField *) NULL)
@@ -89,7 +89,7 @@ void RGISAnNetworkToGridCBK (Widget widget,RGISWorkspace *workspace,XmAnyCallbac
 		if (UIDataHeaderForm (grdData) == false) { delete grdData; return; }
 		}
 
-	UIPauseDialogOpen ("Converting Network to Grid");
+	UIPauseDialogOpen ((char *) "Converting Network to Grid");
 	if (RGlibNetworkToGrid (netData,field,grdData) == DBSuccess) workspace->CurrentData (grdData);
 	else delete grdData;
 	UIPauseDialogClose ();
@@ -104,13 +104,13 @@ void RGISAnNetworkStationsCBK (Widget widget,RGISWorkspace *workspace,XmAnyCallb
 	DBObjData *netData = dataset->Data ();
 	static int proc;
 	static Widget dShell = (Widget) NULL, areaField, toleranceField;
-	
+
 	if (dShell == (Widget) NULL)
 		{
 		Widget mainForm, label;
 		XmString string;
 
-		dShell = UIDialogForm ("Network Stations");
+		dShell = UIDialogForm ((char *) "Network Stations");
 		mainForm = UIDialogFormGetMainForm (dShell);
 		areaField = XtVaCreateManagedWidget ("RGISAnNetworkStationsAreaTextF",xmTextFieldWidgetClass,mainForm,
 											XmNtopAttachment,			XmATTACH_FORM,
@@ -120,7 +120,7 @@ void RGISAnNetworkStationsCBK (Widget widget,RGISWorkspace *workspace,XmAnyCallb
 											XmNmaxLength,				DBStringLength / 2,
 											XmNcolumns,					DBStringLength / 2,
 											NULL);
-		string = XmStringCreate ("Subbasin Area [km2]:",UICharSetBold);
+		string = XmStringCreate ((char *) "Subbasin Area [km2]:",UICharSetBold);
 		label = XtVaCreateManagedWidget ("RGISAnNetworkStationsAreaLabel",xmLabelWidgetClass,mainForm,
 											XmNtopAttachment,			XmATTACH_OPPOSITE_WIDGET,
 											XmNtopWidget,				areaField,
@@ -148,7 +148,7 @@ void RGISAnNetworkStationsCBK (Widget widget,RGISWorkspace *workspace,XmAnyCallb
 											XmNmaxLength,				DBStringLength / 2,
 											XmNcolumns,					DBStringLength / 2,
 											NULL);
-		string = XmStringCreate ("Tolerance [%]:",UICharSetBold);
+		string = XmStringCreate ((char *) "Tolerance [%]:",UICharSetBold);
 		label = XtVaCreateManagedWidget ("RGISAnNetworkStationsToleranceLabel",xmLabelWidgetClass,mainForm,
 											XmNtopAttachment,			XmATTACH_OPPOSITE_WIDGET,
 											XmNtopWidget,				toleranceField,
@@ -160,7 +160,7 @@ void RGISAnNetworkStationsCBK (Widget widget,RGISWorkspace *workspace,XmAnyCallb
 											XmNmarginWidth,			5,
 											NULL);
 		XmStringFree (string);
-		
+
 		XtAddCallback (UIDialogFormGetOkButton (dShell),XmNactivateCallback,(XtCallbackProc) UIAuxSetBooleanTrueCBK,&proc);
 		XtAddCallback (UIDialogFormGetCancelButton (dShell),XmNactivateCallback,(XtCallbackProc) UIAuxSetBooleanFalseCBK,&proc);
 		}
@@ -170,7 +170,7 @@ void RGISAnNetworkStationsCBK (Widget widget,RGISWorkspace *workspace,XmAnyCallb
 		{
 		areaText = XmTextFieldGetString (areaField);
 		toleranceText = XmTextFieldGetString (toleranceField);
-		if ((strlen (areaText) > 0) 		&& (sscanf (areaText,"%lf",&area) == 1) && 
+		if ((strlen (areaText) > 0) 		&& (sscanf (areaText,"%lf",&area) == 1) &&
 			 (strlen (toleranceText) > 0) && (sscanf (toleranceText,"%lf",&tolerance) == 1))
 				XtSetSensitive (UIDialogFormGetOkButton (dShell),true);
 		else	XtSetSensitive (UIDialogFormGetOkButton (dShell),false);
@@ -186,7 +186,7 @@ void RGISAnNetworkStationsCBK (Widget widget,RGISWorkspace *workspace,XmAnyCallb
 		pntData->Document (DBDocSubject,GHAASSubjStations);
 		if (UIDataHeaderForm (pntData))
 			{
-			UIPauseDialogOpen ("Creating Stations");
+			UIPauseDialogOpen ((char *) "Creating Stations");
 			if (RGlibNetworkStations (netData,area,tolerance,pntData) == DBSuccess)
 				{
 				workspace->CurrentData  (pntData);
@@ -215,7 +215,7 @@ void RGISAnNetworkAccumulateCBK (Widget widget,RGISWorkspace *workspace,XmAnyCal
 	outGridData->Document (DBDocSubject,inGridData->Document (DBDocSubject));
 	if (UIDataHeaderForm (outGridData))
 		{
-		UIPauseDialogOpen ("Accumulating Grid");
+		UIPauseDialogOpen ((char *) "Accumulating Grid");
 		if (RGlibNetworkAccumulate (netData,inGridData,outGridData) == DBSuccess)
 			workspace->CurrentData  (outGridData);
 		else	delete outGridData;
@@ -240,7 +240,7 @@ void RGISAnNetworkUpStreamAvgCBK (Widget widget,RGISWorkspace *workspace,XmAnyCa
 	outGridData->Document (DBDocSubject,inGridData->Document (DBDocSubject));
 	if (UIDataHeaderForm (outGridData))
 		{
-		UIPauseDialogOpen ("Upstream Average");
+		UIPauseDialogOpen ((char *) "Upstream Average");
 		if (RGlibNetworkUpStreamAvg (netData,inGridData,outGridData) == DBSuccess)
 			workspace->CurrentData  (outGridData);
 		else	delete outGridData;
@@ -266,7 +266,7 @@ void RGISAnNetworkCellSlopesCBK (Widget widget,RGISWorkspace *workspace,XmAnyCal
 	outGridData->Document (DBDocSubject,"Slope");
 	if (UIDataHeaderForm (outGridData))
 		{
-		UIPauseDialogOpen ("Calculating Slopes");
+		UIPauseDialogOpen ((char *) "Calculating Slopes");
 		if (RGlibNetworkCellSlopes (netData,inGridData,outGridData) == DBSuccess)
 			workspace->CurrentData  (outGridData);
 		else	delete outGridData;
@@ -293,7 +293,7 @@ void RGISAnNetworkBasinProfCBK (Widget widget,RGISWorkspace *workspace,XmAnyCall
 
 	if (UIDataHeaderForm (tblData))
 		{
-		UIPauseDialogOpen ("Creating Basin Profiles");
+		UIPauseDialogOpen ((char *) "Creating Basin Profiles");
 		if (RGlibNetworkBasinProf (netData,gridData,tblData) == DBSuccess)
 			workspace->CurrentData  (tblData);
 		else	delete tblData;
@@ -318,7 +318,7 @@ void RGISAnNetworkBasinStatsCBK (Widget widget,RGISWorkspace *workspace,XmAnyCal
 
 	if (UIDataHeaderForm (tblData))
 		{
-		UIPauseDialogOpen ("Calculating Statistics");
+		UIPauseDialogOpen ((char *) "Calculating Statistics");
 		if (RGlibNetworkBasinStats (netData,grdData,tblData) == DBSuccess)
 			workspace->CurrentData  (tblData);
 		else	delete tblData;
@@ -343,7 +343,7 @@ void RGISAnNetworkHeadStatsCBK (Widget widget,RGISWorkspace *workspace,XmAnyCall
 
 	if (UIDataHeaderForm (tblData))
 		{
-		UIPauseDialogOpen ("Calculating Statistics");
+		UIPauseDialogOpen ((char *) "Calculating Statistics");
 		if (RGlibNetworkHeadStats (netData,grdData,tblData,false) == DBSuccess)
 			workspace->CurrentData  (tblData);
 		else	delete tblData;
@@ -368,7 +368,7 @@ void RGISAnNetworkDivideStatsCBK (Widget widget,RGISWorkspace *workspace,XmAnyCa
 
 	if (UIDataHeaderForm (tblData))
 		{
-		UIPauseDialogOpen ("Calculating Statistics");
+		UIPauseDialogOpen ((char *) "Calculating Statistics");
 		if (RGlibNetworkHeadStats (netData,grdData,tblData,true) == DBSuccess)
 			workspace->CurrentData  (tblData);
 		else	delete tblData;
@@ -389,7 +389,7 @@ void RGISAnNetworkHistogramCBK (Widget widget,RGISWorkspace *workspace,XmAnyCall
 	tblData->Document (DBDocSubject,"Elevation Distribution");
 	if (UIDataHeaderForm (tblData))
 		{
-		UIPauseDialogOpen ("Calculating Histogram");
+		UIPauseDialogOpen ((char *) "Calculating Histogram");
 		if (RGlibNetworkHistogram (netData,grdData,tblData) == DBSuccess)
 			workspace->CurrentData  (tblData);
 		else	delete tblData;
@@ -414,7 +414,7 @@ void RGISAnNetworkBasinDistribCBK (Widget widget,RGISWorkspace *workspace,XmAnyC
 
 	if (UIDataHeaderForm (tblData))
 		{
-		UIPauseDialogOpen ("Calculating Statistics");
+		UIPauseDialogOpen ((char *) "Calculating Statistics");
 		if (RGlibNetworkBasinDistrib (netData,grdData,tblData) == DBSuccess)
 			workspace->CurrentData  (tblData);
 		else	delete tblData;
@@ -430,7 +430,7 @@ void RGISAnNetworkCellSampleGridCBK (Widget widget, RGISWorkspace *workspace,XmA
 	DBObjData *netData  = dataset->Data (), *grdData = netData->LinkedData ();
 
 	widget = widget;	workspace = workspace; callData = callData;
-	UIPauseDialogOpen ("Cell Sampling");
+	UIPauseDialogOpen ((char *) "Cell Sampling");
 	RGlibGridSampling (netData,grdData);
 	UIPauseDialogClose ();
 	}
