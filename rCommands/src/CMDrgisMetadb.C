@@ -44,7 +44,7 @@ int main (int argc,char *argv [])
 		sprintf (metaFileName,  "%s/GHAASMetadb", getenv ("GHAAS_DIR") == NULL ?  getenv ("HOME") : getenv ("GHAAS_DIR"));
 		ghaasMetaDB = metaFileName;
 		}
-	dbDataset = new DBDataset ("GHAASmetadb",ghaasMetaDB);
+	dbDataset = new DBDataset ((char *) "GHAASmetadb",ghaasMetaDB);
 	metaList = dbDataset->MetaList ();
 
 	for ( ;i < argc - 1;++i)

@@ -98,7 +98,7 @@ int main (int argc,char *argv [])
 		{ CMmsgPrint (CMmsgUsrError,"Invalid coordinate field [%s]!\n",srcFieldName); delete data; return (CMfailed); }
 
 
-	if (dstFieldName == (char *) NULL) dstFieldName = "DecimalCoord";
+	if (dstFieldName == (char *) NULL) dstFieldName = (char *) "DecimalCoord";
 		{
 		if ((dstField = table->Field (dstFieldName)) == (DBObjTableField *) NULL)
 			{
@@ -115,7 +115,7 @@ int main (int argc,char *argv [])
 				}
 			}
 		}
-	
+
 	for (recID = 0;recID < table->ItemNum ();++recID)
 		{
 		record = table->Item (recID);

@@ -52,11 +52,11 @@ int _CMDnetErosion (DBObjData *netData, DBObjData *inData, DBObjData *weightData
 		{
 		inLayerRec  = inIO->Layer  (layerID);
 		outLayerRec = outIO->Layer (layerID);
-		if (weightIO != (DBGridIO *) NULL) 
+		if (weightIO != (DBGridIO *) NULL)
 			weightLayerRec = weightIO->Layer (layerID % weightIO->LayerNum ());
 		for (cellID = 0;cellID < netIO->CellNum ();cellID++)
 			{
-			sumWeights [cellID] = 0.0;	
+			sumWeights [cellID] = 0.0;
 			cellRec = netIO->Cell (cellID);
 			if (inIO->Value  (inLayerRec, netIO->Center (cellRec),&inValue) == false)
 				outIO->Value (outLayerRec,netIO->CellPosition (cellRec),0.0);
@@ -78,8 +78,8 @@ int _CMDnetErosion (DBObjData *netData, DBObjData *inData, DBObjData *weightData
 			if (DBPause (progress * 100 / maxProgress)) goto Stop;
 			cellRec = netIO->Cell (cellID);
 			if ((toCell = netIO->ToCell (cellRec)) == (DBObjRecord *) NULL) continue;
-			if (outIO->Value (outLayerRec,netIO->CellPosition (cellRec),&inValue)  == false) continue;	
-			if (outIO->Value (outLayerRec,netIO->CellPosition (toCell),&outValue) == false) continue;	
+			if (outIO->Value (outLayerRec,netIO->CellPosition (cellRec),&inValue)  == false) continue;
+			if (outIO->Value (outLayerRec,netIO->CellPosition (toCell),&outValue) == false) continue;
 
 			sumWeights [toCell->RowID ()] = sumWeights [toCell->RowID ()] + weight;
 			outIO->Value (outLayerRec,netIO->CellPosition (toCell),outValue + inValue);
@@ -126,7 +126,7 @@ int main (int argc,char *argv [])
 			{
 			int modeCodes [] = {	true, false };
 			const char *modes [] = {	"rate", "volume", (char *) NULL };
-			
+
 			if ((argNum = CMargShiftLeft (argPos,argv,argNum)) <= argPos)
 				{ CMmsgPrint (CMmsgUsrError,"Missing accumulation mode!\n"); return (CMfailed); }
 			if ((areaMult = CMoptLookup (modes,argv [argPos],true)) == DBFault)
@@ -243,10 +243,10 @@ int main (int argc,char *argv [])
 	if ((ret == DBFault) || (grdData->Type () != DBTypeGridContinuous))
 		{ delete netData; delete grdData; return (CMfailed); }
 
-	if (title == (char *) NULL)	title   = "Accumulated Grid";
-	if (subject == (char *) NULL)	subject = grdData->Document (DBDocSubject);
-	if (domain == (char *) NULL)	domain  = netData->Document (DBDocGeoDomain);
-	if (version == (char *) NULL)	version = "0.01pre";	
+	if (title   == (char *) NULL)   title = (char *) "Accumulated Grid";
+	if (subject == (char *) NULL) subject = grdData->Document (DBDocSubject);
+	if (domain  == (char *) NULL)  domain = netData->Document (DBDocGeoDomain);
+	if (version == (char *) NULL) version = (char *) "0.01pre";
 
 	data = DBNetworkToGrid (netData,DBTypeGridContinuous);
 	data->Name (title);

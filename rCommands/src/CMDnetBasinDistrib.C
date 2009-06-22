@@ -104,10 +104,10 @@ int main (int argc,char *argv [])
 	if ((ret == DBFault) || (grdData->Type () != DBTypeGridDiscrete))
 		{ delete netData; delete grdData; return (CMfailed); }
 
-	if (title	== (char *) NULL)	title   = "Basin Distribution";
-	if (subject == (char *) NULL)	subject = grdData->Document (DBDocSubject);
-	if (domain	== (char *) NULL)	domain  = netData->Document (DBDocGeoDomain);
-	if (version == (char *) NULL) version = "0.01pre";	
+	if (title	== (char *) NULL)   title = (char *) "Basin Distribution";
+	if (subject == (char *) NULL) subject = grdData->Document (DBDocSubject);
+	if (domain	== (char *) NULL)  domain = netData->Document (DBDocGeoDomain);
+	if (version == (char *) NULL) version = (char *) "0.01pre";
 
 	data = new DBObjData (title,DBTypeTable);
 	data->Document (DBDocSubject,subject);

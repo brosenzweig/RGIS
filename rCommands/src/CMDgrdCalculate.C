@@ -53,7 +53,7 @@ class CMDgrdVariable
 		if ((dataName = (char *) malloc (strlen (dataName) + 1)) == (char *) NULL)
 			{ perror ("Memory allocation error in: CMDgrdVariable::Configure ()"); return (CMfailed); }
 		strcpy (dataName, TargetFLD->Name ());
-		 
+
 		for (i = 0;i < (DBInt) strlen (dataName);++i)
 			if (dataName [i] == ':') { fieldName = dataName + i + 1; dataName [i] = '\0'; i = 0; break;}
 
@@ -90,7 +90,7 @@ class CMDgrdVariable
 	DBFloat CellWidth  () const { return (GridIO->CellWidth ()); }
 	DBFloat CellHeight () const { return (GridIO->CellWidth ()); }
 	DBInt LayerNum () const { return (GridIO->LayerNum ()); }
-	
+
 	char *CurrentLayer (DBInt layerID)
 		{
 		if (layerID == DBFault) LayerRec = GridIO->Layer (0);
@@ -108,7 +108,7 @@ class CMDgrdVariable
 		for (layerID = 0;layerID < GridIO->LayerNum ();++layerID)
 			{
 			layerRec = GridIO->Layer (layerID);
-			
+
 			name = layerRec->Name ();
 			if (strncmp (name,"XXXX-",5) == 0)
 				{ i = 5; if ((strlen (name) - 5) == 0) return (layerID); }
@@ -123,7 +123,7 @@ class CMDgrdVariable
 		layerRec = GridIO->Layer (layerID);
 		date.Set (layerRec->Name ());
 		if (date.Year () != DBDefaultMissingIntVal) return (true);
-		return (date.Month () != DBDefaultMissingIntVal ? true : false); 
+		return (date.Month () != DBDefaultMissingIntVal ? true : false);
 		}
 	void GetVariable (DBObjRecord *record,DBCoordinate coord)
 		{
@@ -371,18 +371,18 @@ int main (int argc,char *argv [])
 
 	if (shrink) for (i = 0;i < varNum;++i) extent.Shrink (grdVar [i]->Extent ());
 
-	if (title	== (char *) NULL)	title   = "Grid Calculate Result";
-	if (subject == (char *) NULL) subject = "GridCalc";
-	if (domain  == (char *) NULL) domain  = "Non-specified";
-	if (version == (char *) NULL) version = "0.01pre";
-	if (shadeSet == DBFault)		shadeSet = DBDataFlagDispModeContGreyScale;
+	if (title	== (char *) NULL)	title = (char *) "Grid Calculate Result";
+	if (subject == (char *) NULL) subject = (char *) "GridCalc";
+	if (domain  == (char *) NULL) domain  = (char *) "Non-specified";
+	if (version == (char *) NULL) version = (char *) "0.01pre";
+	if (shadeSet == DBFault)     shadeSet = DBDataFlagDispModeContGreyScale;
 
 	if ((data = DBGridCreate (title,extent,cellSize)) == (DBObjData *) NULL) return (CMfailed);
 	data->Document (DBDocSubject,subject);
 	data->Document (DBDocGeoDomain,domain);
 	data->Document (DBDocVersion,version);
 	data->Flags (DBDataFlagDispModeContShadeSets,DBClear);
-	data->Flags (shadeSet,DBSet);
+	data->Flags (shadeSet, DBSet);
 
 	gridIO = new DBGridIO (data);
 	for (layerID = 0;layerID < layerNum;++layerID)
@@ -398,7 +398,7 @@ int main (int argc,char *argv [])
 				grdVar [i]->CurrentLayer (dataLayerID);
 				}
 			}
-		if (layerID > 0) gridIO->AddLayer ("New Layer");
+		if (layerID > 0) gridIO->AddLayer ((char *) "New Layer");
 		layerRec = gridIO->Layer (layerID);
 		gridIO->RenameLayer (layerRec,layerName);
 		for (pos.Row = 0;pos.Row < gridIO->RowNum ();++pos.Row)

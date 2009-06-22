@@ -942,7 +942,7 @@ class DBProperties
 			}
 	};
 
-#define DBHiddenField ""
+#define DBHiddenField ((char *) "")
 
 class DBTableFieldDefinition
 	{
@@ -1205,96 +1205,96 @@ class DBDataHeader
 		int Write (FILE *file);
 	};
 
-#define DBrNCoord					"Coord"
-#define DBrNVertexes				"Vertexes"
-#define DBrNVertexNum			"VertexNum"
-#define DBrNRegion				"Region"
-#define DBrNSymbol				"SymbolFLD"
-#define DBrNSymbolID				"SymbolID"
-#define DBrNForeground			"Foreground"
-#define DBrNBackground			"Background"
-#define DBrNStyle					"Style"
-#define DBrNLinkNum				"LinkNum"
-#define DBrNLeftPoly				"LeftPolygon"
-#define DBrNRightPoly			"RightPolygon"
-#define DBrNNextLine				"NextLine"
-#define DBrNPrevLine				"PrevLine"
-#define DBrNFromNode				"FromNode"
-#define DBrNToNode				"ToNode"
-#define DBrNPerimeter			"Perimeter"
-#define DBrNFirstLine			"FirstLine"
-#define DBrNLineNum				"LineNum"
-#define DBrNArea					"Area"
+#define DBrNCoord               ((char *) "Coord")
+#define DBrNVertexes            ((char *) "Vertexes")
+#define DBrNVertexNum           ((char *) "VertexNum")
+#define DBrNRegion              ((char *) "Region")
+#define DBrNSymbol              ((char *) "SymbolFLD")
+#define DBrNSymbolID            ((char *) "SymbolID")
+#define DBrNForeground          ((char *) "Foreground")
+#define DBrNBackground          ((char *) "Background")
+#define DBrNStyle               ((char *) "Style")
+#define DBrNLinkNum             ((char *) "LinkNum")
+#define DBrNLeftPoly            ((char *) "LeftPolygon")
+#define DBrNRightPoly           ((char *) "RightPolygon")
+#define DBrNNextLine            ((char *) "NextLine")
+#define DBrNPrevLine            ((char *) "PrevLine")
+#define DBrNFromNode            ((char *) "FromNode")
+#define DBrNToNode              ((char *) "ToNode")
+#define DBrNPerimeter           ((char *) "Perimeter")
+#define DBrNFirstLine           ((char *) "FirstLine")
+#define DBrNLineNum             ((char *) "LineNum")
+#define DBrNArea                ((char *) "Area")
 
-#define DBrNMouthPos				"MouthPos"
-#define DBrNColor					"Color"
-#define DBrNBasinOrder			"BasinOrder"
-#define DBrNBasinArea			"BasinArea"
-#define DBrNBasinLength			"BasinLength"
-#define DBrNLookupGrid			"NetLookupGrid"
+#define DBrNMouthPos            ((char *) "MouthPos")
+#define DBrNColor               ((char *) "Color")
+#define DBrNBasinOrder          ((char *) "BasinOrder")
+#define DBrNBasinArea           ((char *) "BasinArea")
+#define DBrNBasinLength         ((char *) "BasinLength")
+#define DBrNLookupGrid          ((char *) "NetLookupGrid")
 
-#define DBrNPosition				"Position"
-#define DBrNToCell				"ToCell"
-#define DBrNFromCell				"FromCell"
-#define DBrNOrder					"Order"
-#define DBrNMagnitude			"Magnitude"
-#define DBrNBasin					"BasinID"
-#define DBrNBasinCells			"BasinCells"
-#define DBrNTravel				"Travel"
-#define DBrNUpCellPos			"MostUpCellPos"
-#define DBrNCellArea				"CellArea"
-#define DBrNCellLength			"CellLength"
-#define DBrNSubbasinArea		"SubbasinArea"
-#define DBrNSubbasinLength		"SubbasinLength"
-#define DBrNDistToMouth			"DistToMouth"
-#define DBrNDistToOcean			"DistToOcean"
+#define DBrNPosition            ((char *) "Position")
+#define DBrNToCell              ((char *) "ToCell")
+#define DBrNFromCell            ((char *) "FromCell")
+#define DBrNOrder               ((char *) "Order")
+#define DBrNMagnitude           ((char *) "Magnitude")
+#define DBrNBasin               ((char *) "BasinID")
+#define DBrNBasinCells          ((char *) "BasinCells")
+#define DBrNTravel              ((char *) "Travel")
+#define DBrNUpCellPos           ((char *) "MostUpCellPos")
+#define DBrNCellArea            ((char *) "CellArea")
+#define DBrNCellLength          ((char *) "CellLength")
+#define DBrNSubbasinArea        ((char *) "SubbasinArea")
+#define DBrNSubbasinLength      ((char *) "SubbasinLength")
+#define DBrNDistToMouth         ((char *) "DistToMouth")
+#define DBrNDistToOcean         ((char *) "DistToOcean")
 
-#define DBrNRowNum				"RowNum"
-#define DBrNColNum				"ColNum"
-#define DBrNCellWidth			"CellWidth"
-#define DBrNCellHeight			"CellHeight"
-#define DBrNValueType			"ValueType"
-#define DBrNValueSize			"ValueSize"
-#define DBrNLayer					"Layer"
-#define DBrNMinimum				"Minimum"
-#define DBrNMaximum				"Maximum"
-#define DBrNAverage				"Average"
-#define DBrNStdDev				"StdDev"
-#define DBrNMissingValue 		"MissingValue"
-#define DBrNGridValue			"GridValue"
-#define DBrNGridArea				"GridArea"
-#define DBrNGridPercent			"GridPercent"
+#define DBrNRowNum              ((char *) "RowNum")
+#define DBrNColNum              ((char *) "ColNum")
+#define DBrNCellWidth           ((char *) "CellWidth")
+#define DBrNCellHeight          ((char *) "CellHeight")
+#define DBrNValueType           ((char *) "ValueType")
+#define DBrNValueSize           ((char *) "ValueSize")
+#define DBrNLayer               ((char *) "Layer")
+#define DBrNMinimum             ((char *) "Minimum")
+#define DBrNMaximum             ((char *) "Maximum")
+#define DBrNAverage             ((char *) "Average")
+#define DBrNStdDev              ((char *) "StdDev")
+#define DBrNMissingValue        ((char *) "MissingValue")
+#define DBrNGridValue			((char *) "GridValue")
+#define DBrNGridArea            ((char *) "GridArea")
+#define DBrNGridPercent         ((char *) "GridPercent")
 
-#define DBrNItems					"DBItems"
-#define DBrNSelection			"DBSelection"
+#define DBrNItems               ((char *) "DBItems")
+#define DBrNSelection           ((char *) "DBSelection")
 
-#define DBrNNodes					"DBNodes"
-#define DBrNLineList				"DBLineList"
-#define DBrNContours				"DBContours"
-#define DBrNContourList			"DBContourList"
-#define DBrNSymbols				"DBSymbols"
-#define DBrNCells					"DBCells"
-#define DBrNLayers				"DBLayers"
-#define DBrNGroups				"DBGroups"
+#define DBrNNodes               ((char *) "DBNodes")
+#define DBrNLineList            ((char *) "DBLineList")
+#define DBrNContours            ((char *) "DBContours")
+#define DBrNContourList			((char *) "DBContourList")
+#define DBrNSymbols             ((char *) "DBSymbols")
+#define DBrNCells               ((char *) "DBCells")
+#define DBrNLayers              ((char *) "DBLayers")
+#define DBrNGroups              ((char *) "DBGroups")
 
-#define DBrNRelateData			"DBRelateData"
-#define DBrNRelateField			"DBRelateField"
-#define DBrNRelateJoinField	"DBJoinField"
-#define DBrNRelations			"DBRelations"
+#define DBrNRelateData			((char *) "DBRelateData")
+#define DBrNRelateField         ((char *) "DBRelateField")
+#define DBrNRelateJoinField     ((char *) "DBJoinField")
+#define DBrNRelations           ((char *) "DBRelations")
 
-#define DBrNCategoryID			"CategoryID"
-#define DBrNCategory				"Category"
-#define DBrNPercent				"Percent"
+#define DBrNCategoryID          ((char *) "CategoryID")
+#define DBrNCategory            ((char *) "Category")
+#define DBrNPercent             ((char *) "Percent")
 
-#define DBDocSubject				"Subject"
-#define DBDocGeoDomain 			"GeoDomain"
-#define DBDocVersion 			"Version"
-#define DBDocCitationRef 		"Citation Reference"
-#define DBDocCitationInst 		"Citation Institue"
-#define DBDocSourceInst 		"Source Institue"
-#define DBDocSourcePerson	 	"Source Person"
-#define DBDocOwnerPerson 		"Contact Person"
-#define DBDocComment		 		"Comment"
+#define DBDocSubject            ((char *) "Subject")
+#define DBDocGeoDomain 			((char *) "GeoDomain")
+#define DBDocVersion 			((char *) "Version")
+#define DBDocCitationRef 		((char *) "Citation Reference")
+#define DBDocCitationInst 		((char *) "Citation Institue")
+#define DBDocSourceInst 		((char *) "Source Institue")
+#define DBDocSourcePerson	 	((char *) "Source Person")
+#define DBDocOwnerPerson 		((char *) "Contact Person")
+#define DBDocComment            ((char *) "Comment")
 
 #define DBDataNameLen			0x040
 #define DBDataVersionLen		0x008
@@ -1493,25 +1493,25 @@ class DBDataset
 		DBRegion Extent () { return (ExtentVAR); }
 	};
 
-#define DBMathOperandConst			0x0010
-#define DBMathOperandVar			0x0020
-#define DBMathOperandExpr			0x0030
-#define DBMathOperandCond			0x0040
+#define DBMathOperandConst  0x0010
+#define DBMathOperandVar    0x0020
+#define DBMathOperandExpr   0x0030
+#define DBMathOperandCond   0x0040
 
-#define DBMathOperatorArgs 		0x0800
-#define DBMathOperatorCond 		0x0400
-#define DBMathOperatorFunc			0x0200
-#define DBMathOperatorOr 			0x0100
-#define DBMathOperatorAnd 			0x0080
-#define DBMathOperatorGrt			0x0040
-#define DBMathOperatorEqu			0x0020
-#define DBMathOperatorSml			0x0010
-#define DBMathOperatorAdd 			0x0006
-#define DBMathOperatorSub 			0x0005
-#define DBMathOperatorMul			0x0004
-#define DBMathOperatorMod 			0x0003
-#define DBMathOperatorDiv 			0x0002
-#define DBMathOperatorExp 			0x0001
+#define DBMathOperatorArgs  0x0800
+#define DBMathOperatorCond  0x0400
+#define DBMathOperatorFunc  0x0200
+#define DBMathOperatorOr    0x0100
+#define DBMathOperatorAnd   0x0080
+#define DBMathOperatorGrt   0x0040
+#define DBMathOperatorEqu   0x0020
+#define DBMathOperatorSml   0x0010
+#define DBMathOperatorAdd   0x0006
+#define DBMathOperatorSub   0x0005
+#define DBMathOperatorMul   0x0004
+#define DBMathOperatorMod   0x0003
+#define DBMathOperatorDiv   0x0002
+#define DBMathOperatorExp   0x0001
 
 class DBMathExpression;
 
@@ -1627,53 +1627,53 @@ DBInt DBDateIsLeapYear (DBDate);
 
 DBInt DBFileSize (const char *);
 
-char *DBInfoFileName (const char *,DBInt);
-char *DBInfoFileName (const char *,const char *);
-DBInt DBInfoGetFields (DBObjTable *,const char *);
-DBInt DBInfoGetTable ( DBObjTable *,const char *);
-DBInt DBImportARCVector (DBObjData *,const char *,const char *,const char *);
-DBInt DBImportASCIINet (DBObjData *,const char *);
-DBInt DBImportDMGrid (DBObjData *,FILE *);
-DBInt DBImportDMGrid (DBObjData *,const char *);
-DBInt DBImportNetCDF (DBObjData *,const char *);
+char      *DBInfoFileName       (const char *,DBInt);
+char      *DBInfoFileName       (const char *,const char *);
+DBInt      DBInfoGetFields      (DBObjTable *,const char *);
+DBInt      DBInfoGetTable       ( DBObjTable *,const char *);
+DBInt      DBImportARCVector    (DBObjData *,const char *,const char *,const char *);
+DBInt      DBImportASCIINet     (DBObjData *,const char *);
+DBInt      DBImportDMGrid       (DBObjData *,FILE *);
+DBInt      DBImportDMGrid       (DBObjData *,const char *);
+DBInt      DBImportNetCDF       (DBObjData *,const char *);
 
-DBInt DBExportASCIITable (DBObjTable *,const char *);
-DBInt DBExportASCIITable (DBObjTable *,FILE *);
-DBInt DBExportARCGenPoint	(DBObjData *,char *);
-DBInt DBExportARCTableData (DBObjData *,char *,char *);
-DBInt DBExportARCTableDef  (DBObjData *,char *,char *);
-DBInt DBExportARCGridLayer (DBObjData *,DBObjRecord *,FILE *);
-DBInt DBExportARCGridLayer (DBObjData *,DBObjRecord *,const char *);
-DBInt DBExportDMGrid (DBObjData *,FILE *);
-DBInt DBExportDMGrid (DBObjData *,const char *);
-DBInt DBExportNetCDF (DBObjData *,const char *);
+DBInt      DBExportASCIITable   (DBObjTable *,const char *);
+DBInt      DBExportASCIITable   (DBObjTable *,FILE *);
+DBInt      DBExportARCGenPoint  (DBObjData *,char *);
+DBInt      DBExportARCTableData (DBObjData *,char *,char *);
+DBInt      DBExportARCTableDef  (DBObjData *,char *,char *);
+DBInt      DBExportARCGridLayer (DBObjData *,DBObjRecord *,FILE *);
+DBInt      DBExportARCGridLayer (DBObjData *,DBObjRecord *,const char *);
+DBInt      DBExportDMGrid (DBObjData *,FILE *);
+DBInt      DBExportDMGrid (DBObjData *,const char *);
+DBInt      DBExportNetCDF (DBObjData *,const char *);
 
 
-DBInt	DBPointInRange (DBObjData *,DBInt,DBRegion *);
-DBInt	DBPointAddPoint (DBObjData *,DBCoordinate *,DBInt,DBInt);
-DBInt	DBVectorPointFindPoint (DBObjData *,DBCoordinate *);
+DBInt      DBPointInRange (DBObjData *,DBInt,DBRegion *);
+DBInt      DBPointAddPoint (DBObjData *,DBCoordinate *,DBInt,DBInt);
+DBInt      DBVectorPointFindPoint (DBObjData *,DBCoordinate *);
 
-DBInt	DBVectorArcAdd (DBObjData *,DBCoordinate *,DBInt,DBInt,DBInt);
-void	DBVectorArcFlip (DBObjData *,DBInt);
-DBInt	DBVectorArcFindNearest (DBObjData *,DBCoordinate *,DBRegion *);
-DBInt	DBVectorArcTestRange (DBObjData *,DBInt,DBRegion *);
+DBInt      DBVectorArcAdd (DBObjData *,DBCoordinate *,DBInt,DBInt,DBInt);
+void       DBVectorArcFlip (DBObjData *,DBInt);
+DBInt      DBVectorArcFindNearest (DBObjData *,DBCoordinate *,DBRegion *);
+DBInt      DBVectorArcTestRange (DBObjData *,DBInt,DBRegion *);
 
-DBFloat	DBVectorPolyArea (DBObjData *,DBInt);
-DBInt	DBVectorPolyFindPolygon (DBObjData *,DBCoordinate *,DBRegion *);
-DBInt	DBVectorPolyQuadColor (DBObjData *);
-DBInt	DBVectorPolyTestRange (DBObjData *,DBInt,DBRegion *);
+DBFloat    DBVectorPolyArea (DBObjData *,DBInt);
+DBInt      DBVectorPolyFindPolygon (DBObjData *,DBCoordinate *,DBRegion *);
+DBInt      DBVectorPolyQuadColor (DBObjData *);
+DBInt      DBVectorPolyTestRange (DBObjData *,DBInt,DBRegion *);
 
-void DBGridOperation (DBObjData *,DBObjData *,DBInt,DBInt);
-void DBGridOperation (DBObjData *,DBFloat,DBInt);
-void DBGridOperationAbs (DBObjData *);
+void       DBGridOperation (DBObjData *,DBObjData *,DBInt,DBInt);
+void       DBGridOperation (DBObjData *,DBFloat,DBInt);
+void       DBGridOperationAbs (DBObjData *);
 DBObjData *DBNetworkToGrid (DBObjData *,DBInt);
 DBObjData *DBGridToGrid (DBObjData *,DBInt,DBInt,DBInt);
 DBObjData *DBGridToGrid (DBObjData *,DBInt);
 DBObjData *DBGridToGrid (DBObjData *);
 DBObjData *DBGridCreate (char *,DBRegion,DBCoordinate,DBInt);
 DBObjData *DBGridCreate (char *,DBRegion,DBCoordinate);
-DBInt DBGridAppend (DBObjData *,DBObjData *);
-DBInt DBPointToGrid (DBObjData *,DBObjData *, DBFloat);
-DBInt DBPointToGrid (DBObjData *,DBObjData *,DBObjData *);
+DBInt      DBGridAppend (DBObjData *,DBObjData *);
+DBInt      DBPointToGrid (DBObjData *,DBObjData *, DBFloat);
+DBInt      DBPointToGrid (DBObjData *,DBObjData *,DBObjData *);
 
-DBInt DBNumberOfDays (DBInt, DBInt);
+DBInt      DBNumberOfDays (DBInt, DBInt);

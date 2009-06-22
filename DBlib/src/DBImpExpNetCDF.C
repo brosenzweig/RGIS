@@ -25,14 +25,14 @@ static const char *_DBExportNetCDFRename (const char *name)
 			char *OldName;
 			char *NewName;
 		} names [] = {
-			{ "CellXCoord",              (char *) "cell_x-coord"},
-			{ "CellYCoord",              (char *) "cell_y-coord"},
-			{ "Point",                   (char *) "point"},
-			{ "Line",                    (char *) "line"},
-			{ "Polygon",                 (char *) "polygon"},
-			{ "Continuous",              (char *) "continuous"},
-			{ "Discrete",                (char *) "discrete"},
-			{ "Network",                 (char *) "network"},
+			{ (char *) "CellXCoord",     (char *) "cell_x-coord"},
+			{ (char *) "CellYCoord",     (char *) "cell_y-coord"},
+			{ (char *) "Point",          (char *) "point"},
+			{ (char *) "Line",           (char *) "line"},
+			{ (char *) "Polygon",        (char *) "polygon"},
+			{ (char *) "Continuous",     (char *) "continuous"},
+			{ (char *) "Discrete",       (char *) "discrete"},
+			{ (char *) "Network",        (char *) "network"},
 			{ GHAASSubjRunoff,           (char *) "runoff"},
 			{ GHAASSubjDischarge,        (char *) "discharge"},
 			{ GHAASSubjFlowHeight,       (char *) "flow_height"},
@@ -282,13 +282,13 @@ static DBInt _DBExportNetCDFGridDefine (DBObjData *dbData,int ncid, int dimids [
 	/* Begin Defining Latitude Variable */
 	if ((status = nc_def_var (ncid,"latitude",  NC_DOUBLE, (int) 1,dimids + DIMLat, &latid))  != NC_NOERR)
 		{ fprintf(stderr, "NC Error: %s\n", nc_strerror(status)); nc_close (ncid); return (DBFault); }
-	str = "Latitude";
+	str = (char *) "Latitude";
 	if ((status = nc_put_att_text (ncid,latid,"long_name",strlen (str),str)) != NC_NOERR)
 		{ fprintf(stderr, "NC Error: %s\n", nc_strerror(status)); nc_close (ncid); return (DBFault); }
-	str = "latitude_north";
+	str = (char *) "latitude_north";
 	if ((status = nc_put_att_text (ncid,latid,"standard_name",strlen (str),str)) != NC_NOERR)
 		{ fprintf(stderr, "NC Error: %s\n", nc_strerror(status)); nc_close (ncid); return (DBFault); }
-	str = "degrees_north";
+	str = (char *) "degrees_north";
 	if ((status = nc_put_att_text (ncid,latid,"units",strlen (str),str)) != NC_NOERR)
 		{ fprintf(stderr, "NC Error: %s\n", nc_strerror(status)); nc_close (ncid); return (DBFault); }
 	extent [0] = -90.0;
@@ -299,10 +299,10 @@ static DBInt _DBExportNetCDFGridDefine (DBObjData *dbData,int ncid, int dimids [
 	extent [1] = (dbData->Extent ()).UpperRight.Y;
 	if ((status = nc_put_att_double (ncid,latid,"actual_range",NC_DOUBLE,2,extent)) != NC_NOERR)
 		{ fprintf(stderr, "NC Error: %s\n", nc_strerror(status)); nc_close (ncid); return (DBFault); }
-	str = "latitude_bnds";
+	str = (char *) "latitude_bnds";
 	if ((status = nc_put_att_text (ncid,latid,"bounds",strlen (str),str)) != NC_NOERR)
 		{ fprintf(stderr, "NC Error: %s\n", nc_strerror(status)); nc_close (ncid); return (DBFault); }
-	str = "y";
+	str = (char *) "y";
 	if ((status = nc_put_att_text (ncid,latid,"axis",strlen (str),str)) != NC_NOERR)
 		{ fprintf(stderr, "NC Error: %s\n", nc_strerror(status)); nc_close (ncid); return (DBFault); }
 	/* End Defining Latitude Variable */
@@ -310,13 +310,13 @@ static DBInt _DBExportNetCDFGridDefine (DBObjData *dbData,int ncid, int dimids [
 	/* Begin Defining Longitude Variable */
 	if ((status = nc_def_var (ncid,"longitude",  NC_DOUBLE, (int) 1,dimids + DIMLon, &lonid))  != NC_NOERR)
 	 	{ fprintf(stderr, "NC Error: %s\n", nc_strerror(status)); nc_close (ncid); return (DBFault); }
-	str = "Longitude";
+	str = (char *) "Longitude";
 	if ((status = nc_put_att_text (ncid,lonid,"long_name",strlen (str),str)) != NC_NOERR)
 		{ fprintf(stderr, "NC Error: %s\n", nc_strerror(status)); nc_close (ncid); return (DBFault); }
-	str = "longitude_east";
+	str = (char *) "longitude_east";
 	if ((status = nc_put_att_text (ncid,lonid,"standard_name",strlen (str),str)) != NC_NOERR)
 		{ fprintf(stderr, "NC Error: %s\n", nc_strerror(status)); nc_close (ncid); return (DBFault); }
-	str = "degrees_east";
+	str = (char *) "degrees_east";
 	if ((status = nc_put_att_text (ncid,lonid,"units",strlen (str),str)) != NC_NOERR)
 		{ fprintf(stderr, "NC Error: %s\n", nc_strerror(status)); nc_close (ncid); return (DBFault); }
 	extent [0] = -180.0;
@@ -327,10 +327,10 @@ static DBInt _DBExportNetCDFGridDefine (DBObjData *dbData,int ncid, int dimids [
 	extent [1] = (dbData->Extent ()).UpperRight.X;
 	if ((status = nc_put_att_double (ncid,lonid,"actual_range",NC_DOUBLE,2,extent)) != NC_NOERR)
 		{ fprintf(stderr, "NC Error: %s\n", nc_strerror(status)); nc_close (ncid); return (DBFault); }
-	str = "longitude_bnds";
+	str = (char *) "longitude_bnds";
 	if ((status = nc_put_att_text (ncid,latid,"bounds",strlen (str),str)) != NC_NOERR)
 		{ fprintf(stderr, "NC Error: %s\n", nc_strerror(status)); nc_close (ncid); return (DBFault); }
-	str = "x";
+	str = (char *) "x";
 	if ((status = nc_put_att_text (ncid,lonid,"axis",strlen (str),str)) != NC_NOERR)
 		{ fprintf(stderr, "NC Error: %s\n", nc_strerror(status)); nc_close (ncid); return (DBFault); }
 	/* End Defining Longitude Variable */
@@ -402,10 +402,10 @@ static DBInt _DBExportNetCDFTimeDefine (DBObjData *dbData,int ncid,int dimids []
 	/* Begin Defining Time Variable */
 	if ((status = nc_def_var (ncid,"time", NC_INT,(int) 1,dimids + DIMTime,&timeid)) != NC_NOERR)
 		{ fprintf(stderr, "NC Error: %s\n", nc_strerror(status)); delete gridIO; return (DBFault); }
-	str = "Time";
+	str = (char *) "Time";
 	if ((status = nc_put_att_text (ncid,timeid,"long_name",strlen (str),str)) != NC_NOERR)
 		{ fprintf(stderr, "NC Error: %s\n", nc_strerror(status)); delete gridIO; return (DBFault); }
-	str = "time";
+	str = (char *) "time";
 	if ((status = nc_put_att_text (ncid,timeid,"standard_name",strlen (str),str)) != NC_NOERR)
 		{ fprintf(stderr, "NC Error: %s\n", nc_strerror(status)); delete gridIO; return (DBFault); }
 	strcpy (timeStr,(gridIO->Layer (gridIO->LayerNum () - 1))->Name ());
@@ -452,7 +452,7 @@ static DBInt _DBExportNetCDFTimeDefine (DBObjData *dbData,int ncid,int dimids []
 
 	if ((status = nc_put_att_text (ncid,timeid,"units",strlen (unitStr),unitStr)) != NC_NOERR)
 		{ fprintf(stderr, "NC Error: %s\n", nc_strerror(status)); delete gridIO; return (DBFault); }
-	str = "t";
+	str = (char *) "t";
 	if ((status = nc_put_att_text (ncid,timeid,"axis",strlen (str),str)) != NC_NOERR)
 		{ fprintf(stderr, "NC Error: %s\n", nc_strerror(status)); delete gridIO; return (DBFault); }
 	/* End Defining Time Variable */
@@ -550,10 +550,10 @@ static DBInt _DBExportNetCDFTable (DBObjTable *table,int ncid)
 				size_t dimlen;
 				char *str, *dimname;
 
-				if      (fieldRec->Length () <= 8)           { dimname = "short_string"; dimlen = 8; }
-				else if (fieldRec->Length () <= 64)          { dimname = "string";       dimlen = 64; }
-				else if (fieldRec->Length () <= NC_MAX_NAME) { dimname = "long_string";  dimlen = NC_MAX_NAME; }
-				else { dimname = "text";  dimlen = 256; }
+				if      (fieldRec->Length () <= 8)           { dimname = (char *) "short_string"; dimlen = 8; }
+				else if (fieldRec->Length () <= 64)          { dimname = (char *) "string";       dimlen = 64; }
+				else if (fieldRec->Length () <= NC_MAX_NAME) { dimname = (char *) "long_string";  dimlen = NC_MAX_NAME; }
+				else                                         { dimname = (char *) "text";         dimlen = 256; }
 
 				if (((nc_inq_dimid (ncid,dimname,dimids + 1) == NC_NOERR) || ((nc_def_dim (ncid,dimname,dimlen,dimids + 1)) == NC_NOERR)) &&
 					 ((status = nc_def_var (ncid,fieldName,NC_CHAR,(int) 2,dimids,&varid))  == NC_NOERR) &&

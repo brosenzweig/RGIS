@@ -161,13 +161,13 @@ int main (int argc,char *argv [])
 		{
 		CMmsgPrint (CMmsgUsrError,"Non-numeric field\n");
 		delete netData;
-		return (CMfailed);		
+		return (CMfailed);
 		}
 
-	if (title	== (char *) NULL) title   = "Converted Grid";
-	if (subject == (char *) NULL) subject = "fieldName";
-	if (domain	== (char *) NULL) domain  = netData->Document (DBDocGeoDomain);
-	if (version == (char *) NULL) version = "0.01pre";	
+	if (title	== (char *) NULL)   title = (char *) "Converted Grid";
+	if (subject == (char *) NULL) subject = (char *) "fieldName";
+	if (domain	== (char *) NULL)  domain = netData->Document (DBDocGeoDomain);
+	if (version == (char *) NULL) version = (char *) "0.01pre";
 
 	grdData = DBNetworkToGrid (netData,gridType);
 	grdData->Name (title);

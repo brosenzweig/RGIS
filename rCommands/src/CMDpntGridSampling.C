@@ -108,21 +108,21 @@ int main (int argc,char *argv [])
 		{ CMmsgPrint (CMmsgUsrError,"Sampling coverage is not specified\n"); return (CMfailed); }
 
 	splData = new DBObjData ();
-	if ((splData->Read (splName) == DBFault) || 
+	if ((splData->Read (splName) == DBFault) ||
 		 ((splData->Type () != DBTypeNetwork) && (splData->Type () != DBTypeVectorPoint)))
 		{ delete splData; return (CMfailed); }
 
 	grdData = new DBObjData ();
 	ret = (argNum > 1) && (strcmp (argv [1],"-") != 0) ? grdData->Read (argv [1]) : grdData->Read (stdin);
-	if ((ret == DBFault) || (grdData->Type () & DBTypeGrid != DBTypeGrid))
+	if ((ret == DBFault) || ((grdData->Type () & DBTypeGrid) != DBTypeGrid))
 		{ delete splData; delete grdData; return (CMfailed); }
-		
+
 	if (mode == 0)
 		{
-		if (title	== (char *) NULL)	title   = "Grid Sample";
-		if (subject == (char *) NULL)	subject = grdData->Document (DBDocSubject);
-		if (domain	== (char *) NULL)	domain  = splData->Document (DBDocGeoDomain);
-		if (version == (char *) NULL) version = "0.01pre";	
+		if (title	== (char *) NULL)   title = (char *) "Grid Sample";
+		if (subject == (char *) NULL) subject = grdData->Document (DBDocSubject);
+		if (domain	== (char *) NULL)  domain = splData->Document (DBDocGeoDomain);
+		if (version == (char *) NULL) version = (char *) "0.01pre";
 
 		data = new DBObjData (title,DBTypeTable);
 		data->Document (DBDocGeoDomain,domain);

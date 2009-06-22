@@ -2,9 +2,9 @@
 #include <DBio.H>
 #include <Xm/Xm.h>
 
-#define UICharSetNormal "normal"
-#define UICharSetItalic "italic"
-#define UICharSetBold 	"bold"
+#define UICharSetNormal ((char *) "normal")
+#define UICharSetItalic ((char *) "italic")
+#define UICharSetBold 	((char *) "bold")
 
 #define UIDataSymbolLineMode 0x01
 #define UIDataSymbolFillMode 0x02
@@ -155,7 +155,7 @@ class UIDataSeries : public DBObject
 		DBFloat MinY ()
 			{
 			if (TypeVAR == UIDataTimeSeries)
-					return (ObsRangeVAR.MinValue ());	
+					return (ObsRangeVAR.MinValue ());
 			else	return (XYRangeVAR.LowerLeft.Y);
 			}
 		DBFloat MaxY ()
@@ -208,7 +208,7 @@ class UIXYGraph : public DBObjectLIST<UIDataSeries>
 		void SetRange ();
 	};
 
-#define UIXYGraphShellStr "UIXYGraphShellString"
+#define UIXYGraphShellStr ((char *) "UIXYGraphShellString")
 
 class UIXYGraphShell : public DBObject
 	{
@@ -413,7 +413,7 @@ class UIAttribView : public DBObject
 		void NewField (char *,const char *);
 		DBObjData *Data () const { return (DataPTR); }
 		void Raise () const;
-	};	
+	};
 
 #define UIAttribViewSTR "UIAttribView"
 

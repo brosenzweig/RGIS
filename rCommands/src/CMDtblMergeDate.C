@@ -138,13 +138,13 @@ int main (int argc,char *argv [])
 		if ((yearField = table->Field (yearFieldName)) == (DBObjTableField *) NULL)
 			{ CMmsgPrint (CMmsgUsrError,"Invalid year field [%s]!\n",yearFieldName); delete data; return (CMfailed); }
 		}
-	
+
 	if (monthFieldName != (char *) NULL)
 		{
 		if ((monthField = table->Field (monthFieldName)) == (DBObjTableField *) NULL)
 			{ CMmsgPrint (CMmsgUsrError,"Invalid month field [%s]!\n",monthFieldName); delete data; return (CMfailed); }
 		}
-	
+
 	if (dayFieldName != (char *) NULL)
 		{
 		if (monthField == (DBObjTableField *) NULL)
@@ -160,7 +160,7 @@ int main (int argc,char *argv [])
 		if ((hourField = table->Field (hourFieldName)) == (DBObjTableField *) NULL)
 			{ CMmsgPrint (CMmsgUsrError,"Invalid hour field [%s]",hourFieldName); delete data; return (CMfailed); }
 		}
-	
+
 	if (minFieldName != (char *) NULL)
 		{
 		if (hourField == (DBObjTableField *) NULL)
@@ -168,8 +168,8 @@ int main (int argc,char *argv [])
 		if ((minField = table->Field (minFieldName)) == (DBObjTableField *) NULL)
 			{ CMmsgPrint (CMmsgUsrError,"Invalid minute field [%s]",minFieldName); delete data; return (CMfailed); }
 		}
-	
-	if (fieldName == (char *) NULL) fieldName = "Date";
+
+	if (fieldName == (char *) NULL) fieldName = (char *) "Date";
 	if ((dstField = table->Field (fieldName)) == (DBObjTableField *) NULL)
 		{
 		dstField = new DBObjTableField (fieldName,DBTableFieldDate,"%s",sizeof (DBDate),false);

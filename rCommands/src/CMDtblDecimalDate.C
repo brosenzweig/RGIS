@@ -103,7 +103,7 @@ int main (int argc,char *argv [])
 	if ((table = data->Table (tableName)) == (DBObjTable *) NULL)
 		{ CMmsgPrint (CMmsgUsrError,"Invalid table!\n"); delete data; return (CMfailed); }
 
-	if (srcName == (char *) NULL) srcName = "Date";
+	if (srcName == (char *) NULL) srcName = (char *) "Date";
 	if ((srcField = table->Field (srcName)) == (DBObjTableField *) NULL)
 		{ CMmsgPrint (CMmsgUsrError,"Missing date field!\n"); delete data; return (CMfailed); }
 	if ((srcField->Type () != DBTableFieldString) &&
@@ -113,16 +113,16 @@ int main (int argc,char *argv [])
 	if (dstName == (char *) NULL)
 		switch (mode)
 			{
-			case DBTimeStepYear:  dstName = "Decimal Year";  break;
-			case DBTimeStepMonth: dstName = "Decimal Month"; break;
+			case DBTimeStepYear:  dstName = (char *) "Decimal Year";  break;
+			case DBTimeStepMonth: dstName = (char *) "Decimal Month"; break;
 			}
 
 	if ((dstField = table->Field (dstName)) == (DBObjTableField *) NULL)
 		{
-		dstField = new DBObjTableField (dstName,DBTableFieldFloat,"%8.2f",sizeof (DBFloat4),false);
+		dstField = new DBObjTableField (dstName,DBTableFieldFloat, (char *) "%8.2f", sizeof (DBFloat4),false);
 		table->AddField (dstField);
 		}
-	
+
 	for (recID = 0;recID < table->ItemNum ();++recID)
 		{
 		record = table->Item (recID);

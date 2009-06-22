@@ -72,7 +72,7 @@ void UI2DView::Set (DBRegion region)
 
 	SetExtent (region);
 	SetActiveExtent (ViewEXT);
-	
+
 	sliderSize = (int) ((ViewEXT.UpperRight.X - ViewEXT.LowerLeft.X) * 100.0 /
 							  (dataEXT.UpperRight.X - dataEXT.LowerLeft.X));
 	sliderSize = sliderSize < 100 ? sliderSize : 100;
@@ -118,7 +118,7 @@ void UI2DView::SetUserToggleMode (DBInt visible)
 
 	{
 	if (visible) XtManageChild (UserToggle);
-	else 
+	else
 		{
 		if (XmToggleButtonGadgetGetState (UserToggle))
 			XmToggleButtonGadgetSetState (ZoomToggle,true,true);
@@ -163,7 +163,7 @@ static void _UI2DViewVerScrollBarValueChangedCBK (Widget widget,UI2DView *view,X
 	int value, slider, incr,pgIncr;
 	double deltaY, freeLength;
 	DBRegion dataEXT = (UIDataset ())->Extent (), viewEXT = view->Extent ();
-	
+
 	callData = callData;
 	XmScrollBarGetValues (widget,&value,&slider,&incr,&pgIncr);
 
@@ -195,8 +195,8 @@ static void _UI2DViewScaleValueChangedCBK (Widget widget,UI2DView *view,XmScaleC
 
 	center.X = (viewEXT.UpperRight.X + viewEXT.LowerLeft.X) / 2.0;
 	center.Y = (viewEXT.UpperRight.Y + viewEXT.LowerLeft.Y) / 2.0;
-	size.X	= dataEXT.UpperRight.X - dataEXT.LowerLeft.X; 
-	size.Y	= dataEXT.UpperRight.Y - dataEXT.LowerLeft.Y; 
+	size.X	= dataEXT.UpperRight.X - dataEXT.LowerLeft.X;
+	size.Y	= dataEXT.UpperRight.Y - dataEXT.LowerLeft.Y;
 
 	size.X = size.X * dval;
 	size.Y = size.Y * dval;
@@ -231,7 +231,7 @@ static void _UI2DViewExtentActivateCBK (Widget widget,UI2DView *view,XmPushButto
 	DBObjData *data = (UIDataset ())->Data ();
 	if (callData->reason != XmCR_ACTIVATE) return;
 	if (data == (DBObjData *) NULL) return;
-	
+
 	view->Set (data->Extent ());
 	}
 
@@ -254,7 +254,7 @@ static void _UI2DViewZoom (Widget widget,XEvent *event,UI2DView *view)
 		DBFloat mX, mY;
 		DBCoordinate lowerLeft, upperRight;
 		DBRegion extent;
-		
+
 		view->Window2Map  (sX,sY + height, &mX, &mY);
 		lowerLeft.X = mX; lowerLeft.Y = mY;
 		view->Window2Map  (sX + width,sY, &mX, &mY);
@@ -277,10 +277,10 @@ static void _UI2DViewPane (Widget widget,XEvent *event,UI2DView *view)
 		{
 		DBCoordinate coord0, coord1;
 		DBRegion extent = view->Extent ();
-		
+
 	 	view->Window2Map  (x0,y0, &coord0.X, &coord0.Y);
 	 	view->Window2Map  (x1,y1, &coord1.X, &coord1.Y);
-	 	
+
 	 	extent = extent + (coord0 - coord1);
 	 	view->Set (extent);
 		}
@@ -337,7 +337,7 @@ UI2DView::UI2DView () : DBObject ("Noname 2DView",sizeof (UI2DView))
 	Pixel foreground, background;
 	XWindowAttributes xwa;
 	XSetWindowAttributes xswa;
-	Atom deleteWindowAtom = XmInternAtom(XtDisplay(UITopLevel ()),"WM_DELETE_WINDOW",FALSE);
+	Atom deleteWindowAtom = XmInternAtom(XtDisplay(UITopLevel ()),(char *) "WM_DELETE_WINDOW",FALSE);
 
 	_UI2DViewLIST.Add (this); sprintf (name,"2DView:%2d",RowID ()); Name (name);
 	Image = (XImage *) NULL;
@@ -352,7 +352,7 @@ UI2DView::UI2DView () : DBObject ("Noname 2DView",sizeof (UI2DView))
 												XmNminWidth,					600,
 												XmNminHeight,					450,
 												NULL);
-	XmAddWMProtocolCallback (DShell,deleteWindowAtom,(XtCallbackProc) _UI2DViewDeleteCBK,(XtPointer) this); 
+	XmAddWMProtocolCallback (DShell,deleteWindowAtom,(XtCallbackProc) _UI2DViewDeleteCBK,(XtPointer) this);
 	MainFormW = XtVaCreateManagedWidget ("UI2DViewForm",xmFormWidgetClass,DShell,
 												XmNdialogStyle,				XmDIALOG_WORK_AREA,
 												XmNshadowThickness,			0,
@@ -372,25 +372,25 @@ UI2DView::UI2DView () : DBObject ("Noname 2DView",sizeof (UI2DView))
 	XtVaGetValues (MainFormW,XmNforeground,	&foreground,XmNbackground,	&background,NULL);
 
 	iconPixmap = iconPixmap == (Pixmap) NULL ?
-					XmGetPixmap(XtScreen (UITopLevel()),"UNH2Dview",foreground,background): iconPixmap;
+					XmGetPixmap(XtScreen (UITopLevel()),(char *) "UNH2Dview",foreground,background): iconPixmap;
 	XtVaSetValues (DShell,XmNiconPixmap, iconPixmap,NULL);
 
 	fullPixmap = fullPixmap == (Pixmap) NULL ?
-					XmGetPixmap(XtScreen(UITopLevel()),"UNHFull",  foreground,background) : fullPixmap;
+					XmGetPixmap(XtScreen(UITopLevel()),(char *) "UNHFull",  foreground,background) : fullPixmap;
 	extentPixmap = extentPixmap  == (Pixmap) NULL ?
-					XmGetPixmap(XtScreen(UITopLevel()),"UNHExtent",foreground,background) : extentPixmap;
+					XmGetPixmap(XtScreen(UITopLevel()),(char *) "UNHExtent",foreground,background) : extentPixmap;
 	capturePixmap= capturePixmap == (Pixmap) NULL ?
-					XmGetPixmap(XtScreen(UITopLevel()),"UNHCapture",foreground,background):capturePixmap;
+					XmGetPixmap(XtScreen(UITopLevel()),(char *) "UNHCapture",foreground,background):capturePixmap;
 	redrawPixmap = redrawPixmap == (Pixmap) NULL ?
-					XmGetPixmap(XtScreen(UITopLevel()),"UNHRedraw", foreground,background) : redrawPixmap;
+					XmGetPixmap(XtScreen(UITopLevel()),(char *) "UNHRedraw", foreground,background) : redrawPixmap;
 	zoomPixmap = zoomPixmap == (Pixmap) NULL ?
-					XmGetPixmap(XtScreen(UITopLevel()),"UNHZoom",  foreground,background) : zoomPixmap;
+					XmGetPixmap(XtScreen(UITopLevel()),(char *) "UNHZoom",  foreground,background) : zoomPixmap;
 	panePixmap = panePixmap == (Pixmap) NULL ?
-					XmGetPixmap(XtScreen(UITopLevel()),"UNHPane",  foreground,background) : panePixmap;
+					XmGetPixmap(XtScreen(UITopLevel()),(char *) "UNHPane",  foreground,background) : panePixmap;
 	userPixmap = userPixmap == (Pixmap) NULL ?
-					XmGetPixmap(XtScreen(UITopLevel()),"UNHUser",  foreground,background) : userPixmap;
+					XmGetPixmap(XtScreen(UITopLevel()),(char *) "UNHUser",  foreground,background) : userPixmap;
 	meshPixmap = meshPixmap == (Pixmap) NULL ?
-					XmGetPixmap(XtScreen(UITopLevel()),"UNHMesh",  foreground,background) : meshPixmap;
+					XmGetPixmap(XtScreen(UITopLevel()),(char *) "UNHMesh",  foreground,background) : meshPixmap;
 
 	button = XtVaCreateManagedWidget ("UI2DViewRedrawButton",xmPushButtonGadgetClass,menuBar,
 												XmNlabelType,					XmPIXMAP,
@@ -411,7 +411,7 @@ UI2DView::UI2DView () : DBObject ("Noname 2DView",sizeof (UI2DView))
 												XmNlabelType,					XmPIXMAP,
 												XmNlabelPixmap,				capturePixmap,
 												NULL);
-	radioBox = XtVaCreateManagedWidget ("UI2DViewRadioBox",xmRowColumnWidgetClass,menuBar,										
+	radioBox = XtVaCreateManagedWidget ("UI2DViewRadioBox",xmRowColumnWidgetClass,menuBar,
 												XmNorientation,				XmHORIZONTAL,
 												XmNpacking,						XmPACK_COLUMN,
 												XmNisHomogeneous,				true,
@@ -425,13 +425,13 @@ UI2DView::UI2DView () : DBObject ("Noname 2DView",sizeof (UI2DView))
 												XmNset,							true,
 												NULL);
 	XtAddCallback (ZoomToggle,XmNvalueChangedCallback,(XtCallbackProc) _UI2DViewZoomToggleValueCBK,this);
-	PaneToggle = XtVaCreateManagedWidget ("UI2DViewPaneToggle",xmToggleButtonGadgetClass,radioBox,											
+	PaneToggle = XtVaCreateManagedWidget ("UI2DViewPaneToggle",xmToggleButtonGadgetClass,radioBox,
 												XmNlabelType,					XmPIXMAP,
 												XmNlabelPixmap,				panePixmap,
 												XmNshadowThickness,			0,
 												NULL);
 	XtAddCallback (PaneToggle,XmNvalueChangedCallback,(XtCallbackProc) _UI2DViewPaneToggleValueCBK,this);
-	UserToggle = XtVaCreateWidget ("UI2DViewUserToggle",xmToggleButtonGadgetClass,radioBox,		
+	UserToggle = XtVaCreateWidget ("UI2DViewUserToggle",xmToggleButtonGadgetClass,radioBox,
 												XmNlabelType,					XmPIXMAP,
 												XmNlabelPixmap,				userPixmap,
 												XmNmappedWhenManaged,		false,
@@ -445,7 +445,7 @@ UI2DView::UI2DView () : DBObject ("Noname 2DView",sizeof (UI2DView))
 												XmNshadowThickness,			0,
 												NULL);
 	XtAddCallback (MeshOptionW,XmNvalueChangedCallback,(XtCallbackProc) _UI2DViewMeshOptionCBK,this);
-	XtVaSetValues (menuBar,	XmNmenuHelpWidget, MeshOptionW, NULL);								
+	XtVaSetValues (menuBar,	XmNmenuHelpWidget, MeshOptionW, NULL);
 
 	ScaleW = XtVaCreateManagedWidget ("UI2DViewScale",xmScaleWidgetClass,MainFormW,
 												XmNtopAttachment,				XmATTACH_WIDGET,
@@ -471,20 +471,20 @@ UI2DView::UI2DView () : DBObject ("Noname 2DView",sizeof (UI2DView))
 												XmNbottomOffset,				3,
 												XmNspacing,						2,
 												NULL);
-	HorScrollBarW = XtVaCreateManagedWidget ("UI2DViewHorScrollBar", xmScrollBarWidgetClass, scrolledWindow,									
+	HorScrollBarW = XtVaCreateManagedWidget ("UI2DViewHorScrollBar", xmScrollBarWidgetClass, scrolledWindow,
 												XmNsliderSize,					100,
 												XmNorientation,				XmHORIZONTAL,
 												XmNheight,						16,
-												NULL); 
+												NULL);
 	XtAddCallback (HorScrollBarW,XmNvalueChangedCallback,(XtCallbackProc) _UI2DViewHorScrollBarValueChangedCBK,this);
-	VerScrollBarW = XtVaCreateManagedWidget ("UI2DViewVerScrollBar", xmScrollBarWidgetClass, scrolledWindow,	
+	VerScrollBarW = XtVaCreateManagedWidget ("UI2DViewVerScrollBar", xmScrollBarWidgetClass, scrolledWindow,
 												XmNsliderSize,					100,
 												XmNorientation,				XmVERTICAL,
 												XmNwidth,						16,
 												NULL);
 	XtAddCallback (VerScrollBarW,XmNvalueChangedCallback,(XtCallbackProc) _UI2DViewVerScrollBarValueChangedCBK,this);
 	DrawingAreaW = XtVaCreateManagedWidget ("UI2DViewDrawingArea", xmDrawingAreaWidgetClass, scrolledWindow,
-												XmNuserData,					this,									
+												XmNuserData,					this,
 												XmNbackground,					UIColor (UIColorStandard,0),
 												NULL);
 	XtAddCallback (DrawingAreaW,XmNresizeCallback,(XtCallbackProc) _UI2DViewResizeCBK,this);
@@ -501,7 +501,7 @@ UI2DView::UI2DView () : DBObject ("Noname 2DView",sizeof (UI2DView))
 	Background = xwa.backing_pixel;
 	xswa.backing_store = Always;
 	XChangeWindowAttributes (XtDisplay (DrawingAreaW),  XtWindow (DrawingAreaW),CWBackingStore,&xswa);
-	InputMode (ZOOM_MODE); 
+	InputMode (ZOOM_MODE);
 	Size ();
 	Set ();
 	}
@@ -522,7 +522,7 @@ void UI2DViewRedrawAll ()
 
 	{
 	UI2DView *view;
-	
+
 	for (view = UI2DViewFirst();view != (UI2DView *) NULL;view = UI2DViewNext()) view->Draw ();
 	}
 
@@ -530,7 +530,7 @@ void UI2DViewRedrawAll (DBRegion extent)
 
 	{
 	UI2DView *view;
-	
+
 	for (view = UI2DViewFirst();view != (UI2DView *) NULL;view = UI2DViewNext())
 		view->Draw (extent);
 	}

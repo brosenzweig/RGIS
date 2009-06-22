@@ -105,15 +105,15 @@ int main (int argc,char *argv [])
 	if ((ret == DBFault) || (wGrdData->Type () != DBTypeGridContinuous))
 		{ delete zGrdData; delete wGrdData; return (CMfailed); }
 
-	if (title	== (char *) NULL)	title   = "Zone Statistics";
-	if (subject == (char *) NULL)	subject = "Basin Statistics";
-	if (domain	== (char *) NULL)	domain  = zGrdData->Document (DBDocGeoDomain);
-	if (version == (char *) NULL) version = "0.01pre";	
+	if (title	== (char *) NULL)   title = (char *) "Zone Statistics";
+	if (subject == (char *) NULL) subject = (char *) "Basin Statistics";
+	if (domain	== (char *) NULL)  domain = zGrdData->Document (DBDocGeoDomain);
+	if (version == (char *) NULL) version = (char *) "0.01pre";
 
 	data = new DBObjData (title,DBTypeTable);
 	data->Document (DBDocSubject,subject);
 	data->Document (DBDocGeoDomain,domain);
-	data->Document (DBDocVersion,version);	
+	data->Document (DBDocVersion,version);
 
 	if ((ret = RGlibGridZoneStatistics (zGrdData,wGrdData,data)) == DBSuccess)
 		ret = (argNum > 2) && (strcmp (argv [2],"-") != 0) ? data->Write (argv [2]) : data->Write (stdout);

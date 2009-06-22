@@ -48,7 +48,7 @@ static void _UIDataHeaderFormButtonCBK (Widget widget,DBInt *code,XmAnyCallbackS
 	callData = callData;
 	XtVaGetValues (widget,XmNuserData, code, NULL);
 	}
-	
+
 static void _UIDataHeaderButtonCBK (Widget widget,Widget text,XmAnyCallbackStruct *callData)
 
 	{
@@ -65,7 +65,7 @@ static void _UIDataHeaderTextFieldCBK (Widget widget,int *changed,XmAnyCallbackS
 
 	{
 	char *text, *origText;
-	
+
 	callData = callData;
 	XtVaGetValues (widget,XmNuserData, &text, NULL);
 	origText = XmTextFieldGetString (widget);
@@ -77,14 +77,14 @@ static void _UIDataHeaderTextCBK (Widget widget,int *changed,XmAnyCallbackStruct
 
 	{
 	char *text, *origText;
-	
+
 	callData = callData;
 	XtVaGetValues (widget,XmNuserData, &text, NULL);
 	origText = XmTextGetString (widget);
 	*changed = strcmp (origText,text) == 0 ? false : true;
 	XtFree (origText);
 	}
-	
+
 DBInt UIDataHeaderForm (DBObjData *data)
 
 	{
@@ -101,12 +101,12 @@ DBInt UIDataHeaderForm (DBObjData *data)
 		{
 		XmString string, select;
 		Widget mainForm, label, button, separator;
-		
+
 		var = 0;
-		dShell = UIDialogForm ("Data Header Information");
+		dShell = UIDialogForm ((char *) "Data Header Information");
 		mainForm = UIDialogFormGetMainForm (dShell);
-		select = XmStringCreate ("Select",UICharSetBold);
-		string = XmStringCreate ("Name:",UICharSetBold);
+		select = XmStringCreate ((char *) "Select",UICharSetBold);
+		string = XmStringCreate ((char *) "Name:",UICharSetBold);
 		label = XtVaCreateManagedWidget ("UIDataHeaderFormNameLabel",xmLabelWidgetClass,mainForm,
 											XmNtopAttachment,		XmATTACH_FORM,
 											XmNtopOffset,			10,
@@ -127,7 +127,7 @@ DBInt UIDataHeaderForm (DBObjData *data)
 											XmNcolumns,				DBDataNameLen - 1,
 											NULL);
 		XtAddCallback (nameTextF,XmNvalueChangedCallback,(XtCallbackProc) _UIDataHeaderTextFieldCBK,changed + var++);
-		typeMenu = XmCreatePulldownMenu (mainForm,"UIDataHeaderFormTypeMenu",NULL,0);
+		typeMenu = XmCreatePulldownMenu (mainForm,(char *) "UIDataHeaderFormTypeMenu",NULL,0);
 		for (i = 0;i < (int) (sizeof (_UIDataTypeList) / sizeof (UIButtonList));++i)
 			{
 			string = XmStringCreate (DBDataTypeString (_UIDataTypeList [i].ID),UICharSetNormal);
@@ -138,7 +138,7 @@ DBInt UIDataHeaderForm (DBObjData *data)
 			XmStringFree (string);
 			XtAddCallback (_UIDataTypeList [i].Button,XmNactivateCallback,(XtCallbackProc) _UIDataHeaderFormButtonCBK,&dataType);
 			}
-		string = XmStringCreate ("Data Type:",UICharSetBold);
+		string = XmStringCreate ((char *) "Data Type:",UICharSetBold);
 		typeMenu = XtVaCreateManagedWidget ("UIDataHeaderFormTypeMenu",xmRowColumnWidgetClass,mainForm,
 											XmNtopAttachment,		XmATTACH_WIDGET,
 											XmNtopWidget,			nameTextF,
@@ -151,7 +151,7 @@ DBInt UIDataHeaderForm (DBObjData *data)
 											XmNtraversalOn,		false,
 											NULL);
 		XmStringFree (string);
-		string = XmStringCreate ("Subject:",UICharSetBold);
+		string = XmStringCreate ((char *) "Subject:",UICharSetBold);
 		label = XtVaCreateManagedWidget ("UIDataHeaderFormSubjectLabel",xmLabelWidgetClass,mainForm,
 											XmNtopAttachment,		XmATTACH_WIDGET,
 											XmNtopWidget,			nameTextF,
@@ -190,8 +190,8 @@ DBInt UIDataHeaderForm (DBObjData *data)
 											NULL);
 		XtAddCallback (button,XmNactivateCallback,(XtCallbackProc) _UIDataHeaderButtonCBK,subjectTextF);
 
-		
-		string = XmStringCreate ("Geograhic Domain:",UICharSetBold);
+
+		string = XmStringCreate ((char *) "Geograhic Domain:",UICharSetBold);
 		label = XtVaCreateManagedWidget ("UIDataHeaderFormGeoDomainLabel",xmLabelWidgetClass,mainForm,
 											XmNtopAttachment,		XmATTACH_WIDGET,
 											XmNtopWidget,			subjectTextF,
@@ -230,7 +230,7 @@ DBInt UIDataHeaderForm (DBObjData *data)
 											NULL);
 		XtAddCallback (button,XmNactivateCallback,(XtCallbackProc) _UIDataHeaderButtonCBK,geoDomTextF);
 
-		
+
 		versionTextF = XtVaCreateManagedWidget ("UIDataHeaderFormVersionText",xmTextFieldWidgetClass,mainForm,
 											XmNtopAttachment,		XmATTACH_WIDGET,
 											XmNtopWidget,			subjectTextF,
@@ -240,7 +240,7 @@ DBInt UIDataHeaderForm (DBObjData *data)
 											XmNcolumns,				DBDataVersionLen - 1,
 											NULL);
 		XtAddCallback (versionTextF,XmNvalueChangedCallback,(XtCallbackProc) _UIDataHeaderTextFieldCBK,changed + var++);
-		string = XmStringCreate ("Version:",UICharSetBold);
+		string = XmStringCreate ((char *) "Version:",UICharSetBold);
 		label = XtVaCreateManagedWidget ("UIDataHeaderFormVersion",xmLabelWidgetClass,mainForm,
 											XmNtopAttachment,		XmATTACH_WIDGET,
 											XmNtopWidget,			subjectTextF,
@@ -261,7 +261,7 @@ DBInt UIDataHeaderForm (DBObjData *data)
 											XmNrightAttachment,	XmATTACH_FORM,
 											XmNrightOffset,		20,
 											NULL);
-		string = XmStringCreate ("Citation Reference:",UICharSetBold);
+		string = XmStringCreate ((char *) "Citation Reference:",UICharSetBold);
 		label = XtVaCreateManagedWidget ("UIDataHeaderFormCitRefLabel",xmLabelWidgetClass,mainForm,
 											XmNtopAttachment,		XmATTACH_WIDGET,
 											XmNtopWidget,			separator,
@@ -287,7 +287,7 @@ DBInt UIDataHeaderForm (DBObjData *data)
 											XmNwordWrap,			true,
 											NULL);
 		XtAddCallback (citRefText,XmNvalueChangedCallback,(XtCallbackProc) _UIDataHeaderTextCBK,changed + var++);
-		string = XmStringCreate ("Citation Institute:",UICharSetBold);
+		string = XmStringCreate ((char *) "Citation Institute:",UICharSetBold);
 		label = XtVaCreateManagedWidget ("UIDataHeaderFormInstRefLabel",xmLabelWidgetClass,mainForm,
 											XmNtopAttachment,		XmATTACH_WIDGET,
 											XmNtopWidget,			citRefText,
@@ -310,7 +310,7 @@ DBInt UIDataHeaderForm (DBObjData *data)
 											XmNcolumns,				DBDataNameLen - 1,
 											NULL);
 		XtAddCallback (citInstTextF,XmNvalueChangedCallback,(XtCallbackProc) _UIDataHeaderTextFieldCBK,changed + var++);
-		string = XmStringCreate ("Source Institue:",UICharSetBold);
+		string = XmStringCreate ((char *) "Source Institue:",UICharSetBold);
 		label = XtVaCreateManagedWidget ("UIDataHeaderFormSourceInstLabel",xmLabelWidgetClass,mainForm,
 											XmNtopAttachment,		XmATTACH_WIDGET,
 											XmNtopWidget,			citInstTextF,
@@ -332,7 +332,7 @@ DBInt UIDataHeaderForm (DBObjData *data)
 											XmNcolumns,				DBDataNameLen - 1,
 											NULL);
 		XtAddCallback (srcInstTextF,XmNvalueChangedCallback,(XtCallbackProc) _UIDataHeaderTextFieldCBK,changed + var++);
-		string = XmStringCreate ("Source Person:",UICharSetBold);
+		string = XmStringCreate ((char *) "Source Person:",UICharSetBold);
 		label = XtVaCreateManagedWidget ("UIDataHeaderFormSourcePersonLabel",xmLabelWidgetClass,mainForm,
 											XmNtopAttachment,		XmATTACH_WIDGET,
 											XmNtopWidget,			srcInstTextF,
@@ -354,7 +354,7 @@ DBInt UIDataHeaderForm (DBObjData *data)
 											XmNcolumns,				DBDataSourcePersonLen - 1,
 											NULL);
 		XtAddCallback (srcPersTextF,XmNvalueChangedCallback,(XtCallbackProc) _UIDataHeaderTextFieldCBK,changed + var++);
-		string = XmStringCreate ("Last Modification:",UICharSetBold);
+		string = XmStringCreate ((char *) "Last Modification:",UICharSetBold);
 		label = XtVaCreateManagedWidget ("UIDataHeaderFormVersion",xmLabelWidgetClass,mainForm,
 											XmNtopAttachment,		XmATTACH_WIDGET,
 											XmNtopWidget,			srcInstTextF,
@@ -365,7 +365,7 @@ DBInt UIDataHeaderForm (DBObjData *data)
 											XmNlabelString,		string,
 											NULL);
 		XmStringFree (string);
-		string = XmStringCreate ("Not Set",UICharSetNormal);
+		string = XmStringCreate ((char *) "Not Set",UICharSetNormal);
 		XtVaCreateManagedWidget ("UIDataHeaderFormVersion",xmLabelGadgetClass,mainForm,
 											XmNtopAttachment,		XmATTACH_WIDGET,
 											XmNtopWidget,			srcInstTextF,
@@ -378,7 +378,7 @@ DBInt UIDataHeaderForm (DBObjData *data)
 											XmNlabelString,		string,
 											NULL);
 		XmStringFree (string);
-		string = XmStringCreate ("Comment:",UICharSetBold);
+		string = XmStringCreate ((char *) "Comment:",UICharSetBold);
 		label = XtVaCreateManagedWidget ("UIDataHeaderFormCommentLabel",xmLabelWidgetClass,mainForm,
 											XmNtopAttachment,		XmATTACH_WIDGET,
 											XmNtopWidget,			srcPersTextF,

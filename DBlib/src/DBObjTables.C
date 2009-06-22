@@ -156,7 +156,7 @@ DBInt DBTableFieldMatch (const DBObjTableField *field0, const DBObjRecord *recor
 				return (false);
 			}
 	if (record0->RowID () == record1->RowID ()) return (true);
-	return (false);	
+	return (false);
 	}
 
 void DBObjTableField::Swap ()
@@ -257,7 +257,7 @@ void DBObjTableField::Length (DBInt length)
 		case DBTableFieldInt:
 			{
 			DBInt intNoData;
-			
+
 			intNoData = IntNoData ();
 			LengthVAR = length;
 			IntNoData (intNoData);
@@ -265,12 +265,12 @@ void DBObjTableField::Length (DBInt length)
 		case DBTableFieldFloat:
 			{
 			DBFloat floatNoData;
-			
+
 			floatNoData = FloatNoData ();
 			LengthVAR = length;
 			FloatNoData (floatNoData);
 			}	break;
-		default: LengthVAR = length;	break;	
+		default: LengthVAR = length;	break;
 		}
 	}
 
@@ -310,10 +310,10 @@ DBObjTableField::DBObjTableField (DBObjTableField &field) : DBObject (field)
 	}
 
 void DBObjTableField::String (DBObjRecord *record, const char *value)
-	
+
 	{
 	int i;
-	
+
 	if (record == (DBObjRecord *) NULL) return;
 	strncpy ((char *) record->Data () + StartByte (),value,Length () - 1);
 	((char*) record->Data ()) [StartByte () + Length () - 1] = '\0';
@@ -335,13 +335,13 @@ char *DBObjTableField::String (const DBObjRecord *record) const
 		case DBTableFieldInt:
 			{
 			DBInt ret = Int (record);
-			if (ret == IntNoData ())	return ("");
+			if (ret == IntNoData ())	return ((char *) "");
 			sprintf (retString,Format (),ret);	return (retString);
 			}
 		case DBTableFieldFloat:
 			{
 			DBFloat ret = Float (record);
-			if (CMmathEqualValues (ret,FloatNoData ()))	return ("");
+			if (CMmathEqualValues (ret,FloatNoData ()))	return ((char *) "");
 			sprintf (retString,Format (),ret);	return (retString);
 			}
 		case DBTableFieldDate:
@@ -392,7 +392,7 @@ void DBObjTableField::Int (DBObjRecord  *record,DBInt value)
 			break;
 		}
 	}
-	
+
 DBInt DBObjTableField::Int (const DBObjRecord *record) const
 
 	{
@@ -567,7 +567,7 @@ DBInt DBObjTableField::FormatWidth () const
 	{
 	DBInt i, width;
 	char formatString [DBStringLength];
-	
+
 	switch (Type ())
 		{
 		case DBTableFieldString:  		return (Length ());
@@ -648,8 +648,8 @@ DBObjTable::DBObjTable (DBObjTable &tableObj) : DBObjectLIST<DBObjRecord> (*((DB
 	MethodPTR = new DBObjectLIST<DBObjRecord> (*(tableObj.MethodPTR));
 	}
 
-void DBObjTable::AddField (DBObjTableField *field) 
-	
+void DBObjTable::AddField (DBObjTableField *field)
+
 	{
 	DBInt recID;
 	DBObjRecord *record;
@@ -670,7 +670,7 @@ void DBObjTable::AddField (DBObjTableField *field)
 		}
 	}
 
-void DBObjTable::RedefineField (DBObjTableField *field, DBObjTableField *newField) 
+void DBObjTable::RedefineField (DBObjTableField *field, DBObjTableField *newField)
 
 	{
 	DBInt recID, fieldID;
@@ -728,11 +728,11 @@ void DBObjTable::DeleteField (DBObjTableField *delField)
 	DBObjRecord *record;
 	DBObjTableField *field;
 	unsigned char *data;
-	
+
 	for (fieldID = 0;fieldID < FieldPTR->ItemNum ();++fieldID)
 		{
 		field = FieldPTR->Item (fieldID);
-		if (field->StartByte () > delField->StartByte ()) 
+		if (field->StartByte () > delField->StartByte ())
 			field->StartByte (field->StartByte () - delField->Length ());
 		}
 	for (recID = 0;recID < ItemNum ();++recID)
@@ -767,7 +767,7 @@ static int _DBObjTableListSort (const DBObjRecord **obj0,const DBObjRecord **obj
 	DBInt ret = 0;
 	DBObjTableField *field;
 	DBDate date0, date1;
-	
+
 	for ( field = _DBObjTableSortFields->First ();
 		 	field != (DBObjTableField *) NULL;
 			field = _DBObjTableSortFields->Next ())
@@ -775,7 +775,7 @@ static int _DBObjTableListSort (const DBObjRecord **obj0,const DBObjRecord **obj
 		switch (field->Type ())
 			{
 			case DBTableFieldString:	ret = strcmp (field->String (*obj0),field->String (*obj1)); break;
-			case DBTableFieldInt:		ret = field->Int  (*obj0) - field->Int(*obj1);					break; 
+			case DBTableFieldInt:		ret = field->Int  (*obj0) - field->Int(*obj1);					break;
 			case DBTableFieldFloat:
 				if (field->Float(*obj0) - field->Float(*obj1) > 0.0) 			ret = 1;
 				else if (field->Float(*obj0) - field->Float(*obj1) < 0.0)	ret = -1;

@@ -33,123 +33,123 @@ static void _RGISAnFieldCalculate (DBObjTable *table,DBInt oper)
 		{
 		Widget button;
 
-		dShell = UIDialogForm ("Calculate",false);
+		dShell = UIDialogForm ((char *) "Calculate",false);
 		mainForm = UIDialogFormGetMainForm (dShell);
-		
-		string = XmStringCreate ("Select",UICharSetBold);
+
+		string = XmStringCreate ((char *) "Select",UICharSetBold);
 		button = XtVaCreateManagedWidget ("RGISFieldCalcButton",xmPushButtonWidgetClass,mainForm,
-								XmNtopAttachment,			XmATTACH_FORM,
-								XmNtopOffset,				10,
-								XmNrightAttachment,		XmATTACH_FORM,
-								XmNrightOffset,			10,
-								XmNmarginHeight,			5,
-								XmNtraversalOn,			False,
-								XmNlabelString,			string,
-								XmNuserData,				DBTableFieldIsNumeric,
+								XmNtopAttachment,       XmATTACH_FORM,
+								XmNtopOffset,           10,
+								XmNrightAttachment,     XmATTACH_FORM,
+								XmNrightOffset,         10,
+								XmNmarginHeight,        5,
+								XmNtraversalOn,         False,
+								XmNlabelString,         string,
+								XmNuserData,            DBTableFieldIsNumeric,
 								NULL);
 		XmStringFree (string);
 		field0TextF = XtVaCreateManagedWidget ("RGISFieldCalcOpTextF",xmTextFieldWidgetClass,mainForm,
-								XmNtopAttachment,			XmATTACH_OPPOSITE_WIDGET,
-								XmNtopWidget,				button,
-								XmNrightAttachment,		XmATTACH_WIDGET,
-								XmNrightWidget,			button,
-								XmNrightOffset,			10,
-								XmNbottomAttachment,		XmATTACH_OPPOSITE_WIDGET,
-								XmNbottomWidget,			button,
-								XmNmaxLength,				DBStringLength,
-								XmNcolumns,					DBStringLength / 2,
+								XmNtopAttachment,       XmATTACH_OPPOSITE_WIDGET,
+								XmNtopWidget,           button,
+								XmNrightAttachment,     XmATTACH_WIDGET,
+								XmNrightWidget,         button,
+								XmNrightOffset,         10,
+								XmNbottomAttachment,    XmATTACH_OPPOSITE_WIDGET,
+								XmNbottomWidget,        button,
+								XmNmaxLength,           DBStringLength,
+								XmNcolumns,             DBStringLength / 2,
 								NULL);
 		XtAddCallback (button,XmNactivateCallback,(XtCallbackProc) UIAuxObjectSelectCBK,field0TextF);
-		string = XmStringCreate ("First Field:",UICharSetBold);
+		string = XmStringCreate ((char *) "First Field:",UICharSetBold);
 		XtVaCreateManagedWidget ("RGISFieldCalcOpLabel",xmLabelWidgetClass,mainForm,
-								XmNtopAttachment,			XmATTACH_OPPOSITE_WIDGET,
-								XmNtopWidget,				button,
-								XmNleftAttachment,		XmATTACH_FORM,
-								XmNleftOffset,				10,
-								XmNrightAttachment,		XmATTACH_WIDGET,
-								XmNrightWidget,			field0TextF,
-								XmNrightOffset,			10,
-								XmNbottomAttachment,		XmATTACH_OPPOSITE_WIDGET,
-								XmNbottomWidget,			button,
-								XmNlabelString,			string,
-								NULL);
-		XmStringFree (string);
-		
-		string = XmStringCreate ("Select",UICharSetBold);
-		button = XtVaCreateManagedWidget ("RGISFieldCalcOpButton",xmPushButtonWidgetClass,mainForm,
-								XmNtopAttachment,			XmATTACH_WIDGET,
-								XmNtopWidget,				button,
-								XmNtopOffset,				10,
-								XmNrightAttachment,		XmATTACH_FORM,
-								XmNrightOffset,			10,
-								XmNmarginHeight,			5,
-								XmNtraversalOn,			False,
-								XmNlabelString,			string,
-								XmNuserData,				DBTableFieldIsNumeric,
-								NULL);
-		XmStringFree (string);
-		field1TextF = XtVaCreateManagedWidget ("RGISFieldCalcOpTextF",xmTextFieldWidgetClass,mainForm,
-								XmNtopAttachment,			XmATTACH_OPPOSITE_WIDGET,
-								XmNtopWidget,				button,
-								XmNrightAttachment,		XmATTACH_WIDGET,
-								XmNrightWidget,			button,
-								XmNrightOffset,			10,
-								XmNbottomAttachment,		XmATTACH_OPPOSITE_WIDGET,
-								XmNbottomWidget,			button,
-								XmNmaxLength,				DBStringLength,
-								XmNcolumns,					DBStringLength / 2,
-								NULL);
-		XtAddCallback (button,XmNactivateCallback,(XtCallbackProc) UIAuxObjectSelectCBK,field1TextF);
-		string = XmStringCreate ("Second Field:",UICharSetBold);
-		XtVaCreateManagedWidget ("RGISFieldCalcOpLabel",xmLabelWidgetClass,mainForm,
-								XmNtopAttachment,			XmATTACH_OPPOSITE_WIDGET,
-								XmNtopWidget,				button,
-								XmNleftAttachment,		XmATTACH_FORM,
-								XmNleftOffset,				10,
-								XmNrightAttachment,		XmATTACH_WIDGET,
-								XmNrightWidget,			field1TextF,
-								XmNrightOffset,			10,
-								XmNbottomAttachment,		XmATTACH_OPPOSITE_WIDGET,
-								XmNbottomWidget,			button,
-								XmNlabelString,			string,
+								XmNtopAttachment,       XmATTACH_OPPOSITE_WIDGET,
+								XmNtopWidget,           button,
+								XmNleftAttachment,      XmATTACH_FORM,
+								XmNleftOffset,          10,
+								XmNrightAttachment,     XmATTACH_WIDGET,
+								XmNrightWidget,         field0TextF,
+								XmNrightOffset,         10,
+								XmNbottomAttachment,    XmATTACH_OPPOSITE_WIDGET,
+								XmNbottomWidget,        button,
+								XmNlabelString,         string,
 								NULL);
 		XmStringFree (string);
 
-		string = XmStringCreate ("Select",UICharSetBold);
+		string = XmStringCreate ((char *) "Select",UICharSetBold);
+		button = XtVaCreateManagedWidget ("RGISFieldCalcOpButton",xmPushButtonWidgetClass,mainForm,
+								XmNtopAttachment,       XmATTACH_WIDGET,
+								XmNtopWidget,           button,
+								XmNtopOffset,           10,
+								XmNrightAttachment,     XmATTACH_FORM,
+								XmNrightOffset,         10,
+								XmNmarginHeight,        5,
+								XmNtraversalOn,         False,
+								XmNlabelString,         string,
+								XmNuserData,            DBTableFieldIsNumeric,
+								NULL);
+		XmStringFree (string);
+		field1TextF = XtVaCreateManagedWidget ("RGISFieldCalcOpTextF",xmTextFieldWidgetClass,mainForm,
+								XmNtopAttachment,       XmATTACH_OPPOSITE_WIDGET,
+								XmNtopWidget,           button,
+								XmNrightAttachment,     XmATTACH_WIDGET,
+								XmNrightWidget,         button,
+								XmNrightOffset,         10,
+								XmNbottomAttachment,    XmATTACH_OPPOSITE_WIDGET,
+								XmNbottomWidget,        button,
+								XmNmaxLength,           DBStringLength,
+								XmNcolumns,             DBStringLength / 2,
+								NULL);
+		XtAddCallback (button,XmNactivateCallback,(XtCallbackProc) UIAuxObjectSelectCBK,field1TextF);
+		string = XmStringCreate ((char *) "Second Field:",UICharSetBold);
+		XtVaCreateManagedWidget ("RGISFieldCalcOpLabel",xmLabelWidgetClass,mainForm,
+								XmNtopAttachment,       XmATTACH_OPPOSITE_WIDGET,
+								XmNtopWidget,           button,
+								XmNleftAttachment,		XmATTACH_FORM,
+								XmNleftOffset,          10,
+								XmNrightAttachment,     XmATTACH_WIDGET,
+								XmNrightWidget,         field1TextF,
+								XmNrightOffset,         10,
+								XmNbottomAttachment,    XmATTACH_OPPOSITE_WIDGET,
+								XmNbottomWidget,        button,
+								XmNlabelString,         string,
+								NULL);
+		XmStringFree (string);
+
+		string = XmStringCreate ((char *) "Select",UICharSetBold);
 		button = XtVaCreateManagedWidget ("RGISFieldCalcResButton",xmPushButtonWidgetClass,mainForm,
-								XmNtopAttachment,			XmATTACH_WIDGET,
-								XmNtopWidget,				button,
-								XmNtopOffset,				10,
-								XmNrightAttachment,		XmATTACH_FORM,
-								XmNrightOffset,			10,
-								XmNmarginHeight,			5,
-								XmNtraversalOn,			False,
-								XmNlabelString,			string,
-								XmNuserData,				DBTableFieldIsNumeric,
+								XmNtopAttachment,       XmATTACH_WIDGET,
+								XmNtopWidget,           button,
+								XmNtopOffset,           10,
+								XmNrightAttachment,     XmATTACH_FORM,
+								XmNrightOffset,         10,
+								XmNmarginHeight,        5,
+								XmNtraversalOn,         False,
+								XmNlabelString,         string,
+								XmNuserData,            DBTableFieldIsNumeric,
 								NULL);
 		XmStringFree (string);
 		resultTextF = XtVaCreateManagedWidget ("RGISFieldCalcResTextF",xmTextFieldWidgetClass,mainForm,
-								XmNtopAttachment,			XmATTACH_OPPOSITE_WIDGET,
-								XmNtopWidget,				button,
-								XmNrightAttachment,		XmATTACH_WIDGET,
-								XmNrightWidget,			button,
-								XmNrightOffset,			10,
-								XmNmaxLength,				DBStringLength,
-								XmNcolumns,					DBStringLength / 2,
+								XmNtopAttachment,       XmATTACH_OPPOSITE_WIDGET,
+								XmNtopWidget,           button,
+								XmNrightAttachment,     XmATTACH_WIDGET,
+								XmNrightWidget,         button,
+								XmNrightOffset,         10,
+								XmNmaxLength,           DBStringLength,
+								XmNcolumns,             DBStringLength / 2,
 								NULL);
 		XtAddCallback (button,XmNactivateCallback,(XtCallbackProc) UIAuxObjectSelectCBK,resultTextF);
-		string = XmStringCreate ("Result Field:",UICharSetBold);
+		string = XmStringCreate ((char *) "Result Field:",UICharSetBold);
 		XtVaCreateManagedWidget ("RGISFieldCalcResLabel",xmLabelWidgetClass,mainForm,
-								XmNtopAttachment,			XmATTACH_OPPOSITE_WIDGET,
-								XmNtopWidget,				button,
-								XmNleftAttachment,		XmATTACH_FORM,
-								XmNleftOffset,				10,
-								XmNrightAttachment,		XmATTACH_WIDGET,
-								XmNrightWidget,			resultTextF,
-								XmNrightOffset,			10,
-								XmNbottomAttachment,		XmATTACH_OPPOSITE_WIDGET,
-								XmNbottomWidget,			button,
-								XmNlabelString,			string,
+								XmNtopAttachment,       XmATTACH_OPPOSITE_WIDGET,
+								XmNtopWidget,           button,
+								XmNleftAttachment,      XmATTACH_FORM,
+								XmNleftOffset,          10,
+								XmNrightAttachment,     XmATTACH_WIDGET,
+								XmNrightWidget,         resultTextF,
+								XmNrightOffset,         10,
+								XmNbottomAttachment,    XmATTACH_OPPOSITE_WIDGET,
+								XmNbottomWidget,        button,
+								XmNlabelString,         string,
 								NULL);
 		XmStringFree (string);
 		XtAddCallback (UIDialogFormGetOkButton (dShell),XmNactivateCallback,(XtCallbackProc) UIAuxSetBooleanTrueCBK,&calc);
@@ -165,11 +165,11 @@ static void _RGISAnFieldCalculate (DBObjTable *table,DBInt oper)
 		f1Text = XmTextFieldGetString (field1TextF);
 		rText  = XmTextFieldGetString (resultTextF);
 		allowOk = (strlen (f0Text) > 0) && (strlen (f1Text) > 0) && (rText > 0);
-		XtFree (f0Text);	XtFree (f1Text);	XtFree (rText);	
+		XtFree (f0Text);	XtFree (f1Text);	XtFree (rText);
 		XtSetSensitive (UIDialogFormGetOkButton (dShell),allowOk);
 		}
 	UIDialogFormPopdown (dShell);
-	
+
 	if (calc)
 		{
 		UITable *tableCLS = (UITable *) dbData->Display (UITableName (dbData,table));
@@ -180,7 +180,7 @@ static void _RGISAnFieldCalculate (DBObjTable *table,DBInt oper)
 		rText  = XmTextFieldGetString (resultTextF);
 		field = table->Field (rText);
 		if (RGlibGenFuncFieldCalculate (table,f0Text,f1Text,rText,oper) != DBSuccess)
-			UIMessage ("Invalid Fields");
+			UIMessage ((char *) "Invalid Fields");
 		if (tableCLS != (UITable *) NULL)
 			{
 			if (field == (DBObjTableField *) NULL)
@@ -202,8 +202,8 @@ void RGISAnalyseFieldCalcAddCBK (Widget widget,void *data,XmAnyCallbackStruct *c
 	DBObjData *dbData = dataset->Data ();
 	DBObjTable *table;
 	widget = widget; data = data; callData = callData;
-	
-	if (_RGISAnalyseFieldTableSelect == (Widget) NULL) _RGISAnalyseFieldTableSelect = UISelectionCreate ("Table Selection");
+
+	if (_RGISAnalyseFieldTableSelect == (Widget) NULL) _RGISAnalyseFieldTableSelect = UISelectionCreate ((char *) "Table Selection");
 	table = dbData->Table (UISelectObject (_RGISAnalyseFieldTableSelect,(DBObjectLIST<DBObject> *) dbData->Tables ()));
 	if (table == (DBObjTable *) NULL) return;
 	_RGISAnFieldCalculate (table,DBMathOperatorAdd);
@@ -217,7 +217,7 @@ void RGISAnalyseFieldCalcSubtractCBK (Widget widget,void *data,XmAnyCallbackStru
 	DBObjTable *table;
 
 	widget = widget; data = data; callData = callData;
-	if (_RGISAnalyseFieldTableSelect == (Widget) NULL) _RGISAnalyseFieldTableSelect = UISelectionCreate ("Table Selection");
+	if (_RGISAnalyseFieldTableSelect == (Widget) NULL) _RGISAnalyseFieldTableSelect = UISelectionCreate ((char *) "Table Selection");
 	table = dbData->Table (UISelectObject (_RGISAnalyseFieldTableSelect,(DBObjectLIST<DBObject> *) dbData->Tables ()));
 	if (table == (DBObjTable *) NULL) return;
 	_RGISAnFieldCalculate (table,DBMathOperatorSub);
@@ -231,7 +231,7 @@ void RGISAnalyseFieldCalcMultiplyCBK (Widget widget,void *data,XmAnyCallbackStru
 	DBObjTable *table;
 
 	widget = widget; data = data; callData = callData;
-	if (_RGISAnalyseFieldTableSelect == (Widget) NULL) _RGISAnalyseFieldTableSelect = UISelectionCreate ("Table Selection");
+	if (_RGISAnalyseFieldTableSelect == (Widget) NULL) _RGISAnalyseFieldTableSelect = UISelectionCreate ((char *) "Table Selection");
 	table = dbData->Table (UISelectObject (_RGISAnalyseFieldTableSelect,(DBObjectLIST<DBObject> *) dbData->Tables ()));
 	if (table == (DBObjTable *) NULL) return;
 	_RGISAnFieldCalculate (table,DBMathOperatorMul);
@@ -245,7 +245,7 @@ void RGISAnalyseFieldCalcDivideCBK (Widget widget,void *data,XmAnyCallbackStruct
 	DBObjTable *table;
 
 	widget = widget; data = data; callData = callData;
-	if (_RGISAnalyseFieldTableSelect == (Widget) NULL) _RGISAnalyseFieldTableSelect = UISelectionCreate ("Table Selection");
+	if (_RGISAnalyseFieldTableSelect == (Widget) NULL) _RGISAnalyseFieldTableSelect = UISelectionCreate ((char *) "Table Selection");
 	table = dbData->Table (UISelectObject (_RGISAnalyseFieldTableSelect,(DBObjectLIST<DBObject> *) dbData->Tables ()));
 	if (table == (DBObjTable *) NULL) return;
 	_RGISAnFieldCalculate (table,DBMathOperatorDiv);
@@ -264,65 +264,65 @@ void RGISAnalyseFieldSetValueCBK (Widget widget,void *data,XmAnyCallbackStruct *
 	static Widget dShell = NULL, mainForm, button, srcTextF;
 
 	widget = widget; data = data; callData = callData;
-	if (selectWidget == (Widget) NULL) selectWidget = UISelectionCreate ("Select Field");
+	if (selectWidget == (Widget) NULL) selectWidget = UISelectionCreate ((char *) "Select Field");
 	if (dShell == (Widget) NULL)
 		{
 		XmString string;
-		
-		dShell = UIDialogForm ("Fields",false);
+
+		dShell = UIDialogForm ((char *) "Fields",false);
 		mainForm = UIDialogFormGetMainForm (dShell);
-	
-		string = XmStringCreate ("Select",UICharSetBold);
+
+		string = XmStringCreate ((char *) "Select",UICharSetBold);
 		button = XtVaCreateManagedWidget ("RGISAnalyseFieldCalcSetValueButton",xmPushButtonWidgetClass,mainForm,
-								XmNtopAttachment,			XmATTACH_FORM,
-								XmNtopOffset,				10,
-								XmNrightAttachment,		XmATTACH_FORM,
-								XmNrightOffset,			10,
-								XmNbottomAttachment,		XmATTACH_FORM,
-								XmNbottomOffset,			10,
-								XmNmarginHeight,			5,
-								XmNtraversalOn,			False,
-								XmNlabelString,			string,
-								XmNuserData,				DBTableFieldIsNumeric,
+								XmNtopAttachment,           XmATTACH_FORM,
+								XmNtopOffset,               10,
+								XmNrightAttachment,         XmATTACH_FORM,
+								XmNrightOffset,             10,
+								XmNbottomAttachment,        XmATTACH_FORM,
+								XmNbottomOffset,            10,
+								XmNmarginHeight,            5,
+								XmNtraversalOn,             False,
+								XmNlabelString,             string,
+								XmNuserData,                DBTableFieldIsNumeric,
 								NULL);
 		XmStringFree (string);
 		srcTextF = XtVaCreateManagedWidget ("RGISAnalyseFieldCalcSetValueTextF",xmTextFieldWidgetClass,mainForm,
-								XmNtopAttachment,			XmATTACH_OPPOSITE_WIDGET,
-								XmNtopWidget,				button,
-								XmNrightAttachment,		XmATTACH_WIDGET,
-								XmNrightWidget,			button,
-								XmNrightOffset,			10,
-								XmNbottomAttachment,		XmATTACH_OPPOSITE_WIDGET,
-								XmNbottomWidget,			button,
-								XmNmaxLength,				DBStringLength,
-								XmNcolumns,					DBStringLength / 2,
+								XmNtopAttachment,           XmATTACH_OPPOSITE_WIDGET,
+								XmNtopWidget,               button,
+								XmNrightAttachment,         XmATTACH_WIDGET,
+								XmNrightWidget,             button,
+								XmNrightOffset,             10,
+								XmNbottomAttachment,        XmATTACH_OPPOSITE_WIDGET,
+								XmNbottomWidget,            button,
+								XmNmaxLength,               DBStringLength,
+								XmNcolumns,                 DBStringLength / 2,
 								NULL);
 		XtAddCallback (button,XmNactivateCallback,(XtCallbackProc) UIAuxObjectSelectCBK,srcTextF);
-		string = XmStringCreate ("Source Field:",UICharSetBold);
+		string = XmStringCreate ((char *) "Source Field:",UICharSetBold);
 		XtVaCreateManagedWidget ("RGISAnalyseFieldCalcSetValueLabel",xmLabelWidgetClass,mainForm,
-								XmNtopAttachment,			XmATTACH_OPPOSITE_WIDGET,
-								XmNtopWidget,				button,
-								XmNleftAttachment,		XmATTACH_FORM,
-								XmNleftOffset,				10,
-								XmNrightAttachment,		XmATTACH_WIDGET,
-								XmNrightWidget,			srcTextF,
-								XmNrightOffset,			10,
-								XmNbottomAttachment,		XmATTACH_OPPOSITE_WIDGET,
-								XmNbottomWidget,			button,
-								XmNlabelString,			string,
+								XmNtopAttachment,           XmATTACH_OPPOSITE_WIDGET,
+								XmNtopWidget,               button,
+								XmNleftAttachment,          XmATTACH_FORM,
+								XmNleftOffset,              10,
+								XmNrightAttachment,         XmATTACH_WIDGET,
+								XmNrightWidget,             srcTextF,
+								XmNrightOffset,             10,
+								XmNbottomAttachment,        XmATTACH_OPPOSITE_WIDGET,
+								XmNbottomWidget,            button,
+								XmNlabelString,             string,
 								NULL);
 		XmStringFree (string);
 		XtAddCallback (UIDialogFormGetOkButton (dShell),XmNactivateCallback,(XtCallbackProc) UIAuxSetBooleanTrueCBK,&cont);
 		XtSetSensitive (UIDialogFormGetOkButton (dShell),True);
 		}
-	if (_RGISAnalyseFieldTableSelect == (Widget) NULL) _RGISAnalyseFieldTableSelect = UISelectionCreate ("Table Selection");
+	if (_RGISAnalyseFieldTableSelect == (Widget) NULL) _RGISAnalyseFieldTableSelect = UISelectionCreate ((char *) "Table Selection");
 	table = dbData->Table (UISelectObject (_RGISAnalyseFieldTableSelect,(DBObjectLIST<DBObject> *) dbData->Tables ()));
 	if (table == (DBObjTable *) NULL) return;
 	if ((selection = UISelectObject (selectWidget,(DBObjectLIST<DBObject> *) table->Fields (),DBTableFieldIsNumeric)) == NULL)
 		return;
 	if ((dstFLD = table->Field (selection)) == (DBObjTableField *) NULL)
 		{ fprintf (stderr,"Corrupt Table in: _RGISAnalyseFieldCalcSetValueCBK ()\n"); return; }
-	if (dstFLD->Required ()) { UIMessage ("Protected Field!"); return; }
+	if (dstFLD->Required ()) { UIMessage ((char *) "Protected Field!"); return; }
 	XtVaSetValues (srcTextF,XmNuserData,table->Fields (),NULL);
 	cont = false;
 	UIDialogFormPopup (dShell);
@@ -336,7 +336,7 @@ void RGISAnalyseFieldSetValueCBK (Widget widget,void *data,XmAnyCallbackStruct *
 		DBObjTableField *srcFLD;
 		DBObjRecord *record;
 		UITable *tableCLS = (UITable *) dbData->Display (UITableName (dbData,table));
-		
+
 		srcText = XmTextFieldGetString (srcTextF);
 		if ((srcFLD = table->Field (srcText)) == (DBObjTableField *) NULL)
 			{
@@ -366,7 +366,7 @@ void RGISAnalyseFieldSetValueCBK (Widget widget,void *data,XmAnyCallbackStruct *
 			}
 		XtFree (srcText);
 		if (tableCLS != (UITable *) NULL) tableCLS->Draw ();
-		}	
+		}
 	}
 
 void RGISAnalyseFieldsCompareCBK (Widget widget,void *data,XmAnyCallbackStruct *callData)
@@ -387,161 +387,161 @@ void RGISAnalyseFieldsCompareCBK (Widget widget,void *data,XmAnyCallbackStruct *
 		{
 		Widget button;
 
-		dShell = UIDialogForm ("Compare Fields",false);
+		dShell = UIDialogForm ((char *) "Compare Fields",false);
 		mainForm = UIDialogFormGetMainForm (dShell);
-		
-		string = XmStringCreate ("Select",UICharSetBold);
+
+		string = XmStringCreate ((char *) "Select",UICharSetBold);
 		button = XtVaCreateManagedWidget ("RGISEdiCompFieldsButton",xmPushButtonWidgetClass,mainForm,
-								XmNtopAttachment,			XmATTACH_FORM,
-								XmNtopOffset,				10,
-								XmNrightAttachment,		XmATTACH_FORM,
-								XmNrightOffset,			10,
-								XmNmarginHeight,			5,
-								XmNtraversalOn,			False,
-								XmNlabelString,			string,
-								XmNuserData,				DBTableFieldIsNumeric,
+								XmNtopAttachment,           XmATTACH_FORM,
+								XmNtopOffset,               10,
+								XmNrightAttachment,         XmATTACH_FORM,
+								XmNrightOffset,             10,
+								XmNmarginHeight,            5,
+								XmNtraversalOn,             False,
+								XmNlabelString,             string,
+								XmNuserData,                DBTableFieldIsNumeric,
 								NULL);
 		XmStringFree (string);
 		field0TextF = XtVaCreateManagedWidget ("RGISAnalyseCompField0TextF",xmTextFieldWidgetClass,mainForm,
-								XmNtopAttachment,			XmATTACH_OPPOSITE_WIDGET,
-								XmNtopWidget,				button,
-								XmNrightAttachment,		XmATTACH_WIDGET,
-								XmNrightWidget,			button,
-								XmNrightOffset,			10,
-								XmNbottomAttachment,		XmATTACH_OPPOSITE_WIDGET,
-								XmNbottomWidget,			button,
-								XmNmaxLength,				DBStringLength,
-								XmNcolumns,					DBStringLength / 2,
+								XmNtopAttachment,           XmATTACH_OPPOSITE_WIDGET,
+								XmNtopWidget,               button,
+								XmNrightAttachment,         XmATTACH_WIDGET,
+								XmNrightWidget,             button,
+								XmNrightOffset,             10,
+								XmNbottomAttachment,        XmATTACH_OPPOSITE_WIDGET,
+								XmNbottomWidget,            button,
+								XmNmaxLength,               DBStringLength,
+								XmNcolumns,                 DBStringLength / 2,
 								NULL);
 		XtAddCallback (button,XmNactivateCallback,(XtCallbackProc) UIAuxObjectSelectCBK,field0TextF);
-		string = XmStringCreate ("First Field:",UICharSetBold);
+		string = XmStringCreate ((char *) "First Field:",UICharSetBold);
 		XtVaCreateManagedWidget ("RGISAnalyseCompFieldNameLabel",xmLabelWidgetClass,mainForm,
-								XmNtopAttachment,			XmATTACH_OPPOSITE_WIDGET,
-								XmNtopWidget,				button,
-								XmNleftAttachment,		XmATTACH_FORM,
-								XmNleftOffset,				10,
-								XmNrightAttachment,		XmATTACH_WIDGET,
-								XmNrightWidget,			field0TextF,
-								XmNrightOffset,			10,
-								XmNbottomAttachment,		XmATTACH_OPPOSITE_WIDGET,
-								XmNbottomWidget,			button,
-								XmNlabelString,			string,
-								NULL);
-		XmStringFree (string);
-		
-		string = XmStringCreate ("Select",UICharSetBold);
-		button = XtVaCreateManagedWidget ("RGISAnalyseCompField0Button",xmPushButtonWidgetClass,mainForm,
-								XmNtopAttachment,			XmATTACH_WIDGET,
-								XmNtopWidget,				button,
-								XmNtopOffset,				10,
-								XmNrightAttachment,		XmATTACH_FORM,
-								XmNrightOffset,			10,
-								XmNmarginHeight,			5,
-								XmNtraversalOn,			False,
-								XmNlabelString,			string,
-								XmNuserData,				DBTableFieldIsNumeric,
-								NULL);
-		XmStringFree (string);
-		field1TextF = XtVaCreateManagedWidget ("RGISAnalyseCompField1TextF",xmTextFieldWidgetClass,mainForm,
-								XmNtopAttachment,			XmATTACH_OPPOSITE_WIDGET,
-								XmNtopWidget,				button,
-								XmNrightAttachment,		XmATTACH_WIDGET,
-								XmNrightWidget,			button,
-								XmNrightOffset,			10,
-								XmNbottomAttachment,		XmATTACH_OPPOSITE_WIDGET,
-								XmNbottomWidget,			button,
-								XmNmaxLength,				DBStringLength,
-								XmNcolumns,					DBStringLength / 2,
-								NULL);
-		XtAddCallback (button,XmNactivateCallback,(XtCallbackProc) UIAuxObjectSelectCBK,field1TextF);
-		string = XmStringCreate ("Second Field:",UICharSetBold);
-		XtVaCreateManagedWidget ("RGISAnalyseCompField1Label",xmLabelWidgetClass,mainForm,
-								XmNtopAttachment,			XmATTACH_OPPOSITE_WIDGET,
-								XmNtopWidget,				button,
-								XmNleftAttachment,		XmATTACH_FORM,
-								XmNleftOffset,				10,
-								XmNrightAttachment,		XmATTACH_WIDGET,
-								XmNrightWidget,			field1TextF,
-								XmNrightOffset,			10,
-								XmNbottomAttachment,		XmATTACH_OPPOSITE_WIDGET,
-								XmNbottomWidget,			button,
-								XmNlabelString,			string,
+								XmNtopAttachment,           XmATTACH_OPPOSITE_WIDGET,
+								XmNtopWidget,               button,
+								XmNleftAttachment,          XmATTACH_FORM,
+								XmNleftOffset,              10,
+								XmNrightAttachment,         XmATTACH_WIDGET,
+								XmNrightWidget,             field0TextF,
+								XmNrightOffset,             10,
+								XmNbottomAttachment,        XmATTACH_OPPOSITE_WIDGET,
+								XmNbottomWidget,            button,
+								XmNlabelString,             string,
 								NULL);
 		XmStringFree (string);
 
-		string = XmStringCreate ("Select",UICharSetBold);
+		string = XmStringCreate ((char *) "Select",UICharSetBold);
+		button = XtVaCreateManagedWidget ("RGISAnalyseCompField0Button",xmPushButtonWidgetClass,mainForm,
+								XmNtopAttachment,           XmATTACH_WIDGET,
+								XmNtopWidget,               button,
+								XmNtopOffset,               10,
+								XmNrightAttachment,         XmATTACH_FORM,
+								XmNrightOffset,             10,
+								XmNmarginHeight,            5,
+								XmNtraversalOn,             False,
+								XmNlabelString,             string,
+								XmNuserData,                DBTableFieldIsNumeric,
+								NULL);
+		XmStringFree (string);
+		field1TextF = XtVaCreateManagedWidget ("RGISAnalyseCompField1TextF",xmTextFieldWidgetClass,mainForm,
+								XmNtopAttachment,           XmATTACH_OPPOSITE_WIDGET,
+								XmNtopWidget,               button,
+								XmNrightAttachment,         XmATTACH_WIDGET,
+								XmNrightWidget,             button,
+								XmNrightOffset,             10,
+								XmNbottomAttachment,        XmATTACH_OPPOSITE_WIDGET,
+								XmNbottomWidget,            button,
+								XmNmaxLength,               DBStringLength,
+								XmNcolumns,                 DBStringLength / 2,
+								NULL);
+		XtAddCallback (button,XmNactivateCallback,(XtCallbackProc) UIAuxObjectSelectCBK,field1TextF);
+		string = XmStringCreate ((char *) "Second Field:",UICharSetBold);
+		XtVaCreateManagedWidget ("RGISAnalyseCompField1Label",xmLabelWidgetClass,mainForm,
+								XmNtopAttachment,           XmATTACH_OPPOSITE_WIDGET,
+								XmNtopWidget,               button,
+								XmNleftAttachment,          XmATTACH_FORM,
+								XmNleftOffset,              10,
+								XmNrightAttachment,         XmATTACH_WIDGET,
+								XmNrightWidget,             field1TextF,
+								XmNrightOffset,             10,
+								XmNbottomAttachment,        XmATTACH_OPPOSITE_WIDGET,
+								XmNbottomWidget,            button,
+								XmNlabelString,             string,
+								NULL);
+		XmStringFree (string);
+
+		string = XmStringCreate ((char *) "Select",UICharSetBold);
 		button = XtVaCreateManagedWidget ("RGISAnalyseCompResultFieldsButton",xmPushButtonWidgetClass,mainForm,
-								XmNtopAttachment,			XmATTACH_WIDGET,
-								XmNtopWidget,				button,
-								XmNtopOffset,				10,
-								XmNrightAttachment,		XmATTACH_FORM,
-								XmNrightOffset,			10,
-								XmNmarginHeight,			5,
-								XmNtraversalOn,			False,
-								XmNlabelString,			string,
-								XmNuserData,				DBTableFieldIsNumeric,
+								XmNtopAttachment,           XmATTACH_WIDGET,
+								XmNtopWidget,               button,
+								XmNtopOffset,               10,
+								XmNrightAttachment,         XmATTACH_FORM,
+								XmNrightOffset,             10,
+								XmNmarginHeight,            5,
+								XmNtraversalOn,             False,
+								XmNlabelString,             string,
+								XmNuserData,                DBTableFieldIsNumeric,
 								NULL);
 		XmStringFree (string);
 		resultTextF = XtVaCreateManagedWidget ("RGISAnalyseCompFieldsResultTextF",xmTextFieldWidgetClass,mainForm,
-								XmNtopAttachment,			XmATTACH_OPPOSITE_WIDGET,
-								XmNtopWidget,				button,
-								XmNrightAttachment,		XmATTACH_WIDGET,
-								XmNrightWidget,			button,
-								XmNrightOffset,			10,
-								XmNmaxLength,				DBStringLength,
-								XmNcolumns,					DBStringLength / 2,
+								XmNtopAttachment,           XmATTACH_OPPOSITE_WIDGET,
+								XmNtopWidget,               button,
+								XmNrightAttachment,         XmATTACH_WIDGET,
+								XmNrightWidget,             button,
+								XmNrightOffset,             10,
+								XmNmaxLength,               DBStringLength,
+								XmNcolumns,                 DBStringLength / 2,
 								NULL);
 		XtAddCallback (button,XmNactivateCallback,(XtCallbackProc) UIAuxObjectSelectCBK,resultTextF);
-		string = XmStringCreate ("Result Field:",UICharSetBold);
+		string = XmStringCreate ((char *) "Result Field:",UICharSetBold);
 		XtVaCreateManagedWidget ("RGISAnalyseCompFieldsResultLabel",xmLabelWidgetClass,mainForm,
-								XmNtopAttachment,			XmATTACH_OPPOSITE_WIDGET,
-								XmNtopWidget,				button,
-								XmNleftAttachment,		XmATTACH_FORM,
-								XmNleftOffset,				10,
-								XmNrightAttachment,		XmATTACH_WIDGET,
-								XmNrightWidget,			resultTextF,
-								XmNrightOffset,			10,
-								XmNbottomAttachment,		XmATTACH_OPPOSITE_WIDGET,
-								XmNbottomWidget,			button,
-								XmNlabelString,			string,
+								XmNtopAttachment,           XmATTACH_OPPOSITE_WIDGET,
+								XmNtopWidget,               button,
+								XmNleftAttachment,          XmATTACH_FORM,
+								XmNleftOffset,              10,
+								XmNrightAttachment,         XmATTACH_WIDGET,
+								XmNrightWidget,             resultTextF,
+								XmNrightOffset,             10,
+								XmNbottomAttachment,        XmATTACH_OPPOSITE_WIDGET,
+								XmNbottomWidget,            button,
+								XmNlabelString,             string,
 								NULL);
 		XmStringFree (string);
 		XtAddCallback (UIDialogFormGetOkButton (dShell),XmNactivateCallback,(XtCallbackProc) UIAuxSetBooleanTrueCBK,&compare);
 
-		menu = XmCreatePulldownMenu (mainForm,"RGISAnalyseCompFieldsMenu",NULL,0);
-		string = XmStringCreate ("Plain",UICharSetNormal);
+		menu = XmCreatePulldownMenu (mainForm,(char *) "RGISAnalyseCompFieldsMenu",NULL,0);
+		string = XmStringCreate ((char *) "Plain",UICharSetNormal);
 		mButton = XtVaCreateManagedWidget ("RGISAnalyseCompFieldsMenuButton",xmPushButtonWidgetClass,menu,
-								XmNlabelString,			string,
-								XmNuserData,				&diffMethod,
+								XmNlabelString,             string,
+								XmNuserData,                &diffMethod,
 								NULL);
-		XmStringFree (string);										
+		XmStringFree (string);
 		XtAddCallback (mButton,XmNactivateCallback,(XtCallbackProc) UIAuxSetIntegerCBK,(XtPointer) 0);
-		string = XmStringCreate ("Simple %",UICharSetNormal);
+		string = XmStringCreate ((char *) "Simple %",UICharSetNormal);
 		mButton = XtVaCreateManagedWidget ("RGISAnalyseCompFieldsMenuButton",xmPushButtonWidgetClass,menu,
-								XmNlabelString,			string,
-								XmNuserData,				&diffMethod,
+								XmNlabelString,             string,
+								XmNuserData,                &diffMethod,
 								NULL);
-		XmStringFree (string);										
+		XmStringFree (string);
 		XtAddCallback (mButton,XmNactivateCallback,(XtCallbackProc) UIAuxSetIntegerCBK,(XtPointer) 1);
-		string = XmStringCreate ("Symmetric %",UICharSetNormal);
+		string = XmStringCreate ((char *) "Symmetric %",UICharSetNormal);
 		mButton = XtVaCreateManagedWidget ("RGISAnalyseCompFieldsMenuButton",xmPushButtonWidgetClass,menu,
-								XmNlabelString,			string,
-								XmNuserData,				&diffMethod,
+								XmNlabelString,             string,
+								XmNuserData,                &diffMethod,
 								NULL);
-		XmStringFree (string);										
+		XmStringFree (string);
 		XtAddCallback (mButton,XmNactivateCallback,(XtCallbackProc) UIAuxSetIntegerCBK,(XtPointer) 2);
-		string = XmStringCreate ("Difference Method:",UICharSetBold);
+		string = XmStringCreate ((char *) "Difference Method:",UICharSetBold);
 		menu = XtVaCreateManagedWidget ("RGISAnalyseCompFieldsMenu",xmRowColumnWidgetClass,mainForm,
-								XmNtopAttachment,			XmATTACH_WIDGET,
-								XmNtopWidget,				button,
-								XmNtopOffset,				10,
-								XmNrightAttachment,		XmATTACH_FORM,
-								XmNrightOffset,			10,
-								XmNbottomAttachment,		XmATTACH_FORM,
-								XmNbottomOffset,			10,
-								XmNrowColumnType,			XmMENU_OPTION,
-								XmNlabelString,			string,
-								XmNsubMenuId,				menu,
+								XmNtopAttachment,           XmATTACH_WIDGET,
+								XmNtopWidget,               button,
+								XmNtopOffset,               10,
+								XmNrightAttachment,         XmATTACH_FORM,
+								XmNrightOffset,             10,
+								XmNbottomAttachment,        XmATTACH_FORM,
+								XmNbottomOffset,            10,
+								XmNrowColumnType,           XmMENU_OPTION,
+								XmNlabelString,             string,
+								XmNsubMenuId,               menu,
 								NULL);
 		XmStringFree (string);
 		}
@@ -556,11 +556,11 @@ void RGISAnalyseFieldsCompareCBK (Widget widget,void *data,XmAnyCallbackStruct *
 		f1Text = XmTextFieldGetString (field1TextF);
 		rText  = XmTextFieldGetString (resultTextF);
 		allowOk = (strlen (f0Text) > 0) && (strlen (f1Text) > 0) && (rText > 0);
-		XtFree (f0Text);	XtFree (f1Text);	XtFree (rText);	
+		XtFree (f0Text);	XtFree (f1Text);	XtFree (rText);
 		XtSetSensitive (UIDialogFormGetOkButton (dShell),allowOk);
 		}
 	UIDialogFormPopdown (dShell);
-	
+
 	if (compare)
 		{
 		UITable *tableCLS = (UITable *) dbData->Display (UITableName (dbData,itemTable));
@@ -596,133 +596,133 @@ static void _RGISAnFieldTopoDialog (DBInt (*function) (DBObjTable *,char *,char 
 	if (dShell == (Widget) NULL)
 		{
 		XmString string;
-		
-		dShell = UIDialogForm ("Fields",false);
+
+		dShell = UIDialogForm ((char *) "Fields",false);
 		mainForm = UIDialogFormGetMainForm (dShell);
-	
-		string = XmStringCreate ("Select",UICharSetBold);
+
+		string = XmStringCreate ((char *) "Select",UICharSetBold);
 		button = XtVaCreateManagedWidget ("RGISAnalyseTopoDialogButton",xmPushButtonWidgetClass,mainForm,
-								XmNtopAttachment,			XmATTACH_FORM,
-								XmNtopOffset,				10,
-								XmNrightAttachment,		XmATTACH_FORM,
-								XmNrightOffset,			10,
-								XmNmarginHeight,			5,
-								XmNtraversalOn,			False,
-								XmNlabelString,			string,
-								XmNuserData,				DBTableFieldIsNumeric,
+								XmNtopAttachment,           XmATTACH_FORM,
+								XmNtopOffset,               10,
+								XmNrightAttachment,         XmATTACH_FORM,
+								XmNrightOffset,             10,
+								XmNmarginHeight,            5,
+								XmNtraversalOn,             False,
+								XmNlabelString,             string,
+								XmNuserData,                DBTableFieldIsNumeric,
 								NULL);
 		XmStringFree (string);
 		nextStnTextF = XtVaCreateManagedWidget ("RGISAnalyseTopoDialogTextF",xmTextFieldWidgetClass,mainForm,
-								XmNtopAttachment,			XmATTACH_OPPOSITE_WIDGET,
-								XmNtopWidget,				button,
-								XmNrightAttachment,		XmATTACH_WIDGET,
-								XmNrightWidget,			button,
-								XmNrightOffset,			10,
-								XmNbottomAttachment,		XmATTACH_OPPOSITE_WIDGET,
-								XmNbottomWidget,			button,
-								XmNmaxLength,				DBStringLength,
-								XmNcolumns,					DBStringLength / 2,
+								XmNtopAttachment,           XmATTACH_OPPOSITE_WIDGET,
+								XmNtopWidget,               button,
+								XmNrightAttachment,         XmATTACH_WIDGET,
+								XmNrightWidget,             button,
+								XmNrightOffset,             10,
+								XmNbottomAttachment,        XmATTACH_OPPOSITE_WIDGET,
+								XmNbottomWidget,            button,
+								XmNmaxLength,               DBStringLength,
+								XmNcolumns,                 DBStringLength / 2,
 								NULL);
 		XtAddCallback (button,XmNactivateCallback,(XtCallbackProc) UIAuxObjectSelectCBK,nextStnTextF);
-		string = XmStringCreate ("Next Station Field:",UICharSetBold);
+		string = XmStringCreate ((char *) "Next Station Field:",UICharSetBold);
 		XtVaCreateManagedWidget ("RGISAnalyseTopoDialogLabel",xmLabelWidgetClass,mainForm,
-								XmNtopAttachment,			XmATTACH_OPPOSITE_WIDGET,
-								XmNtopWidget,				button,
-								XmNleftAttachment,		XmATTACH_FORM,
-								XmNleftOffset,				10,
-								XmNrightAttachment,		XmATTACH_WIDGET,
-								XmNrightWidget,			nextStnTextF,
-								XmNrightOffset,			10,
-								XmNbottomAttachment,		XmATTACH_OPPOSITE_WIDGET,
-								XmNbottomWidget,			button,
-								XmNlabelString,			string,
+								XmNtopAttachment,           XmATTACH_OPPOSITE_WIDGET,
+								XmNtopWidget,               button,
+								XmNleftAttachment,          XmATTACH_FORM,
+								XmNleftOffset,              10,
+								XmNrightAttachment,         XmATTACH_WIDGET,
+								XmNrightWidget,             nextStnTextF,
+								XmNrightOffset,             10,
+								XmNbottomAttachment,        XmATTACH_OPPOSITE_WIDGET,
+								XmNbottomWidget,            button,
+								XmNlabelString,             string,
 								NULL);
 		XmStringFree (string);
 
-		string = XmStringCreate ("Select",UICharSetBold);
+		string = XmStringCreate ((char *) "Select",UICharSetBold);
 		button = XtVaCreateManagedWidget ("RGISAnalyseTopoDialogButton",xmPushButtonWidgetClass,mainForm,
-								XmNtopAttachment,			XmATTACH_WIDGET,
-								XmNtopWidget,				nextStnTextF,
-								XmNtopOffset,				10,
-								XmNrightAttachment,		XmATTACH_FORM,
-								XmNrightOffset,			10,
-								XmNmarginHeight,			5,
-								XmNtraversalOn,			False,
-								XmNlabelString,			string,
-								XmNuserData,				DBTableFieldIsNumeric,
+								XmNtopAttachment,           XmATTACH_WIDGET,
+								XmNtopWidget,               nextStnTextF,
+								XmNtopOffset,               10,
+								XmNrightAttachment,         XmATTACH_FORM,
+								XmNrightOffset,             10,
+								XmNmarginHeight,            5,
+								XmNtraversalOn,             False,
+								XmNlabelString,             string,
+								XmNuserData,                DBTableFieldIsNumeric,
 								NULL);
 		XmStringFree (string);
 		srcTextF = XtVaCreateManagedWidget ("RGISAnalyseTopoDialogTextF",xmTextFieldWidgetClass,mainForm,
-								XmNtopAttachment,			XmATTACH_OPPOSITE_WIDGET,
-								XmNtopWidget,				button,
-								XmNrightAttachment,		XmATTACH_WIDGET,
-								XmNrightWidget,			button,
-								XmNrightOffset,			10,
-								XmNbottomAttachment,		XmATTACH_OPPOSITE_WIDGET,
-								XmNbottomWidget,			button,
-								XmNmaxLength,				DBStringLength,
-								XmNcolumns,					DBStringLength / 2,
+								XmNtopAttachment,           XmATTACH_OPPOSITE_WIDGET,
+								XmNtopWidget,               button,
+								XmNrightAttachment,         XmATTACH_WIDGET,
+								XmNrightWidget,             button,
+								XmNrightOffset,             10,
+								XmNbottomAttachment,        XmATTACH_OPPOSITE_WIDGET,
+								XmNbottomWidget,            button,
+								XmNmaxLength,               DBStringLength,
+								XmNcolumns,                 DBStringLength / 2,
 								NULL);
 		XtAddCallback (button,XmNactivateCallback,(XtCallbackProc) UIAuxObjectSelectCBK,srcTextF);
-		string = XmStringCreate ("Source Field:",UICharSetBold);
+		string = XmStringCreate ((char *) "Source Field:",UICharSetBold);
 		XtVaCreateManagedWidget ("RGISAnalyseTopoDialogLabel",xmLabelWidgetClass,mainForm,
-								XmNtopAttachment,			XmATTACH_OPPOSITE_WIDGET,
-								XmNtopWidget,				button,
-								XmNleftAttachment,		XmATTACH_FORM,
-								XmNleftOffset,				10,
-								XmNrightAttachment,		XmATTACH_WIDGET,
-								XmNrightWidget,			srcTextF,
-								XmNrightOffset,			10,
-								XmNbottomAttachment,		XmATTACH_OPPOSITE_WIDGET,
-								XmNbottomWidget,			button,
-								XmNlabelString,			string,
+								XmNtopAttachment,           XmATTACH_OPPOSITE_WIDGET,
+								XmNtopWidget,               button,
+								XmNleftAttachment,          XmATTACH_FORM,
+								XmNleftOffset,              10,
+								XmNrightAttachment,         XmATTACH_WIDGET,
+								XmNrightWidget,             srcTextF,
+								XmNrightOffset,             10,
+								XmNbottomAttachment,        XmATTACH_OPPOSITE_WIDGET,
+								XmNbottomWidget,            button,
+								XmNlabelString,             string,
 								NULL);
 		XmStringFree (string);
 
-		string = XmStringCreate ("Select",UICharSetBold);
+		string = XmStringCreate ((char *) "Select",UICharSetBold);
 		button = XtVaCreateManagedWidget ("RGISAnalyseTopoSubtractButton",xmPushButtonWidgetClass,mainForm,
-								XmNtopAttachment,			XmATTACH_WIDGET,
-								XmNtopWidget,				srcTextF,
-								XmNtopOffset,				10,
-								XmNrightAttachment,		XmATTACH_FORM,
-								XmNrightOffset,			10,
-								XmNmarginHeight,			5,
-								XmNtraversalOn,			False,
-								XmNlabelString,			string,
-								XmNuserData,				DBTableFieldIsNumeric,
+								XmNtopAttachment,           XmATTACH_WIDGET,
+								XmNtopWidget,               srcTextF,
+								XmNtopOffset,               10,
+								XmNrightAttachment,         XmATTACH_FORM,
+								XmNrightOffset,             10,
+								XmNmarginHeight,            5,
+								XmNtraversalOn,             False,
+								XmNlabelString,             string,
+								XmNuserData,                DBTableFieldIsNumeric,
 								NULL);
 		XmStringFree (string);
 		dstTextF = XtVaCreateManagedWidget ("RGISAnalyseTopoSubtractTextF",xmTextFieldWidgetClass,mainForm,
-								XmNtopAttachment,			XmATTACH_OPPOSITE_WIDGET,
-								XmNtopWidget,				button,
-								XmNrightAttachment,		XmATTACH_WIDGET,
-								XmNrightWidget,			button,
-								XmNrightOffset,			10,
-								XmNbottomAttachment,		XmATTACH_OPPOSITE_WIDGET,
-								XmNbottomWidget,			button,
-								XmNmaxLength,				DBStringLength,
-								XmNcolumns,					DBStringLength / 2,
+								XmNtopAttachment,           XmATTACH_OPPOSITE_WIDGET,
+								XmNtopWidget,               button,
+								XmNrightAttachment,         XmATTACH_WIDGET,
+								XmNrightWidget,             button,
+								XmNrightOffset,             10,
+								XmNbottomAttachment,        XmATTACH_OPPOSITE_WIDGET,
+								XmNbottomWidget,            button,
+								XmNmaxLength,               DBStringLength,
+								XmNcolumns,                 DBStringLength / 2,
 								NULL);
 		XtAddCallback (button,XmNactivateCallback,(XtCallbackProc) UIAuxObjectSelectCBK,dstTextF);
-		string = XmStringCreate ("Target Field:",UICharSetBold);
+		string = XmStringCreate ((char *) "Target Field:",UICharSetBold);
 		XtVaCreateManagedWidget ("RGISAnalyseTopoSubtractLabel",xmLabelWidgetClass,mainForm,
-								XmNtopAttachment,			XmATTACH_OPPOSITE_WIDGET,
-								XmNtopWidget,				button,
-								XmNleftAttachment,		XmATTACH_FORM,
-								XmNleftOffset,				10,
-								XmNrightAttachment,		XmATTACH_WIDGET,
-								XmNrightWidget,			dstTextF,
-								XmNrightOffset,			10,
-								XmNbottomAttachment,		XmATTACH_OPPOSITE_WIDGET,
-								XmNbottomWidget,			button,
-								XmNlabelString,			string,
+								XmNtopAttachment,           XmATTACH_OPPOSITE_WIDGET,
+								XmNtopWidget,               button,
+								XmNleftAttachment,          XmATTACH_FORM,
+								XmNleftOffset,              10,
+								XmNrightAttachment,         XmATTACH_WIDGET,
+								XmNrightWidget,             dstTextF,
+								XmNrightOffset,             10,
+								XmNbottomAttachment,        XmATTACH_OPPOSITE_WIDGET,
+								XmNbottomWidget,            button,
+								XmNlabelString,             string,
 								NULL);
 		XmStringFree (string);
 		XtAddCallback (UIDialogFormGetOkButton (dShell),XmNactivateCallback,(XtCallbackProc) UIAuxSetBooleanTrueCBK,&cont);
 		}
 	dataset = UIDataset ();
 	dbData = dataset->Data ();
-	if (_RGISAnalyseFieldTableSelect == (Widget) NULL) _RGISAnalyseFieldTableSelect = UISelectionCreate ("Table Selection");
+	if (_RGISAnalyseFieldTableSelect == (Widget) NULL) _RGISAnalyseFieldTableSelect = UISelectionCreate ((char *) "Table Selection");
 	table = dbData->Table (UISelectObject (_RGISAnalyseFieldTableSelect,(DBObjectLIST<DBObject> *) dbData->Tables ()));
 	if (table == (DBObjTable *) NULL) return;
 
@@ -749,7 +749,7 @@ static void _RGISAnFieldTopoDialog (DBInt (*function) (DBObjTable *,char *,char 
 		UITable *tableCLS = (UITable *) dbData->Display (UITableName (dbData,table));
 		DBObjTableField *dstFLD;
 
-		UIPauseDialogOpen ("Calculating");
+		UIPauseDialogOpen ((char *) "Calculating");
 		nextStnText = XmTextFieldGetString (nextStnTextF);
 		srcText = XmTextFieldGetString (srcTextF);
 		dstText = XmTextFieldGetString (dstTextF);
@@ -780,4 +780,3 @@ void RGISAnalyseFieldTopoSubtractCBK (Widget widget, void *userData,XmAnyCallbac
 	widget = widget; userData = userData; callData = callData;
 	_RGISAnFieldTopoDialog (RGlibGenFuncTopoSubtract);
 	}
-

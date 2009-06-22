@@ -103,11 +103,11 @@ int main (int argc,char *argv [])
 	ret = (argNum > 1) && (strcmp (argv [1],"-") != 0) ? pntData->Read (argv [1]) : pntData->Read (stdin);
 	if ((ret == DBFault) || (pntData->Type () != DBTypeVectorPoint))
 		{ delete pntData, delete netData; return (CMfailed); }
-		
-	if (title	== (char *) NULL) title   = "Subbasin Grid";
+
+	if (title	== (char *) NULL)   title = (char *) "Subbasin Grid";
 	if (subject == (char *) NULL) subject = pntData->Document (DBDocSubject);
-	if (domain	== (char *) NULL)	domain  = netData->Document (DBDocGeoDomain);
-	if (version == (char *) NULL) version = "0.01pre";	
+	if (domain	== (char *) NULL)  domain = netData->Document (DBDocGeoDomain);
+	if (version == (char *) NULL) version = (char *) "0.01pre";
 
 	data = DBNetworkToGrid (netData,DBTypeGridDiscrete);
 	data->Name (title);

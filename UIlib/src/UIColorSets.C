@@ -14,22 +14,22 @@ balazs.fekete@unh.edu
 
 #define _UIColorNum(colorList) (int) (sizeof (colorList) / sizeof (XColor))
 
-static char *_UIStdColorNames [] = {"white",
-				"Black",
-				"Red",
-				"Green",
-				"Blue",
-				"Cyan",
-				"Magenta",
-				"Yellow",
-				"Orange",
-				"LimeGreen",
-				"MediumSpringGreen",
-				"DarkSlateBlue",
-				"MediumSlateBlue",
-				"Brown",
-				"DimGray",
-				"LightGray" };
+static char *_UIStdColorNames [] = {(char *) "white",
+				(char *) "Black",
+				(char *) "Red",
+				(char *) "Green",
+				(char *) "Blue",
+				(char *) "Cyan",
+				(char *) "Magenta",
+				(char *) "Yellow",
+				(char *) "Orange",
+				(char *) "LimeGreen",
+				(char *) "MediumSpringGreen",
+				(char *) "DarkSlateBlue",
+				(char *) "MediumSlateBlue",
+				(char *) "Brown",
+				(char *) "DimGray",
+				(char *) "LightGray" };
 
 static XColor _UIStandardColors [] = {
 		{ 0,	255,	255,	255,	DoRed | DoGreen | DoBlue,	0},	/* White	*/
@@ -132,14 +132,14 @@ class UIColorSetList
 		int ColorSet;
 		char *Name;
 	};
-	
+
 static UIColorSetList	 _UIColorSetList [] = {
-				{UIColorStandard, 	"Standard"},
-				{UIColorBlueScale, 	"Blues"},
-				{UIColorRedScale,		"Reds"},
-				{UIColorGreyScale,	"Greys"},
-				{UIColorElevation,	"Elevation"},
-				{UIColorTrueColor,	"True"}};
+				{UIColorStandard,   (char *) "Standard"},
+				{UIColorBlueScale,  (char *) "Blues"},
+				{UIColorRedScale,   (char *) "Reds"},
+				{UIColorGreyScale,  (char *) "Greys"},
+				{UIColorElevation,  (char *) "Elevation"},
+				{UIColorTrueColor,  (char *) "True"}};
 
 int UIColorSet (int i)
 
@@ -164,7 +164,7 @@ void _UIColorInitialize (Widget shell)
 	{
 	int i;
 	Colormap cmap;
-	
+
 	XtVaGetValues (shell,XmNcolormap,&cmap,NULL);
 
 	for (i = 0;i < _UIColorNum (_UIStandardColors); ++i)
@@ -252,7 +252,7 @@ Pixel UIColor (int colorSet,int color)
 		case UIColorTrueColor:
 		default: fprintf (stderr,"Invalid colorset in: UIColor ()\n"); return ((Pixel) NULL);
 		}
-	}	
+	}
 
 char *UIStandardColorName (int color)
 

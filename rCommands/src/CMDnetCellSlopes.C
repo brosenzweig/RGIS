@@ -104,10 +104,10 @@ int main (int argc,char *argv [])
 	if ((ret == DBFault) || (grdData->Type () != DBTypeGridContinuous))
 		{ delete netData; delete grdData; return (CMfailed); }
 
-	if (title	== (char *) NULL)	title   = "Cell Slopes";
-	if (subject == (char *) NULL)	subject = grdData->Document (DBDocSubject);
-	if (domain	== (char *) NULL)	domain  = netData->Document (DBDocGeoDomain);
-	if (version == (char *) NULL) version = "0.01pre";	
+	if (title	== (char *) NULL)   title = (char *) "Cell Slopes";
+	if (subject == (char *) NULL) subject = grdData->Document (DBDocSubject);
+	if (domain	== (char *) NULL)  domain = (char *) netData->Document (DBDocGeoDomain);
+	if (version == (char *) NULL) version = (char *) "0.01pre";
 
 	data = DBNetworkToGrid (netData,DBTypeGridContinuous);
 	data->Name (title);

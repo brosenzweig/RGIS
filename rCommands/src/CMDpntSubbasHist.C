@@ -119,11 +119,11 @@ int main (int argc,char *argv [])
 	ret = (argNum > 1) && (strcmp (argv [1],"-") != 0) ? grdData->Read (argv [1]) : grdData->Read (stdin);
 	if ((ret == DBFault) || (grdData->Type () != DBTypeGridContinuous))
 		{ delete pntData, delete netData; delete grdData; return (CMfailed); }
-		
-	if (title	== (char *) NULL) title   = "Subbasin Histogram";
+
+	if (title	== (char *) NULL)   title = (char *) "Subbasin Histogram";
 	if (subject == (char *) NULL) subject = grdData->Document (DBDocSubject);
-	if (domain	!= (char *) NULL)	domain  = netData->Document (DBDocGeoDomain);
-	if (version != (char *) NULL) version = "0.01pre";	
+	if (domain	!= (char *) NULL)  domain = netData->Document (DBDocGeoDomain);
+	if (version != (char *) NULL) version = (char *) "0.01pre";
 
 	data = new DBObjData (title,DBTypeTable);
 	data->Document (DBDocSubject,subject);

@@ -90,10 +90,10 @@ int main (int argc,char *argv [])
 	if ((dstData = DBGridToGrid (srcData)) == (DBObjData *) NULL)
 		{ delete srcData; return (CMfailed); }
 
-	if (title	== (char *) NULL) title = "Cell Statistics";
+	if (title	== (char *) NULL)   title = (char *) "Cell Statistics";
 	if (subject == (char *) NULL) subject = srcData->Document (DBDocSubject);
-	if (domain  == (char *) NULL) domain = srcData->Document (DBDocGeoDomain);
-	if (version == (char *) NULL) version = "0.01pre";
+	if (domain  == (char *) NULL)  domain = srcData->Document (DBDocGeoDomain);
+	if (version == (char *) NULL) version = (char *) "0.01pre";
 
 	dstData->Name (title);
 	dstData->Document (DBDocSubject,subject);

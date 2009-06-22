@@ -31,8 +31,8 @@ void RGISAnGridResampleCBK (Widget widget,RGISWorkspace *workspace,XmAnyCallback
 		char *selection;
 		DBObjTable *itemTable = inGData->Table (DBrNItems);
 		static Widget selectWidget = (Widget) NULL;
-		
-		if (selectWidget == (Widget) NULL) selectWidget = UISelectionCreate ("Select Nodata Category");
+
+		if (selectWidget == (Widget) NULL) selectWidget = UISelectionCreate ((char *) "Select Nodata Category");
 		if ((selection = UISelectObject (selectWidget,(DBObjectLIST<DBObject> *) itemTable)) == (char *) NULL)
 				noDataRec = (DBObjRecord *) NULL;
 		else	noDataRec = itemTable->Item (selection);
@@ -42,8 +42,8 @@ void RGISAnGridResampleCBK (Widget widget,RGISWorkspace *workspace,XmAnyCallback
 	outGData->Name (inGData->Name ());
 	if (UIDataHeaderForm (outGData))
 		{
-		clip = UIYesOrNo ("Clip to Network");
-		UIPauseDialogOpen ("Resampling Grid");
+		clip = UIYesOrNo ((char *) "Clip to Network");
+		UIPauseDialogOpen ((char *) "Resampling Grid");
 		if (RGlibGridResampling (inGData,noDataRec,clip ? netData : (DBObjData *) NULL, outGData) == DBSuccess)
 			workspace->CurrentData (outGData);
 		else	delete outGData;
@@ -70,9 +70,9 @@ void RGISAnGDiscUniformRunoffCBK (Widget widget,RGISWorkspace *workspace,XmAnyCa
 	DBObjRecord *relateRec;
 	static Widget selectWidget = (Widget) NULL, valueWidget = (Widget) NULL, tStepWidget = (Widget) NULL;
 
-	if (selectWidget == (Widget) NULL)	selectWidget = UISelectionCreate ("Select Time Series");
-	if (valueWidget == (Widget) NULL)	valueWidget  = UISelectionCreate ("Select Value Field");
-	if (tStepWidget == (Widget) NULL)	tStepWidget	 = UISelectionCreate ("Time Step Field");
+	if (selectWidget == (Widget) NULL)	selectWidget = UISelectionCreate ((char *) "Select Time Series");
+	if (valueWidget == (Widget) NULL)	valueWidget  = UISelectionCreate ((char *) "Select Value Field");
+	if (tStepWidget == (Widget) NULL)	tStepWidget	 = UISelectionCreate ((char *) "Time Step Field");
 
 	if ((selection = UISelectObject (selectWidget,(DBObjectLIST<DBObject> *) relateTBL)) == (char *) NULL) return;
 	if ((relateRec = relateTBL->Item (selection)) == (DBObjRecord *) NULL)
@@ -102,16 +102,16 @@ void RGISAnGDiscUniformRunoffCBK (Widget widget,RGISWorkspace *workspace,XmAnyCa
 		if ((tsTimeFLD = tsTBL->Field (selection)) == (DBObjTableField *) NULL)
 			{ fprintf (stderr,"Invalid time step field in: RGISAnGDiscUniformRunoffCBK ()\\nn"); return; }
 		}
-	
+
 	if ((selection = UISelectObject (valueWidget,(DBObjectLIST<DBObject> *) tsTBL->Fields (),DBTableFieldIsNumeric)) == (char *) NULL) return;
 	if ((tsValueFLD = tsTBL->Field (selection)) == (DBObjTableField *) NULL)
 		{ fprintf (stderr,"Corrupt Value Field in: RGISAnGDiscUniRunoffCBK ()\n"); return; }
-	
+
 	if ((runoffData = DBGridToGrid (gridData,DBTypeGridContinuous)) == (DBObjData *) NULL) return;
 	runoffData->Document (DBDocSubject,GHAASSubjRunoff);
 	if (UIDataHeaderForm (runoffData) == true)
 		{
-		UIPauseDialogOpen ("Creating Runoff Grid");
+		UIPauseDialogOpen ((char *) "Creating Runoff Grid");
 		if (RGlibGridUniformRunoff	  (gridData, tsData,
 												grdRelateFLD->String (relateRec),
 												tsJoinFLD->String (relateRec),
@@ -134,19 +134,19 @@ void RGISAnGDiscReclassDiscreteCBK (Widget widget,RGISWorkspace *workspace,XmAny
 	DBObjTable *srcItemTable = srcData->Table (DBrNItems);
 	static Widget selectWidget = (Widget) NULL;
 
-	if (selectWidget == (Widget) NULL) selectWidget = UISelectionCreate ("Select Time Series");
+	if (selectWidget == (Widget) NULL) selectWidget = UISelectionCreate ((char *) "Select Time Series");
 	if ((selection = UISelectObject (selectWidget,(DBObjectLIST<DBObject> *) (srcItemTable->Fields ()),DBTableFieldIsCategory)) == (char *) NULL)
 		return;
 	if ((dstData = DBGridToGrid (srcData,DBTypeGridDiscrete)) == (DBObjData *) NULL)
 		{ fprintf (stderr,"Grid Creation Error in: RGISAnGDiscReclassDiscreteCBK ()\n"); return; }
 	if (UIDataHeaderForm (dstData))
 		{
-		UIPauseDialogOpen ("Reclassing Grid");
+		UIPauseDialogOpen ((char *) "Reclassing Grid");
 		if (RGlibGridReclassDiscrete (srcData,selection,dstData) == DBSuccess)
 			workspace->CurrentData (dstData);
 		else delete dstData;
 		UIPauseDialogClose ();
-		}	
+		}
 	else
 		delete dstData;
 	}
@@ -160,7 +160,7 @@ void RGISAnGDiscReclassContinuousCBK (Widget widget,RGISWorkspace *workspace,XmA
 	DBObjTable *srcItemTable = srcData->Table (DBrNItems);
 	static Widget selectWidget = (Widget) NULL;
 
-	if (selectWidget == (Widget) NULL) selectWidget = UISelectionCreate ("Select Time Series");
+	if (selectWidget == (Widget) NULL) selectWidget = UISelectionCreate ((char *) "Select Time Series");
 	if ((selection = UISelectObject (selectWidget,(DBObjectLIST<DBObject> *) (srcItemTable->Fields ()),DBTableFieldIsNumeric)) == (char *) NULL)
 		return;
 	if ((dstData = DBGridToGrid (srcData,DBTypeGridContinuous)) == (DBObjData *) NULL)
@@ -168,12 +168,12 @@ void RGISAnGDiscReclassContinuousCBK (Widget widget,RGISWorkspace *workspace,XmA
 
 	if (UIDataHeaderForm (dstData))
 		{
-		UIPauseDialogOpen ("Reclassing Grid");
+		UIPauseDialogOpen ((char *) "Reclassing Grid");
 		if (RGlibGridReclassContinuous (srcData,selection,dstData) == DBSuccess)
 			workspace->CurrentData (dstData);
 		else	delete dstData;
 		UIPauseDialogClose ();
-		}	
+		}
 	else	delete dstData;
 	}
 
@@ -184,15 +184,15 @@ void RGISAnGDiscZoneHistCBK (Widget widget,RGISWorkspace *workspace,XmAnyCallbac
 	DBObjData *zGrdData = dataset->Data ();
 	DBObjData *cGrdData = zGrdData->LinkedData ();
 	DBObjData *tblData;
-	
+
 	if ((zGrdData == (DBObjData *) NULL) || (cGrdData == (DBObjData *) NULL)) return;
-	
+
 	tblData  = new DBObjData ("",DBTypeTable);
 	tblData->Document (DBDocGeoDomain,zGrdData->Document (DBDocGeoDomain));
 	tblData->Document (DBDocSubject,"Zone Histogram");
 	if (UIDataHeaderForm (tblData))
 		{
-		UIPauseDialogOpen ("Calculating Histogram");	
+		UIPauseDialogOpen ((char *) "Calculating Histogram");
 		if (RGlibGridZoneHistogram (zGrdData,cGrdData,tblData) == DBSuccess)
 			workspace->CurrentData (tblData);
 		else
@@ -209,15 +209,15 @@ void RGISAnGDiscZoneStatsCBK (Widget widget,RGISWorkspace *workspace,XmAnyCallba
 	DBObjData *zGrdData = dataset->Data ();
 	DBObjData *wGrdData = zGrdData->LinkedData ();
 	DBObjData *tblData;
-		
+
 	if ((zGrdData == (DBObjData *) NULL) || (wGrdData == (DBObjData *) NULL)) return;
-	
+
 	tblData  = new DBObjData ("",DBTypeTable);
 	tblData->Document (DBDocGeoDomain,zGrdData->Document (DBDocGeoDomain));
 	tblData->Document (DBDocSubject,"Zone Statistics");
 	if (UIDataHeaderForm (tblData))
 		{
-		UIPauseDialogOpen ("Calculating Statistics");	
+		UIPauseDialogOpen ((char *) "Calculating Statistics");
 		if (RGlibGridZoneStatistics (zGrdData, wGrdData, tblData) ==  DBSuccess)
 			workspace->CurrentData (tblData);
 		else	delete tblData;
@@ -251,7 +251,7 @@ void RGISAnGContPitsCBK (Widget widget,RGISWorkspace *workspace,XmAnyCallbackStr
 	DBGridIO *gridIO;
 
 	widget = widget; callData = callData;
-	
+
 	if (gridData == (DBObjData *) NULL)
 		{ fprintf (stderr,"Null Data in: _RGISAnGContPitsCBK ()\n"); return; }
 
@@ -288,7 +288,7 @@ void RGISAnGContPitsCBK (Widget widget,RGISWorkspace *workspace,XmAnyCallbackStr
 
 	gridIO = new DBGridIO (gridData);
 	netIO = new DBNetworkIO (netData);
-	
+
 	for (cellID = 0;cellID < netIO->CellNum ();++cellID)
 		{
 		cellRec = netIO->Cell (cellID);
@@ -306,7 +306,7 @@ void RGISAnGContPitsCBK (Widget widget,RGISWorkspace *workspace,XmAnyCallbackStr
 		if ((toCellRec = netIO->ToCell (cellRec)) == (DBObjRecord *) NULL) continue;
 
 		pourCellRec =  netIO->Cell (pourIDFLD->Int (toCellRec));
-		
+
 		if (gridIO->Value (netIO->Center (pourCellRec),&pourElev) == false)	pourElev = 0.0;
 		if (gridIO->Value (netIO->Center (cellRec),    &cellElev) == false)  cellElev = pourElev;
 		if (pourElev > cellElev)
@@ -321,8 +321,8 @@ void RGISAnGContPitsCBK (Widget widget,RGISWorkspace *workspace,XmAnyCallbackStr
 			pits = true;
 			}
 		}
-	
-	if (pits == false) { UIMessage ("No Pits were found"); return; }
+
+	if (pits == false) { UIMessage ((char *) "No Pits were found"); return; }
 	pntData = new DBObjData ("",DBTypeVectorPoint);
 	pntData->Document (DBDocGeoDomain,netData->Document (DBDocGeoDomain));
 	pntData->Document (DBDocSubject,GHAASSubjPits);
@@ -408,7 +408,7 @@ static DBInt _RGISAnnGContFindBasinMinCrest (void *ptr,DBObjRecord *cellRec)
 	{
 	DBFloat elev;
 	DBNetworkIO *netIO = (DBNetworkIO *) ptr;
-	
+
 	if (netIO->CellBasinCells (cellRec) > 1) return (false);
 	printf ("Itt Jartam: %d %d\n",cellRec->RowID (),netIO->CellBasinCells (cellRec));
 	if (_RGISAnnGContPourGridIO->Value (netIO->Center (cellRec),&elev))
@@ -431,7 +431,7 @@ void RGISAnGContPourCBK (Widget widget,RGISWorkspace *workspace,XmAnyCallbackStr
 	DBNetworkIO *netIO;
 
 	widget = widget; workspace = workspace; callData = callData;
-	
+
 	if (gridData == (DBObjData *) NULL) { fprintf (stderr,"Null Data in: _RGISAnGContPourCBK ()\n"); return; }
 
 	if ((netData = gridData->LinkedData ()) == (DBObjData *) NULL)
@@ -439,7 +439,7 @@ void RGISAnGContPourCBK (Widget widget,RGISWorkspace *workspace,XmAnyCallbackStr
 
 	_RGISAnnGContPourGridIO = new DBGridIO (gridData);
 	netIO = new DBNetworkIO (netData);
-	
+
 	for (basinID = 0;basinID < netIO->BasinNum ();++basinID)
 		{
 		basinRec = netIO->Basin (basinID);
@@ -472,7 +472,7 @@ void RGISAnGContCreateNetworkCBK (Widget widget,RGISWorkspace *workspace,XmAnyCa
 	netData->Document (DBDocSubject,"STNetwork");
 	if (UIDataHeaderForm (netData))
 		{
-		UIPauseDialogOpen ("Creating Networks");
+		UIPauseDialogOpen ((char *) "Creating Networks");
 		if (DBGridCont2Network (gridData,netData) == DBFault)	delete netData;
 		else workspace->CurrentData (netData);
 		UIPauseDialogClose ();
@@ -487,7 +487,7 @@ void RGISAnGContMergeCBK (Widget widget,RGISWorkspace *workspace,XmAnyCallbackSt
 	DBDataset *dataset = UIDataset ();
 	DBObjData *mGridData = dataset->Data (), *lGridData, *nGridData;;
 	DBRegion extent;
-	
+
 	for (lGridData = mGridData;(lGridData != (DBObjData *) NULL);lGridData = lGridData->LinkedData ())
 		if ((lGridData->Flags () & DBObjectFlagProcessed) == DBObjectFlagProcessed)	break;
 		else	if (lGridData->Type () == DBTypeGridContinuous)
@@ -520,8 +520,8 @@ void RGISAnGContMergeCBK (Widget widget,RGISWorkspace *workspace,XmAnyCallbackSt
 		DBObjTableField *valueSizeFLD = layerTable->Field (DBrNValueSize);
 		DBObjTableField *layerFLD 		= layerTable->Field (DBrNLayer);
 		DBObjTableField *missingValueFLD	= itemTable->Field (DBrNMissingValue);
-		
-		UIPauseDialogOpen ("Merging Continuous Grids");
+
+		UIPauseDialogOpen ((char *) "Merging Continuous Grids");
 		pos.Col = (int) (ceil ((extent.UpperRight.X - extent.LowerLeft.X) / gridIO->CellWidth  ()));
 		pos.Row = (int) (ceil ((extent.UpperRight.Y - extent.LowerLeft.Y) / gridIO->CellHeight ()));
 		for (layerID = 0;layerID < gridIO->LayerNum ();++layerID)
@@ -530,7 +530,7 @@ void RGISAnGContMergeCBK (Widget widget,RGISWorkspace *workspace,XmAnyCallbackSt
 			if ((layerRec->Flags () & DBObjectFlagIdle) == DBObjectFlagIdle) continue;
 			if ((nLayerRec = layerTable->Add (layerRec->Name ())) == (DBObjRecord *) NULL)
 				{ delete gridIO; delete nGridData; return; }
-			
+
 			cellWidthFLD->Float  (nLayerRec,gridIO->CellWidth ());
 			cellHeightFLD->Float (nLayerRec,gridIO->CellHeight ());
 			rowNumFLD->Int (nLayerRec,pos.Row);
@@ -602,7 +602,7 @@ void RGISAnGContAbsCBK (Widget widget,RGISWorkspace *workspace,XmAnyCallbackStru
 	grdData = new DBObjData (*grdData);
 	if (UIDataHeaderForm (grdData))
 		{
-		UIPauseDialogOpen ("Calculating Absolute Values");
+		UIPauseDialogOpen ((char *) "Calculating Absolute Values");
 		DBGridOperationAbs (grdData);
 		UIPauseDialogClose ();
 		workspace->CurrentData (grdData);
@@ -620,8 +620,8 @@ void RGISAnGContNoNegCBK (Widget widget,RGISWorkspace *workspace,XmAnyCallbackSt
 	grdData = new DBObjData (*grdData);
 	if (UIDataHeaderForm (grdData))
 		{
-		setZero = UIYesOrNo ("Set to Zero");
-		UIPauseDialogOpen ("Eliminating Negative Values");
+		setZero = UIYesOrNo ((char *) "Set to Zero");
+		UIPauseDialogOpen ((char *) "Eliminating Negative Values");
 		if (RGlibGridNoNegatives (grdData,setZero) == DBSuccess)
 			workspace->CurrentData (grdData);
 		else	delete grdData;
@@ -642,8 +642,8 @@ void RGISAnGContAddCBK (Widget widget,RGISWorkspace *workspace,XmAnyCallbackStru
 	grdData = new DBObjData (*grdData);
 	if (UIDataHeaderForm (grdData))
 		{
-		mergeMissingVal = UIYesOrNo ("Merge Missing Values?");
-		UIPauseDialogOpen ("Adding Grids");
+		mergeMissingVal = UIYesOrNo ((char *) "Merge Missing Values?");
+		UIPauseDialogOpen ((char *) "Adding Grids");
 		DBGridOperation (grdData,lnkData,DBMathOperatorAdd,mergeMissingVal);
 		UIPauseDialogClose ();
 		workspace->CurrentData (grdData);
@@ -663,8 +663,8 @@ void RGISAnGContSubtractCBK (Widget widget,RGISWorkspace *workspace,XmAnyCallbac
 	grdData = new DBObjData (*grdData);
 	if (UIDataHeaderForm (grdData))
 		{
-		mergeMissingVal = UIYesOrNo ("Merge Missing Values?");
-		UIPauseDialogOpen ("Subtracting Grids");
+		mergeMissingVal = UIYesOrNo ((char *) "Merge Missing Values?");
+		UIPauseDialogOpen ((char *) "Subtracting Grids");
 		DBGridOperation (grdData,lnkData,DBMathOperatorSub,mergeMissingVal);
 		UIPauseDialogClose ();
 		workspace->CurrentData (grdData);
@@ -684,8 +684,8 @@ void RGISAnGContMultiplyCBK (Widget widget,RGISWorkspace *workspace,XmAnyCallbac
 	grdData = new DBObjData (*grdData);
 	if (UIDataHeaderForm (grdData))
 		{
-		mergeMissingVal = UIYesOrNo ("Merge Missing Values?");
-		UIPauseDialogOpen ("Multiplying Grids");
+		mergeMissingVal = UIYesOrNo ((char *) "Merge Missing Values?");
+		UIPauseDialogOpen ((char *) "Multiplying Grids");
 		DBGridOperation (grdData,lnkData,DBMathOperatorMul,mergeMissingVal);
 		UIPauseDialogClose ();
 		workspace->CurrentData (grdData);
@@ -705,8 +705,8 @@ void RGISAnGContDivideCBK (Widget widget,RGISWorkspace *workspace,XmAnyCallbackS
 	grdData = new DBObjData (*grdData);
 	if (UIDataHeaderForm (grdData))
 		{
-		mergeMissingVal = UIYesOrNo ("Merge Missing Values?");
-		UIPauseDialogOpen ("Dividing Grids");
+		mergeMissingVal = UIYesOrNo ((char *) "Merge Missing Values?");
+		UIPauseDialogOpen ((char *) "Dividing Grids");
 		DBGridOperation (grdData,lnkData,DBMathOperatorDiv,mergeMissingVal);
 		UIPauseDialogClose ();
 		workspace->CurrentData (grdData);
@@ -722,12 +722,12 @@ void RGISAnGContMakeDiscreteAddButtonCBK (Widget button, Widget textField, XmAny
 	double newBin, bin;
 	Widget list;
 	XmString string, *items;
-	
+
 	XtVaGetValues (button, XmNuserData, &list, NULL);
 	XtVaGetValues (list,XmNitems, &items, XmNitemCount, &itemCount, NULL);
 
 	f0Text = XmTextFieldGetString (textField);
-	
+
 	for (i = 0;i < (int) strlen (f0Text);i++)
 		if (((f0Text [i] < '0') || (f0Text [i] > '9')) && (f0Text [i] != '-') && (f0Text [i] != '+') && (f0Text [i] != '.'))	f0Text [i] = '\0';
 	newBin = atof (f0Text);
@@ -754,15 +754,15 @@ void RGISAnGContMakeDiscreteLoadButtonCBK (Widget button, Widget textField, XmAn
 	Widget list;
 	static Widget fileSelect = (Widget) NULL;
 	XmString string;
-	
+
 	XtVaGetValues (button, XmNuserData, &list, NULL);
 
-	if (fileSelect == NULL) fileSelect = UIFileSelectionCreate ("Load Binfile",NULL,"*.txt",XmFILE_REGULAR);
+	if (fileSelect == NULL) fileSelect = UIFileSelectionCreate ((char *) "Load Binfile",NULL,(char *) "*.txt",XmFILE_REGULAR);
 	if ((fileName = UIFileSelection (fileSelect,true)) == NULL) return;
 
 	if ((inFile = fopen (fileName,"r")) == (FILE *)  NULL)
 		{ perror ("File Opening Error in: RGISAnGContMakeDiscreteLoadButtonCBK ()"); return; }
-	
+
 	XmListDeleteAllItems (list);
 	for (i = 0;fgets (fText,sizeof (fText) - 1,inFile) != (char *) NULL; i++)
 		{
@@ -783,16 +783,16 @@ void RGISAnGContMakeDiscreteSaveButtonCBK (Widget button, Widget textField, XmAn
 	Widget list;
 	static Widget fileSelect = (Widget) NULL;
 	XmString *items;
-	
+
 	XtVaGetValues (button, XmNuserData, &list, NULL);
 	XtVaGetValues (list,XmNitems, &items, XmNitemCount, &itemCount, NULL);
 
-	if (fileSelect == NULL) fileSelect = UIFileSelectionCreate ("Load Binfile",NULL,"*.txt",XmFILE_REGULAR);
+	if (fileSelect == NULL) fileSelect = UIFileSelectionCreate ((char *) "Load Binfile",NULL,(char *) "*.txt",XmFILE_REGULAR);
 	if ((fileName = UIFileSelection (fileSelect,false)) == NULL) return;
 
 	if ((outFile = fopen (fileName,"w")) == (FILE *)  NULL)
 		{ perror ("File Opening Error in: RGISAnGContMakeDiscreteSaveButtonCBK ()"); return; }
-	
+
 	for (i = 0;i < itemCount;i++)
 		{
 		XmStringGetLtoR (items [i],UICharSetNormal,&fText);
@@ -823,8 +823,8 @@ void RGISAnGContMakeDiscreteRemoveButtonCBK (Widget button, Widget textField, Xm
 		}
 	XmListDeletePos (list, i + 1);
 	if (itemCount > 1) XmListSelectPos (list,i + (itemCount - 1 > i? 1 : 0), True);
-	else	XtSetSensitive (button, False);	
-	XtFree (f0Text);	
+	else	XtSetSensitive (button, False);
+	XtFree (f0Text);
 	}
 
 void RGISAnGContMakeDiscreteListCBK (Widget list, Widget textField, XmListCallbackStruct *callData)
@@ -832,9 +832,9 @@ void RGISAnGContMakeDiscreteListCBK (Widget list, Widget textField, XmListCallba
 	{
 	char *fText;
 	Widget removeButton;
-	
+
 	XtVaGetValues (list,XmNuserData, &removeButton, NULL);
-	
+
 	XmStringGetLtoR (callData->item,UICharSetNormal,&fText);
 	XmTextFieldSetString (textField,fText);
 	XtSetSensitive (removeButton, True);
@@ -852,7 +852,7 @@ void RGISAnGContMakeDiscreteCBK (Widget widget,RGISWorkspace *workspace,XmAnyCal
 	DBObjData *srcData = dataset->Data ();
 	static Widget dShell = (Widget) NULL, mainForm;
 	static Widget textField, list, addButton, removeButton, saveButton;
-	
+
 	if (dShell == (Widget) NULL)
 		{
 		int argNum;
@@ -860,69 +860,69 @@ void RGISAnGContMakeDiscreteCBK (Widget widget,RGISWorkspace *workspace,XmAnyCal
 		Arg wargs [20];
 		Widget label, loadButton;
 		XmString string;
-		
-		dShell = UIDialogForm ("Bin Dialog",false);
+
+		dShell = UIDialogForm ((char *) "Bin Dialog",false);
 		mainForm = UIDialogFormGetMainForm (dShell);
 
-		string = XmStringCreate ("Add",UICharSetBold);
+		string = XmStringCreate ((char *) "Add",UICharSetBold);
 		addButton = XtVaCreateManagedWidget ("RGISAnGContMakeDiscreteAddButton",xmPushButtonWidgetClass,mainForm,
-								XmNtopAttachment,			XmATTACH_FORM,
-								XmNtopOffset,				10,
-								XmNrightAttachment,		XmATTACH_FORM,
-								XmNrightOffset,			10,
-								XmNmarginWidth,			10,
-								XmNmarginHeight,			5,
-								XmNtraversalOn,			False,
-								XmNlabelString,			string,
-								XmNnoResize,				True,
-								XmNsensitive,				False,
+								XmNtopAttachment,       XmATTACH_FORM,
+								XmNtopOffset,           10,
+								XmNrightAttachment,     XmATTACH_FORM,
+								XmNrightOffset,         10,
+								XmNmarginWidth,         10,
+								XmNmarginHeight,        5,
+								XmNtraversalOn,         False,
+								XmNlabelString,         string,
+								XmNnoResize,            True,
+								XmNsensitive,           False,
 								NULL);
 		XmStringFree (string);
 
 		textField = XtVaCreateManagedWidget ("RGISAnGContMakeDiscreteField",xmTextFieldWidgetClass,mainForm,
-								XmNtopAttachment,			XmATTACH_OPPOSITE_WIDGET,
-								XmNtopWidget,				addButton,
-								XmNrightAttachment,		XmATTACH_WIDGET,
-								XmNrightWidget,			addButton,
-								XmNrightOffset,			10,
-								XmNbottomAttachment,		XmATTACH_OPPOSITE_WIDGET,
-								XmNbottomWidget,			addButton,
-								XmNmaxLength,				10,
-								XmNcolumns,					10,
+								XmNtopAttachment,       XmATTACH_OPPOSITE_WIDGET,
+								XmNtopWidget,           addButton,
+								XmNrightAttachment,     XmATTACH_WIDGET,
+								XmNrightWidget,         addButton,
+								XmNrightOffset,         10,
+								XmNbottomAttachment,    XmATTACH_OPPOSITE_WIDGET,
+								XmNbottomWidget,        addButton,
+								XmNmaxLength,           10,
+								XmNcolumns,             10,
 								NULL);
 
-		string = XmStringCreate ("Bin value:",UICharSetBold);
+		string = XmStringCreate ((char *) "Bin value:",UICharSetBold);
 		label = XtVaCreateManagedWidget ("RGISAnGContMakeDiscreteFieldLabel",xmLabelWidgetClass,mainForm,
-								XmNtopAttachment,			XmATTACH_OPPOSITE_WIDGET,
-								XmNtopWidget,				textField,
-								XmNleftAttachment,		XmATTACH_FORM,
-								XmNleftOffset,				20,
-								XmNbottomAttachment,		XmATTACH_OPPOSITE_WIDGET,
-								XmNbottomWidget,			textField,
-								XmNlabelString,			string,
+								XmNtopAttachment,       XmATTACH_OPPOSITE_WIDGET,
+								XmNtopWidget,           textField,
+								XmNleftAttachment,      XmATTACH_FORM,
+								XmNleftOffset,          20,
+								XmNbottomAttachment,    XmATTACH_OPPOSITE_WIDGET,
+								XmNbottomWidget,        textField,
+								XmNlabelString,         string,
 								NULL);
 		XmStringFree (string);
 
-		string = XmStringCreate ("Remove",UICharSetBold);
+		string = XmStringCreate ((char *) "Remove",UICharSetBold);
 		removeButton = XtVaCreateManagedWidget ("RGISAnGContMakeDiscreteRemoveButton",xmPushButtonWidgetClass,mainForm,
-								XmNtopAttachment,			XmATTACH_WIDGET,
-								XmNtopWidget,				addButton,
-								XmNtopOffset,				10,
-								XmNrightAttachment,		XmATTACH_FORM,
-								XmNrightOffset,			10,
-								XmNmarginWidth,			10,
-								XmNmarginHeight,			5,
-								XmNtraversalOn,			False,
-								XmNlabelString,			string,
-								XmNsensitive,				False,
+								XmNtopAttachment,       XmATTACH_WIDGET,
+								XmNtopWidget,           addButton,
+								XmNtopOffset,           10,
+								XmNrightAttachment,     XmATTACH_FORM,
+								XmNrightOffset,         10,
+								XmNmarginWidth,         10,
+								XmNmarginHeight,        5,
+								XmNtraversalOn,         False,
+								XmNlabelString,         string,
+								XmNsensitive,           False,
 								NULL);
 		XmStringFree (string);
 		XtVaGetValues (removeButton,XmNwidth, &bWidth, NULL);
 		XtVaSetValues (addButton,XmNwidth, bWidth, NULL);
 
 		argNum = 0;
-		XtSetArg (wargs [argNum],	XmNtopAttachment,				XmATTACH_WIDGET);	++argNum;
-		XtSetArg (wargs [argNum],	XmNtopWidget,					textField);			++argNum;
+		XtSetArg (wargs [argNum],	XmNtopAttachment,   XmATTACH_WIDGET);  ++argNum;
+		XtSetArg (wargs [argNum],	XmNtopWidget,       textField);        ++argNum;
 		XtSetArg (wargs [argNum],	XmNtopOffset,					10);					++argNum;
 		XtSetArg (wargs [argNum],	XmNleftAttachment,			XmATTACH_FORM);	++argNum;
 		XtSetArg (wargs [argNum],	XmNleftOffset,					20); 					++argNum;
@@ -972,12 +972,12 @@ void RGISAnGContMakeDiscreteCBK (Widget widget,RGISWorkspace *workspace,XmAnyCal
 								XmNlabelString,			string,
 								NULL);
 		XmStringFree (string);
-		
+
 		XtAddCallback (UIDialogFormGetOkButton (dShell),XmNactivateCallback,(XtCallbackProc) UIAuxSetBooleanTrueCBK,&proc);
-		XtVaSetValues (addButton, XmNuserData, list, NULL); 
-		XtVaSetValues (removeButton, XmNuserData, list, NULL); 
-		XtVaSetValues (loadButton, XmNuserData, list, NULL); 
-		XtVaSetValues (saveButton, XmNuserData, list, NULL); 
+		XtVaSetValues (addButton, XmNuserData, list, NULL);
+		XtVaSetValues (removeButton, XmNuserData, list, NULL);
+		XtVaSetValues (loadButton, XmNuserData, list, NULL);
+		XtVaSetValues (saveButton, XmNuserData, list, NULL);
 		XtAddCallback (addButton,XmNactivateCallback,(XtCallbackProc) RGISAnGContMakeDiscreteAddButtonCBK,textField);
 		XtAddCallback (removeButton,XmNactivateCallback,(XtCallbackProc) RGISAnGContMakeDiscreteRemoveButtonCBK,textField);
 		XtAddCallback (loadButton,XmNactivateCallback,(XtCallbackProc) RGISAnGContMakeDiscreteLoadButtonCBK,textField);
@@ -1010,9 +1010,9 @@ void RGISAnGContMakeDiscreteCBK (Widget widget,RGISWorkspace *workspace,XmAnyCal
 		int item;
 		DBObjData *dstData;
 		XmString *items;
-		
+
 		XtVaGetValues (list,XmNitems, &items, XmNitemCount, &itemCount, NULL);
-		
+
 		if ((dstData = DBGridToGrid (srcData,DBTypeGridDiscrete)) == (DBObjData *) NULL) return;
 		if (UIDataHeaderForm (dstData))
 			{

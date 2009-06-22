@@ -22,7 +22,7 @@ void RGISAnGNUXYPlotCBK (Widget widget,RGISWorkspace *workspace,XmAnyCallbackStr
 
 	{
 	FILE *file;
-	char command [DBDataFileNameLen * 2 + DBStringLength]; 
+	char command [DBDataFileNameLen * 2 + DBStringLength];
 	const char *ghaasDir;
 	char *f0Text, *f1Text, fileName [12];
 	int allowOk, fd;
@@ -40,10 +40,10 @@ void RGISAnGNUXYPlotCBK (Widget widget,RGISWorkspace *workspace,XmAnyCallbackStr
 		{
 		Widget button;
 
-		dShell = UIDialogForm ("Compare Fields",false);
+		dShell = UIDialogForm ((char *) "Compare Fields",false);
 		mainForm = UIDialogFormGetMainForm (dShell);
-		
-		string = XmStringCreate ("Select",UICharSetBold);
+
+		string = XmStringCreate ((char *) "Select",UICharSetBold);
 		button = XtVaCreateManagedWidget ("RGISEdiCompFieldsButton",xmPushButtonWidgetClass,mainForm,
 								XmNtopAttachment,			XmATTACH_FORM,
 								XmNtopOffset,				10,
@@ -67,7 +67,7 @@ void RGISAnGNUXYPlotCBK (Widget widget,RGISWorkspace *workspace,XmAnyCallbackStr
 								XmNcolumns,					DBStringLength / 2,
 								NULL);
 		XtAddCallback (button,XmNactivateCallback,(XtCallbackProc) UIAuxObjectSelectCBK,field0TextF);
-		string = XmStringCreate ("X Field:",UICharSetBold);
+		string = XmStringCreate ((char *) "X Field:",UICharSetBold);
 		XtVaCreateManagedWidget ("RGISEditCompFieldNameLabel",xmLabelWidgetClass,mainForm,
 								XmNtopAttachment,			XmATTACH_OPPOSITE_WIDGET,
 								XmNtopWidget,				button,
@@ -81,8 +81,8 @@ void RGISAnGNUXYPlotCBK (Widget widget,RGISWorkspace *workspace,XmAnyCallbackStr
 								XmNlabelString,			string,
 								NULL);
 		XmStringFree (string);
-		
-		string = XmStringCreate ("Select",UICharSetBold);
+
+		string = XmStringCreate ((char *) "Select",UICharSetBold);
 		button = XtVaCreateManagedWidget ("RGISEditCompField0Button",xmPushButtonWidgetClass,mainForm,
 								XmNtopAttachment,			XmATTACH_WIDGET,
 								XmNtopWidget,				button,
@@ -107,7 +107,7 @@ void RGISAnGNUXYPlotCBK (Widget widget,RGISWorkspace *workspace,XmAnyCallbackStr
 								XmNcolumns,					DBStringLength / 2,
 								NULL);
 		XtAddCallback (button,XmNactivateCallback,(XtCallbackProc) UIAuxObjectSelectCBK,field1TextF);
-		string = XmStringCreate ("Y Field:",UICharSetBold);
+		string = XmStringCreate ((char *) "Y Field:",UICharSetBold);
 		XtVaCreateManagedWidget ("RGISEditCompField1Label",xmLabelWidgetClass,mainForm,
 								XmNtopAttachment,			XmATTACH_OPPOSITE_WIDGET,
 								XmNtopWidget,				button,
@@ -121,7 +121,7 @@ void RGISAnGNUXYPlotCBK (Widget widget,RGISWorkspace *workspace,XmAnyCallbackStr
 								XmNlabelString,			string,
 								NULL);
 		XmStringFree (string);
-		string = XmStringCreate ("Logarithmic Scale",UICharSetBold);
+		string = XmStringCreate ((char *) "Logarithmic Scale",UICharSetBold);
 		toggle = XtVaCreateManagedWidget ("RGISEditCompLogScaleToggle",xmToggleButtonWidgetClass,mainForm,
 								XmNtopAttachment,			XmATTACH_WIDGET,
 								XmNtopWidget,				button,
@@ -137,7 +137,7 @@ void RGISAnGNUXYPlotCBK (Widget widget,RGISWorkspace *workspace,XmAnyCallbackStr
 								XmNset,						False,
 								NULL);
  		XmStringFree (string);
- 		XtAddCallback (toggle,XmNvalueChangedCallback,(XtCallbackProc) UIAuxSetToggleCBK, (XtPointer) &logScale); 
+ 		XtAddCallback (toggle,XmNvalueChangedCallback,(XtCallbackProc) UIAuxSetToggleCBK, (XtPointer) &logScale);
 
 		XtAddCallback (UIDialogFormGetOkButton (dShell),XmNactivateCallback,(XtCallbackProc) UIAuxSetBooleanTrueCBK,&plot);
 		}
@@ -150,11 +150,11 @@ void RGISAnGNUXYPlotCBK (Widget widget,RGISWorkspace *workspace,XmAnyCallbackStr
 		f0Text = XmTextFieldGetString (field0TextF);
 		f1Text = XmTextFieldGetString (field1TextF);
 		allowOk = (strlen (f0Text) > 0) && (strlen (f1Text) > 0);
-		XtFree (f0Text);	XtFree (f1Text);	
+		XtFree (f0Text);	XtFree (f1Text);
 		XtSetSensitive (UIDialogFormGetOkButton (dShell),allowOk);
 		}
 	UIDialogFormPopdown (dShell);
-	
+
 	if (plot)
 		{
 		char buffer [256];
@@ -163,11 +163,11 @@ void RGISAnGNUXYPlotCBK (Widget widget,RGISWorkspace *workspace,XmAnyCallbackStr
 		DBObjTableField *field0 = itemTable->Field (f0Text = XmTextFieldGetString (field0TextF));
 		DBObjTableField *field1 = itemTable->Field (f1Text = XmTextFieldGetString (field1TextF));
 		DBObjRecord *record;
-		
+
 		XtFree (f0Text);	XtFree (f1Text);
 		if ((field0 == (DBObjTableField *) NULL) || (field1 == (DBObjTableField *) NULL))
 			{ fprintf (stderr,"Invalid Compare Fields in: _RGISEditCompareFieldsCBK ()\n");	return; }
-		
+
 		strcpy (fileName,"ghaasXXXXXX");
 		if ((fd = mkstemp (fileName)) == DBFault)
 			{ perror ("File Opening Error in: RGISAnGNUXYPlotCBK ()"); return; }
@@ -182,7 +182,7 @@ void RGISAnGNUXYPlotCBK (Widget widget,RGISWorkspace *workspace,XmAnyCallbackStr
 			if ((record->Flags () & DBObjectFlagIdle) == DBObjectFlagIdle) continue;
 			sprintf (buffer,"%d\t\"%s\"\t%d",record->RowID () + 1,record->Name (),
 						(record->Flags () & DBObjectFlagSelected) == DBObjectFlagSelected ? true : false);
-			if (field0->Type () == DBTableFieldInt) 
+			if (field0->Type () == DBTableFieldInt)
 				{
 				intVal = field0->Int (record);
 				if (intVal == field0->IntNoData ()) continue;
@@ -194,7 +194,7 @@ void RGISAnGNUXYPlotCBK (Widget widget,RGISWorkspace *workspace,XmAnyCallbackStr
 				if (CMmathEqualValues (val,field0->FloatNoData ())) continue;
 				sprintf (buffer + strlen (buffer),"\t%f",val);
 				}
-			if (field1->Type () == DBTableFieldInt) 
+			if (field1->Type () == DBTableFieldInt)
 				{
 				intVal = field1->Int (record);
 				if (intVal == field1->IntNoData ()) continue;

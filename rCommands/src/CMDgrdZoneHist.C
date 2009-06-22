@@ -104,15 +104,15 @@ int main (int argc,char *argv [])
 	if ((ret == DBFault) || (cGrdData->Type () != DBTypeGridDiscrete))
 		{ delete zGrdData; delete cGrdData; return (CMfailed); }
 
-	if (title	== (char *) NULL)	title   = "Zone Histogram";
-	if (subject == (char *) NULL)	subject = cGrdData->Document (DBDocSubject);
-	if (domain	== (char *) NULL)	domain  = zGrdData->Document (DBDocGeoDomain);
-	if (version == (char *) NULL) version = "0.01pre";	
+	if (title	== (char *) NULL)   title = (char *) "Zone Histogram";
+	if (subject == (char *) NULL) subject = cGrdData->Document (DBDocSubject);
+	if (domain	== (char *) NULL)  domain = zGrdData->Document (DBDocGeoDomain);
+	if (version == (char *) NULL) version = (char *) "0.01pre";
 
 	data = new DBObjData (title,DBTypeTable);
 	data->Document (DBDocSubject,subject);
 	data->Document (DBDocGeoDomain,domain);
-	data->Document (DBDocVersion,version);	
+	data->Document (DBDocVersion,version);
 
 	if ((ret = RGlibGridZoneHistogram (zGrdData,cGrdData,data)) == DBSuccess)
 		ret = (argNum > 2) && (strcmp (argv [2],"-") != 0) ? data->Write (argv [2]) : data->Write (stdout);

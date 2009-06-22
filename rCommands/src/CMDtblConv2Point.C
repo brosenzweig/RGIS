@@ -21,8 +21,8 @@ int main (int argc,char *argv [])
 	int argPos, argNum = argc, ret, verbose = false;
 	char *tableName = DBrNItems;
 	char *nameSTR   = (char *) NULL;
-	char *xcoordSTR = "XCoord";
-	char *ycoordSTR = "YCoord";
+	char *xcoordSTR = (char *) "XCoord";
+	char *ycoordSTR = (char *) "YCoord";
 	char *title     = (char *) NULL, *subject = (char *) NULL;
 	char *domain    = (char *) NULL, *version = (char *) NULL;
 	DBObjData  *data, *pntData;
@@ -142,15 +142,15 @@ int main (int argc,char *argv [])
 	if ((yField = table->Field (ycoordSTR)) == (DBObjTableField *) NULL)
 		{ CMmsgPrint (CMmsgUsrError,"YCoord field!\n"); delete data; return (CMfailed); }
 
-	pntData = new DBObjData ("",DBTypeVectorPoint);	
-	if (title	== (char *) NULL) title   = "Converted Point coverage";
-	if (subject == (char *) NULL) subject = "Points";
+	pntData = new DBObjData ("",DBTypeVectorPoint);
+	if (title	== (char *) NULL)  title  = (char *) "Converted Point coverage";
+	if (subject == (char *) NULL) subject = (char *) "Points";
 	if (domain	== (char *) NULL) domain  = data->Document (DBDocGeoDomain);
-	if (version == (char *) NULL) version = "0.01pre";
+	if (version == (char *) NULL) version = (char *) "0.01pre";
 	pntData->Name (title);
 	pntData->Document (DBDocSubject,subject);
 	pntData->Document (DBDocGeoDomain,domain);
-	pntData->Document (DBDocVersion,version);	
+	pntData->Document (DBDocVersion,version);
 
 	pntTable    = pntData->Table (DBrNItems);
 	symbols     = pntData->Table (DBrNSymbols);

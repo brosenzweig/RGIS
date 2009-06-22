@@ -148,7 +148,7 @@ int main (int argc,char *argv [])
 	if ((table = data->Table (tableName)) == (DBObjTable *) NULL)
 		{ CMmsgPrint (CMmsgUsrError,"Invalid table!\n"); delete data; return (CMfailed); }
 
-	if (fieldName == (char *) NULL) fieldName = "Date";
+	if (fieldName == (char *) NULL) fieldName = (char *) "Date";
 	if ((srcField = table->Field (fieldName)) == (DBObjTableField *) NULL)
 		{ CMmsgPrint (CMmsgUsrError,"Missing date field!\n"); delete data; return (CMfailed); }
 	if ((srcField->Type () != DBTableFieldString) &&
@@ -163,7 +163,7 @@ int main (int argc,char *argv [])
 			table->AddField (yearField);
 			}
 		}
-	
+
 	if (monthFieldName != (char *) NULL)
 		{
 		if ((monthField = table->Field (monthFieldName)) == (DBObjTableField *) NULL)
@@ -172,7 +172,7 @@ int main (int argc,char *argv [])
 			table->AddField (monthField);
 			}
 		}
-	
+
 	if (dayFieldName != (char *) NULL)
 		{
 		if (monthField == (DBObjTableField *) NULL)
@@ -194,7 +194,7 @@ int main (int argc,char *argv [])
 			table->AddField (hourField);
 			}
 		}
-	
+
 	if (minFieldName != (char *) NULL)
 		{
 		if (hourField == (DBObjTableField *) NULL)
@@ -205,7 +205,7 @@ int main (int argc,char *argv [])
 			table->AddField (minField);
 			}
 		}
-	
+
 	for (recID = 0;recID < table->ItemNum ();++recID)
 		{
 		record = table->Item (recID);

@@ -121,7 +121,7 @@ int getValuesStandardIn(bool batchValue){
 	skipComments();
 	cin >> rowOrder;
 	if(rowOrder<0 || rowOrder > 1){cout << "Err-- row order number is not a boolean!\n"; return 0;}
-  
+
 	if(batchValue == false) cout << "\tFile Type: 0=Binary, 1=Ascii?> ";
 	skipComments();
 	cin >> fileType;
@@ -189,7 +189,7 @@ int getValuesStandardIn(bool batchValue){
 
 	return 1;
 }
-	
+
 int getValuesFromFileHeader(bool batchMode){
 
 	bool ListFileMode = false;
@@ -197,7 +197,7 @@ int getValuesFromFileHeader(bool batchMode){
 	fileType = 1; //set the file type to ascii
 	if(batchMode == true) skipComments();
 
-	if(batchMode == false) cout << "\tBinary Type: 0=byte, 1=short, 2=long, 3=float, 4=double?> ";  
+	if(batchMode == false) cout << "\tBinary Type: 0=byte, 1=short, 2=long, 3=float, 4=double?> ";
 	skipComments();
 	cin >> binaryType;
 	if(binaryType<0 || binaryType>4){cout << "ERR- Binary_Type: invalid numbers!\n"; return 0;}
@@ -230,7 +230,7 @@ int getValuesFromFileHeader(bool batchMode){
 	if(!readHeader(ListFileMode)) return 0;
 	else return 1;
 }
-  
+
 int readHeader(bool ListFileMode){
 	char JUNK [40];
 	char testFileName [DBDataFileNameLen];
@@ -253,7 +253,7 @@ int readHeader(bool ListFileMode){
 		infile >> JUNK;    infile >> cellWidth; cellHeight = cellWidth; //cellsize
 		infile >> JUNK;    infile >> missingVal;               //nodata_val
 
-		if(cellCenter){ 
+		if(cellCenter){
 			//if we are measuring from the center of a cell instead of the corner
 			//set it so it reads from the corner.
 			llXCoord = llXCoord - (cellWidth/2);
@@ -262,17 +262,17 @@ int readHeader(bool ListFileMode){
 
 		return 1;
 		}
-  
+
 	cout << "I couldn't read the file: " << listFileName << "... check the file for errors!\n";
 	if(ListFileMode)
 	cout << "List file: the problem could either be in there or in " << testFileName << "\n";
 	return 0;
-}  
-       
+}
+
 int main(int argc, char* argv[])
 {
-	if(Exists_In_Arguments("-h","--help",argc,argv) != -1){showUsage(argv[0]); return 0;}
-	if(Exists_In_Arguments("-b","--batch",argc,argv) != -1) Batch_Mode = true;
+	if (Exists_In_Arguments ((char *) "-h", (char *) "--help",  argc, argv) != -1) {showUsage(argv[0]); return 0;}
+	if (Exists_In_Arguments ((char *) "-b", (char *) "--batch", argc, argv) != -1)  Batch_Mode = true;
 
 	if(Open_File(argc,argv) == 0){
 		if(!getValuesStandardIn(Batch_Mode)) return 0;
@@ -288,21 +288,21 @@ int main(int argc, char* argv[])
 
 	if(Continuous_Grid_Mode)
 		grdData = new DBObjData ("",DBTypeGridContinuous);
-	else 
+	else
 		grdData = new DBObjData ("",DBTypeGridDiscrete);
-  
-  
+
+
 	grdData -> Name("Untitled");
 	FILE *inFILE, *lstFILE = (FILE *) NULL;
 	char fileName [DBDataFileNameLen], recordName [DBStringLength];
 	DBInt pathLen, itemSize, chunk, i, j, row, col, recordLen;
 	DBCoordinate coord;
 	DBRegion extent;
-	DBObjTable *layerTable = grdData->Table (DBrNLayers);  
+	DBObjTable *layerTable = grdData->Table (DBrNLayers);
 	DBObjTable *itemTable  = grdData->Table (DBrNItems);
 	DBObjTableField *missingValueFLD   = grdData->Type () == DBTypeGridContinuous ?
 		itemTable->Field (DBrNMissingValue) : (DBObjTableField *) NULL;
-	DBObjTableField *rowNumFLD		= layerTable->Field (DBrNRowNum);  
+	DBObjTableField *rowNumFLD		= layerTable->Field (DBrNRowNum);
 	DBObjTableField *colNumFLD 	= layerTable->Field (DBrNColNum);
 	DBObjTableField *cellWidthFLD = layerTable->Field (DBrNCellWidth);
 	DBObjTableField *cellHeightFLD= layerTable->Field (DBrNCellHeight);
@@ -347,7 +347,7 @@ int main(int argc, char* argv[])
 			delete grdData;
 			return 0;
 		}
-  
+
 	for (pathLen = strlen (listFileName) - 1;(pathLen > 0) && (listFileName [pathLen] != '/');--pathLen);
 	if (listFileName [pathLen] == '/') ++pathLen;
 	if (listFile)
@@ -428,7 +428,7 @@ int main(int argc, char* argv[])
 		if ((dataRec = new DBObjRecord (layerRec->Name (),colNum * rowNum * valueSizeFLD->Int (layerRec),valueSizeFLD->Int (layerRec))) == (DBObjRecord *) NULL)
 			{ fclose (inFILE); delete grdData; return 0; }
 		(grdData->Arrays ())->Add (dataRec);
-		layerFLD->Record (layerRec,dataRec); 
+		layerFLD->Record (layerRec,dataRec);
 		if (grdData->Type () == DBTypeGridContinuous)
 			{
 			itemTable->Add (layerRec->Name ());
@@ -442,7 +442,7 @@ int main(int argc, char* argv[])
 			for (j = 0;(chunk = fread (buffer,1,sizeof (buffer),inFILE)) > 0;++j)
 			for (i = 0;i < chunk;i += itemSize)
 				{//this is the itemsize declaration
-				//it is dependent upon the 
+				//it is dependent upon the
 				if (byteOrder != DBByteOrder ())
 				switch (itemSize)
 					{

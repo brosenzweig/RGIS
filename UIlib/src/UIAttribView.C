@@ -61,7 +61,7 @@ static void _UIAttribViewDeleteCBK (Widget widget,UIAttribView *view,XmAnyCallba
 
 	{
 	DBObjData *dbData = view->Data ();
-	
+
 	widget = widget; callData = callData;
 	dbData->DispRemove (view);
 	delete view;
@@ -74,74 +74,73 @@ UIAttribView::UIAttribView (DBObjData *data) : DBObject (data->Name (),sizeof (U
 	DBObjectLIST<DBObjTableField> *fields;
 	Widget mainForm, scrolledW, rowCol, label;
 	XmString string;
-	Atom deleteWindowAtom = XmInternAtom(XtDisplay(UITopLevel ()),"WM_DELETE_WINDOW",FALSE);
+	Atom deleteWindowAtom = XmInternAtom(XtDisplay(UITopLevel ()),(char *) "WM_DELETE_WINDOW",FALSE);
 
 	DataPTR = data;
 	ItemTable = DataPTR->Table (DBrNItems);
 	Name (UIAttribViewSTR);
 	DShellWGT = XtVaCreatePopupShell ("UIAttribView",xmDialogShellWidgetClass,UITopLevel (),
-								XmNkeyboardFocusPolicy,		XmPOINTER,
-								XmNtitle,						data->Name (),
-								XmNtransient,					False,
-								XmNminWidth,					400,
-								XmNminHeight,					300,
+								XmNkeyboardFocusPolicy, XmPOINTER,
+								XmNtitle,               data->Name (),
+								XmNtransient,           False,
+								XmNminWidth,            400,
+								XmNminHeight,           300,
 								NULL);
-	XmAddWMProtocolCallback (DShellWGT,deleteWindowAtom,(XtCallbackProc) _UIAttribViewDeleteCBK,(XtPointer) this); 
+	XmAddWMProtocolCallback (DShellWGT,deleteWindowAtom,(XtCallbackProc) _UIAttribViewDeleteCBK,(XtPointer) this);
 	mainForm = XtVaCreateWidget ("UIAttribViewForm",xmFormWidgetClass,DShellWGT,
 								XmNshadowThickness,			0,
 								NULL);
-	string = XmStringCreate ("Item:",UICharSetBold);
+	string = XmStringCreate ((char *) "Item:",UICharSetBold);
 	label = XtVaCreateManagedWidget ("UIAttribViewNameLabel",xmLabelWidgetClass,mainForm,
-								XmNtopAttachment,			XmATTACH_FORM,
-								XmNtopOffset,				5,
+								XmNtopAttachment,       XmATTACH_FORM,
+								XmNtopOffset,           5,
 								XmNleftAttachment,		XmATTACH_FORM,
-								XmNleftOffset,				10,
-								XmNlabelString,			string,
-								XmNrecomputeSize,			False,
+								XmNleftOffset,          10,
+								XmNlabelString,         string,
+								XmNrecomputeSize,       False,
 								NULL);
 	XmStringFree (string);
-	string = XmStringCreate ("",UICharSetNormal);
+	string = XmStringCreate ((char *) "",UICharSetNormal);
 	ItemNameWGT = XtVaCreateManagedWidget ("UIAttribViewNameText",xmLabelWidgetClass,mainForm,
-								XmNtopAttachment,			XmATTACH_FORM,
-								XmNtopOffset,				5,
-								XmNleftAttachment,		XmATTACH_WIDGET,
-								XmNleftWidget,				label,
-								XmNleftOffset,				5,
-								XmNlabelString,			string,
+								XmNtopAttachment,       XmATTACH_FORM,
+								XmNtopOffset,           5,
+								XmNleftAttachment,      XmATTACH_WIDGET,
+								XmNleftWidget,          label,
+								XmNleftOffset,          5,
+								XmNlabelString,         string,
 								NULL);
 	XmStringFree (string);
 	scrolledW = XtVaCreateManagedWidget ("UIAttribViewScrolledW",xmScrolledWindowWidgetClass,mainForm,
-								XmNtopAttachment,			XmATTACH_WIDGET,
-								XmNtopWidget,				label,
-								XmNtopOffset,				5,
-								XmNleftAttachment,		XmATTACH_FORM,
-								XmNleftOffset,				5,
-								XmNrightAttachment,		XmATTACH_FORM,
-								XmNrightOffset,			5,
-								XmNbottomAttachment,		XmATTACH_FORM,
-								XmNbottomOffset,			 5,
-								XmNheight,					150,
-								XmNvisualPolicy,			XmCONSTANT,
-								XmNscrollingPolicy,		XmAUTOMATIC,
+								XmNtopAttachment,       XmATTACH_WIDGET,
+								XmNtopWidget,           label,
+								XmNtopOffset,           5,
+								XmNleftAttachment,      XmATTACH_FORM,
+								XmNleftOffset,          5,
+								XmNrightAttachment,     XmATTACH_FORM,
+								XmNrightOffset,         5,
+								XmNbottomAttachment,    XmATTACH_FORM,
+								XmNbottomOffset,        5,
+								XmNheight,              150,
+								XmNvisualPolicy,        XmCONSTANT,
+								XmNscrollingPolicy,     XmAUTOMATIC,
 								NULL);
 	rowCol = XtVaCreateManagedWidget ("UIAttribViewRowColumn",xmRowColumnWidgetClass,scrolledW,
-								XmNnumColumns,				2,
-								XmNorientation,			XmHORIZONTAL,
-								XmNrowColumnType,			XmWORK_AREA,
+								XmNnumColumns,          2,
+								XmNorientation,         XmHORIZONTAL,
+								XmNrowColumnType,       XmWORK_AREA,
 								NULL);
 	NamesRowCol = XtVaCreateManagedWidget ("UIAttribViewNamesRowColumn",xmRowColumnWidgetClass,rowCol,
-								XmNorientation,			XmVERTICAL,
-								XmNrowColumnType,			XmWORK_AREA,
-								XmNpacking,					XmPACK_COLUMN,
-								XmNspacing,					0,
+								XmNorientation,         XmVERTICAL,
+								XmNrowColumnType,       XmWORK_AREA,
+								XmNpacking,             XmPACK_COLUMN,
+								XmNspacing,             0,
 								NULL);
 	FieldsRowCol = XtVaCreateManagedWidget ("UIAttribViewNamesRowColumn",xmRowColumnWidgetClass,rowCol,
-								XmNorientation,			XmVERTICAL,
-								XmNrowColumnType,			XmWORK_AREA,
-								XmNspacing,					0,
+								XmNorientation,         XmVERTICAL,
+								XmNrowColumnType,       XmWORK_AREA,
+								XmNspacing,             0,
 								NULL);
-	
-	
+
 	switch (DataPTR->Type ())
 		{
 		case DBTypeVectorPoint:
@@ -161,11 +160,11 @@ UIAttribView::UIAttribView (DBObjData *data) : DBObject (data->Name (),sizeof (U
 				NewField (record->Name (),gridIO->ValueFormat ());
 			delete gridIO;
 			} break;
-		case DBTypeNetwork:	
+		case DBTypeNetwork:
 			{
 			DBObjTable *cellTable = DataPTR->Table (DBrNCells);
 
-			NewField ("Basin Name","%s");
+			NewField ((char *) "Basin Name",(char *) "%s");
 			fields = ItemTable->Fields ();
 			for (field = fields->First ();field != (DBObjTableField *) NULL;field = fields->Next ())
 				if (DBTableFieldIsVisible (field) == true)	NewField (field->Name (),field->Format ());
@@ -204,13 +203,13 @@ void UIAttribView::Draw (DBObjRecord *record)
 		Cardinal i, numChildren;
 		WidgetList rowCols;
 
-		UIAuxSetLabelString (ItemNameWGT,"");
+		UIAuxSetLabelString (ItemNameWGT,(char *) "");
 		XtVaGetValues (FieldsRowCol,XmNchildren,	&rowCols, XmNnumChildren,	&numChildren,NULL);
 		for (i = 0;i < numChildren; ++i)
-			XmTextFieldSetString (XtNameToWidget (rowCols [i],"UIAttribViewTextField"),"");
+			XmTextFieldSetString (XtNameToWidget (rowCols [i],"UIAttribViewTextField"),(char *) "");
 		return;
 		}
-	
+
 	UIAuxSetLabelString (ItemNameWGT,record->Name ());
 	switch (DataPTR->Type ())
 		{
@@ -235,15 +234,15 @@ void UIAttribView::Draw (DBObjRecord *record)
 			DBObjTable *cellTable = DataPTR->Table (DBrNCells);
 			DBObjTableField *basinFLD = cellTable->Field (DBrNBasin);
 			DBObjRecord *basinRec;
-			
+
 			if ((basinRec =  ItemTable->Item (basinFLD->Int (record) - 1)) == (DBObjRecord *) NULL)
 				{ fprintf (stderr,"BasinID Error in: UIAttribView::Draw (DBObjRecord *)\n"); return; }
-			DrawField ("Basin Name",basinRec->Name ());
+			DrawField ((char *) "Basin Name",basinRec->Name ());
 			fields = ItemTable->Fields ();
 			for (field = fields->First ();field != (DBObjTableField *) NULL;field = fields->Next ())
 				if (DBTableFieldIsVisible (field) == true)	DrawField (field->Name (),field->String (basinRec));
 
-			fields = cellTable->Fields ();	
+			fields = cellTable->Fields ();
 			for (field = fields->First ();field != (DBObjTableField *) NULL;field = fields->Next ())
 				if (DBTableFieldIsVisible (field) == true)	DrawField (field->Name (),field->String (record));
 			} break;

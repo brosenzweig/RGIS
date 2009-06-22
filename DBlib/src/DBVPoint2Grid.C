@@ -62,7 +62,7 @@ DBInt DBPointToGrid (DBObjData *pntData,DBObjData *netData,DBObjData *grdData)
 		return (DBFault);
 		}
 	_DBGrdIO = new DBGridIO (grdData);
-	_DBGrdIO->RenameLayer (_DBGrdIO->Layer ((DBInt) 0),"Subbasins");
+	_DBGrdIO->RenameLayer (_DBGrdIO->Layer ((DBInt) 0),(char *) "Subbasins");
 	_DBNetIO	= new DBNetworkIO (netData);
 
 	for (pos.Row = 0;pos.Row < _DBGrdIO->RowNum ();++pos.Row)
@@ -71,7 +71,7 @@ DBInt DBPointToGrid (DBObjData *pntData,DBObjData *netData,DBObjData *grdData)
 	grdTable->AddField (new DBObjTableField (DBrNGridPercent,DBTableFieldFloat,"%5.1f",sizeof (DBFloat4)));
 	for (pntFLD = pntFields->First ();pntFLD != (DBObjTableField *) NULL;pntFLD = pntFields->Next ())
 		if (DBTableFieldIsVisible (pntFLD)) grdTable->AddField (new DBObjTableField (*pntFLD));
-	
+
 	recID = 0;
 	for (i = 0;i < _DBPntIO->ItemNum ();++i)
 		{
@@ -103,7 +103,7 @@ DBInt DBPointToGrid (DBObjData *pntData,DBObjData *netData,DBObjData *grdData)
 		}
 
 	qsort (recARR,recID,2 * sizeof (DBObjRecord *),_DBPointSort);
-	
+
 	for (recID = recID - 1;recID >= 0;--recID)
 		{
 		if ((cellRec = _DBNetIO->Cell (_DBPntIO->Coordinate (recARR [(recID << 0x01)]))) == (DBObjRecord *) NULL) continue;
@@ -141,12 +141,12 @@ DBInt DBPointToGrid (DBObjData *pntData,DBObjData *grdData,DBFloat factor)
 
 	grdIO = new DBGridIO (grdData);
 	for (pntID = 0;pntID < itemNum;++pntID) pCoord [pntID] = pntIO->Coordinate (pntIO->Item (pntID));
-	
+
 	if (grdData->Type () == DBTypeGridContinuous)
-		grdIO->RenameLayer (grdIO->Layer ((DBInt) 0),"Distance to Station");
+		grdIO->RenameLayer (grdIO->Layer ((DBInt) 0),(char *) "Distance to Station");
 	else
 		{
-		grdIO->RenameLayer (grdIO->Layer ((DBInt) 0),"Station grid");
+		grdIO->RenameLayer (grdIO->Layer ((DBInt) 0),(char *) "Station grid");
 		itemTable = grdData->Table (DBrNItems);
 		symTable  = grdData->Table (DBrNSymbols);
 	   valField  = itemTable->Field (DBrNGridValue);

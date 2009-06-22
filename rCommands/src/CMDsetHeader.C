@@ -39,7 +39,7 @@ int CMDgetDelim(char **in, size_t *len,char delim, FILE *file)
 }
 
 void CMDgetInfoInteractive(char **in, char *prompt, bool useMultipleLines)
-{ 
+{
 	char ch;
 	size_t len = 2;
 	printf("%s ",prompt);
@@ -112,15 +112,15 @@ int main(int argc, char* argv[])
 	}
 	if(All_Fields)
 	{
-		CMDgetInfoInteractive(&title,    "title:>",false); 
-		CMDgetInfoInteractive(&subject,  "subject:>",false); 
-		CMDgetInfoInteractive(&domain,   "domain:>",false); 
-		CMDgetInfoInteractive(&version,  "version:>",false); 
-		CMDgetInfoInteractive(&citation, "citation (multiple lines finish with $):>",true); 
-		CMDgetInfoInteractive(&institute,"institute:>",false); 
-		CMDgetInfoInteractive(&person,   "person:>",false); 
-		CMDgetInfoInteractive(&source,   "source (multiple lines finish with $):>",true); 
-		CMDgetInfoInteractive(&comment,  "comment (multiple lines finish with $):>",true); 
+		CMDgetInfoInteractive(&title,    (char *) "title:>",    false);
+		CMDgetInfoInteractive(&subject,  (char *) "subject:>",  false);
+		CMDgetInfoInteractive(&domain,   (char *) "domain:>",   false);
+		CMDgetInfoInteractive(&version,  (char *) "version:>",  false);
+		CMDgetInfoInteractive(&citation, (char *) "citation (multiple lines finish with $):>",true);
+		CMDgetInfoInteractive(&institute,(char *) "institute:>",false);
+		CMDgetInfoInteractive(&person,   (char *) "person:>",   false);
+		CMDgetInfoInteractive(&source,   (char *) "source (multiple lines finish with $):>",true);
+		CMDgetInfoInteractive(&comment,  (char *) "comment (multiple lines finish with $):>",true);
 	}
 	else
 	{
@@ -129,7 +129,7 @@ int main(int argc, char* argv[])
 			if (CMargTest (argv [argPos],"-t","--title"))
 			{
 				argNum = CMargShiftLeft (argPos,argv,argNum);
-			 	if(Interactive_Mode) CMDgetInfoInteractive(&title,"title:>",false); 
+			 	if(Interactive_Mode) CMDgetInfoInteractive(&title,(char *) "title:>",false);
 			 	else
 				{
 					if (argNum <= argPos) { CMmsgPrint (CMmsgUsrError,"Missing title!\n"); return (CMfailed); }
@@ -138,10 +138,10 @@ int main(int argc, char* argv[])
 				}
 				continue;
 			}
-			if (CMargTest (argv [argPos],"-d","--domain"))
+			if (CMargTest (argv [argPos],"-d", "--domain"))
 			{
 				argNum = CMargShiftLeft (argPos,argv,argNum);
-				if(Interactive_Mode) CMDgetInfoInteractive(&domain,"domain:>",false); 
+				if(Interactive_Mode) CMDgetInfoInteractive(&domain,(char *) "domain:>",false);
 				else
 				{
 					if (argNum <= argPos) { CMmsgPrint (CMmsgUsrError,"Missing domain!\n"); return (CMfailed); }
@@ -153,7 +153,7 @@ int main(int argc, char* argv[])
 			if (CMargTest (argv [argPos],"-s","--subject"))
 			{
 				argNum = CMargShiftLeft (argPos,argv,argNum);
-			 	if(Interactive_Mode) CMDgetInfoInteractive(&subject,"subject:>",false); 
+			 	if(Interactive_Mode) CMDgetInfoInteractive(&subject,(char *) "subject:>",false);
 				else
 				{
 					if (argNum <= argPos) { CMmsgPrint (CMmsgUsrError,"Missing subject!\n"); return (CMfailed); }
@@ -165,7 +165,7 @@ int main(int argc, char* argv[])
 			if (CMargTest (argv [argPos],"-v","--version"))
 			{
 				argNum = CMargShiftLeft (argPos,argv,argNum);
-				if(Interactive_Mode) CMDgetInfoInteractive(&version,"version:>",false); 
+				if(Interactive_Mode) CMDgetInfoInteractive(&version,(char *) "version:>",false);
 				else
 				{
 					if (argNum <= argPos) { CMmsgPrint (CMmsgUsrError,"Missing version!\n"); return (CMfailed); }
@@ -177,7 +177,7 @@ int main(int argc, char* argv[])
 			if (CMargTest (argv [argPos],"-n","--institute"))
 			{
 				argNum = CMargShiftLeft (argPos,argv,argNum);
-				if(Interactive_Mode) CMDgetInfoInteractive(&institute,"institute:>",false); 
+				if(Interactive_Mode) CMDgetInfoInteractive(&institute,(char *) "institute:>",false);
 				else
 				{
 					if (argNum <= argPos) { CMmsgPrint (CMmsgUsrError,"Missing institute!\n"); return (CMfailed); }
@@ -186,10 +186,10 @@ int main(int argc, char* argv[])
 				}
 				continue;
 			}
-			if (CMargTest (argv [argPos],"-p","--person"))
+			if (CMargTest (argv [argPos], "-p", "--person"))
 			{
 				argNum = CMargShiftLeft (argPos,argv,argNum);
-				if(Interactive_Mode) CMDgetInfoInteractive(&person,"person:>",false); 
+				if(Interactive_Mode) CMDgetInfoInteractive(&person, (char *) "person:>",false);
 				else
 				{
 					if (argNum <= argPos) { CMmsgPrint (CMmsgUsrError,"Missing person!\n"); return (CMfailed); }
@@ -198,10 +198,10 @@ int main(int argc, char* argv[])
 				}
 				continue;
 			}
-			if (CMargTest (argv [argPos],"-i","--citation"))
+			if (CMargTest (argv [argPos], "-i", "--citation"))
 			{
 				argNum = CMargShiftLeft (argPos,argv,argNum);
-				if(Interactive_Mode) CMDgetInfoInteractive(&citation,"citation (multiple lines finish with $):>",true); 
+				if(Interactive_Mode) CMDgetInfoInteractive(&citation,(char *) "citation (multiple lines finish with $):>",true);
 				else
 				{
 					if (argNum <= argPos) { CMmsgPrint (CMmsgUsrError,"Missing citation!\n"); return (CMfailed); }
@@ -213,7 +213,7 @@ int main(int argc, char* argv[])
 			if (CMargTest (argv [argPos],"-c","--comment"))
 			{
 				argNum = CMargShiftLeft (argPos,argv,argNum);
-				if(Interactive_Mode) CMDgetInfoInteractive(&comment,"comment (multiple lines finish with $):>",true); 
+				if(Interactive_Mode) CMDgetInfoInteractive(&comment,(char *) "comment (multiple lines finish with $):>",true);
 				else
 				{
 					if (argNum <= argPos) { CMmsgPrint (CMmsgUsrError,"Missing comment!\n"); return (CMfailed); }
@@ -225,7 +225,7 @@ int main(int argc, char* argv[])
 			if (CMargTest (argv [argPos],"-S","--source"))
 			{
 				argNum = CMargShiftLeft (argPos,argv,argNum);
-				if(Interactive_Mode) CMDgetInfoInteractive(&source,"source (multiple lines finish with $):>",true); 
+				if(Interactive_Mode) CMDgetInfoInteractive(&source,(char *) "source (multiple lines finish with $):>",true);
 				else
 				{
 					if (argNum < argPos) { CMmsgPrint (CMmsgUsrError,"Missing source!\n"); return (CMfailed); }
@@ -233,7 +233,7 @@ int main(int argc, char* argv[])
 					argNum = CMargShiftLeft (argPos,argv,argNum);
 				}
 				continue;
-			}	
+			}
 			if ((argv [argPos][0] == '-') && (strlen (argv [argPos]) > 1))
 				{ CMmsgPrint (CMmsgUsrError,"Unknown option: %s!\n",argv [argPos]); return (CMfailed); }
 			argPos++;
@@ -260,7 +260,7 @@ int main(int argc, char* argv[])
 	if(domain    != (char *) NULL) dbData->Document(DBDocGeoDomain,domain);
 	if(subject   != (char *) NULL) dbData->Document(DBDocSubject,subject);
 	if(version   != (char *) NULL) dbData->Document(DBDocVersion,version);
-	if(institute != (char *) NULL) dbData->Document(DBDocCitationInst,institute); 
+	if(institute != (char *) NULL) dbData->Document(DBDocCitationInst,institute);
 	if(person    != (char *) NULL) dbData->Document(DBDocOwnerPerson,person);
 	if(citation  != (char *) NULL) dbData->Document(DBDocCitationRef,citation);
 	if(comment   != (char *) NULL) dbData->Document(DBDocComment,comment);
@@ -276,7 +276,7 @@ int main(int argc, char* argv[])
 		if (domain    != (char *) NULL) delete domain;
 		if (subject   != (char *) NULL) delete subject;
 		if (version   != (char *) NULL) delete version;
-		if (institute != (char *) NULL) delete institute; 
+		if (institute != (char *) NULL) delete institute;
 		if (person    != (char *) NULL) delete person;
 		if (citation  != (char *) NULL) delete citation;
 		if (comment   != (char *) NULL) delete comment;

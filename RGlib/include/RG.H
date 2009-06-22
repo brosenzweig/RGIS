@@ -11,15 +11,15 @@
 #define RGlibCycleDecr(cycle,tStep) ((tStep > 0 ? tStep : cycle) - 1)
 #define RGlibCycleStep(cycle,tStep) ((tStep) % cycle)
 
-#define RGlibCellID         "CellID"
-#define RGlibBasinName      "BasinName"
-#define RGlibStreamOrder    "Stream Order"
-#define RGlibColor          "Color"
-#define RGlibCellNum        "NumberOfCells"
-#define RGlibLength         "STNMainstemLength"
-#define RGlibArea           "STNCatchmentArea"
-#define RGlibInterStation   "STNInterStationArea"
-#define RGlibNextStation    "NextStation"
+#define RGlibCellID         ((char *) "CellID")
+#define RGlibBasinName      ((char *) "BasinName")
+#define RGlibStreamOrder    ((char *) "Stream Order")
+#define RGlibColor          ((char *) "Color")
+#define RGlibCellNum        ((char *)  "NumberOfCells")
+#define RGlibLength         ((char *) "STNMainstemLength")
+#define RGlibArea           ((char *) "STNCatchmentArea")
+#define RGlibInterStation   ((char *) "STNInterStationArea")
+#define RGlibNextStation    ((char *) "NextStation")
 
 #define RGlibMinSLOPE 0.01
 
@@ -78,7 +78,7 @@ DBInt RGlibNetworkPsmRouting (DBObjData *,DBObjData *, DBObjData *, DBInt, DBFlo
 DBInt RGlibNetworkDefragment (DBObjData *, DBObjData *,DBFloat,bool);
 void RGlibGridSampling (DBObjData *,DBObjData *);
 
-DBInt RGLibTableJoin (DBObjTable *,DBObjTableField *,DBObjTable *,DBObjTableField *); 
+DBInt RGLibTableJoin (DBObjTable *,DBObjTableField *,DBObjTable *,DBObjTableField *);
 
 DBInt RGlibRGIS2DataStream (DBObjData *,DBObjData *,char *,FILE *);
 DBInt RGlibDataStream2RGIS (DBObjData *,DBObjData *,FILE *);

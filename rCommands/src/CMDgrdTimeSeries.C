@@ -163,19 +163,19 @@ int main (int argc,char *argv [])
 	if ((ret == DBFault) || (tabData->Type () != DBTypeTable))
 		{ delete grdData; delete tabData; return (CMfailed); }
 
-	if (title	== (char *) NULL)	title   = "Time Series";
-	if (subject == (char *) NULL)	subject = tabData->Document (DBDocSubject);
-	if (domain	== (char *) NULL)	domain  = grdData->Document (DBDocGeoDomain);
-	if (version == (char *) NULL) version = "0.01pre";	
+	if (title	== (char *) NULL)  title   = (char *) "Time Series";
+	if (subject == (char *) NULL)  subject = tabData->Document (DBDocSubject);
+	if (domain	== (char *) NULL)  domain  = grdData->Document (DBDocGeoDomain);
+	if (version == (char *) NULL)  version = (char *) "0.01pre";
 
 	if ((outData = DBGridToGrid (grdData,DBTypeGridContinuous)) == (DBObjData *) NULL) return (CMfailed);
 
 	outData->Name (title);
 	outData->Document (DBDocSubject,subject);
 	outData->Document (DBDocGeoDomain,domain);
-	outData->Document (DBDocVersion,version);	
+	outData->Document (DBDocVersion,version);
 	if (shadeSet != DBFault)
-		{	
+		{
 		outData->Flags (DBDataFlagDispModeContShadeSets,DBClear);
 		outData->Flags (shadeSet,DBSet);
 		}

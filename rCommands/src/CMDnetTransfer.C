@@ -29,7 +29,7 @@ int _CMDnetTransfer (DBObjData *netData,
 						  DBFloat umax,
 						  DBFloat ksat,
 						  DBInt areaMult)
-	{	
+	{
 	DBInt ret = DBSuccess, layerID, cellID, progress, maxProgress;
 	DBFloat inValue, weight, outValue, *sumWeights, kCoeff, q, hl, Conc, Uptake, Vf;
 	DBPosition pos;
@@ -69,18 +69,18 @@ int _CMDnetTransfer (DBObjData *netData,
 		{
 		inLayerRec  = inIO->Layer  (layerID);
 		outLayerRec = outIO->Layer (layerID);
-		if (weightIO != (DBGridIO *) NULL) 
+		if (weightIO != (DBGridIO *) NULL)
 			weightLayerRec = weightIO->Layer (layerID % weightIO->LayerNum ());
-		if (coeffIO != (DBGridIO *) NULL) 
+		if (coeffIO != (DBGridIO *) NULL)
 			coeffLayerRec = coeffIO->Layer (layerID % coeffIO->LayerNum ());
-		if (Q_IO != (DBGridIO *) NULL) 
+		if (Q_IO != (DBGridIO *) NULL)
 			Q_LayerRec = Q_IO->Layer (layerID % Q_IO->LayerNum ());
-		if (HL_IO != (DBGridIO *) NULL) 
+		if (HL_IO != (DBGridIO *) NULL)
 			HL_LayerRec = HL_IO->Layer (layerID % HL_IO->LayerNum ());
 
 		for (cellID = 0;cellID < netIO->CellNum ();cellID++)
 			{
-			sumWeights [cellID] = 0.0;	
+			sumWeights [cellID] = 0.0;
 			cellRec = netIO->Cell (cellID);
 			coord = netIO->Center (cellRec);
 			if (inIO->Value  (inLayerRec,coord, &inValue) == false)
@@ -105,25 +105,25 @@ int _CMDnetTransfer (DBObjData *netData,
 			cellRec = netIO->Cell (cellID);
 			coord = netIO->Center (cellRec);
 			if ((toCell = netIO->ToCell (cellRec)) == (DBObjRecord *) NULL) continue;
-			if (outIO->Value (outLayerRec,netIO->CellPosition (cellRec),&inValue)  == false) continue;	
-			if (outIO->Value (outLayerRec,netIO->CellPosition (toCell),&outValue) == false) continue;	
+			if (outIO->Value (outLayerRec,netIO->CellPosition (cellRec),&inValue)  == false) continue;
+			if (outIO->Value (outLayerRec,netIO->CellPosition (toCell),&outValue) == false) continue;
 
 			sumWeights [toCell->RowID ()] = sumWeights [toCell->RowID ()] + weight;
 
-			
-			if (coeffIO != (DBGridIO *) NULL) 
+
+			if (coeffIO != (DBGridIO *) NULL)
 				{
-				if (coeffIO->Value (coeffLayerRec,netIO->Center (cellRec),&kCoeff) == false) kCoeff = 1.0; 
-				} 
-			else 
+				if (coeffIO->Value (coeffLayerRec,netIO->Center (cellRec),&kCoeff) == false) kCoeff = 1.0;
+				}
+			else
 				{
 				if ( ((Q_IO == (DBGridIO *) NULL) || (Q_IO->Value (Q_LayerRec,netIO->Center (cellRec),&q) == false)) ||
 				     ((HL_IO == (DBGridIO *) NULL) || (HL_IO->Value (HL_LayerRec,netIO->Center (cellRec),&hl) == false)) ||
 					  (umax == 0) || (ksat == 0) )	kCoeff = 1.0;
 				else {
 							if ((q > 0) && (hl > 0))
-							{  
-								Conc = ((inValue / (q * 86400 * 365)) * 1000 * 1000); /* mg/m3 - assume input = kg/yr, Q is m3/s convert to m3/yr kg to mg */	  
+							{
+								Conc = ((inValue / (q * 86400 * 365)) * 1000 * 1000); /* mg/m3 - assume input = kg/yr, Q is m3/s convert to m3/yr kg to mg */
 					  			Uptake = (umax * 24 * 365 * Conc) / (ksat * 1000 + Conc ); /* mg/m2/yr - umax and ksat/Conc are in mg/m2/hr, mg/m3 */
 								if (Uptake > 0)
 									{
@@ -131,20 +131,20 @@ int _CMDnetTransfer (DBObjData *netData,
 									}
 								else Vf = 0;
 								kCoeff = pow(2.71828, (-1.0 * Vf / hl)); /* HL in m/yr */
-							/*	
+							/*
 							 if ((cellID == 5390) || (cellID == 5015) || (cellID  == 4905) || (cellID == 4857))
-							     printf("%i, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f \n", cellID, outValue, inValue, q, hl, umax, ksat, Conc, Uptake, Vf, kCoeff); 
-							*/	  
+							     printf("%i, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f \n", cellID, outValue, inValue, q, hl, umax, ksat, Conc, Uptake, Vf, kCoeff);
+							*/
 							}
 							else kCoeff = 0;
 						 }
 				}
 			/*
 			if ((cellID == 5390) || (cellID == 5015) || (cellID  == 4905) || (cellID == 4857))
-			     printf("%i, %f \n", cellID, inValue); 
+			     printf("%i, %f \n", cellID, inValue);
 			*/
 			inValue = kCoeff * inValue;
-			
+
 			outIO->Value (outLayerRec,netIO->CellPosition (toCell),outValue + inValue);
 			}
 		outIO->RecalcStats (outLayerRec);
@@ -167,7 +167,7 @@ int main (int argc,char *argv [])
 	char *title  = (char *) NULL,		*subject = (char *) NULL;
 	char *domain = (char *) NULL,		*version = (char *) NULL;
 	char *netName = (char *) NULL,	*weightName = (char *) NULL, *coeffName = (char *) NULL;
-	char *QName = (char *) NULL , *HLName = (char *) NULL; 
+	char *QName = (char *) NULL , *HLName = (char *) NULL;
 	DBInt shadeSet = DBFault, areaMult = true, coeffSet = false;
 /*	float umax = false, ksat = false;*/
 	DBObjData *data, *netData, *weightData, *coeffData, *grdData, *QData, *HLData;
@@ -377,16 +377,16 @@ int main (int argc,char *argv [])
 		}
 	else HLData = (DBObjData *) NULL;
 
-	
+
 	grdData = new DBObjData ();
 	ret = (argNum > 1) && (strcmp (argv [1],"-") != 0) ? grdData->Read (argv [1]) : grdData->Read (stdin);
 	if ((ret == DBFault) || (grdData->Type () != DBTypeGridContinuous))
 		{ delete netData; delete grdData; return (CMfailed); }
 
-	if (title	== (char *) NULL)	title   = "Accumulated Grid";
-	if (subject == (char *) NULL)	subject = grdData->Document (DBDocSubject);
-	if (domain	== (char *) NULL)	domain  = netData->Document (DBDocGeoDomain);
-	if (version == (char *) NULL) version = "0.01pre";	
+	if (title	== (char *) NULL)   title = (char *) "Accumulated Grid";
+	if (subject == (char *) NULL) subject = grdData->Document (DBDocSubject);
+	if (domain	== (char *) NULL)  domain = netData->Document (DBDocGeoDomain);
+	if (version == (char *) NULL) version = (char *) "0.01pre";
 
 	data = DBNetworkToGrid (netData,DBTypeGridContinuous);
 	data->Name (title);

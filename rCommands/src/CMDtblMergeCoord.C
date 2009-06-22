@@ -117,13 +117,13 @@ int main (int argc,char *argv [])
 		if ((degField = table->Field (degFieldName)) == (DBObjTableField *) NULL)
 			{ CMmsgPrint (CMmsgUsrError,"Invalid degree field [%s]!\n",degFieldName); delete data; return (CMfailed); }
 		}
-	
+
 	if (minFieldName != (char *) NULL)
 		{
 		if ((minField = table->Field (minFieldName)) == (DBObjTableField *) NULL)
 			{ CMmsgPrint (CMmsgUsrError,"Invalid min field [%s]!\n",minFieldName); delete data; return (CMfailed); }
 		}
-	
+
 	if (secFieldName != (char *) NULL)
 		{
 		if (minField == (DBObjTableField *) NULL)
@@ -132,7 +132,7 @@ int main (int argc,char *argv [])
 			{ CMmsgPrint (CMmsgUsrError,"Invalid second field [%s]",secFieldName); delete data; return (CMfailed); }
 		}
 
-	if (fieldName == (char *) NULL) fieldName = "Coord[ddd:mm\'ss\"]";
+	if (fieldName == (char *) NULL) fieldName = (char *) "Coord[ddd:mm\'ss\"]";
 	if ((dstField = table->Field (fieldName)) == (DBObjTableField *) NULL)
 		{
 		dstField = new DBObjTableField (fieldName,DBTableFieldString,"%s",16,false);
@@ -142,7 +142,7 @@ int main (int argc,char *argv [])
 	for (recID = 0;recID < table->ItemNum ();++recID)
 		{
 		record = table->Item (recID);
-	
+
 		if ((degField == (DBObjTableField *) NULL) ||
 			 ((deg = degField->Int  (record)) == degField->IntNoData ()))
 			strcpy (coordStr,"");

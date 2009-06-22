@@ -27,7 +27,7 @@ DBDataHeader::DBDataHeader ()
 	MinScale		(3);
 	MaxScale 	(7);
 	}
-		
+
 DBDataHeader::DBDataHeader (const DBDataHeader &header)
 
 	{
@@ -217,7 +217,7 @@ void DBObjData::Document (const char *docName,const char *string)
 
 	{
 	DBObjRecord *obj = DocsPTR->Item (docName);
-	
+
 	if (obj == (DBObjRecord *) NULL)
 		{
 		DocsPTR->Add (obj = new DBObjRecord (docName,sizeof (DBVarString)));
@@ -225,8 +225,8 @@ void DBObjData::Document (const char *docName,const char *string)
 		((DBVarString *) obj->Data ())->VString (string);
 		}
 	else ((DBVarString *) obj->Data ())->VString (string);
-	}	
-	
+	}
+
 char *DBObjData::Document (const char *docName)
 
 	{
@@ -234,8 +234,8 @@ char *DBObjData::Document (const char *docName)
 	if (obj == (DBObjRecord *) NULL)
 		{
 		if ((strcmp (docName,DBDocSubject) == 0) || (strcmp (docName,DBDocGeoDomain) == 0))
-			{ Document (docName,"unspecified"); return ("unspecified"); }
-		else return ("");
+			{ Document (docName,(char *) "unspecified"); return ((char *) "unspecified"); }
+		else return ((char *) "");
 		}
 	return (((DBVarString *) obj->Data ())->VString ());
 	}
@@ -285,7 +285,7 @@ DBRegion DBObjData::Extent (DBObjRecord *record)
 			} return (extent);
 		case DBTypeTable:
 		default:	return (extent);
-		} 
+		}
 	}
 
 void DBObjData::RecalcExtent ()
@@ -344,7 +344,7 @@ DBInt DBObjData::SelectObject (DBObjRecord *record,DBInt select)
 		DBInt cellID;
 		DBObjRecord *cellRec;
 		DBNetworkIO *netIO = new DBNetworkIO (this);
-		
+
 		for (cellID = 0;cellID < netIO->CellNum ();++cellID)
 			{
 			cellRec = netIO->Cell (cellID);
@@ -361,15 +361,15 @@ char *DBDataTypeString (int dataType)
 	{
 	char *typeString;
 	switch (dataType)
-		{ 
-		case DBTypeVectorPoint: 	typeString = "Point";		break;
-		case DBTypeVectorLine:		typeString = "Line";			break;
-		case DBTypeVectorPolygon:	typeString = "Polygon";		break;
-		case DBTypeGridContinuous:	typeString = "Continuous";	break;
-		case DBTypeGridDiscrete:	typeString = "Discrete";	break;
-		case DBTypeNetwork:			typeString = "Network";		break;
-		case DBTypeTable:				typeString = "Tabular";		break;
-		default:	typeString = "UNKNOWN";	break;
+		{
+		case DBTypeVectorPoint: 	typeString = (char *) "Point";      break;
+		case DBTypeVectorLine:		typeString = (char *) "Line";       break;
+		case DBTypeVectorPolygon:	typeString = (char *) "Polygon";    break;
+		case DBTypeGridContinuous:	typeString = (char *) "Continuous"; break;
+		case DBTypeGridDiscrete:	typeString = (char *) "Discrete";   break;
+		case DBTypeNetwork:			typeString = (char *) "Network";    break;
+		case DBTypeTable:           typeString = (char *) "Tabular";    break;
+		default:                    typeString = (char *) "UNKNOWN";    break;
 		}
 	return (typeString);
 	}

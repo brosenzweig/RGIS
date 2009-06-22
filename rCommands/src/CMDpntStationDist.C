@@ -132,11 +132,11 @@ int main (int argc,char *argv [])
 	ret = (argNum > 1) && (strcmp (argv [1],"-") != 0) ? pntData->Read (argv [1]) : pntData->Read (stdin);
 	if ((ret == DBFault) || (pntData->Type () != DBTypeVectorPoint))
 		{ delete pntData, delete tmplData; return (CMfailed); }
-		
-	if (title	== (char *) NULL) title   = "Distance to Station";
+
+	if (title	== (char *) NULL)   title = (char *) "Distance to Station";
 	if (subject == (char *) NULL) subject = pntData->Document (DBDocSubject);
-	if (domain	== (char *) NULL)	domain  = tmplData->Document (DBDocGeoDomain);
-	if (version == (char *) NULL) version = "0.01pre";	
+	if (domain	== (char *) NULL)  domain = tmplData->Document (DBDocGeoDomain);
+	if (version == (char *) NULL) version = (char *) "0.01pre";
 
 	if (tmplData->Type () == DBTypeNetwork)
 		data = DBNetworkToGrid (tmplData, mode ? DBTypeGridContinuous : DBTypeGridDiscrete);

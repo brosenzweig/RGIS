@@ -21,7 +21,7 @@ void UIAuxSetLabelString (Widget widget,char *text,char *charset)
 	string = XmStringCreate (text,charset);
 	XtVaSetValues (widget,XmNlabelString,string,NULL);
 	XmStringFree (string);
-	} 
+	}
 
 void UIAuxSetLabelString (Widget widget,char *text)
 
@@ -36,7 +36,7 @@ char *UIAuxGetLabelString (Widget widget,char *charset)
 	XtVaGetValues (widget,XmNlabelString,&string,NULL);
 	XmStringGetLtoR (string,charset,&text);
 	return (text);
-	} 
+	}
 
 char *UIAuxGetLabelString (Widget widget)
 
@@ -44,7 +44,7 @@ char *UIAuxGetLabelString (Widget widget)
 
 void UIAuxSetBooleanTrueCBK (Widget widget,int *boolean,XmAnyCallbackStruct *callData)
 
-	{ 
+	{
 	widget = widget; callData = callData;
 	*boolean = True;
 	}
@@ -74,9 +74,9 @@ void UIAuxSetDefaultButtonEH (Widget widget,void *data,XEvent *event,Boolean boo
 
 	{
 	Arg wargs [1];
-	
+
 	data = data; boolVal = boolVal;
-	
+
 	switch (event->type)
 		{
 		case EnterNotify: XtSetArg (wargs [0],XmNshowAsDefault,	True);	break;
@@ -84,7 +84,7 @@ void UIAuxSetDefaultButtonEH (Widget widget,void *data,XEvent *event,Boolean boo
 		}
 	XtSetValues (widget,wargs,1);
 	}
-	
+
 
 void UIAuxObjectSelectCBK (Widget widget,Widget text,XmAnyCallbackStruct *callData)
 
@@ -95,7 +95,7 @@ void UIAuxObjectSelectCBK (Widget widget,Widget text,XmAnyCallbackStruct *callDa
 	DBObjectLIST<DBObject> *objects;
 
 	callData = callData;
-	if (select == NULL) select = UISelectionCreate ("Object Selection");
+	if (select == NULL) select = UISelectionCreate ((char *) "Object Selection");
 	XtVaGetValues (text,XmNuserData, &objects, NULL);
 	XtVaGetValues (widget,XmNuserData, &condFunc, NULL);
 	if ((objName = UISelectObject (select,objects,condFunc)) != NULL)
@@ -111,7 +111,7 @@ void UIAuxFileSelectCBK (Widget widget,Widget text,XmAnyCallbackStruct *callData
 	XmString string;
 
 	callData = callData;
-	if (select == (Widget) NULL) select = UIFileSelectionCreate ("File Selection",(char *) NULL,(char *) NULL,XmFILE_REGULAR);
+	if (select == (Widget) NULL) select = UIFileSelectionCreate ((char *) "File Selection",(char *) NULL,(char *) NULL,XmFILE_REGULAR);
 	XtVaGetValues (text,		XmNuserData, &pattern, 		NULL);
 	XtVaGetValues (widget,	XmNuserData, &selectMode,	NULL);
 	if (strlen (pattern) > 0)
@@ -133,7 +133,7 @@ void UIAuxDirSelectCBK (Widget widget,Widget text,XmAnyCallbackStruct *callData)
 	XmString string;
 
 	callData = callData;
-	if (select == NULL) select = UIFileSelectionCreate ("Directory Selection",(char *) NULL,(char *) NULL,XmFILE_DIRECTORY);
+	if (select == NULL) select = UIFileSelectionCreate ((char *) "Directory Selection",(char *) NULL,(char *) NULL,XmFILE_DIRECTORY);
 	XtVaGetValues (text,XmNuserData, 	&pattern,		NULL);
 	XtVaGetValues (widget,XmNuserData,	&selectMode,	NULL);
 	if (strlen (pattern) > 0)

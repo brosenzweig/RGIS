@@ -86,18 +86,18 @@ class FieldOptions
 		Functions getFunc() const { return func; }
 		char* getFuncName() const
 			{
-			if (func == NUM) return "num";
-			else if(func == NONNULL) return "nonnull";
-			else if(func == MIN) return "min";
-			else if(func == MAX) return "max";
-			else if(func == SUM) return "sum";
-			else if(func == AVG) return "avg";
-			else if(func == NAVG) return "navg";
-			else if(func == PCT) return "pct";
-			else if(func == MED) return "med";
-			else if(func == MOD) return "mod";
-			else if(func == DEV) return "dev";
-			return "bad";
+			if     (func == NUM)     return ((char *) "num");
+			else if(func == NONNULL) return ((char *) "nonnull");
+			else if(func == MIN)     return ((char *) "min");
+			else if(func == MAX)     return ((char *) "max");
+			else if(func == SUM)     return ((char *) "sum");
+			else if(func == AVG)     return ((char *) "avg");
+			else if(func == NAVG)    return ((char *) "navg");
+			else if(func == PCT)     return ((char *) "pct");
+			else if(func == MED)     return ((char *) "med");
+			else if(func == MOD)     return ((char *) "mod");
+			else if(func == DEV)     return ((char *) "dev");
+			return ((char *) "bad");
 			}
 		bool isInt() const { return isInteger; }
 		void setInt() { isInteger = true; }
@@ -732,7 +732,7 @@ int main (int argc,char *argv [])
 				}
 			}
 		}
-		
+
 	for(int outRecID = 0; outRecID < outTable->ItemNum();++outRecID)
 		{
 		outRecord = outTable->Item(outRecID);
@@ -864,7 +864,7 @@ int main (int argc,char *argv [])
 	outTable->ListSort(list);
 
 if (ascii) DBExportASCIITable(outTable,outFile); else outData->Write(outFile);
-		
+
 /* CLEANUP ************************************************/
 	if(outFile != stdout) fclose(outFile);
 	for(i = 0; i < numGrpNames; i++) delete groups[i]->dstFLD;
