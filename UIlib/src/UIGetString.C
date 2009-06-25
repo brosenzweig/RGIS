@@ -26,7 +26,7 @@ char *UIGetString (char *labelText,int length)
 	XmString string;
 	Widget dShell, mainForm, textF;
 
-	dShell = UIDialogForm ("String Input");
+	dShell = UIDialogForm ((char *) "String Input");
 	mainForm = UIDialogFormGetMainForm (dShell);
 	textF = XtVaCreateManagedWidget ("UIGetStringTextF",xmTextFieldWidgetClass,mainForm,
 								XmNuserData,				mainForm,
@@ -53,7 +53,7 @@ char *UIGetString (char *labelText,int length)
 								NULL);
 	XmStringFree (string);
 	XtAddCallback (UIDialogFormGetOkButton (dShell),XmNactivateCallback,(XtCallbackProc) UIAuxSetBooleanTrueCBK,&save);
-	
+
 	UIDialogFormPopup (dShell);
 	while (UILoop ())
 		XtSetSensitive (UIDialogFormGetOkButton (dShell),strLength > 0);

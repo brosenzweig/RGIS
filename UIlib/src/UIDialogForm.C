@@ -46,12 +46,12 @@ void UIDialogFormPopup (Widget widget)
 		{
 		Widget *children;
 		int numChildren;
-		
+
 		XtVaGetValues (XtNameToWidget (widget,UIDialogPaneName),
 								XmNchildren, 			&children,
 								XmNnumChildren,		&numChildren, NULL);
 		XtManageChild (XtNameToWidget (widget,UIDialogBulletinName));
-		
+
 		while (numChildren-- > 0)
 			if (XmIsTraversable (children [numChildren])) XtVaSetValues (children [numChildren],XmNtraversalOn, false, NULL);
 		XtVaGetValues (XtNameToWidget (widget,UIDialogActionFormName),XmNheight, &actionHeight, NULL);
@@ -71,8 +71,8 @@ Widget UIDialogForm (char *dialogTitle,int resize)
 
 	{
 	Widget dShell, bulletin, pane, actionForm, button;
-	XmString ok = XmStringCreate ("Accept",UICharSetBold);
-	XmString cancel = XmStringCreate ("Discard",UICharSetBold);
+	XmString ok = XmStringCreate ((char *) "Accept",UICharSetBold);
+	XmString cancel = XmStringCreate ((char *) "Discard",UICharSetBold);
 
 	dShell = XtVaCreatePopupShell (dialogTitle,xmDialogShellWidgetClass,UITopLevel (),
 								XmNkeyboardFocusPolicy,		XmEXPLICIT,

@@ -20,7 +20,7 @@ static void _RGISEditGridLayersYearButtonCBK (Widget widget,DBInt step,XmAnyCall
 
 	{
 	DBInt *timeStep;
-	
+
 	XtVaGetValues (widget,XmNuserData, &timeStep, NULL);
 	*timeStep = step;
 	}
@@ -51,46 +51,46 @@ void RGISEditGridDateLayersCBK (Widget widget, RGISWorkspace *workspace,XmAnyCal
 		Widget mainForm;
 		XmString string;
 
-		dShell = UIDialogForm ("Date Layers",false);
+		dShell = UIDialogForm ((char *) "Date Layers",false);
 		mainForm = UIDialogFormGetMainForm (dShell);
-		
-		menu = XmCreatePulldownMenu (mainForm,"RGISEditGridDateLayersTimeStepMenu",NULL,0);
-		string = XmStringCreate ("Year",UICharSetNormal);
+
+		menu = XmCreatePulldownMenu (mainForm,(char *) "RGISEditGridDateLayersTimeStepMenu",NULL,0);
+		string = XmStringCreate ((char *) "Year",UICharSetNormal);
 		button = XtVaCreateManagedWidget ("RGISEditGridDateLayersTimeStepButton",xmPushButtonWidgetClass,menu,
 												XmNlabelString,				string,
 												XmNuserData,					&timeStep,
 												NULL);
 		XmStringFree (string);
 		XtAddCallback (button,XmNactivateCallback,(XtCallbackProc) _RGISEditGridLayersYearButtonCBK,(XtPointer) DBTimeStepYear);
-		string = XmStringCreate ("Month",UICharSetNormal);
+		string = XmStringCreate ((char *) "Month",UICharSetNormal);
 		button = XtVaCreateManagedWidget ("RGISEditGridDateLayersTimeStepButton",xmPushButtonWidgetClass,menu,
 												XmNlabelString,				string,
 												XmNuserData,					&timeStep,
 												NULL);
 		XmStringFree (string);
 		XtAddCallback (button,XmNactivateCallback,(XtCallbackProc) _RGISEditGridLayersYearButtonCBK,(XtPointer) DBTimeStepMonth);
-		string = XmStringCreate ("Day",UICharSetNormal);
+		string = XmStringCreate ((char *) "Day",UICharSetNormal);
 		button = XtVaCreateManagedWidget ("RGISEditGridDateLayersTimeStepButton",xmPushButtonWidgetClass,menu,
 												XmNlabelString,				string,
 												XmNuserData,					&timeStep,
 												NULL);
 		XmStringFree (string);
 		XtAddCallback (button,XmNactivateCallback,(XtCallbackProc) _RGISEditGridLayersYearButtonCBK,(XtPointer) DBTimeStepDay);
-		string = XmStringCreate ("Hour",UICharSetNormal);
+		string = XmStringCreate ((char *) "Hour",UICharSetNormal);
 		button = XtVaCreateManagedWidget ("RGISEditGridDateLayersTimeStepButton",xmPushButtonWidgetClass,menu,
 												XmNlabelString,				string,
 												XmNuserData,					&timeStep,
 												NULL);
 		XmStringFree (string);
 		XtAddCallback (button,XmNactivateCallback,(XtCallbackProc) _RGISEditGridLayersYearButtonCBK,(XtPointer) DBTimeStepHour);
-		string = XmStringCreate ("Minute",UICharSetNormal);
+		string = XmStringCreate ((char *) "Minute",UICharSetNormal);
 		button = XtVaCreateManagedWidget ("RGISEditGridDateLayersTimeStepButton",xmPushButtonWidgetClass,menu,
 												XmNlabelString,				string,
 												XmNuserData,					&timeStep,
 												NULL);
 		XmStringFree (string);
 		XtAddCallback (button,XmNactivateCallback,(XtCallbackProc) _RGISEditGridLayersYearButtonCBK,(XtPointer) DBTimeStepMinute);
-		string = XmStringCreate ("Time Step:",UICharSetBold);
+		string = XmStringCreate ((char *) "Time Step:",UICharSetBold);
 		menu = XtVaCreateManagedWidget ("RGISEditGridDateLayersTimeStepMenu",xmRowColumnWidgetClass,mainForm,
 												XmNtopAttachment,				XmATTACH_FORM,
 												XmNtopOffset,					10,
@@ -116,7 +116,7 @@ void RGISEditGridDateLayersCBK (Widget widget, RGISWorkspace *workspace,XmAnyCal
 								XmNcolumns,					4,
 								NULL);
 		XtAddCallback (yearTextF,XmNvalueChangedCallback,(XtCallbackProc) _RGISEditGridLayersYearTextCBK,yearText);
-		string = XmStringCreate ("Begin Year",UICharSetBold);
+		string = XmStringCreate ((char *) "Begin Year",UICharSetBold);
 		XtVaCreateManagedWidget ("RGISEditGridDateLayersYearLabel",xmLabelWidgetClass,mainForm,
 								XmNtopAttachment,			XmATTACH_OPPOSITE_WIDGET,
 								XmNtopWidget,				menu,
@@ -164,16 +164,16 @@ void RGISEditGridDateLayersCBK (Widget widget, RGISWorkspace *workspace,XmAnyCal
 				 ((stepDate.Hour () > 0)	&& (gridIO->LayerNum () > 365 * 24)) ||
 				 ((stepDate.Minute () > 0) && (gridIO->LayerNum () > 365 * 24 * 60)))
 				 {
-				 UIMessage ("Too Many Layers in Dataset");
+				 UIMessage ((char *) "Too Many Layers in Dataset");
 				 }
 			}
-		UIPauseDialogOpen ("Labeling Layers");
+		UIPauseDialogOpen ((char *) "Labeling Layers");
 		date.Set (year);
 		if (stepDate.Month () > 0)		date.Set (year,0);
 		if (stepDate.Day () > 0) 		date.Set (year,0,0);
 		if (stepDate.Hour () > 0) 		date.Set (year,0,0,0);
 		if (stepDate.Minute () > 0) 	date.Set (year,0,0,0,0);
-			
+
 		for (layerID = 0;layerID < gridIO->LayerNum ();++layerID)
 			{
 			layerRec = gridIO->Layer (layerID);
@@ -194,8 +194,8 @@ void RGISEditGridRenameLayerCBK (Widget widget, RGISWorkspace *workspace,XmAnyCa
 	DBDataset *dataset = UIDataset ();
 	DBObjData *dbData = dataset->Data ();
 	DBGridIO *gridIO;
-	
-	if ((layerName = UIGetString ("Layer Name",DBStringLength)) == (char *) NULL) return;
+
+	if ((layerName = UIGetString ((char *) "Layer Name",DBStringLength)) == (char *) NULL) return;
 	gridIO= new DBGridIO (dbData);
 	gridIO->RenameLayer (layerName);
 	delete gridIO;
@@ -224,7 +224,7 @@ void RGISEditGridRemovePitsCBK (Widget widget, RGISWorkspace *workspace,XmAnyCal
 	DBObjData *grdData = dataset->Data ();
 	DBObjData *netData = grdData->LinkedData ();
 
-	UIPauseDialogOpen ("Removing Pits");
+	UIPauseDialogOpen ((char *) "Removing Pits");
 	RGlibGridRemovePits (netData,grdData);
 	UIPauseDialogClose ();
 	}
@@ -240,9 +240,9 @@ void RGISEditGridNetFilterCBK (Widget widget, RGISWorkspace *workspace,XmAnyCall
 	DBGridIO *gridIO = new DBGridIO (grdData);
 	DBNetworkIO *netIO = new DBNetworkIO (netData);
 	DBObjRecord *cellRec, *fromCell, *nextCell, *layerRec;
-	
-	UIPauseDialogOpen ("Network Filtering");
-	maxProgress = netIO->CellNum () * gridIO->LayerNum ();	
+
+	UIPauseDialogOpen ((char *) "Network Filtering");
+	maxProgress = netIO->CellNum () * gridIO->LayerNum ();
 	for (layerID = 0;layerID < gridIO->LayerNum (); ++layerID)
 		{
 		layerRec = gridIO->Layer (layerID);

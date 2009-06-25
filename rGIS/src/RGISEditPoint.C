@@ -33,7 +33,7 @@ void RGISEditPointAddXYCBK (Widget widget, RGISWorkspace *workspace,XmAnyCallbac
 	UITable *tableCLS = (UITable *) dbData->Display (UITableName (dbData,pointTable));
 
 	widget = widget; workspace = workspace; callData = callData;
-	UIPauseDialogOpen ("Adding XY Coordinates");
+	UIPauseDialogOpen ((char *) "Adding XY Coordinates");
 	if (xCoordFLD == NULL)
 		{
 		xCoordFLD = new DBObjTableField (RGISEditPointXCoord,DBTableFieldFloat,"%10.3f",sizeof (DBFloat4));
@@ -68,11 +68,11 @@ static void _RGISEditPointSTNCoordsSelectCBK (Widget widget,Widget text,XmAnyCal
 	DBObjectLIST<DBObjTableField> *fields;
 
 	callData = callData;
-	if (select == NULL) select = UISelectionCreate ("Field Selection");
+	if (select == NULL) select = UISelectionCreate ((char *) "Field Selection");
 	XtVaGetValues (text,XmNuserData, &fields, NULL);
 	if ((field = UISelectObject (select,(DBObjectLIST<DBObject> *) fields,DBTableFieldIsFloat)) != NULL)
 			XmTextFieldSetString (text,field);
-	else	XmTextFieldSetString (text,"");
+	else	XmTextFieldSetString (text,(char *) "");
 	}
 
 void RGISEditPointSTNCoordsCBK (Widget widget,void *data,XmAnyCallbackStruct *callData)
@@ -87,15 +87,15 @@ void RGISEditPointSTNCoordsCBK (Widget widget,void *data,XmAnyCallbackStruct *ca
 	static Widget dShell = NULL, mainForm, button, textF;
 
 	widget = widget; data = data; callData = callData;
-	
+
 	if (dShell == (Widget) NULL)
 		{
 		XmString string;
-		
-		dShell = UIDialogForm ("Area Field",false);
+
+		dShell = UIDialogForm ((char *) "Area Field",false);
 		mainForm = UIDialogFormGetMainForm (dShell);
-	
-		string = XmStringCreate ("Select",UICharSetBold);
+
+		string = XmStringCreate ((char *) "Select",UICharSetBold);
 		button = XtVaCreateManagedWidget ("RGISEditPointSTNBestCoordsButton",xmPushButtonWidgetClass,mainForm,
 								XmNtopAttachment,			XmATTACH_FORM,
 								XmNtopOffset,				10,
@@ -119,7 +119,7 @@ void RGISEditPointSTNCoordsCBK (Widget widget,void *data,XmAnyCallbackStruct *ca
 								XmNcolumns,					DBStringLength / 2,
 								NULL);
 		XtAddCallback (button,XmNactivateCallback,(XtCallbackProc) _RGISEditPointSTNCoordsSelectCBK,textF);
-		string = XmStringCreate ("Area Field:",UICharSetBold);
+		string = XmStringCreate ((char *) "Area Field:",UICharSetBold);
 		XtVaCreateManagedWidget ("RGISEditJoinTableNameLabel",xmLabelWidgetClass,mainForm,
 								XmNtopAttachment,			XmATTACH_OPPOSITE_WIDGET,
 								XmNtopWidget,				button,
@@ -136,7 +136,7 @@ void RGISEditPointSTNCoordsCBK (Widget widget,void *data,XmAnyCallbackStruct *ca
 		XtAddCallback (UIDialogFormGetOkButton (dShell),XmNactivateCallback,(XtCallbackProc) UIAuxSetBooleanTrueCBK,&cont);
 		XtSetSensitive (UIDialogFormGetOkButton (dShell),true);
 		}
-	
+
 	dataset = UIDataset ();
 	dbData = dataset->Data ();
 	table = dbData->Table (DBrNItems);
@@ -157,7 +157,7 @@ void RGISEditPointSTNCoordsCBK (Widget widget,void *data,XmAnyCallbackStruct *ca
 	UIDialogFormPopdown (dShell);
 	if (cont)
 		{
-		UIPauseDialogOpen ("Moving Points");
+		UIPauseDialogOpen ((char *) "Moving Points");
 		RGlibPointSTNCoordinates (dbData,field);
 		UIPauseDialogClose ();
 		UI2DViewRedrawAll ();

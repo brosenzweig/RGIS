@@ -28,7 +28,7 @@ void _RGISUserFuncionNetwork (DBObjData *data,UI2DView *view,XEvent *event)
 	if (event->type != ButtonPress) return;
 	if (DBTypeNetwork != data->Type ())
 		{ fprintf (stderr,"Invalid data Type in: _RGISUserFuncionNetwork ()\n"); }
-	
+
 	sX = event->xbutton.x;
 	sY = event->xbutton.y;
 	view->Window2Map  (sX,sY, &coord.X, &coord.Y);
@@ -41,9 +41,9 @@ void _RGISUserFuncionNetwork (DBObjData *data,UI2DView *view,XEvent *event)
 			DBInt basinID, cellID;
 			DBRegion extent;
 			UITable *tableView;
-			
+
 			if ((cellRec = netIO->Cell (coord)) == (DBObjRecord *) NULL)
-				{ UIMessage ("Cell Does not Exists!"); return; }
+				{ UIMessage ((char *) "Cell Does not Exists!"); return; }
 			for (basinID = 0;basinID < netIO->BasinNum ();++basinID)
 				{
 				basinRec = netIO->Basin (basinID);
@@ -89,17 +89,17 @@ void _RGISUserFuncionNetwork (DBObjData *data,UI2DView *view,XEvent *event)
 				tableView->Draw ();
 			} break;
 		case DBDataFlagUserModeAdd:
-			if (netIO->CellAdd (coord) == (DBObjRecord *) NULL) UIMessage ("Cell Creation Error");
-			else redraw = true;				
+			if (netIO->CellAdd (coord) == (DBObjRecord *) NULL) UIMessage ((char *) "Cell Creation Error");
+			else redraw = true;
 			break;
 		case DBDataFlagUserModeDelete:
-			if (netIO->CellDelete (coord) == DBFault) UIMessage ("Cell Does not Exists!");				
-			else redraw = true;				
+			if (netIO->CellDelete (coord) == DBFault) UIMessage ((char *) "Cell Does not Exists!");
+			else redraw = true;
 			break;
 		case DBDataFlagUserModeRotate:
 			{
 			DBObjRecord *cellRec = netIO->Cell (coord);
-			
+
 			if (cellRec != (DBObjRecord *) NULL)
 				{
 				switch (event->xbutton.button)
@@ -114,22 +114,22 @@ void _RGISUserFuncionNetwork (DBObjData *data,UI2DView *view,XEvent *event)
 					}
 				redraw = true;
 				}
-			else	UIMessage ("Cell Does not Exists!");
+			else	UIMessage ((char *) "Cell Does not Exists!");
 			} break;
 		default: printf ("Unknown Mode %lX",data->Flags () & DBDataFlagUserModeFlags); break;
 		}
 	if (redraw)
 		{
 		DBPosition pos;
-		
+
 		if (netIO->Coord2Pos (coord,pos) == DBSuccess)
 			{
 			DBRegion extent;
 			DBCoordinate delta (netIO->CellWidth () * 1.25, netIO->CellHeight () * 1.25);
-			
+
 			netIO->Pos2Coord (pos,coord); coord = coord + delta; extent.Expand (coord);
 			netIO->Pos2Coord (pos,coord); coord = coord - delta; extent.Expand (coord);
-			UI2DViewRedrawAll (extent); 
+			UI2DViewRedrawAll (extent);
 			}
 		}
 	delete netIO;

@@ -20,7 +20,7 @@ static void _UIFileSelectionNoMatchCBK (Widget widget,void *dummy,XmFileSelectio
 
 	{
 	widget = widget; dummy = dummy; callData = callData;
-	UIMessage ("Must Select!");
+	UIMessage ((char *) "Must Select!");
 	}
 
 static void _UIFileSelectionOkCBK (Widget widget,char *fullPath,XmFileSelectionBoxCallbackStruct *callData)
@@ -32,7 +32,7 @@ static void _UIFileSelectionOkCBK (Widget widget,char *fullPath,XmFileSelectionB
 	widget = widget;
 
 	if (XmStringGetLtoR (callData->value,XmSTRING_DEFAULT_CHARSET,&_UIFileName));
-	else _UIFileName = NULL; 
+	else _UIFileName = NULL;
 		XmStringGetLtoR (callData->dir,XmSTRING_DEFAULT_CHARSET,&dir);
 	if (callData->dir_length > callData->length) sprintf (fullPath,"%s/%s",dir,_UIFileName);
 	else 	strcpy (fullPath,_UIFileName);
@@ -43,7 +43,7 @@ static void _UIFileSelectionOkCBK (Widget widget,char *fullPath,XmFileSelectionB
 		for (i = strlen (mask);i > 0; --i) if (mask [i - 1] == '*' || mask [i - 1] == '?') break;
 		if (i > 0)
 			if (strcmp (_UIFileName + strlen (_UIFileName) - strlen (mask) + i,mask + i) != 0)
-				strcat (fullPath,mask + i);	
+				strcat (fullPath,mask + i);
 		}
 	}
 
@@ -94,7 +94,7 @@ char *UIFileSelection (Widget widget,int match)
 	XmFileSelectionDoSearch (widget,dirMask);
 	XtManageChild (widget);
 	_UIFileName = NULL;
-	while (UILoop ()); 
+	while (UILoop ());
 
 	XtUnmanageChild (widget);
 	return (_UIFileName);

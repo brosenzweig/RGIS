@@ -42,11 +42,11 @@ class UIResData
 static class UIResData _UIResData;
 
 static XtResource _UIResources [] = {
-{"UILargeFontList",	XmCFontList,XmRFontList, sizeof (XmFontList), XtOffset (UIResData *,LargeFontList), NULL},
-{"UINormalFontList",	XmCFontList,XmRFontList, sizeof (XmFontList), XtOffset (UIResData *,NormalFontList),NULL},
-{"UISmallFontList",	XmCFontList,XmRFontList, sizeof (XmFontList), XtOffset (UIResData *,SmallFontList), NULL},
-{"UIItalicFontList",	XmCFontList,XmRFontList, sizeof (XmFontList), XtOffset (UIResData *,ItalicFontList),NULL},
-{"UIFixedFontList",	XmCFontList,XmRFontList, sizeof (XmFontList), XtOffset (UIResData *,FixedFontList),NULL}};
+{(char *) "UILargeFontList",	XmCFontList,XmRFontList, sizeof (XmFontList), XtOffset (UIResData *,LargeFontList), NULL},
+{(char *) "UINormalFontList",	XmCFontList,XmRFontList, sizeof (XmFontList), XtOffset (UIResData *,NormalFontList),NULL},
+{(char *) "UISmallFontList",	XmCFontList,XmRFontList, sizeof (XmFontList), XtOffset (UIResData *,SmallFontList), NULL},
+{(char *) "UIItalicFontList",	XmCFontList,XmRFontList, sizeof (XmFontList), XtOffset (UIResData *,ItalicFontList),NULL},
+{(char *) "UIFixedFontList",	XmCFontList,XmRFontList, sizeof (XmFontList), XtOffset (UIResData *,FixedFontList),NULL}};
 
 XmFontList UILargeFontList ()		{ return (_UIResData.LargeFontList); }
 XmFontList UINormalFontList ()	{ return (_UIResData.NormalFontList); }
@@ -88,7 +88,7 @@ Widget UIInitialize (char *title,char *icon,char *helpFile, UIMenuItem mainMenu 
 	XmString string;
 	void _UIColorInitialize (Widget);
 	void _UIGlobeInitialize (Widget,int,Pixel,DBInt);
-	
+
 	if (gethostname (hostName,sizeof (hostName) - 1) == DBFault) sprintf (hostName,"UNKNOWN");
 	else for (i = 0;i < (int) strlen (hostName); ++i) if (hostName [i] == '.') { hostName [i] = 0; break; }
 
@@ -127,7 +127,7 @@ Widget UIInitialize (char *title,char *icon,char *helpFile, UIMenuItem mainMenu 
 													NULL);
 	if (helpFile != (char *) NULL)
 		{
-		string = XmStringCreate ("Help",UICharSetBold);
+		string = XmStringCreate ((char *) "Help",UICharSetBold);
 		helpButton = XtVaCreateManagedWidget ("GHAASMainHelp",xmCascadeButtonWidgetClass,menuBar,
 											XmNlabelString,	string,
 											NULL);
@@ -142,7 +142,7 @@ Widget UIInitialize (char *title,char *icon,char *helpFile, UIMenuItem mainMenu 
 	XtRealizeWidget (_UITopLevel);
 	_UIColorInitialize (_UITopLevel);
 
-	pixmap	= XmGetPixmap(XtScreen(UITopLevel()),"UNHLogo21",foreground,background);
+	pixmap	= XmGetPixmap(XtScreen(UITopLevel()),(char *) "UNHLogo21",foreground,background);
 	unhLogo = XtVaCreateManagedWidget ("GHAASMainUNHLogo",xmLabelWidgetClass,mainForm,
 													XmNlabelType,				XmPIXMAP,
 													XmNlabelPixmap,			pixmap,
@@ -153,7 +153,7 @@ Widget UIInitialize (char *title,char *icon,char *helpFile, UIMenuItem mainMenu 
 													XmNbottomAttachment,		XmATTACH_FORM,
 													XmNbottomOffset,			5,
 													NULL);
-	pixmap = XmGetPixmap(XtScreen(UITopLevel()),"UNHghaas",foreground,background);
+	pixmap = XmGetPixmap(XtScreen(UITopLevel()),(char *) "UNHghaas",foreground,background);
 	ghaasLogo = XtVaCreateManagedWidget ("GHAASMainUNHLogo",xmLabelWidgetClass,mainForm,
 													XmNlabelType,				XmPIXMAP,
 													XmNlabelPixmap,			pixmap,
@@ -162,7 +162,7 @@ Widget UIInitialize (char *title,char *icon,char *helpFile, UIMenuItem mainMenu 
 													XmNbottomAttachment,	XmATTACH_FORM,
 													XmNbottomOffset,			5,
 													NULL);
-	string = XmStringCreate ("Global Hydrological Archive and Analysis System",UICharSetNormal);
+	string = XmStringCreate ((char *) "Global Hydrological Archive and Analysis System",UICharSetNormal);
 	XtVaCreateManagedWidget ("GHAASLabel",xmLabelWidgetClass,mainForm,
 									XmNlabelString,		string,
 									XmNtopAttachment,		XmATTACH_OPPOSITE_WIDGET,

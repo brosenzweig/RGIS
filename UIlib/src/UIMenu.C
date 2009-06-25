@@ -25,7 +25,7 @@ void _UIHelpCallback (Widget,char *, XmAnyCallbackStruct *);
 static void _UINotImplementedCBK (Widget widget,char *text,XmAnyCallbackStruct *callData)
          {
          widget = widget; text = text; callData = callData;
-          UIMessage ("This menu option is not implemented");
+          UIMessage ((char *) "This menu option is not implemented");
           }
 
 UIMenuItem::UIMenuItem ()
@@ -76,7 +76,7 @@ static void _UIMenuButtonCBK (Widget widget,XtPointer *menuData,XmAnyCallbackStr
 
 	{
 	UIMenuItem *menuBut;
-	
+
 	XtVaGetValues (widget,XmNuserData, &menuBut, NULL);
 	switch (callData->event->xbutton.button)
 		{
@@ -108,7 +108,7 @@ void UIMenuItem::CreateButton (Widget menuWidget,
 			break;
 		case UIMENU_SUBMENU:
 			argNum = 0;
-			subMenu = XmCreatePulldownMenu (menuWidget,"GHAASPullDownMenu",wargs,argNum);
+			subMenu = XmCreatePulldownMenu (menuWidget,(char *) "GHAASPullDownMenu",wargs,argNum);
 
 			mnemonic[0] = menuBut->Label [0];
 			mnemonic[1] = '\0';
@@ -124,10 +124,10 @@ void UIMenuItem::CreateButton (Widget menuWidget,
 					menuBut->CreateButton (subMenu,((UIMenuItem *) menuBut->Action) + menuNum,menuData);
 			break;
 		case UIMENU_SEPARATOR:
-			menuBut->Button = 	 XmCreateSeparatorGadget (menuWidget,"GHAASMenuSeparator", NULL,0);
+			menuBut->Button = 	 XmCreateSeparatorGadget (menuWidget,(char *) "GHAASMenuSeparator", NULL,0);
 			break;
 		default: fprintf (stderr,"Not valid Button type: in UIMenuItem::CreateButton ()\n"); return;
-		}	
+		}
 	if (menuBut->VisibleVAR == UIMENU_NORULE)		XtManageChild	(menuBut->Button);
 	XtSetSensitive (menuBut->Button,menuBut->SensitiveVAR == UIMENU_NORULE);
 	}
@@ -136,7 +136,7 @@ void UIMenuItem::Sensitive (unsigned groups,int sensitive)
 
 	{
 	int menuNum;
-	
+
 	switch (Type)
 		{
 		case UIMENU_SUBMENU:
@@ -155,7 +155,7 @@ void UIMenuItem::Visible (unsigned groups, int visible)
 
 	{
 	int menuNum;
-	
+
 	switch (Type)
 		{
 		case UIMENU_SUBMENU:
@@ -177,11 +177,11 @@ void UIMenuItem::CallMenu (Widget widget,void *data,XmAnyCallbackStruct *callDat
 void UIMenuDisplayHelp (char *helpFile)
 
 	{
-	if (helpFile == (char *) NULL) UIMessage ("Sorry, No Help! You are on your own!");
+	if (helpFile == (char *) NULL) UIMessage ((char *) "Sorry, No Help! You are on your own!");
 	else
 		{
 		char cmndString [2048];
-		if (getenv ("GHAAS_BROWSER") == NULL) { UIMessage ("You Don't have Web Browser Configured!"); return; }
+		if (getenv ("GHAAS_BROWSER") == NULL) { UIMessage ((char *) "You Don't have Web Browser Configured!"); return; }
 		sprintf (cmndString,getenv ("GHAAS_BROWSER"),helpFile);
 		system (cmndString);
 		}

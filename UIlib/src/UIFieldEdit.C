@@ -176,12 +176,12 @@ static void _UITableFieldEditTypeButtonCBK (Widget widget,DBInt type, XmAnyCallb
 	{
 	Widget mainForm;
 	DBObjTableField *field;
-	
+
 	callData = callData;
 	XtVaGetValues (widget,	XmNuserData, &mainForm,	NULL);
 	XtVaGetValues (mainForm,XmNuserData, &field, 	NULL);
-	
-	field->Type (type); 
+
+	field->Type (type);
 	_UITableFieldEditDisplayWidgets (mainForm,field);
 	}
 
@@ -190,14 +190,14 @@ static void _UITableFieldEditSizeButtonCBK (Widget widget,DBInt size, XmAnyCallb
 	{
 	Widget mainForm;
 	DBObjTableField *field;
-	
+
 	callData = callData;
 	XtVaGetValues (widget, XmNuserData, &mainForm, NULL);
 	XtVaGetValues (mainForm, XmNuserData, &field,  NULL);
 	if ((field->Type () != DBTableFieldInt) || (field->Type () != DBTableFieldFloat)) return;
 
 	if (field->Type () == DBTableFieldFloat) size = size << 0x01;
-	field->Length (size);	
+	field->Length (size);
 	}
 
 static void _UITableFieldEditTextValueChangedCBK (Widget widget,void *data,XmTextVerifyCallbackStruct *callData)
@@ -248,7 +248,7 @@ DBObjTableField *UITableFieldEdit ()
 
 	{
 	DBObjTableField *field = new DBObjTableField (), *retField;
-	
+
 	retField = UITableFieldEdit (field);
 	delete field;
 	return (retField);
@@ -266,7 +266,7 @@ DBObjTableField *UITableFieldEdit (DBObjTableField *field)
 		{
 		XmString string;
 		Widget label, textF, subMenu, menu, button, frame, scale;
-		dShell = UIDialogForm ("Field Edit");
+		dShell = UIDialogForm ((char *) "Field Edit");
 		mainForm = UIDialogFormGetMainForm (dShell);
 
 		textF = XtVaCreateManagedWidget (UITableFieldEditNameTextF + 1,xmTextFieldWidgetClass,mainForm,
@@ -281,7 +281,7 @@ DBObjTableField *UITableFieldEdit (DBObjTableField *field)
 								XmNcolumns,					DBStringLength,
 								NULL);
 		XtAddCallback (textF,XmNvalueChangedCallback,(XtCallbackProc) _UITableFieldEditTextValueChangedCBK,(XtPointer) NULL);
-		string = XmStringCreate ("Field Name:",UICharSetBold);
+		string = XmStringCreate ((char *) "Field Name:",UICharSetBold);
 		label = XtVaCreateManagedWidget ("UITableFieldEditFieldNameLabel",xmLabelWidgetClass,mainForm,
 								XmNtopAttachment,			XmATTACH_OPPOSITE_WIDGET,
 								XmNtopWidget,				textF,
@@ -294,7 +294,7 @@ DBObjTableField *UITableFieldEdit (DBObjTableField *field)
 								NULL);
 		XmStringFree (string);
 		subMenu = XmCreatePulldownMenu (mainForm,(char *) UITableFieldEditTypeMenu + 1,NULL,0);
-		string = XmStringCreate ("Character",UICharSetNormal);
+		string = XmStringCreate ((char *) "Character",UICharSetNormal);
 		button = XtVaCreateManagedWidget (UITableFieldEditTypeCharButton + 1,xmPushButtonGadgetClass,subMenu,
 								XmNuserData,				mainForm,
 								XmNlabelString,			string,
@@ -303,7 +303,7 @@ DBObjTableField *UITableFieldEdit (DBObjTableField *field)
 		XtAddCallback (button,XmNactivateCallback,(XtCallbackProc) _UITableFieldEditTypeButtonCBK,(XtPointer) DBTableFieldString);
 		XtVaGetValues (button, XmNwidth, &width, NULL);
 		maxWidth = width;
-		string = XmStringCreate ("Integer",UICharSetNormal);
+		string = XmStringCreate ((char *) "Integer",UICharSetNormal);
 		button = XtVaCreateManagedWidget (UITableFieldEditTypeIntButton + 1,xmPushButtonGadgetClass,subMenu,
 								XmNuserData,				mainForm,
 								XmNlabelString,			string,
@@ -312,7 +312,7 @@ DBObjTableField *UITableFieldEdit (DBObjTableField *field)
 		XtAddCallback (button,XmNactivateCallback,(XtCallbackProc) _UITableFieldEditTypeButtonCBK,(XtPointer) DBTableFieldInt);
 		XtVaGetValues (button, XmNwidth, &width, NULL);
 		maxWidth = maxWidth > width ? maxWidth : width;
-		string = XmStringCreate ("Float",UICharSetNormal);
+		string = XmStringCreate ((char *) "Float",UICharSetNormal);
 		button = XtVaCreateManagedWidget (UITableFieldEditTypeFloatButton + 1,xmPushButtonGadgetClass,subMenu,
 								XmNuserData,				mainForm,
 								XmNlabelString,			string,
@@ -321,7 +321,7 @@ DBObjTableField *UITableFieldEdit (DBObjTableField *field)
 		XtAddCallback (button,XmNactivateCallback,(XtCallbackProc) _UITableFieldEditTypeButtonCBK,(XtPointer) DBTableFieldFloat);
 		XtVaGetValues (button, XmNwidth, &width, NULL);
 		maxWidth = maxWidth > width ? maxWidth : width;
-		string = XmStringCreate ("Data Type:",UICharSetBold);
+		string = XmStringCreate ((char *) "Data Type:",UICharSetBold);
 		menu = XtVaCreateManagedWidget (UITableFieldEditTypeOptionMenu + 1,xmRowColumnWidgetClass,mainForm,
 								XmNtopAttachment,			XmATTACH_WIDGET,
 								XmNtopWidget,				textF,
@@ -347,7 +347,7 @@ DBObjTableField *UITableFieldEdit (DBObjTableField *field)
 								XmNcolumns,					10 ,
 								NULL);
 		XtAddCallback (textF,XmNvalueChangedCallback,(XtCallbackProc) _UITableFieldEditNoDataValueChangedCBK,(XtPointer) NULL);
-		string = XmStringCreate ("Nodata:",UICharSetBold);
+		string = XmStringCreate ((char *) "Nodata:",UICharSetBold);
 		label = XtVaCreateManagedWidget (UITableFieldEditFieldNodataLabel + 1,xmLabelWidgetClass,mainForm,
 								XmNtopAttachment,			XmATTACH_OPPOSITE_WIDGET,
 								XmNtopWidget,				textF,
@@ -361,7 +361,7 @@ DBObjTableField *UITableFieldEdit (DBObjTableField *field)
 		XmStringFree (string);
 
 		subMenu = XmCreatePulldownMenu (mainForm,(char *) UITableFieldEditSizeMenu + 1,NULL,0);
-		string = XmStringCreate ("Byte",UICharSetNormal);
+		string = XmStringCreate ((char *) "Byte",UICharSetNormal);
 		button = XtVaCreateManagedWidget ("UITableFieldEditSizeByteButton",xmPushButtonGadgetClass,subMenu,
 								XmNuserData,				mainForm,
 								XmNwidth, 					maxWidth,
@@ -370,7 +370,7 @@ DBObjTableField *UITableFieldEdit (DBObjTableField *field)
 								NULL);
 		XmStringFree (string);
 		XtAddCallback (button,XmNactivateCallback,(XtCallbackProc) _UITableFieldEditSizeButtonCBK,(XtPointer) sizeof (DBByte));
-		string = XmStringCreate ("Short",UICharSetNormal);
+		string = XmStringCreate ((char *) "Short",UICharSetNormal);
 		button = XtVaCreateManagedWidget (UITableFieldEditSizeShortButton + 1,xmPushButtonGadgetClass,subMenu,
 								XmNuserData,				mainForm,
 								XmNwidth, 					maxWidth,
@@ -379,7 +379,7 @@ DBObjTableField *UITableFieldEdit (DBObjTableField *field)
 								NULL);
 		XmStringFree (string);
 		XtAddCallback (button,XmNactivateCallback,(XtCallbackProc) _UITableFieldEditSizeButtonCBK,(XtPointer) sizeof (DBShort));
-		string = XmStringCreate ("Long",UICharSetNormal);
+		string = XmStringCreate ((char *) "Long",UICharSetNormal);
 		button = XtVaCreateManagedWidget (UITableFieldEditSizeLongButton + 1,xmPushButtonGadgetClass,subMenu,
 								XmNuserData,				mainForm,
 								XmNwidth, 					maxWidth,
@@ -388,7 +388,7 @@ DBObjTableField *UITableFieldEdit (DBObjTableField *field)
 								NULL);
 		XmStringFree (string);
 		XtAddCallback (button,XmNactivateCallback,(XtCallbackProc) _UITableFieldEditSizeButtonCBK,(XtPointer) sizeof (DBInt));
-		string = XmStringCreate ("Size:",UICharSetBold);
+		string = XmStringCreate ((char *) "Size:",UICharSetBold);
 		menu = XtVaCreateManagedWidget (UITableFieldEditSizeOptionMenu + 1,xmRowColumnWidgetClass,mainForm,
 								XmNtopAttachment,			XmATTACH_WIDGET,
 								XmNtopWidget,				menu,
@@ -400,7 +400,7 @@ DBObjTableField *UITableFieldEdit (DBObjTableField *field)
 								XmNtraversalOn,			False,
 								NULL);
 		XmStringFree (string);
-	
+
 		frame = XtVaCreateManagedWidget ("UITableFieldEditWidthFrame",xmFrameWidgetClass,mainForm,
 								XmNtopAttachment,			XmATTACH_WIDGET,
 								XmNtopWidget,				menu,
@@ -411,7 +411,7 @@ DBObjTableField *UITableFieldEdit (DBObjTableField *field)
 								XmNbottomAttachment,		XmATTACH_FORM,
 								XmNbottomOffset,			5,
 								NULL);
-		string = XmStringCreate ("data",UICharSetNormal);
+		string = XmStringCreate ((char *) "data",UICharSetNormal);
 		label = XtVaCreateManagedWidget (UITableFieldEditWidthLabelF + 1,xmLabelWidgetClass,frame,
 								XmNmarginWidth,			5,
 								XmNalignment,				XmALIGNMENT_END,
@@ -436,7 +436,7 @@ DBObjTableField *UITableFieldEdit (DBObjTableField *field)
 								XmNtraversalOn,			False,
 								NULL);
 		XtAddCallback (scale,XmNdragCallback,(XtCallbackProc) _UITableFieldEditWidthScaleValueCBK,(XtPointer) label);
-		string = XmStringCreate ("Width:",UICharSetBold);
+		string = XmStringCreate ((char *) "Width:",UICharSetBold);
 		label = XtVaCreateManagedWidget ("UITableFieldEditWidthLabel",xmLabelWidgetClass,mainForm,
 								XmNtopAttachment,			XmATTACH_OPPOSITE_WIDGET,
 								XmNtopWidget,				frame,
@@ -463,7 +463,7 @@ DBObjTableField *UITableFieldEdit (DBObjTableField *field)
 								XmNtraversalOn,			False,
 								NULL);
 		XtAddCallback (scale,XmNdragCallback,(XtCallbackProc) _UITableFieldEditDecimalScaleValueCBK,(XtPointer) NULL);
-		string = XmStringCreate ("Decimals:",UICharSetBold);
+		string = XmStringCreate ((char *) "Decimals:",UICharSetBold);
 		label = XtVaCreateManagedWidget (UITableFieldEditDecimalsLabel + 1,xmLabelWidgetClass,mainForm,
 								XmNtopAttachment,			XmATTACH_OPPOSITE_WIDGET,
 								XmNtopWidget,				frame,

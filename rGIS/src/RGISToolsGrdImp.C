@@ -24,7 +24,7 @@ static int _RGISToolsImportWidgetMaxWidth (Widget widget,int maxWidth)
 
 	{
 	Dimension width;
-	
+
 	XtVaGetValues (widget,XmNwidth, &width, NULL);
 	return (maxWidth > width ? maxWidth : width);
 	}
@@ -34,10 +34,10 @@ static void _RGISToolsImportSetButtonWidth (Widget menu,Dimension width)
 	{
 	Cardinal childrenNum, child;
 	WidgetList children;
-	
+
 	XtVaGetValues (menu,XmNsubMenuId, &menu, NULL);
 	XtVaGetValues (menu,XmNchildren, &children,XmNnumChildren, &childrenNum, NULL);
-	
+
 	for (child = 0;child < childrenNum;++child)
 		XtVaSetValues (children [child],XmNwidth, width, XmNrecomputeSize, False, NULL);
 	}
@@ -46,7 +46,7 @@ static void _RGISToolsImpGridMapMenuCBK (Widget widget,Widget mapWidget, XmAnyCa
 
 	{
 	DBInt *val;
-	
+
 	callData = callData;
 	XtVaGetValues (widget,XmNuserData, 	&val, NULL);
 	if ((*val & 0x01) == 0x01)
@@ -59,7 +59,7 @@ static void _RGISToolsImpGridSetMapCallback (Widget menu,Widget mapWidget)
 	{
 	Cardinal childrenNum, child;
 	WidgetList children;
-	
+
 	XtVaGetValues (menu,XmNsubMenuId, &menu, NULL);
 	XtVaGetValues (menu,XmNchildren, &children,XmNnumChildren, &childrenNum, NULL);
 	for (child = 0;child < childrenNum;++child)
@@ -108,7 +108,7 @@ void RGISToolsImportGridCBK (Widget widget,RGISWorkspace *workspace,XmAnyCallbac
 		Widget binaryTypeMenu, byteOrderMenu;
 		XmString string;
 
-		dShell = UIDialogForm ("Grid Import",false);
+		dShell = UIDialogForm ((char *) "Grid Import",false);
 		mainForm = UIDialogFormGetMainForm (dShell);
 
 		rowColWGT = XtVaCreateManagedWidget ("RGISToolsGridImportSubform",xmRowColumnWidgetClass,mainForm,
@@ -123,23 +123,23 @@ void RGISToolsImportGridCBK (Widget widget,RGISWorkspace *workspace,XmAnyCallbac
 								XmNorientation,			XmHORIZONTAL,
 								NULL);
 
-		string = XmStringCreate (" ",UICharSetNormal);
+		string = XmStringCreate ((char *) " ",UICharSetNormal);
 		XtVaCreateManagedWidget ("RGISToolsGridImportColNumLabel",xmLabelWidgetClass,rowColWGT,
 								XmNlabelString,			string,
 								NULL);
 		XmStringFree (string);
-		string = XmStringCreate ("Columns",UICharSetNormal);
+		string = XmStringCreate ((char *) "Columns",UICharSetNormal);
 		XtVaCreateManagedWidget ("RGISToolsGridImportColNumLabel",xmLabelWidgetClass,rowColWGT,
 								XmNlabelString,			string,
 								NULL);
 		XmStringFree (string);
-		string = XmStringCreate ("Rows",UICharSetNormal);
+		string = XmStringCreate ((char *) "Rows",UICharSetNormal);
 		XtVaCreateManagedWidget ("RGISToolsGridImportRowNumLabel",xmLabelWidgetClass,rowColWGT,
 								XmNlabelString,			string,
 								NULL);
 		XmStringFree (string);
 
-		string = XmStringCreate ("Dimensions:",UICharSetBold);
+		string = XmStringCreate ((char *) "Dimensions:",UICharSetBold);
 		XtVaCreateManagedWidget ("RGISToolsGridImportDimensionLabel",xmLabelWidgetClass,rowColWGT,
 								XmNlabelString,			string,
 								NULL);
@@ -152,7 +152,7 @@ void RGISToolsImportGridCBK (Widget widget,RGISWorkspace *workspace,XmAnyCallbac
 								XmNmaxLength,				DBStringLength >> 0x02,
 								XmNcolumns,					DBStringLength >> 0x02,
 								NULL);
-		
+
 		colWGT = XtVaCreateManagedWidget ("RGISToolsGridImportSubform",xmRowColumnWidgetClass,mainForm,
 								XmNtopAttachment,			XmATTACH_WIDGET,
 								XmNtopWidget,				rowColWGT,
@@ -163,8 +163,8 @@ void RGISToolsImportGridCBK (Widget widget,RGISWorkspace *workspace,XmAnyCallbac
 								XmNspacing,					0,
 								XmNorientation,			XmVERTICAL,
 								NULL);
-		layoutMenu = XmCreatePulldownMenu (colWGT,"RGISToolsGridImportLayoutMenu",NULL,0);
-		string = XmStringCreate ("by Row",UICharSetNormal);
+		layoutMenu = XmCreatePulldownMenu (colWGT,(char *) "RGISToolsGridImportLayoutMenu",NULL,0);
+		string = XmStringCreate ((char *) "by Row",UICharSetNormal);
 		button = XtVaCreateManagedWidget ("RGISToolsGridImportLayoutButton",xmPushButtonGadgetClass,layoutMenu,
 								XmNuserData,				&layout,
 								XmNlabelString,			string,
@@ -172,7 +172,7 @@ void RGISToolsImportGridCBK (Widget widget,RGISWorkspace *workspace,XmAnyCallbac
 		XmStringFree (string);
 		buttonWidth = _RGISToolsImportWidgetMaxWidth (button,buttonWidth);
 		XtAddCallback (button,XmNactivateCallback,(XtCallbackProc) UIAuxSetIntegerCBK,(void *) RGISLaoutByRow);
-		string = XmStringCreate ("by Column",UICharSetNormal);
+		string = XmStringCreate ((char *) "by Column",UICharSetNormal);
 		button = XtVaCreateManagedWidget ("RGISToolsGridImportFLayoutButton",xmPushButtonGadgetClass,layoutMenu,
 								XmNuserData,				&layout,
 								XmNlabelString,			string,
@@ -180,7 +180,7 @@ void RGISToolsImportGridCBK (Widget widget,RGISWorkspace *workspace,XmAnyCallbac
 		XmStringFree (string);
 		buttonWidth = _RGISToolsImportWidgetMaxWidth (button,buttonWidth);
 		XtAddCallback (button,XmNactivateCallback,(XtCallbackProc) UIAuxSetIntegerCBK,(void *) RGISLaoutByCol);
-		string = XmStringCreate ("Grid Layout",UICharSetBold);
+		string = XmStringCreate ((char *) "Grid Layout",UICharSetBold);
 		layoutMenu = XtVaCreateManagedWidget ("RGISToolsGridImportLayoutMenu",xmRowColumnWidgetClass,colWGT,
 								XmNsubMenuId,				layoutMenu,
 								XmNlabelString,			string,
@@ -189,8 +189,8 @@ void RGISToolsImportGridCBK (Widget widget,RGISWorkspace *workspace,XmAnyCallbac
 								NULL);
 		XmStringFree (string);
 		optionWidth = _RGISToolsImportWidgetMaxWidth (XmOptionLabelGadget (layoutMenu),optionWidth);
-		rowOrderMenu = XmCreatePulldownMenu (colWGT,"RGISToolsGridImportLayoutMenu",NULL,0);
-		string = XmStringCreate ("Top-Down",UICharSetNormal);
+		rowOrderMenu = XmCreatePulldownMenu (colWGT,(char *) "RGISToolsGridImportLayoutMenu",NULL,0);
+		string = XmStringCreate ((char *) "Top-Down",UICharSetNormal);
 		button = XtVaCreateManagedWidget ("RGISToolsGridImportLayoutButton",xmPushButtonGadgetClass,rowOrderMenu,
 								XmNuserData,				&rowOrder,
 								XmNlabelString,			string,
@@ -198,7 +198,7 @@ void RGISToolsImportGridCBK (Widget widget,RGISWorkspace *workspace,XmAnyCallbac
 		XmStringFree (string);
 		buttonWidth = _RGISToolsImportWidgetMaxWidth (button,buttonWidth);
 		XtAddCallback (button,XmNactivateCallback,(XtCallbackProc) UIAuxSetIntegerCBK,(void *) RGISItemOrderTopDown);
-		string = XmStringCreate ("Bottom-Up",UICharSetNormal);
+		string = XmStringCreate ((char *) "Bottom-Up",UICharSetNormal);
 		button = XtVaCreateManagedWidget ("RGISToolsGridImportFLayoutButton",xmPushButtonGadgetClass,rowOrderMenu,
 								XmNuserData,				&rowOrder,
 								XmNlabelString,			string,
@@ -206,7 +206,7 @@ void RGISToolsImportGridCBK (Widget widget,RGISWorkspace *workspace,XmAnyCallbac
 		XmStringFree (string);
 		buttonWidth = _RGISToolsImportWidgetMaxWidth (button,buttonWidth);
 		XtAddCallback (button,XmNactivateCallback,(XtCallbackProc) UIAuxSetIntegerCBK,(void *) RGISItemOrderBottomUp);
-		string = XmStringCreate ("Row Order",UICharSetBold);
+		string = XmStringCreate ((char *) "Row Order",UICharSetBold);
 		rowOrderMenu = XtVaCreateManagedWidget ("RGISToolsGridImportLayoutMenu",xmRowColumnWidgetClass,colWGT,
 								XmNsubMenuId,				rowOrderMenu,
 								XmNlabelString,			string,
@@ -215,8 +215,8 @@ void RGISToolsImportGridCBK (Widget widget,RGISWorkspace *workspace,XmAnyCallbac
 								NULL);
 		XmStringFree (string);
 		optionWidth = _RGISToolsImportWidgetMaxWidth (XmOptionLabelGadget (rowOrderMenu),optionWidth);
-		fileTypeMenu = XmCreatePulldownMenu (colWGT,"RGISToolsGridImportFileTypeMenu",NULL,0);
-		string = XmStringCreate ("Binary",UICharSetNormal);
+		fileTypeMenu = XmCreatePulldownMenu (colWGT,(char *) "RGISToolsGridImportFileTypeMenu",NULL,0);
+		string = XmStringCreate ((char *) "Binary",UICharSetNormal);
 		button = XtVaCreateManagedWidget ("RGISToolsGridImportFileTypeButton",xmPushButtonGadgetClass,fileTypeMenu,
 								XmNuserData,				&fileType,
 								XmNlabelString,			string,
@@ -224,7 +224,7 @@ void RGISToolsImportGridCBK (Widget widget,RGISWorkspace *workspace,XmAnyCallbac
 		XmStringFree (string);
 		buttonWidth = _RGISToolsImportWidgetMaxWidth (button,buttonWidth);
 		XtAddCallback (button,XmNactivateCallback,(XtCallbackProc) UIAuxSetIntegerCBK,(void *) RGISGridBinary);
-		string = XmStringCreate ("ASCII",UICharSetNormal);
+		string = XmStringCreate ((char *) "ASCII",UICharSetNormal);
 		button = XtVaCreateManagedWidget ("RGISToolsGridImportFileTypeButton",xmPushButtonGadgetClass,fileTypeMenu,
 								XmNuserData,				&fileType,
 								XmNlabelString,			string,
@@ -232,7 +232,7 @@ void RGISToolsImportGridCBK (Widget widget,RGISWorkspace *workspace,XmAnyCallbac
 		XmStringFree (string);
 		buttonWidth = _RGISToolsImportWidgetMaxWidth (button,buttonWidth);
 		XtAddCallback (button,XmNactivateCallback,(XtCallbackProc) UIAuxSetIntegerCBK,(void *) RGISGridASCII);
-		string = XmStringCreate ("File Type",UICharSetBold);
+		string = XmStringCreate ((char *) "File Type",UICharSetBold);
 		fileTypeMenu = XtVaCreateManagedWidget ("RGISToolsGridImportFileTypeMenu",xmRowColumnWidgetClass,colWGT,
 								XmNsubMenuId,				fileTypeMenu,
 								XmNlabelString,			string,
@@ -241,8 +241,8 @@ void RGISToolsImportGridCBK (Widget widget,RGISWorkspace *workspace,XmAnyCallbac
 								NULL);
 		XmStringFree (string);
 		optionWidth = _RGISToolsImportWidgetMaxWidth (XmOptionLabelGadget (fileTypeMenu),optionWidth);
-		binaryTypeMenu = XmCreatePulldownMenu (colWGT,"RGISToolsGridImportBinaryTypeMenu",NULL,0);
-		string = XmStringCreate ("Byte",UICharSetNormal);
+		binaryTypeMenu = XmCreatePulldownMenu (colWGT,(char *) "RGISToolsGridImportBinaryTypeMenu",NULL,0);
+		string = XmStringCreate ((char *) "Byte",UICharSetNormal);
 		button = XtVaCreateManagedWidget ("RGISToolsGridImportBinaryTypeButton",xmPushButtonGadgetClass,binaryTypeMenu,
 								XmNuserData,				&binaryType,
 								XmNlabelString,			string,
@@ -250,7 +250,7 @@ void RGISToolsImportGridCBK (Widget widget,RGISWorkspace *workspace,XmAnyCallbac
 		XmStringFree (string);
 		buttonWidth = _RGISToolsImportWidgetMaxWidth (button,buttonWidth);
 		XtAddCallback (button,XmNactivateCallback,(XtCallbackProc) UIAuxSetIntegerCBK,(void *) RGISBinTypeByte);
-		string = XmStringCreate ("Short Integer",UICharSetNormal);
+		string = XmStringCreate ((char *) "Short Integer",UICharSetNormal);
 		button = XtVaCreateManagedWidget ("RGISToolsGridImportBinaryTypeButton",xmPushButtonGadgetClass,binaryTypeMenu,
 								XmNuserData,				&binaryType,
 								XmNlabelString,			string,
@@ -258,7 +258,7 @@ void RGISToolsImportGridCBK (Widget widget,RGISWorkspace *workspace,XmAnyCallbac
 		XmStringFree (string);
 		buttonWidth = _RGISToolsImportWidgetMaxWidth (button,buttonWidth);
 		XtAddCallback (button,XmNactivateCallback,(XtCallbackProc) UIAuxSetIntegerCBK,(void *) RGISBinTypeShort);
-		string = XmStringCreate ("Long Integer",UICharSetNormal);
+		string = XmStringCreate ((char *) "Long Integer",UICharSetNormal);
 		button = XtVaCreateManagedWidget ("RGISToolsGridImportBinaryTypeButton",xmPushButtonGadgetClass,binaryTypeMenu,
 								XmNuserData,				&binaryType,
 								XmNlabelString,			string,
@@ -266,7 +266,7 @@ void RGISToolsImportGridCBK (Widget widget,RGISWorkspace *workspace,XmAnyCallbac
 		XmStringFree (string);
 		buttonWidth = _RGISToolsImportWidgetMaxWidth (button,buttonWidth);
 		XtAddCallback (button,XmNactivateCallback,(XtCallbackProc) UIAuxSetIntegerCBK,(void *) RGISBinTypeLong);
-		string = XmStringCreate ("Single Float",UICharSetNormal);
+		string = XmStringCreate ((char *) "Single Float",UICharSetNormal);
 		button = XtVaCreateManagedWidget ("RGISToolsGridImportBinaryTypeButton",xmPushButtonGadgetClass,binaryTypeMenu,
 								XmNuserData,				&binaryType,
 								XmNlabelString,			string,
@@ -274,7 +274,7 @@ void RGISToolsImportGridCBK (Widget widget,RGISWorkspace *workspace,XmAnyCallbac
 		XmStringFree (string);
 		buttonWidth = _RGISToolsImportWidgetMaxWidth (button,buttonWidth);
 		XtAddCallback (button,XmNactivateCallback,(XtCallbackProc) UIAuxSetIntegerCBK,(void *) RGISBinTypeSingle);
-		string = XmStringCreate ("Double Float",UICharSetNormal);
+		string = XmStringCreate ((char *) "Double Float",UICharSetNormal);
 		button = XtVaCreateManagedWidget ("RGISToolsGridImportBinaryTypeButton",xmPushButtonGadgetClass,binaryTypeMenu,
 								XmNuserData,				&binaryType,
 								XmNlabelString,			string,
@@ -282,7 +282,7 @@ void RGISToolsImportGridCBK (Widget widget,RGISWorkspace *workspace,XmAnyCallbac
 		XmStringFree (string);
 		buttonWidth = _RGISToolsImportWidgetMaxWidth (button,buttonWidth);
 		XtAddCallback (button,XmNactivateCallback,(XtCallbackProc) UIAuxSetIntegerCBK,(void *) RGISBinTypeDouble);
-		string = XmStringCreate ("Binary Type",UICharSetBold);
+		string = XmStringCreate ((char *) "Binary Type",UICharSetBold);
 		binaryTypeMenu = XtVaCreateManagedWidget ("RGISToolsGridImportBinaryTypeMenu",xmRowColumnWidgetClass,colWGT,
 								XmNsubMenuId,				binaryTypeMenu,
 								XmNlabelString,			string,
@@ -291,8 +291,8 @@ void RGISToolsImportGridCBK (Widget widget,RGISWorkspace *workspace,XmAnyCallbac
 								NULL);
 		XmStringFree (string);
 		optionWidth = _RGISToolsImportWidgetMaxWidth (XmOptionLabelGadget (binaryTypeMenu),optionWidth);
-		byteOrderMenu = XmCreatePulldownMenu (colWGT,"RGISToolsGridImportByteOrderMenu",NULL,0);
-		string = XmStringCreate ("Big Endian",UICharSetNormal);
+		byteOrderMenu = XmCreatePulldownMenu (colWGT,(char *) "RGISToolsGridImportByteOrderMenu",NULL,0);
+		string = XmStringCreate ((char *) "Big Endian",UICharSetNormal);
 		button = XtVaCreateManagedWidget ("RGISToolsGridImportFileTypeButton",xmPushButtonGadgetClass,byteOrderMenu,
 								XmNuserData,				&byteOrder,
 								XmNlabelString,			string,
@@ -300,7 +300,7 @@ void RGISToolsImportGridCBK (Widget widget,RGISWorkspace *workspace,XmAnyCallbac
 		XmStringFree (string);
 		buttonWidth = _RGISToolsImportWidgetMaxWidth (button,buttonWidth);
 		XtAddCallback (button,XmNactivateCallback,(XtCallbackProc) UIAuxSetIntegerCBK,(void *) DBByteOrderBIG);
-		string = XmStringCreate ("Little Endian",UICharSetNormal);
+		string = XmStringCreate ((char *) "Little Endian",UICharSetNormal);
 		button = XtVaCreateManagedWidget ("RGISToolsGridImportFileTypeButton",xmPushButtonGadgetClass,byteOrderMenu,
 								XmNuserData,				&byteOrder,
 								XmNlabelString,			string,
@@ -308,7 +308,7 @@ void RGISToolsImportGridCBK (Widget widget,RGISWorkspace *workspace,XmAnyCallbac
 		XmStringFree (string);
 		buttonWidth = _RGISToolsImportWidgetMaxWidth (button,buttonWidth);
 		XtAddCallback (button,XmNactivateCallback,(XtCallbackProc) UIAuxSetIntegerCBK,(void *) DBByteOrderLITTLE);
-		string = XmStringCreate ("ByteOrder",UICharSetBold);
+		string = XmStringCreate ((char *) "ByteOrder",UICharSetBold);
 		byteOrderMenu = XtVaCreateManagedWidget ("RGISToolsGridImportByteOrderMenu",xmRowColumnWidgetClass,colWGT,
 								XmNsubMenuId,				byteOrderMenu,
 								XmNlabelString,			string,
@@ -317,7 +317,7 @@ void RGISToolsImportGridCBK (Widget widget,RGISWorkspace *workspace,XmAnyCallbac
 								NULL);
 		XmStringFree (string);
 		optionWidth = _RGISToolsImportWidgetMaxWidth (XmOptionLabelGadget (byteOrderMenu),optionWidth);
-		
+
 		_RGISToolsImpGridSetMapCallback (fileTypeMenu,byteOrderMenu);
 		_RGISToolsImportSetButtonWidth (layoutMenu,buttonWidth);
 		_RGISToolsImportSetButtonWidth (rowOrderMenu,buttonWidth);
@@ -345,23 +345,23 @@ void RGISToolsImportGridCBK (Widget widget,RGISWorkspace *workspace,XmAnyCallbac
 								XmNnumColumns,				6,
 								XmNorientation,			XmHORIZONTAL,
 								NULL);
-		string = XmStringCreate (" ",UICharSetNormal);
+		string = XmStringCreate ((char *) " ",UICharSetNormal);
 		XtVaCreateManagedWidget ("RGISToolsGridImportColNumLabel",xmLabelWidgetClass,rowColWGT,
 								XmNlabelString,			string,
 								NULL);
 		XmStringFree (string);
-		string = XmStringCreate ("Column",UICharSetNormal);
+		string = XmStringCreate ((char *) "Column",UICharSetNormal);
 		XtVaCreateManagedWidget ("RGISToolsGridImportLLCellColLabel",xmLabelWidgetClass,rowColWGT,
 								XmNlabelString,			string,
 								NULL);
 		XmStringFree (string);
-		string = XmStringCreate ("Row",UICharSetNormal);
+		string = XmStringCreate ((char *) "Row",UICharSetNormal);
 		XtVaCreateManagedWidget ("RGISToolsGridImportLLCellRowLabel",xmLabelWidgetClass,rowColWGT,
 								XmNlabelString,			string,
 								NULL);
 		XmStringFree (string);
 
-		string = XmStringCreate ("LL Cell:",UICharSetBold);
+		string = XmStringCreate ((char *) "LL Cell:",UICharSetBold);
 		XtVaCreateManagedWidget ("RGISToolsGridImportLLCellLabel",xmLabelWidgetClass,rowColWGT,
 								XmNlabelString,			string,
 								NULL);
@@ -376,24 +376,24 @@ void RGISToolsImportGridCBK (Widget widget,RGISWorkspace *workspace,XmAnyCallbac
 								XmNcolumns,					DBStringLength >> 0x02,
 								XmNvalue,					"0",
 								NULL);
-	
-		string = XmStringCreate (" ",UICharSetNormal);
+
+		string = XmStringCreate ((char *) " ",UICharSetNormal);
 		XtVaCreateManagedWidget ("RGISToolsGridImportColNumLabel",xmLabelWidgetClass,rowColWGT,
 								XmNlabelString,			string,
 								NULL);
 		XmStringFree (string);
-		string = XmStringCreate ("Width",UICharSetNormal);
+		string = XmStringCreate ((char *) "Width",UICharSetNormal);
 		label = XtVaCreateManagedWidget ("RGISToolsGridImportCellWidthLabel",xmLabelWidgetClass,rowColWGT,
 								XmNlabelString,			string,
 								NULL);
 		XmStringFree (string);
-		string = XmStringCreate ("Height",UICharSetNormal);
+		string = XmStringCreate ((char *) "Height",UICharSetNormal);
 		label = XtVaCreateManagedWidget ("RGISToolsGridImportCellHeightLabel",xmLabelWidgetClass,rowColWGT,
 								XmNlabelString,			string,
 								NULL);
 		XmStringFree (string);
 
-		string = XmStringCreate ("Cell Size:",UICharSetBold);
+		string = XmStringCreate ((char *) "Cell Size:",UICharSetBold);
 		XtVaCreateManagedWidget ("RGISToolsGridImportCellSizeLabel",xmLabelWidgetClass,rowColWGT,
 								XmNlabelString,			string,
 								NULL);
@@ -408,23 +408,23 @@ void RGISToolsImportGridCBK (Widget widget,RGISWorkspace *workspace,XmAnyCallbac
 								NULL);
 
 
-		string = XmStringCreate (" ",UICharSetNormal);
+		string = XmStringCreate ((char *) " ",UICharSetNormal);
 		XtVaCreateManagedWidget ("RGISToolsGridImportColNumLabel",xmLabelWidgetClass,rowColWGT,
 								XmNlabelString,			string,
 								NULL);
 		XmStringFree (string);
-		string = XmStringCreate ("Horizontal",UICharSetNormal);
+		string = XmStringCreate ((char *) "Horizontal",UICharSetNormal);
 		label = XtVaCreateManagedWidget ("RGISToolsGridImportllXCoordLabel",xmLabelWidgetClass,rowColWGT,
 								XmNlabelString,			string,
 								NULL);
 		XmStringFree (string);
-		string = XmStringCreate ("Vertical",UICharSetNormal);
+		string = XmStringCreate ((char *) "Vertical",UICharSetNormal);
 		label = XtVaCreateManagedWidget ("RGISToolsGridImportllYCoordLabel",xmLabelWidgetClass,rowColWGT,
 								XmNlabelString,			string,
 								NULL);
 		XmStringFree (string);
 
-		string = XmStringCreate ("LL Corner:",UICharSetBold);
+		string = XmStringCreate ((char *) "LL Corner:",UICharSetBold);
 		XtVaCreateManagedWidget ("RGISToolsGridImportllCornerLabel",xmLabelWidgetClass,rowColWGT,
 								XmNlabelString,			string,
 								NULL);
@@ -439,7 +439,7 @@ void RGISToolsImportGridCBK (Widget widget,RGISWorkspace *workspace,XmAnyCallbac
 								NULL);
 		XtVaGetValues (llYCoordFLD,XmNheight,	&widgetHeight, NULL);
 
-		string = XmStringCreate ("Missing Value:",UICharSetBold);
+		string = XmStringCreate ((char *) "Missing Value:",UICharSetBold);
 		missingValFLD = XtVaCreateManagedWidget ("RGISToolsGridImportMissingValFLD",xmTextFieldWidgetClass,mainForm,
 								XmNtopAttachment,			XmATTACH_WIDGET,
 								XmNtopWidget,				rowColWGT,
@@ -462,7 +462,7 @@ void RGISToolsImportGridCBK (Widget widget,RGISWorkspace *workspace,XmAnyCallbac
 								NULL);
 		XmStringFree (string);
 
-		string = XmStringCreate ("Select",UICharSetBold);
+		string = XmStringCreate ((char *) "Select",UICharSetBold);
 		button = XtVaCreateManagedWidget ("RGISToolsGridImportPathSelectButton",xmPushButtonGadgetClass,mainForm,
 								XmNtopAttachment,			XmATTACH_WIDGET,
 								XmNtopWidget,				missingValFLD,
@@ -477,7 +477,7 @@ void RGISToolsImportGridCBK (Widget widget,RGISWorkspace *workspace,XmAnyCallbac
 								XmNuserData,				true,
 								NULL);
 		XmStringFree (string);
-		string = XmStringCreate ("File Name:",UICharSetBold);
+		string = XmStringCreate ((char *) "File Name:",UICharSetBold);
 		label = XtVaCreateManagedWidget ("RGISToolsGridImportSkipPadLabel",xmLabelWidgetClass,mainForm,
 								XmNtopAttachment,			XmATTACH_OPPOSITE_WIDGET,
 								XmNtopWidget,				button,
@@ -515,7 +515,7 @@ void RGISToolsImportGridCBK (Widget widget,RGISWorkspace *workspace,XmAnyCallbac
 								XmNcolumns,					6,
 								XmNvalue,					"0",
 								NULL);
-		string = XmStringCreate ("Header:",UICharSetBold);
+		string = XmStringCreate ((char *) "Header:",UICharSetBold);
 		label = XtVaCreateManagedWidget ("RGISToolsGridImportSkipPadLabel",xmLabelWidgetClass,mainForm,
 								XmNtopAttachment,			XmATTACH_OPPOSITE_WIDGET,
 								XmNtopWidget,				skipHeaderFLD,
@@ -526,7 +526,7 @@ void RGISToolsImportGridCBK (Widget widget,RGISWorkspace *workspace,XmAnyCallbac
 								XmNlabelString,			string,
 								NULL);
 		XmStringFree (string);
-		string = XmStringCreate ("Record Padding:",UICharSetBold);
+		string = XmStringCreate ((char *) "Record Padding:",UICharSetBold);
 		label = XtVaCreateManagedWidget ("RGISToolsGridImportSkipPadLabel",xmLabelWidgetClass,mainForm,
 								XmNtopAttachment,			XmATTACH_OPPOSITE_WIDGET,
 								XmNtopWidget,				skipHeaderFLD,
@@ -552,7 +552,7 @@ void RGISToolsImportGridCBK (Widget widget,RGISWorkspace *workspace,XmAnyCallbac
 								NULL);
 		_RGISToolsImpGridSetMapCallback (fileTypeMenu,label);
 		_RGISToolsImpGridSetMapCallback (fileTypeMenu,skipPadFLD);
-		string = XmStringCreate ("List File",UICharSetBold);
+		string = XmStringCreate ((char *) "List File",UICharSetBold);
 		listFileTGL = XtVaCreateManagedWidget ("RGISToolsGridImportListFileToggle",xmToggleButtonGadgetClass,mainForm,
 								XmNtopAttachment,			XmATTACH_OPPOSITE_WIDGET,
 								XmNtopWidget,				skipHeaderFLD,
@@ -705,7 +705,7 @@ void RGISToolsImportGridCBK (Widget widget,RGISWorkspace *workspace,XmAnyCallbac
 					}
 				listFileName [pathLen] = '\0';
 				}
-			
+
 			while (true)
 				{
 				if (listFile)
@@ -744,7 +744,7 @@ void RGISToolsImportGridCBK (Widget widget,RGISWorkspace *workspace,XmAnyCallbac
 					for (chunk = 0;chunk < skipHeader;++chunk)
 						do	fgets (buffer,sizeof (buffer) - 2,inFILE);
 							while (buffer [strlen (buffer) - 1] != '\n');
-			
+
 				for (i = 0;i < (int) strlen (recordName);++i) if (recordName [i] == '.') recordName [i] = ' ';
 				layerTable->Add (recordName);
 				if ((layerRec = layerTable->Item ()) == (DBObjRecord *) NULL)
@@ -771,7 +771,7 @@ void RGISToolsImportGridCBK (Widget widget,RGISWorkspace *workspace,XmAnyCallbac
 				if ((dataRec = new DBObjRecord (layerRec->Name (),colNum * rowNum * valueSizeFLD->Int (layerRec),valueSizeFLD->Int (layerRec))) == (DBObjRecord *) NULL)
 					{ fclose (inFILE); delete grdData; return; }
 				(grdData->Arrays ())->Add (dataRec);
-				layerFLD->Record (layerRec,dataRec); 
+				layerFLD->Record (layerRec,dataRec);
 				if (grdData->Type () == DBTypeGridContinuous)
 					{
 					itemTable->Add (layerRec->Name ());
@@ -868,7 +868,7 @@ void RGISToolsImportGridCBK (Widget widget,RGISWorkspace *workspace,XmAnyCallbac
 				DBObjTableField *foregroundFLD = (grdData->Table (DBrNSymbols))->Field (DBrNForeground);
 				DBObjTableField *backgroundFLD = (grdData->Table (DBrNSymbols))->Field (DBrNBackground);
 				DBObjTableField *styleFLD = (grdData->Table (DBrNSymbols))->Field (DBrNStyle);
-				
+
 				symbolIDFLD->Int (symRec,0);
 				foregroundFLD->Int (symRec,1);
 				backgroundFLD->Int (symRec,0);
@@ -930,7 +930,7 @@ void RGISToolsImportGridDMCBK (Widget widget,RGISWorkspace *workspace,XmAnyCallb
 	static Widget fileSelect = NULL;
 
 	widget = widget; callData = callData;
-	if (fileSelect == NULL) fileSelect = UIFileSelectionCreate ("Data Manager Import",NULL,"M:*",XmFILE_REGULAR); 
+	if (fileSelect == NULL) fileSelect = UIFileSelectionCreate ((char *) "Data Manager Import",NULL,(char *) "M:*",XmFILE_REGULAR);
 	if (UIDataHeaderForm (data))
 		{
 		char *fileName;

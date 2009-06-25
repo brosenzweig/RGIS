@@ -21,12 +21,12 @@ extern UIMenuItem RGISMetaDBMenu [];
 extern UIMenuItem RGISDisplayMenu [];
 
 UIMenuItem RGISMainMenu [] = {
-	UIMenuItem ("File",		UIMENU_NORULE,			UIMENU_NORULE,		RGISFileMenu),
-	UIMenuItem ("Edit",		UIMENU_NORULE,			RGISDataGroup,		RGISEditMenu),
-	UIMenuItem ("Analyse",	RGISDataGroup,			UIMENU_NORULE,		RGISAnalyseMenu),
-	UIMenuItem ("Tools",		UIMENU_NORULE,			UIMENU_NORULE,		RGISToolsMenu),
-	UIMenuItem ("MetaDB",	UIMENU_NORULE,			UIMENU_NORULE,		RGISMetaDBMenu),
-	UIMenuItem ("Display",	UIMENU_NORULE,			RGISDataGroup,		RGISDisplayMenu),
+	UIMenuItem ((char *) "File",		UIMENU_NORULE,			UIMENU_NORULE,		RGISFileMenu),
+	UIMenuItem ((char *) "Edit",		UIMENU_NORULE,			RGISDataGroup,		RGISEditMenu),
+	UIMenuItem ((char *) "Analyse",	RGISDataGroup,			UIMENU_NORULE,		RGISAnalyseMenu),
+	UIMenuItem ((char *) "Tools",		UIMENU_NORULE,			UIMENU_NORULE,		RGISToolsMenu),
+	UIMenuItem ((char *) "MetaDB",	UIMENU_NORULE,			UIMENU_NORULE,		RGISMetaDBMenu),
+	UIMenuItem ((char *) "Display",	UIMENU_NORULE,			RGISDataGroup,		RGISDisplayMenu),
 	UIMenuItem ()};
 
 int main (int argc,char **argv)
@@ -35,7 +35,7 @@ int main (int argc,char **argv)
 	int argPos, argNum = argc;
 	char *metaDB = (char *) NULL;
 	int spin = true, progress = true;
-	const char *modes [] = { "yes", "no", NULL };
+	const char *modes [] = { (char *) "yes", (char *) "no", NULL };
 	int codes [] = { true, false };
 	Widget mainForm;
 	RGISWorkspace *workspace;
@@ -104,10 +104,10 @@ int main (int argc,char **argv)
 		}
 
 	workspace = new RGISWorkspace;
-	mainForm = UIInitialize ("GHAAS V2.1 - RiverGIS","GHAASrgis","RGISMain.html",
+	mainForm = UIInitialize ((char *) "GHAAS V2.1 - RiverGIS",(char *) "GHAASrgis",(char *) "RGISMain.html",
 									 RGISMainMenu,(void *) workspace,&argc,argv,720,500,(bool) spin,(bool) progress);
-	
-	UIDataset ("GHAASrgis",metaDB);
+
+	UIDataset ((char *) "GHAASrgis",metaDB);
 
 	XtVaSetValues (mainForm,XmNkeyboardFocusPolicy,		XmPOINTER, NULL);
 

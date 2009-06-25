@@ -26,7 +26,7 @@ static void _RGISToolsConvertToPointSelectCBK (Widget widget,Widget text,XmAnyCa
 	int (*condFunc) (const DBObject *);
 
 	callData = callData;
-	if (select == NULL) select = UISelectionCreate ("Field Selection");
+	if (select == NULL) select = UISelectionCreate ((char *) "Field Selection");
 	XtVaGetValues (widget,XmNuserData, &condFunc, NULL);
 	if ((field = UISelectObject (select,(DBObjectLIST<DBObject> *) (_RGISToolsConvertToPointFields),condFunc)) != NULL)
 		XmTextFieldSetString (text,field);
@@ -47,21 +47,21 @@ void RGISToolsConvertToPointCBK (Widget widget,RGISWorkspace *workspace,XmAnyCal
 	XmString string;
 
 	widget = widget;	callData = callData;
-	if (tableSelect == (Widget) NULL)	tableSelect = UISelectionCreate ("Table Selection");
+	if (tableSelect == (Widget) NULL)	tableSelect = UISelectionCreate ((char *) "Table Selection");
 	selection = UISelectObject (tableSelect,(DBObjectLIST<DBObject> *) dbData->Tables ());
 	if (selection == (char *) NULL) return;
 	if ((itemTable = dbData->Table (selection)) == (DBObjTable *) NULL)
 		{ fprintf (stderr,"Invalid Table in: RGISToolsConvertToPointCBK ()\n"); return; }
-	
+
 	_RGISToolsConvertToPointFields = itemTable->Fields ();
 	if (dShell == (Widget) NULL)
 		{
 		Widget button;
 
-		dShell = UIDialogForm ("Convert Table To Point",false);
+		dShell = UIDialogForm ((char *) "Convert Table To Point",false);
 		mainForm = UIDialogFormGetMainForm (dShell);
-		
-		string = XmStringCreate ("Select",UICharSetBold);
+
+		string = XmStringCreate ((char *) "Select",UICharSetBold);
 		button = XtVaCreateManagedWidget ("RGISToolsConvertToPointNameButton",xmPushButtonWidgetClass,mainForm,
 								XmNtopAttachment,			XmATTACH_FORM,
 								XmNtopOffset,				10,
@@ -85,7 +85,7 @@ void RGISToolsConvertToPointCBK (Widget widget,RGISWorkspace *workspace,XmAnyCal
 								XmNcolumns,					DBStringLength / 2,
 								NULL);
 		XtAddCallback (button,XmNactivateCallback,(XtCallbackProc) _RGISToolsConvertToPointSelectCBK,nameTextF);
-		string = XmStringCreate ("Name Field:",UICharSetBold);
+		string = XmStringCreate ((char *) "Name Field:",UICharSetBold);
 		XtVaCreateManagedWidget ("RGISToolsConvertToPointNameLabel",xmLabelWidgetClass,mainForm,
 								XmNtopAttachment,			XmATTACH_OPPOSITE_WIDGET,
 								XmNtopWidget,				button,
@@ -99,8 +99,8 @@ void RGISToolsConvertToPointCBK (Widget widget,RGISWorkspace *workspace,XmAnyCal
 								XmNlabelString,			string,
 								NULL);
 		XmStringFree (string);
-		
-		string = XmStringCreate ("Select",UICharSetBold);
+
+		string = XmStringCreate ((char *) "Select",UICharSetBold);
 		button = XtVaCreateManagedWidget ("RGISToolsConvertToPointXCoordButton",xmPushButtonWidgetClass,mainForm,
 								XmNtopAttachment,			XmATTACH_WIDGET,
 								XmNtopWidget,				button,
@@ -125,7 +125,7 @@ void RGISToolsConvertToPointCBK (Widget widget,RGISWorkspace *workspace,XmAnyCal
 								XmNcolumns,					DBStringLength / 2,
 								NULL);
 		XtAddCallback (button,XmNactivateCallback,(XtCallbackProc) _RGISToolsConvertToPointSelectCBK,xCoordTextF);
-		string = XmStringCreate ("X Coordinate:",UICharSetBold);
+		string = XmStringCreate ((char *) "X Coordinate:",UICharSetBold);
 		XtVaCreateManagedWidget ("RGISToolsConvertToPointXCoordLabel",xmLabelWidgetClass,mainForm,
 								XmNtopAttachment,			XmATTACH_OPPOSITE_WIDGET,
 								XmNtopWidget,				button,
@@ -140,7 +140,7 @@ void RGISToolsConvertToPointCBK (Widget widget,RGISWorkspace *workspace,XmAnyCal
 								NULL);
 		XmStringFree (string);
 
-		string = XmStringCreate ("Select",UICharSetBold);
+		string = XmStringCreate ((char *) "Select",UICharSetBold);
 		button = XtVaCreateManagedWidget ("RGISToolsConvertToPointYCoordButton",xmPushButtonWidgetClass,mainForm,
 								XmNtopAttachment,			XmATTACH_WIDGET,
 								XmNtopWidget,				button,
@@ -167,7 +167,7 @@ void RGISToolsConvertToPointCBK (Widget widget,RGISWorkspace *workspace,XmAnyCal
 								XmNcolumns,					DBStringLength / 2,
 								NULL);
 		XtAddCallback (button,XmNactivateCallback,(XtCallbackProc) _RGISToolsConvertToPointSelectCBK,yCoordTextF);
-		string = XmStringCreate ("Y Coordinate:",UICharSetBold);
+		string = XmStringCreate ((char *) "Y Coordinate:",UICharSetBold);
 		XtVaCreateManagedWidget ("RGISToolsConvertToPointYCoordLabel",xmLabelWidgetClass,mainForm,
 								XmNtopAttachment,			XmATTACH_OPPOSITE_WIDGET,
 								XmNtopWidget,				button,
@@ -190,15 +190,15 @@ void RGISToolsConvertToPointCBK (Widget widget,RGISWorkspace *workspace,XmAnyCal
 		xText = XmTextFieldGetString (xCoordTextF);
 		yText = XmTextFieldGetString (yCoordTextF);
 		allowOk = (strlen (xText) > 0) && (strlen (yText) > 0);
-		XtFree (xText);	XtFree (yText);	
+		XtFree (xText);	XtFree (yText);
 		XtSetSensitive (UIDialogFormGetOkButton (dShell),allowOk);
 		}
 	UIDialogFormPopdown (dShell);
-	
+
 	if (convert)
 		{
 		DBObjData *pntData = new DBObjData ("",DBTypeVectorPoint);
-		
+
 		pntData->Name (dbData->Name ());
 		pntData->Document (DBDocSubject,dbData->Document (DBDocSubject));
 		pntData->Document (DBDocGeoDomain,dbData->Document (DBDocGeoDomain));

@@ -23,7 +23,7 @@ static void _UIDataPropProjectionButtonCBK (Widget widget,void *projection,XmAny
 
 	{
 	int *userData;
-	
+
 	callData = callData;
 	XtVaGetValues (widget,XmNuserData, &userData, NULL);
 	*userData = (int) ((char *) projection - (char *) NULL);
@@ -40,7 +40,7 @@ class UIDataPropProjection
 			ProjectionVAR = projection;
 			ProjectionSTR = name;
 			}
-		UIDataPropProjection () { UIDataPropProjection (DBFault,"NoButton"); }
+		UIDataPropProjection () { UIDataPropProjection (DBFault,(char *) "NoButton"); }
 		void Button (Widget menu,int *userData)
 			{
 			XmString string;
@@ -57,8 +57,8 @@ class UIDataPropProjection
 	};
 
 static UIDataPropProjection _UIDataPropProjections [] = {
-	UIDataPropProjection (DBProjectionSpherical,"Geographic"),
-	UIDataPropProjection (DBProjectionCartesian,"Cartesian")};
+	UIDataPropProjection (DBProjectionSpherical,(char *) "Geographic"),
+	UIDataPropProjection (DBProjectionCartesian,(char *) "Cartesian")};
 
 
 class UIDataProperties
@@ -147,13 +147,13 @@ class UIDataPropertiesGeo : public UIDataProperties
 		Widget ProjectionMenuWGT, PrecisionScaleWGT, MaxScaleScaleWGT, MinScaleScaleWGT;
 		int ProjectionVAR;
 	public:
- 		UIDataPropertiesGeo (Widget widget) : UIDataProperties (widget,"Geographic")
+ 		UIDataPropertiesGeo (Widget widget) : UIDataProperties (widget,(char *) "Geographic")
  			{
  			int i;
  			Widget label, frame;
 			XmString string;
 
-			string = XmStringCreate ("Lower Left",UICharSetBold);
+			string = XmStringCreate ((char *) "Lower Left",UICharSetBold);
 			label = XtVaCreateManagedWidget ("UIDataPropExtentLLLabel",xmLabelGadgetClass,Form (),
 											XmNtopAttachment,			XmATTACH_WIDGET,
 											XmNtopWidget,				Label (),
@@ -167,7 +167,7 @@ class UIDataPropertiesGeo : public UIDataProperties
 											NULL);
 			XmStringFree (string);
 
-			string = XmStringCreate ("Upper Right",UICharSetBold);
+			string = XmStringCreate ((char *) "Upper Right",UICharSetBold);
 			label = XtVaCreateManagedWidget ("UIDataPropExtentURLabel",xmLabelGadgetClass,Form (),
 											XmNtopAttachment,			XmATTACH_WIDGET,
 											XmNtopWidget,				Label (),
@@ -180,7 +180,7 @@ class UIDataPropertiesGeo : public UIDataProperties
 											NULL);
 			XmStringFree (string);
 
-			string = XmStringCreate (" ",UICharSetNormal);
+			string = XmStringCreate ((char *) " ",UICharSetNormal);
 			ExtentLLHorLabelWGT = XtVaCreateManagedWidget ("UIDataPorpExtentLLHorLabel",xmLabelGadgetClass,Form (),
 											XmNtopAttachment,			XmATTACH_WIDGET,
 											XmNtopWidget,				label,
@@ -204,7 +204,7 @@ class UIDataPropertiesGeo : public UIDataProperties
 											NULL);
 			XmStringFree (string);
 
-			string = XmStringCreate ("Horizontal:",UICharSetBold);
+			string = XmStringCreate ((char *) "Horizontal:",UICharSetBold);
 			label = XtVaCreateManagedWidget ("UIDataPropExtentURLabel",xmLabelGadgetClass,Form (),
 											XmNtopAttachment,			XmATTACH_WIDGET,
 											XmNtopWidget,				label,
@@ -215,7 +215,7 @@ class UIDataPropertiesGeo : public UIDataProperties
 											NULL);
 			XmStringFree (string);
 
-			string = XmStringCreate (" ",UICharSetNormal);
+			string = XmStringCreate ((char *) " ",UICharSetNormal);
 			ExtentLLVerLabelWGT = XtVaCreateManagedWidget ("UIDataPropExtentURHorLabel",xmLabelGadgetClass,Form (),
 											XmNtopAttachment,			XmATTACH_WIDGET,
 											XmNtopWidget,				label,
@@ -239,7 +239,7 @@ class UIDataPropertiesGeo : public UIDataProperties
 											NULL);
 			XmStringFree (string);
 
-			string = XmStringCreate ("Vertical:",UICharSetBold);
+			string = XmStringCreate ((char *) "Vertical:",UICharSetBold);
 			label = XtVaCreateManagedWidget ("UIDataPropExtentURLabel",xmLabelGadgetClass,Form (),
 											XmNtopAttachment,			XmATTACH_WIDGET,
 											XmNtopWidget,				label,
@@ -250,10 +250,10 @@ class UIDataPropertiesGeo : public UIDataProperties
 											NULL);
 			XmStringFree (string);
 
-			ProjectionMenuWGT = XmCreatePulldownMenu (Form (),"UIDataPropProjectionMenu",NULL,0);
+			ProjectionMenuWGT = XmCreatePulldownMenu (Form (),(char *) "UIDataPropProjectionMenu",NULL,0);
 			for (i = 0;i < (int) (sizeof (_UIDataPropProjections) / sizeof (UIDataPropProjection));++i)
 				_UIDataPropProjections [i].Button (ProjectionMenuWGT,&ProjectionVAR);
-			string = XmStringCreate ("Projection:",UICharSetBold);
+			string = XmStringCreate ((char *) "Projection:",UICharSetBold);
 			ProjectionMenuWGT= XtVaCreateManagedWidget ("UIDataHeaderFormTypeMenu",xmRowColumnWidgetClass,Form (),
 											XmNtopAttachment,		XmATTACH_WIDGET,
 											XmNtopWidget,			label,
@@ -267,7 +267,7 @@ class UIDataPropertiesGeo : public UIDataProperties
 											NULL);
 			XmStringFree (string);
 
-		
+
 			frame = XtVaCreateManagedWidget ("UIDataPropPrecisionFrame",xmFrameWidgetClass,Form (),
 											XmNtopAttachment,			XmATTACH_WIDGET,
 											XmNtopWidget,				ProjectionMenuWGT,
@@ -275,7 +275,7 @@ class UIDataPropertiesGeo : public UIDataProperties
 											XmNrightAttachment,		XmATTACH_FORM,
 											XmNrightOffset,			5,
 											NULL);
-			string = XmStringCreate ("FieldNotSet",UICharSetNormal);
+			string = XmStringCreate ((char *) "FieldNotSet",UICharSetNormal);
 			label = XtVaCreateManagedWidget ("UIDataPropPrecisonLabel",xmLabelGadgetClass,frame,
 											XmNmarginWidth,			5,
 											XmNalignment,				XmALIGNMENT_END,
@@ -303,7 +303,7 @@ class UIDataPropertiesGeo : public UIDataProperties
 											NULL);
 			XtAddCallback (PrecisionScaleWGT,XmNdragCallback,(XtCallbackProc) UIDataPropPrecisionCBK,(void *) NULL);
 			XtAddCallback (PrecisionScaleWGT,XmNvalueChangedCallback,(XtCallbackProc) UIDataPropPrecisionCBK,(void *) NULL);
-			string = XmStringCreate ("Precision:",UICharSetBold);
+			string = XmStringCreate ((char *) "Precision:",UICharSetBold);
 			label = XtVaCreateManagedWidget ("UIDataPropPrecisonLabel",xmLabelGadgetClass,Form (),
 											XmNtopAttachment,			XmATTACH_OPPOSITE_WIDGET,
 											XmNtopWidget,				frame,
@@ -320,8 +320,8 @@ class UIDataPropertiesGeo : public UIDataProperties
 											XmNalignment,				XmALIGNMENT_BEGINNING,
 											NULL);
 			XmStringFree (string);
- 		
- 		
+
+
 			frame = XtVaCreateManagedWidget ("UIDataPropMaxScaleFrame",xmFrameWidgetClass,Form (),
 											XmNtopAttachment,			XmATTACH_WIDGET,
 											XmNtopWidget,				PrecisionScaleWGT,
@@ -329,7 +329,7 @@ class UIDataPropertiesGeo : public UIDataProperties
 											XmNrightAttachment,		XmATTACH_FORM,
 											XmNrightOffset,			5,
 											NULL);
-			string = XmStringCreate ("FieldNotSet",UICharSetNormal);
+			string = XmStringCreate ((char *) "FieldNotSet",UICharSetNormal);
 			label = XtVaCreateManagedWidget ("UIDataPropMaxScaleLabel",xmLabelGadgetClass,frame,
 											XmNmarginWidth,			5,
 											XmNalignment,				XmALIGNMENT_END,
@@ -357,7 +357,7 @@ class UIDataPropertiesGeo : public UIDataProperties
 											NULL);
 			XtAddCallback (MaxScaleScaleWGT,XmNdragCallback,(XtCallbackProc) UIDataPropScaleCBK,(void *) NULL);
 			XtAddCallback (MaxScaleScaleWGT,XmNvalueChangedCallback,(XtCallbackProc) UIDataPropScaleCBK,(void *) NULL);
-			string = XmStringCreate ("Maximum Scale:",UICharSetBold);
+			string = XmStringCreate ((char *) "Maximum Scale:",UICharSetBold);
 			label = XtVaCreateManagedWidget ("UIDataPropMaxScaleLabel",xmLabelGadgetClass,Form (),
 											XmNtopAttachment,			XmATTACH_OPPOSITE_WIDGET,
 											XmNtopWidget,				frame,
@@ -383,7 +383,7 @@ class UIDataPropertiesGeo : public UIDataProperties
 											XmNbottomAttachment,		XmATTACH_FORM,
 											XmNbottomOffset,			5,
 											NULL);
-			string = XmStringCreate ("FieldNotSet",UICharSetNormal);
+			string = XmStringCreate ((char *) "FieldNotSet",UICharSetNormal);
 			label = XtVaCreateManagedWidget ("UIDataPropMinScaleLabel",xmLabelGadgetClass,frame,
 											XmNmarginWidth,			5,
 											XmNalignment,				XmALIGNMENT_END,
@@ -411,7 +411,7 @@ class UIDataPropertiesGeo : public UIDataProperties
 											NULL);
 			XtAddCallback (MinScaleScaleWGT,XmNdragCallback,(XtCallbackProc) UIDataPropScaleCBK,(void *) NULL);
 			XtAddCallback (MinScaleScaleWGT,XmNvalueChangedCallback,(XtCallbackProc) UIDataPropScaleCBK,(void *) NULL);
-			string = XmStringCreate ("Minimum Scale:",UICharSetBold);
+			string = XmStringCreate ((char *) "Minimum Scale:",UICharSetBold);
 			label = XtVaCreateManagedWidget ("UIDataPropMinScaleLabel",xmLabelGadgetClass,Form (),
 											XmNtopAttachment,			XmATTACH_OPPOSITE_WIDGET,
 											XmNtopWidget,				frame,
@@ -472,7 +472,7 @@ class UIDataPropertiesGeo : public UIDataProperties
  		void Save (DBObjData *data)
  			{
  			int value;
- 		
+
  			data->Projection (ProjectionVAR);
  			XmScaleGetValue (PrecisionScaleWGT,&value);	data->Precision (value);
  			XmScaleGetValue (MaxScaleScaleWGT,&value);	data->MaxScale (value);
@@ -486,12 +486,12 @@ class UIDataPropertiesVector : public UIDataProperties
 	private:
 		Widget ItemNumLabelWGT, FieldNumLabelWGT;
 	public:
-		UIDataPropertiesVector (Widget widget) : UIDataProperties (widget, "Vector")
+		UIDataPropertiesVector (Widget widget) : UIDataProperties (widget, (char *) "Vector")
 			{
 			XmString string;
 			Widget label;
-			
-			string = XmStringCreate ("Number of Items:",UICharSetBold);
+
+			string = XmStringCreate ((char *) "Number of Items:",UICharSetBold);
 			label = XtVaCreateManagedWidget ("UIDataPropVectorItemNumLabel",xmLabelWidgetClass,Form (),
 											XmNtopAttachment,			XmATTACH_WIDGET,
 											XmNtopWidget,				Label (),
@@ -501,7 +501,7 @@ class UIDataPropertiesVector : public UIDataProperties
 											XmNlabelString,			string,
 											NULL);
 			XmStringFree (string);
-			string = XmStringCreate (" ",UICharSetNormal);
+			string = XmStringCreate ((char *) " ",UICharSetNormal);
 			ItemNumLabelWGT = XtVaCreateManagedWidget ("UIDataPropVectorItemNumLabel",xmLabelWidgetClass,Form (),
 											XmNtopAttachment,			XmATTACH_WIDGET,
 											XmNtopWidget,				Label (),
@@ -513,7 +513,7 @@ class UIDataPropertiesVector : public UIDataProperties
 											XmNrightAttachment,		XmATTACH_FORM,
 											XmNrightOffset,			15,
 											NULL);
-			string = XmStringCreate ("Number of Fields:",UICharSetBold);
+			string = XmStringCreate ((char *) "Number of Fields:",UICharSetBold);
 			label = XtVaCreateManagedWidget ("UIDataPropVectorFieldNumLabel",xmLabelWidgetClass,Form (),
 											XmNtopAttachment,			XmATTACH_WIDGET,
 											XmNtopWidget,				ItemNumLabelWGT,
@@ -526,7 +526,7 @@ class UIDataPropertiesVector : public UIDataProperties
 											XmNlabelString,			string,
 											NULL);
 			XmStringFree (string);
-			string = XmStringCreate (" ",UICharSetNormal);
+			string = XmStringCreate ((char *) " ",UICharSetNormal);
 			FieldNumLabelWGT = XtVaCreateManagedWidget ("UIDataPropVectorFieldNumLabel",xmLabelWidgetClass,Form (),
 											XmNtopAttachment,			XmATTACH_WIDGET,
 											XmNtopWidget,				ItemNumLabelWGT,
@@ -547,7 +547,7 @@ class UIDataPropertiesVector : public UIDataProperties
 			int fieldNum;
 			char numberString [10];
 			DBObjTable *table = data->Table (DBrNItems);
-			DBObjectLIST<DBObjTableField> *fields = table->Fields (); 
+			DBObjectLIST<DBObjTableField> *fields = table->Fields ();
 			DBObjTableField *field;
 
 			sprintf (numberString,"%d",table->ItemNum ());
@@ -568,7 +568,7 @@ static void _UIDataPropContinuousColorCBK (Widget widget,void *Flags,XmAnyCallba
 
 	{
 	DBUnsigned *userData;
-	
+
 	callData = callData;
 	XtVaGetValues (widget,XmNuserData, &userData, NULL);
 	*userData = (DBUnsigned) ((char *) Flags - (char *) NULL);
@@ -586,7 +586,7 @@ class UIDataPropContinuousColor
 			{
 			XmString string;
 			Widget button;
-			
+
 			string = XmStringCreate (NameSTR,UICharSetNormal);
 			button = XtVaCreateManagedWidget ("UIDataPropContinuousColorMenuButton",xmPushButtonGadgetClass,widget,
 														XmNlabelString,			string,
@@ -599,12 +599,12 @@ class UIDataPropContinuousColor
 	};
 
 static UIDataPropContinuousColor _UIDataPropContinuousColors [] = {
-	UIDataPropContinuousColor ("Standard", 		DBDataFlagDispModeContStandard),
-	UIDataPropContinuousColor ("Grey Scale",		DBDataFlagDispModeContGreyScale),
-	UIDataPropContinuousColor ("Blue Scale",		DBDataFlagDispModeContBlueScale),
-	UIDataPropContinuousColor ("Blue to Red",		DBDataFlagDispModeContBlueRed),
-	UIDataPropContinuousColor ("Elevation",		DBDataFlagDispModeContElevation)};
- 
+	UIDataPropContinuousColor ((char *) "Standard", 		DBDataFlagDispModeContStandard),
+	UIDataPropContinuousColor ((char *) "Grey Scale",		DBDataFlagDispModeContGreyScale),
+	UIDataPropContinuousColor ((char *) "Blue Scale",		DBDataFlagDispModeContBlueScale),
+	UIDataPropContinuousColor ((char *) "Blue to Red",		DBDataFlagDispModeContBlueRed),
+	UIDataPropContinuousColor ((char *) "Elevation",		DBDataFlagDispModeContElevation)};
+
 
 class UIDataPropertiesContinuous : public UIDataProperties
 
@@ -616,13 +616,13 @@ class UIDataPropertiesContinuous : public UIDataProperties
 		Widget LayerNumLabelWGT;
 		Widget ColorMenuWGT;
 	public:
-		UIDataPropertiesContinuous (Widget widget) : UIDataProperties (widget, "Continuous")
+		UIDataPropertiesContinuous (Widget widget) : UIDataProperties (widget, (char *) "Continuous")
 			{
 			int button;
 			XmString string;
 			Widget label;
-			
-			string = XmStringCreate ("Horizontal",UICharSetBold);
+
+			string = XmStringCreate ((char *) "Horizontal",UICharSetBold);
 			label = XtVaCreateManagedWidget ("UIDataPropContinuousHorizontalLabel",xmLabelGadgetClass,Form (),
 											XmNtopAttachment,			XmATTACH_WIDGET,
 											XmNtopWidget,				Label (),
@@ -636,7 +636,7 @@ class UIDataPropertiesContinuous : public UIDataProperties
 											NULL);
 			XmStringFree (string);
 
-			string = XmStringCreate ("Vertical",UICharSetBold);
+			string = XmStringCreate ((char *) "Vertical",UICharSetBold);
 			label = XtVaCreateManagedWidget ("UIDataPropContinuousVerticalLabel",xmLabelGadgetClass,Form (),
 											XmNtopAttachment,			XmATTACH_WIDGET,
 											XmNtopWidget,				Label (),
@@ -649,7 +649,7 @@ class UIDataPropertiesContinuous : public UIDataProperties
 											NULL);
 			XmStringFree (string);
 
-			string = XmStringCreate (" ",UICharSetNormal);
+			string = XmStringCreate ((char *) " ",UICharSetNormal);
 			CellWidthLabelWGT = XtVaCreateManagedWidget ("UIDataPorpContinuousCellWidthLabel",xmLabelGadgetClass,Form (),
 											XmNtopAttachment,			XmATTACH_WIDGET,
 											XmNtopWidget,				label,
@@ -673,7 +673,7 @@ class UIDataPropertiesContinuous : public UIDataProperties
 											NULL);
 			XmStringFree (string);
 
-			string = XmStringCreate ("Cell Size:",UICharSetBold);
+			string = XmStringCreate ((char *) "Cell Size:",UICharSetBold);
 			label = XtVaCreateManagedWidget ("UIDataPropContinuousCellSizeLabel",xmLabelGadgetClass,Form (),
 											XmNtopAttachment,			XmATTACH_WIDGET,
 											XmNtopWidget,				label,
@@ -684,7 +684,7 @@ class UIDataPropertiesContinuous : public UIDataProperties
 											NULL);
 			XmStringFree (string);
 
-			string = XmStringCreate (" ",UICharSetNormal);
+			string = XmStringCreate ((char *) " ",UICharSetNormal);
 			ColNumLabelWGT = XtVaCreateManagedWidget ("UIDataPropContinuousColNumLabel",xmLabelGadgetClass,Form (),
 											XmNtopAttachment,			XmATTACH_WIDGET,
 											XmNtopWidget,				label,
@@ -708,7 +708,7 @@ class UIDataPropertiesContinuous : public UIDataProperties
 											NULL);
 			XmStringFree (string);
 
-			string = XmStringCreate ("Dimension:",UICharSetBold);
+			string = XmStringCreate ((char *) "Dimension:",UICharSetBold);
 			label = XtVaCreateManagedWidget ("UIDataPropContinuousDimensionLabel",xmLabelGadgetClass,Form (),
 											XmNtopAttachment,			XmATTACH_WIDGET,
 											XmNtopWidget,				label,
@@ -719,7 +719,7 @@ class UIDataPropertiesContinuous : public UIDataProperties
 											NULL);
 			XmStringFree (string);
 
-			string = XmStringCreate ("Number of Layers:",UICharSetBold);
+			string = XmStringCreate ((char *) "Number of Layers:",UICharSetBold);
 			label = XtVaCreateManagedWidget ("UIDataPropContinuousLayerNumLabel",xmLabelWidgetClass,Form (),
 											XmNtopAttachment,			XmATTACH_WIDGET,
 											XmNtopWidget,				RowNumLabelWGT,
@@ -729,7 +729,7 @@ class UIDataPropertiesContinuous : public UIDataProperties
 											XmNlabelString,			string,
 											NULL);
 			XmStringFree (string);
-			string = XmStringCreate (" ",UICharSetNormal);
+			string = XmStringCreate ((char *) " ",UICharSetNormal);
 			LayerNumLabelWGT = XtVaCreateManagedWidget ("UIDataPropContinuousLayerNumLabel",xmLabelWidgetClass,Form (),
 											XmNtopAttachment,			XmATTACH_WIDGET,
 											XmNtopWidget,				RowNumLabelWGT,
@@ -743,12 +743,12 @@ class UIDataPropertiesContinuous : public UIDataProperties
 											NULL);
 			XmStringFree (string);
 
-			ColorMenuWGT = XmCreatePulldownMenu (Form (),"UIDataPropContinuousColorMenu",NULL,0);
+			ColorMenuWGT = XmCreatePulldownMenu (Form (),(char *) "UIDataPropContinuousColorMenu",NULL,0);
 
 			for (button = 0;button < (int) (sizeof (_UIDataPropContinuousColors) / sizeof (UIDataPropContinuousColor)); ++button)
 				_UIDataPropContinuousColors [button].MakeButton (ColorMenuWGT,&ColorVAR);
-	
-			string = XmStringCreate ("Color Code:",UICharSetBold);
+
+			string = XmStringCreate ((char *) "Color Code:",UICharSetBold);
 			ColorMenuWGT = XtVaCreateManagedWidget ("UIDataPropContinuousColorMenu",xmRowColumnWidgetClass,Form (),
 											XmNtopAttachment,			XmATTACH_WIDGET,
 											XmNtopWidget,				label,
@@ -814,12 +814,12 @@ class UIDataPropertiesNetwork : public UIDataProperties
 	private:
 		Widget BasinNumLabelWGT, CellNumLabelWGT, RowNumLabelWGT, ColNumLabelWGT, CellWidthLabelWGT, CellHeightLabelWGT;
 	public:
-		UIDataPropertiesNetwork (Widget widget) : UIDataProperties (widget, "Network")
+		UIDataPropertiesNetwork (Widget widget) : UIDataProperties (widget, (char *) "Network")
 			{
 			XmString string;
 			Widget label;
-			
-			string = XmStringCreate ("Horizontal",UICharSetBold);
+
+			string = XmStringCreate ((char *) "Horizontal",UICharSetBold);
 			label = XtVaCreateManagedWidget ("UIDataPropNetworkHorizontalLabel",xmLabelGadgetClass,Form (),
 											XmNtopAttachment,			XmATTACH_WIDGET,
 											XmNtopWidget,				Label (),
@@ -833,7 +833,7 @@ class UIDataPropertiesNetwork : public UIDataProperties
 											NULL);
 			XmStringFree (string);
 
-			string = XmStringCreate ("Vertical",UICharSetBold);
+			string = XmStringCreate ((char *) "Vertical",UICharSetBold);
 			label = XtVaCreateManagedWidget ("UIDataPropNetworkVerticalLabel",xmLabelGadgetClass,Form (),
 											XmNtopAttachment,			XmATTACH_WIDGET,
 											XmNtopWidget,				Label (),
@@ -846,7 +846,7 @@ class UIDataPropertiesNetwork : public UIDataProperties
 											NULL);
 			XmStringFree (string);
 
-			string = XmStringCreate (" ",UICharSetNormal);
+			string = XmStringCreate ((char *) " ",UICharSetNormal);
 			CellWidthLabelWGT = XtVaCreateManagedWidget ("UIDataPorpNetworkCellWidthLabel",xmLabelGadgetClass,Form (),
 											XmNtopAttachment,			XmATTACH_WIDGET,
 											XmNtopWidget,				label,
@@ -870,7 +870,7 @@ class UIDataPropertiesNetwork : public UIDataProperties
 											NULL);
 			XmStringFree (string);
 
-			string = XmStringCreate ("Cell Size:",UICharSetBold);
+			string = XmStringCreate ((char *) "Cell Size:",UICharSetBold);
 			label = XtVaCreateManagedWidget ("UIDataPropNetworkCellSizeLabel",xmLabelGadgetClass,Form (),
 											XmNtopAttachment,			XmATTACH_WIDGET,
 											XmNtopWidget,				label,
@@ -881,7 +881,7 @@ class UIDataPropertiesNetwork : public UIDataProperties
 											NULL);
 			XmStringFree (string);
 
-			string = XmStringCreate (" ",UICharSetNormal);
+			string = XmStringCreate ((char *) " ",UICharSetNormal);
 			RowNumLabelWGT = XtVaCreateManagedWidget ("UIDataPropNetworkColNumLabel",xmLabelGadgetClass,Form (),
 											XmNtopAttachment,			XmATTACH_WIDGET,
 											XmNtopWidget,				label,
@@ -905,7 +905,7 @@ class UIDataPropertiesNetwork : public UIDataProperties
 											NULL);
 			XmStringFree (string);
 
-			string = XmStringCreate ("Dimension:",UICharSetBold);
+			string = XmStringCreate ((char *) "Dimension:",UICharSetBold);
 			label = XtVaCreateManagedWidget ("UIDataPropNetworkDimensionLabel",xmLabelGadgetClass,Form (),
 											XmNtopAttachment,			XmATTACH_WIDGET,
 											XmNtopWidget,				label,
@@ -916,7 +916,7 @@ class UIDataPropertiesNetwork : public UIDataProperties
 											NULL);
 			XmStringFree (string);
 
-			string = XmStringCreate ("Number of Basins:",UICharSetBold);
+			string = XmStringCreate ((char *) "Number of Basins:",UICharSetBold);
 			label = XtVaCreateManagedWidget ("UIDataPropNetworkBasinNumLabel",xmLabelWidgetClass,Form (),
 											XmNtopAttachment,			XmATTACH_WIDGET,
 											XmNtopWidget,				RowNumLabelWGT,
@@ -926,7 +926,7 @@ class UIDataPropertiesNetwork : public UIDataProperties
 											XmNlabelString,			string,
 											NULL);
 			XmStringFree (string);
-			string = XmStringCreate (" ",UICharSetNormal);
+			string = XmStringCreate ((char *) " ",UICharSetNormal);
 			BasinNumLabelWGT = XtVaCreateManagedWidget ("UIDataPropNetworkBasinNumLabel",xmLabelWidgetClass,Form (),
 											XmNtopAttachment,			XmATTACH_WIDGET,
 											XmNtopWidget,				RowNumLabelWGT,
@@ -939,7 +939,7 @@ class UIDataPropertiesNetwork : public UIDataProperties
 											XmNrightOffset,			15,
 											NULL);
 			XmStringFree (string);
-			string = XmStringCreate ("Number of Cells:",UICharSetBold);
+			string = XmStringCreate ((char *) "Number of Cells:",UICharSetBold);
 			label = XtVaCreateManagedWidget ("UIDataPropNetworkCellNumLabel",xmLabelWidgetClass,Form (),
 											XmNtopAttachment,			XmATTACH_WIDGET,
 											XmNtopWidget,				BasinNumLabelWGT,
@@ -952,7 +952,7 @@ class UIDataPropertiesNetwork : public UIDataProperties
 											XmNlabelString,			string,
 											NULL);
 			XmStringFree (string);
-			string = XmStringCreate (" ",UICharSetNormal);
+			string = XmStringCreate ((char *) " ",UICharSetNormal);
 			CellNumLabelWGT = XtVaCreateManagedWidget ("UIDataPropNetworkCellNumLabel",xmLabelWidgetClass,Form (),
 											XmNtopAttachment,			XmATTACH_WIDGET,
 											XmNtopWidget,				BasinNumLabelWGT,
@@ -1016,9 +1016,9 @@ DBInt UIDataPropertiesForm (DBObjData *data)
 		{
 		Widget rowColumn;
 
-		dShell = UIDialogForm ("Data Properties");
+		dShell = UIDialogForm ((char *) "Data Properties");
 		XtAddCallback (UIDialogFormGetOkButton (dShell),XmNactivateCallback,(XtCallbackProc) UIAuxSetBooleanTrueCBK,&save);
-		
+
 		rowColumn = XtVaCreateManagedWidget ("UIPropRowColumn",xmRowColumnWidgetClass,UIDialogFormGetMainForm (dShell),
 											XmNtopAttachment,				XmATTACH_FORM,
 											XmNtopOffset,					5,

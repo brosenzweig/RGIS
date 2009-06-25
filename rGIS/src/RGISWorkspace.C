@@ -21,50 +21,50 @@ balazs.fekete@unh.edu
 #include <rgis.H>
 
 static RGISControlMode _RGISUserModes [] = {
-	RGISControlMode ("Query",			DBTypeVectorPoint,	DBDataFlagUserModeQuery,		false),
-	RGISControlMode ("Select",			DBTypeVectorPoint,	DBDataFlagUserModeSelect,		false),
-	RGISControlMode ("Add",				DBTypeVectorPoint,	DBDataFlagUserModeAdd,			true),
-	RGISControlMode ("Move",			DBTypeVectorPoint,	DBDataFlagUserModeMove,			true),
-	RGISControlMode ("Delete",			DBTypeVectorPoint,	DBDataFlagUserModeDelete,		true),
+	RGISControlMode ((char *) "Query",			DBTypeVectorPoint,	DBDataFlagUserModeQuery,		false),
+	RGISControlMode ((char *) "Select",			DBTypeVectorPoint,	DBDataFlagUserModeSelect,		false),
+	RGISControlMode ((char *) "Add",				DBTypeVectorPoint,	DBDataFlagUserModeAdd,			true),
+	RGISControlMode ((char *) "Move",			DBTypeVectorPoint,	DBDataFlagUserModeMove,			true),
+	RGISControlMode ((char *) "Delete",			DBTypeVectorPoint,	DBDataFlagUserModeDelete,		true),
 
-	RGISControlMode ("Query",			DBTypeVectorLine,		DBDataFlagUserModeQuery,		false),
-	RGISControlMode ("Select",			DBTypeVectorLine,		DBDataFlagUserModeSelect,		false),
-	RGISControlMode ("Flip",			DBTypeVectorLine,		DBDataFlagUserModeFlip,			true),
+	RGISControlMode ((char *) "Query",			DBTypeVectorLine,		DBDataFlagUserModeQuery,		false),
+	RGISControlMode ((char *) "Select",			DBTypeVectorLine,		DBDataFlagUserModeSelect,		false),
+	RGISControlMode ((char *) "Flip",			DBTypeVectorLine,		DBDataFlagUserModeFlip,			true),
 
-	RGISControlMode ("Query",			DBTypeVectorPolygon,	DBDataFlagUserModeQuery,		false),
-	RGISControlMode ("Select",			DBTypeVectorPolygon,	DBDataFlagUserModeSelect,		false),
-			
-	RGISControlMode ("Query",			DBTypeGridDiscrete,	DBDataFlagUserModeQuery,		false),
-			
-	RGISControlMode ("Query",			DBTypeGridContinuous,DBDataFlagUserModeQuery,		false),
+	RGISControlMode ((char *) "Query",			DBTypeVectorPolygon,	DBDataFlagUserModeQuery,		false),
+	RGISControlMode ((char *) "Select",			DBTypeVectorPolygon,	DBDataFlagUserModeSelect,		false),
 
-	RGISControlMode ("Query",			DBTypeNetwork,			DBDataFlagUserModeQuery,		false),
-	RGISControlMode ("Select",			DBTypeNetwork,			DBDataFlagUserModeSelect,		false),
-	RGISControlMode ("Add",				DBTypeNetwork,			DBDataFlagUserModeAdd,			true),
-	RGISControlMode ("Delete",			DBTypeNetwork,			DBDataFlagUserModeDelete,		true),
-	RGISControlMode ("Rotate",			DBTypeNetwork,			DBDataFlagUserModeRotate,		true),
-			
-	RGISControlMode ("Query",			DBTypeTable,			DBDataFlagUserModeQuery,		false)};
+	RGISControlMode ((char *) "Query",			DBTypeGridDiscrete,	DBDataFlagUserModeQuery,		false),
+
+	RGISControlMode ((char *) "Query",			DBTypeGridContinuous,DBDataFlagUserModeQuery,		false),
+
+	RGISControlMode ((char *) "Query",			DBTypeNetwork,			DBDataFlagUserModeQuery,		false),
+	RGISControlMode ((char *) "Select",			DBTypeNetwork,			DBDataFlagUserModeSelect,		false),
+	RGISControlMode ((char *) "Add",				DBTypeNetwork,			DBDataFlagUserModeAdd,			true),
+	RGISControlMode ((char *) "Delete",			DBTypeNetwork,			DBDataFlagUserModeDelete,		true),
+	RGISControlMode ((char *) "Rotate",			DBTypeNetwork,			DBDataFlagUserModeRotate,		true),
+
+	RGISControlMode ((char *) "Query",			DBTypeTable,			DBDataFlagUserModeQuery,		false)};
 
 static RGISControlMode _RGISSelectModes [] = {
-	RGISControlMode ("One",				DBTypeVectorPoint,	(int) 0x0L,							false),
-	RGISControlMode ("Many",			DBTypeVectorPoint,	DBDataFlagSelectMode,			false),
+	RGISControlMode ((char *) "One",				DBTypeVectorPoint,	(int) 0x0L,							false),
+	RGISControlMode ((char *) "Many",			DBTypeVectorPoint,	DBDataFlagSelectMode,			false),
 
-	RGISControlMode ("One",				DBTypeVectorLine,		(int) 0x0L,							false),
-	RGISControlMode ("Many",			DBTypeVectorLine,		DBDataFlagSelectMode,			false),
+	RGISControlMode ((char *) "One",				DBTypeVectorLine,		(int) 0x0L,							false),
+	RGISControlMode ((char *) "Many",			DBTypeVectorLine,		DBDataFlagSelectMode,			false),
 
-	RGISControlMode ("One",				DBTypeVectorPolygon,	(int) 0x0L,							false),
-	RGISControlMode ("Many",			DBTypeVectorPolygon,	DBDataFlagSelectMode,			false),
+	RGISControlMode ((char *) "One",				DBTypeVectorPolygon,	(int) 0x0L,							false),
+	RGISControlMode ((char *) "Many",			DBTypeVectorPolygon,	DBDataFlagSelectMode,			false),
 
-	RGISControlMode ("Up Stream",		DBTypeNetwork,			(int) 0x0L,							false),
-	RGISControlMode ("Down Stream",	DBTypeNetwork,			DBDataFlagSelectMode,			false)};
+	RGISControlMode ((char *) "Up Stream",		DBTypeNetwork,			(int) 0x0L,							false),
+	RGISControlMode ((char *) "Down Stream",	DBTypeNetwork,			DBDataFlagSelectMode,			false)};
 
 static void _RGISUserModeCBK (Widget widget,void *mode,XmAnyCallbackStruct *callData)
 
 	{
 	callData = callData;
 	DBObjData *data;
-	
+
 	XtVaGetValues (widget,XmNuserData, &data, NULL);
 	data->Flags (DBDataFlagUserModeFlags,DBClear);
 	data->Flags ((DBUnsigned) ((char *) mode - (char *) NULL),DBSet);
@@ -75,7 +75,7 @@ static void _RGISSelectModeCBK (Widget widget,void *mode,XmAnyCallbackStruct *ca
 	{
 	callData = callData;
 	DBObjData *data;
-	
+
 	XtVaGetValues (widget,XmNuserData, &data, NULL);
 	data->Flags (DBDataFlagSelectMode,(DBInt) ((char *) mode - (char *) NULL) == DBDataFlagSelectMode ? true : false);
 	}
@@ -84,7 +84,7 @@ static void _RGISDisplayModeCBK (Widget widget,void *dummy,XmToggleButtonCallbac
 
 	{
 	DBObjData *data;
-	
+
 	dummy = dummy;
 	XtVaGetValues (widget,XmNuserData, &data, NULL);
 	data->Flags (DBDataFlagDisplay,callData->set);
@@ -127,7 +127,7 @@ static void _RGISControlPageCBK (Widget widget,DBInt page,XmToggleButtonCallback
 
 	{
 	RGISWorkspace *workspace;
-	
+
 	XtVaGetValues (widget,XmNuserData, &workspace, NULL);
 	if (callData->set) workspace->ControlPage (page);
 	}
@@ -136,7 +136,7 @@ void RGISWorkspace::ControlPage (DBInt page)
 
 	{
 	DBInt i;
-	
+
 	for (i = 0;i < (int) (sizeof (Pages) / sizeof (Widget));++i)
 		if ((Pages [i] != (Widget) NULL) && XtIsManaged (Pages [i])) XtUnmanageChild (Pages [i]);
 	if ((page < i) && (Pages [page] != (Widget) NULL)) XtManageChild (Pages [page]);
@@ -151,7 +151,7 @@ static void _RGISTextFieldValueChangedCBK (Widget widget,char *nameSTR,XmAnyCall
 
 	{
 	char *text = XmTextFieldGetString (widget);
-	
+
 	callData = callData;
 
 	strcpy (nameSTR,text);
@@ -162,7 +162,7 @@ static void _RGISSelectButtonCBK (Widget widget,Widget textF,XmAnyCallbackStruct
 
 	{
 	char *(*function) (void), *string, *nameSTR;
-	
+
 	callData = callData;
 	XtVaGetValues (widget,XmNuserData, (int *) (&function), NULL);
 	XtVaGetValues (textF,XmNuserData, 	&nameSTR, NULL);
@@ -227,8 +227,8 @@ void RGISWorkspace::Initialize (Widget mainForm)
 											XmNuserData,				SubjectSTR,
 											NULL);
 	XtAddCallback (textF,XmNvalueChangedCallback,(XtCallbackProc) _RGISTextFieldValueChangedCBK,(XtPointer) SubjectSTR);
-	
-	string = XmStringCreate ("Subject:",UICharSetBold);
+
+	string = XmStringCreate ((char *) "Subject:",UICharSetBold);
 	label = XtVaCreateManagedWidget ("RGISWorkspaceSubjectLabel",xmLabelWidgetClass,selectionForm,
 											XmNtopAttachment,			XmATTACH_OPPOSITE_WIDGET,
 											XmNtopWidget,				textF,
@@ -239,7 +239,7 @@ void RGISWorkspace::Initialize (Widget mainForm)
 											XmNbottomWidget,			textF,
 											XmNlabelString,			string,
 											NULL);
-	string = XmStringCreate ("Select",UICharSetBold);
+	string = XmStringCreate ((char *) "Select",UICharSetBold);
 	button = XtVaCreateManagedWidget ("RGISWorkspaceSubjectSelectB",xmPushButtonGadgetClass,selectionForm,
 											XmNtopAttachment,			XmATTACH_OPPOSITE_WIDGET,
 											XmNtopWidget,				textF,
@@ -253,7 +253,7 @@ void RGISWorkspace::Initialize (Widget mainForm)
 											NULL);
 	XtAddCallback (button,XmNactivateCallback,(XtCallbackProc) _RGISSelectButtonCBK,textF);
 
-	string = XmStringCreate ("Domain:",UICharSetBold);
+	string = XmStringCreate ((char *) "Domain:",UICharSetBold);
 	label = XtVaCreateManagedWidget ("RGISWorkspaceDomainLabel",xmLabelWidgetClass,selectionForm,
 											XmNtopAttachment,			XmATTACH_OPPOSITE_WIDGET,
 											XmNtopWidget,				textF,
@@ -277,8 +277,8 @@ void RGISWorkspace::Initialize (Widget mainForm)
 											XmNuserData,				DomainSTR,
 											NULL);
 	XtAddCallback (textF,XmNvalueChangedCallback,(XtCallbackProc) _RGISTextFieldValueChangedCBK,(XtPointer) DomainSTR);
-	
-	string = XmStringCreate ("Select",UICharSetBold);
+
+	string = XmStringCreate ((char *) "Select",UICharSetBold);
 	button = XtVaCreateManagedWidget ("RGISWorkspaceDomainSelectB",xmPushButtonGadgetClass,selectionForm,
 											XmNtopAttachment,			XmATTACH_OPPOSITE_WIDGET,
 											XmNtopWidget,				textF,
@@ -303,7 +303,7 @@ void RGISWorkspace::Initialize (Widget mainForm)
 											XmNshadowThickness,		1,
 											NULL);
 
-	string = XmStringCreate ("Current Data:",UICharSetBold);
+	string = XmStringCreate ((char *) "Current Data:",UICharSetBold);
 	dataLabel = XtVaCreateManagedWidget ("RGISWorkspaceCurrentDataLabel",xmLabelWidgetClass,currentDataForm,
 											XmNtopAttachment,			XmATTACH_FORM,
 											XmNtopOffset,				5,
@@ -312,8 +312,8 @@ void RGISWorkspace::Initialize (Widget mainForm)
 											XmNlabelString,			string,
 											NULL);
 	XmStringFree (string);
-	
-	string = XmStringCreate (" ",UICharSetNormal);
+
+	string = XmStringCreate ((char *) " ",UICharSetNormal);
 	CurrentDataLabel = XtVaCreateManagedWidget ("RGISWorkspaceCurrentDataLabelField",xmLabelGadgetClass,currentDataForm,
 											XmNtopAttachment,			XmATTACH_FORM,
 											XmNtopOffset,				5,
@@ -326,9 +326,9 @@ void RGISWorkspace::Initialize (Widget mainForm)
 											XmNalignment,				XmALIGNMENT_BEGINNING,
 											XmNlabelString,			string,
 											NULL);
-	
+
 	XmStringFree (string);
-	string = XmStringCreate ("Type:",UICharSetBold);
+	string = XmStringCreate ((char *) "Type:",UICharSetBold);
 	label = XtVaCreateManagedWidget ("RGISWorkspaceDataTypeLabel",xmLabelWidgetClass,currentDataForm,
 											XmNtopAttachment,			XmATTACH_FORM,
 											XmNtopOffset,				5,
@@ -338,7 +338,7 @@ void RGISWorkspace::Initialize (Widget mainForm)
 											XmNlabelString,			string,
 											NULL);
 	XmStringFree (string);
-	string = XmStringCreate (" ",UICharSetNormal);
+	string = XmStringCreate ((char *) " ",UICharSetNormal);
 	DataTypeLabel = XtVaCreateManagedWidget ("RGISWorkspaceDataTypeLabelField",xmLabelGadgetClass,currentDataForm,
 											XmNtopAttachment,			XmATTACH_FORM,
 											XmNtopOffset,				5,
@@ -352,7 +352,7 @@ void RGISWorkspace::Initialize (Widget mainForm)
 											NULL);
 	XmStringFree (string);
 
-	string = XmStringCreate ("Domain:",UICharSetBold);
+	string = XmStringCreate ((char *) "Domain:",UICharSetBold);
 	label = XtVaCreateManagedWidget ("RGISWorkspaceDomainLabel",xmLabelWidgetClass,currentDataForm,
 											XmNtopAttachment,			XmATTACH_WIDGET,
 											XmNtopWidget,				CurrentDataLabel,
@@ -366,7 +366,7 @@ void RGISWorkspace::Initialize (Widget mainForm)
 											XmNlabelString,			string,
 											NULL);
 	XmStringFree (string);
-	string = XmStringCreate (" ",UICharSetNormal);
+	string = XmStringCreate ((char *) " ",UICharSetNormal);
 	GeoDomainLabel = XtVaCreateManagedWidget ("RGISWorkspaceDomainLabelField",xmLabelGadgetClass,currentDataForm,
 											XmNtopAttachment,			XmATTACH_OPPOSITE_WIDGET,
 											XmNtopWidget,				label,
@@ -383,7 +383,7 @@ void RGISWorkspace::Initialize (Widget mainForm)
 											NULL);
 	XmStringFree (string);
 
-	string = XmStringCreate ("Version:",UICharSetBold);
+	string = XmStringCreate ((char *) "Version:",UICharSetBold);
 	label = XtVaCreateManagedWidget ("RGISWorkspaceSubjectLabel",xmLabelWidgetClass,currentDataForm,
 											XmNtopAttachment,			XmATTACH_OPPOSITE_WIDGET,
 											XmNtopWidget,				GeoDomainLabel,
@@ -392,12 +392,12 @@ void RGISWorkspace::Initialize (Widget mainForm)
 											XmNleftOffset,				10,
 											XmNbottomAttachment,		XmATTACH_OPPOSITE_WIDGET,
 											XmNbottomWidget,			GeoDomainLabel,
-											XmNalignment,				XmALIGNMENT_END,	
+											XmNalignment,				XmALIGNMENT_END,
 											XmNrecomputeSize,			False,
 											XmNlabelString,			string,
 											NULL);
 	XmStringFree (string);
-	string = XmStringCreate (" ",UICharSetNormal);
+	string = XmStringCreate ((char *) " ",UICharSetNormal);
 	VersionLabel = XtVaCreateManagedWidget ("RGISWorkspaceSubjectLabelField",xmLabelGadgetClass,currentDataForm,
 											XmNtopAttachment,			XmATTACH_OPPOSITE_WIDGET,
 											XmNtopWidget,				label,
@@ -411,14 +411,14 @@ void RGISWorkspace::Initialize (Widget mainForm)
 											NULL);
 	XmStringFree (string);
 
-	UserModeMenu = XmCreatePulldownMenu (currentDataForm,"RGISSelectModeMenu",NULL,0);
+	UserModeMenu = XmCreatePulldownMenu (currentDataForm,(char *) "RGISSelectModeMenu",NULL,0);
 	for (i = 0;i < UserModeNum;++i)
 		{
 		width = UserModeARR [i].CreateButton (UserModeMenu,(XtCallbackProc) _RGISUserModeCBK);
 		maxWidth = width > maxWidth ? width : maxWidth;
 		}
 	XtVaGetValues (UserModeMenu,XmNchildren,	&buttons, NULL);
-	string = XmStringCreate ("User Mode:",UICharSetBold);
+	string = XmStringCreate ((char *) "User Mode:",UICharSetBold);
 	UserModeMenu = XtVaCreateManagedWidget ("RGISUserModeMenu",xmRowColumnWidgetClass,currentDataForm,
 											XmNtopAttachment,			XmATTACH_OPPOSITE_WIDGET,
 											XmNtopWidget,				VersionLabel,
@@ -433,7 +433,7 @@ void RGISWorkspace::Initialize (Widget mainForm)
 											NULL);
 	XmStringFree (string);
 
-	string = XmStringCreate ("Subject:",UICharSetBold);
+	string = XmStringCreate ((char *) "Subject:",UICharSetBold);
 	label = XtVaCreateManagedWidget ("RGISWorkspaceDomainLabel",xmLabelWidgetClass,currentDataForm,
 											XmNtopAttachment,			XmATTACH_WIDGET,
 											XmNtopWidget,				GeoDomainLabel,
@@ -447,8 +447,8 @@ void RGISWorkspace::Initialize (Widget mainForm)
 											XmNlabelString,			string,
 											NULL);
 	XmStringFree (string);
-	string = XmStringCreate (" ",UICharSetNormal);
-	SubjectLabel = XtVaCreateManagedWidget ("RGISWorkspaceSubjectLabelField",xmLabelGadgetClass,currentDataForm,						
+	string = XmStringCreate ((char *) " ",UICharSetNormal);
+	SubjectLabel = XtVaCreateManagedWidget ("RGISWorkspaceSubjectLabelField",xmLabelGadgetClass,currentDataForm,
 											XmNtopAttachment,			XmATTACH_OPPOSITE_WIDGET,
 											XmNtopWidget,				label,
 											XmNleftAttachment,		XmATTACH_WIDGET,
@@ -465,7 +465,7 @@ void RGISWorkspace::Initialize (Widget mainForm)
 	XmStringFree (string);
 
 
-	string = XmStringCreate ("Display",UICharSetBold);
+	string = XmStringCreate ((char *) "Display",UICharSetBold);
 	DisplayToggle = XtVaCreateManagedWidget ("RGISWorkspaceDisplayToggle",xmToggleButtonGadgetClass,currentDataForm,
 											XmNtopAttachment,			XmATTACH_OPPOSITE_WIDGET,
 											XmNtopWidget,				SubjectLabel,
@@ -479,7 +479,7 @@ void RGISWorkspace::Initialize (Widget mainForm)
 	XtAddCallback (DisplayToggle,XmNvalueChangedCallback,(XtCallbackProc) _RGISDisplayModeCBK,(void *) NULL);
 	XmStringFree (string);
 
-	SelectModeMenu = XmCreatePulldownMenu (currentDataForm,"RGISSelectModeMenu",NULL,0);
+	SelectModeMenu = XmCreatePulldownMenu (currentDataForm,(char *) "RGISSelectModeMenu",NULL,0);
 	for (i = 0;i < SelectModeNum;++i)
 		{
 		width = SelectModeARR [i].CreateButton (SelectModeMenu,(XtCallbackProc) _RGISSelectModeCBK);
@@ -488,8 +488,8 @@ void RGISWorkspace::Initialize (Widget mainForm)
 	for (i = 0;i < UserModeNum;++i) XtVaSetValues (buttons [i],XmNwidth, maxWidth, XmNrecomputeSize, False, NULL);
 	XtVaGetValues (SelectModeMenu,XmNchildren,	&buttons, NULL);
 	for (i = 0;i < SelectModeNum;++i) XtVaSetValues (buttons [i],XmNwidth, maxWidth, XmNrecomputeSize, False, NULL);
-	
-	string = XmStringCreate ("Select Mode:",UICharSetBold);
+
+	string = XmStringCreate ((char *) "Select Mode:",UICharSetBold);
 	SelectModeMenu = XtVaCreateManagedWidget ("RGISelectModeMenu",xmRowColumnWidgetClass,currentDataForm,
 											XmNtopAttachment,			XmATTACH_OPPOSITE_WIDGET,
 											XmNtopWidget,				SubjectLabel,
@@ -504,7 +504,7 @@ void RGISWorkspace::Initialize (Widget mainForm)
 											NULL);
 	XmStringFree (string);
 
-	string = XmStringCreate ("Linked Data:",UICharSetBold);
+	string = XmStringCreate ((char *) "Linked Data:",UICharSetBold);
 	label = XtVaCreateManagedWidget ("RGISWorkspaceSubjectLabel",xmLabelWidgetClass,currentDataForm,
 											XmNtopAttachment,			XmATTACH_WIDGET,
 											XmNtopWidget,				SubjectLabel,
@@ -521,7 +521,7 @@ void RGISWorkspace::Initialize (Widget mainForm)
 											NULL);
 	XmStringFree (string);
 
-	string = XmStringCreate (" ",UICharSetNormal);
+	string = XmStringCreate ((char *) " ",UICharSetNormal);
 	LinkedDataLabel = XtVaCreateManagedWidget ("RGISWorkspaceSubjectLabelField",xmLabelGadgetClass,currentDataForm,
 											XmNtopAttachment,			XmATTACH_WIDGET,
 											XmNtopWidget,				SubjectLabel,
@@ -538,8 +538,8 @@ void RGISWorkspace::Initialize (Widget mainForm)
 											XmNlabelString,			string,
 											NULL);
 	XmStringFree (string);
-								
-	string = XmStringCreate ("Type:",UICharSetBold);
+
+	string = XmStringCreate ((char *) "Type:",UICharSetBold);
 	label = XtVaCreateManagedWidget ("RGISWorkspaceSubjectLabel",xmLabelWidgetClass,currentDataForm,
 											XmNtopAttachment,			XmATTACH_WIDGET,
 											XmNtopWidget,				SubjectLabel,
@@ -553,7 +553,7 @@ void RGISWorkspace::Initialize (Widget mainForm)
 											XmNlabelString,			string,
 											NULL);
 	XmStringFree (string);
-	string = XmStringCreate (" ",UICharSetNormal);
+	string = XmStringCreate ((char *) " ",UICharSetNormal);
 	LinkedTypeLabel = XtVaCreateManagedWidget ("RGISWorkspaceSubjectLabelField",xmLabelGadgetClass,currentDataForm,
 											XmNtopAttachment,			XmATTACH_WIDGET,
 											XmNtopWidget,				SubjectLabel,
@@ -569,8 +569,8 @@ void RGISWorkspace::Initialize (Widget mainForm)
 											XmNlabelString,			string,
 											NULL);
 	XmStringFree (string);
-	
-	string = XmStringCreate ("Active Data:",UICharSetBold);
+
+	string = XmStringCreate ((char *) "Active Data:",UICharSetBold);
 	label = XtVaCreateManagedWidget ("RGISPointInfoItemNumLabel",xmLabelWidgetClass, mainForm,
 											XmNtopAttachment,				XmATTACH_WIDGET,
 											XmNtopWidget,					currentDataForm,
@@ -581,7 +581,7 @@ void RGISWorkspace::Initialize (Widget mainForm)
 											NULL);
 	XmStringFree (string);
 
-	string = XmStringCreate ("Smart Sort",UICharSetBold);
+	string = XmStringCreate ((char *) "Smart Sort",UICharSetBold);
 	SmartSortToggle = XtVaCreateManagedWidget ("RGISWorkspaceDisplayToggle",xmToggleButtonGadgetClass,mainForm,
 											XmNtopAttachment,			XmATTACH_WIDGET,
 											XmNtopWidget,				currentDataForm,
@@ -594,7 +594,7 @@ void RGISWorkspace::Initialize (Widget mainForm)
 											NULL);
 	XtAddCallback (SmartSortToggle,XmNvalueChangedCallback,(XtCallbackProc) _RGISSmartSortCBK,(void *) (dataset->DataList ()));
 	XmStringFree (string);
-	
+
 	argNum = 0;
 	XtSetArg (wargs [argNum],	XmNtopAttachment,				XmATTACH_WIDGET);	++argNum;
 	XtSetArg (wargs [argNum],	XmNtopWidget,					label);				++argNum;
@@ -610,7 +610,7 @@ void RGISWorkspace::Initialize (Widget mainForm)
 	XtSetArg (wargs [argNum],	XmNvisualPolicy,				XmVARIABLE);		++argNum;
 	XtSetArg (wargs [argNum],	XmNshadowThickness,			2);					++argNum;
 	XtSetArg (wargs [argNum],	XmNselectionPolicy,			XmSINGLE_SELECT);	++argNum;
-	DataList = XmCreateScrolledList (mainForm,"RGISCurrentDataList",wargs,argNum);
+	DataList = XmCreateScrolledList (mainForm,(char *) "RGISCurrentDataList",wargs,argNum);
 	XtAddCallback (DataList,XmNsingleSelectionCallback,	(XtCallbackProc) _RGISWorkspaceSetCurrentDataCBK,this);
 	XtManageChild (DataList);
 
@@ -618,7 +618,7 @@ void RGISWorkspace::Initialize (Widget mainForm)
 	GrdPNL = new RGISGrdPanel (mainForm,DataList);
 	NetPNL = new RGISNetPanel (mainForm,DataList);
 	TblPNL = new RGISTblPanel (mainForm,DataList);
-	GrpPNL = new RGISGrpPanel (mainForm,DataList);	
+	GrpPNL = new RGISGrpPanel (mainForm,DataList);
 
 	controlRowCol = XtVaCreateManagedWidget ("RGISGroupMenuRowColumn",xmRowColumnWidgetClass,mainForm,
 											XmNtopAttachment,			XmATTACH_OPPOSITE_WIDGET,
@@ -636,7 +636,7 @@ void RGISWorkspace::Initialize (Widget mainForm)
 											XmNradioBehavior,			True,
 											XmNradioAlwaysOne,		True,
 											NULL);
-	string = XmStringCreate ("Display Modes",UICharSetBold);
+	string = XmStringCreate ((char *) "Display Modes",UICharSetBold);
 	toggle = XtVaCreateManagedWidget ("RGISWorkspaceDisplayControlToggleWGT",xmToggleButtonGadgetClass,controlRowCol,
 											XmNuserData,				this,
 											XmNlabelString,			string,
@@ -647,7 +647,7 @@ void RGISWorkspace::Initialize (Widget mainForm)
 											NULL);
 	XmStringFree (string);
 	XtAddCallback (toggle,XmNvalueChangedCallback,(XtCallbackProc) _RGISControlPageCBK,(XtPointer) 0);
-	string = XmStringCreate ("Groups",UICharSetBold);
+	string = XmStringCreate ((char *) "Groups",UICharSetBold);
 	toggle = XtVaCreateManagedWidget ("RGISWorkspaceGroupControlToggleWGT",xmToggleButtonGadgetClass,controlRowCol,
 											XmNuserData,				this,
 											XmNlabelString,			string,
@@ -658,7 +658,7 @@ void RGISWorkspace::Initialize (Widget mainForm)
 											NULL);
 	XmStringFree (string);
 	XtAddCallback (toggle,XmNvalueChangedCallback,(XtCallbackProc) _RGISControlPageCBK,(XtPointer) 1);
-	
+
 	for (data = dataset->FirstData ();data != (DBObjData *) NULL;data = dataset->NextData ())
 		{
 		string = XmStringCreate (data->Name (),UICharSetNormal);
@@ -679,7 +679,7 @@ void RGISWorkspace::CurrentDataName ()
 	DBDataset *dataset = UIDataset ();
 	DBObjData *data = dataset->Data ();
 	XmString string = XmStringCreate (data->Name (),UICharSetNormal);
-	
+
 	XmListReplaceItems (DataList,&DataNameString,1,&string);
 	XmStringFree (DataNameString);
 	DataNameString = string;
@@ -750,8 +750,8 @@ void RGISWorkspace::CurrentData (DBObjData *data)
 
 		if (LinkedTypeVAR != DBFault)
 			{
-			UIAuxSetLabelString (LinkedDataLabel,"");
-			UIAuxSetLabelString (LinkedTypeLabel,"");
+			UIAuxSetLabelString (LinkedDataLabel,(char *) "");
+			UIAuxSetLabelString (LinkedTypeLabel,(char *) "");
 			switch (LinkedTypeVAR)
 				{
 				case DBTypeVectorPoint:		UIMenuSensitive (RGISLinkedPointGroup,		false);		break;
@@ -765,17 +765,17 @@ void RGISWorkspace::CurrentData (DBObjData *data)
 			}
 		}
 
-	UI2DViewChangeUserData (data);	
+	UI2DViewChangeUserData (data);
 	if (data == (DBObjData *) NULL)
 		{
 		UI2DViewChangeUserFunction ((UI2DViewUserFunction) NULL);
-		UIAuxSetLabelString (CurrentDataLabel,"");
-		UIAuxSetLabelString (VersionLabel,"");
-		UIAuxSetLabelString (GeoDomainLabel,"");
-		UIAuxSetLabelString (SubjectLabel,"");
-		UIAuxSetLabelString (DataTypeLabel,"");
-		UIAuxSetLabelString (LinkedDataLabel,""); 
-		UIAuxSetLabelString (LinkedTypeLabel,"");
+		UIAuxSetLabelString (CurrentDataLabel,(char *) "");
+		UIAuxSetLabelString (VersionLabel,(char *) "");
+		UIAuxSetLabelString (GeoDomainLabel,(char *) "");
+		UIAuxSetLabelString (SubjectLabel,(char *) "");
+		UIAuxSetLabelString (DataTypeLabel,(char *) "");
+		UIAuxSetLabelString (LinkedDataLabel,(char *) "");
+		UIAuxSetLabelString (LinkedTypeLabel,(char *) "");
 		DataTypeVAR = DBFault;
 		LinkedTypeVAR = DBFault;
 		UIMenuVisible 	(RGISDataGroup,			false);
@@ -809,8 +809,8 @@ void RGISWorkspace::CurrentData (DBObjData *data)
 
 	if ((linkedData = data->LinkedData ()) == NULL)
 		{
-		UIAuxSetLabelString (LinkedDataLabel," "); 
-		UIAuxSetLabelString (LinkedTypeLabel," ");
+		UIAuxSetLabelString (LinkedDataLabel,(char *) " ");
+		UIAuxSetLabelString (LinkedTypeLabel,(char *) " ");
 		UIMenuSensitive (RGISLinkedDataGroup,	false);
 		}
 	else

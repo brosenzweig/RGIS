@@ -42,7 +42,7 @@ DBInt RGlibNetworkToGrid (DBObjData *netData,DBObjTableField *field, DBObjData *
 				if (DBPause (cellID * 100 / netIO->CellNum ())) goto Stop;
 				cellRec = netIO->Cell (cellID);
 				if ((cellRec->Flags () & DBObjectFlagIdle) == DBObjectFlagIdle) continue;
-			
+
 				if (field->Type () == DBTableFieldInt)
 					{
 					intVal = field->Int (cellRec);
@@ -114,7 +114,7 @@ Stop:
 	delete netIO;
 	if (cellID == netIO->CellNum ()) { delete grdIO; return (DBSuccess); }
 	delete grdIO;
-	return (DBFault); 
+	return (DBFault);
 	}
 
 DBInt RGlibNetworkBasinGrid (DBObjData *netData, DBObjData *grdData)
@@ -142,8 +142,8 @@ DBInt RGlibNetworkBasinGrid (DBObjData *netData, DBObjData *grdData)
 	netIO = new DBNetworkIO (netData);
 	grdIO = new DBGridIO (grdData);
 
-	grdIO->RenameLayer (grdIO->Layer (0),"Basin Grid");
-	
+	grdIO->RenameLayer (grdIO->Layer (0),(char *) "Basin Grid");
+
 	for (inFieldID = 0;inFieldID < basinTable->FieldNum ();++inFieldID)
 		{
 		inFLD = basinTable->Field (inFieldID);
@@ -195,7 +195,7 @@ DBInt RGlibNetworkBasinGrid (DBObjData *netData, DBObjData *grdData)
 		}
 
 	for (pos.Row = 0;pos.Row < netIO->RowNum (); pos.Row++)
-		for (pos.Col = 0;pos.Col < netIO->ColNum (); pos.Col++) grdIO->Value (pos,DBFault);	
+		for (pos.Col = 0;pos.Col < netIO->ColNum (); pos.Col++) grdIO->Value (pos,DBFault);
 	for (cellID = 0;cellID < netIO->CellNum ();++cellID)
 		{
 		if (DBPause (cellID * 100 / netIO->CellNum ())) goto Stop;
@@ -208,7 +208,7 @@ Stop:
 	if (cellID == netIO->CellNum ())
 		{ grdIO->DiscreteStats (); delete grdIO; return (DBSuccess); }
 	delete grdIO;
-	return (DBFault); 
+	return (DBFault);
 	}
 
 DBInt RGlibNetworkStations (DBObjData *netData,DBFloat area, DBFloat tolerance,DBObjData *pntData)
@@ -248,7 +248,7 @@ DBInt RGlibNetworkStations (DBObjData *netData,DBFloat area, DBFloat tolerance,D
 		{
 		if (DBPause ((netIO->CellNum () - cellID) * 100 / netIO->CellNum ())) goto Stop;
 
-		if (areaARR [cellID] > area)	toCell = netIO->ToCell (cellRec = netIO->Cell (cellID)); 
+		if (areaARR [cellID] > area)	toCell = netIO->ToCell (cellRec = netIO->Cell (cellID));
 		else	if (areaARR [cellID] > area * (1.0 - tolerance / 100.0))
 			{
 			if ((toCell = netIO->ToCell (netIO->Cell (cellID))) != (DBObjRecord *) NULL)
@@ -383,16 +383,16 @@ DBInt RGlibNetworkAccumulate (DBObjData *netData,
 			{ fprintf (stderr,"Invalid time series data\n"); return (DBFault); }
 */		stnTable = stnData->Table (DBrNItems);
 		disTable = disData->Table (DBrNItems);
-		if ((fields [0] != (char *) NULL) && 
-			((relateFLD = stnTable->Field (fields [0])) == (DBObjTableField *) NULL)) 
+		if ((fields [0] != (char *) NULL) &&
+			((relateFLD = stnTable->Field (fields [0])) == (DBObjTableField *) NULL))
 			{ fprintf (stderr,"Invalid relate field [%s]!\n",fields [0]); return (DBFault); }
 		nextStnFLD = stnTable->Field (fields [1] == (char *) NULL ?  RGlibNextStation : fields [1]);
-		if (nextStnFLD == (DBObjTableField *) NULL) 
+		if (nextStnFLD == (DBObjTableField *) NULL)
 			{ fprintf (stderr,"Invalid next station field!\n"); return (DBFault); }
 		if (nextStnFLD->Type () != DBVariableInt)
 			{ fprintf (stderr,"Invalid next station field\n"); return (DBFault); }
-		if ((fields [2] != (char *) NULL) && 
-			((joinFLD = disTable->Field (fields [2])) == (DBObjTableField *) NULL)) 
+		if ((fields [2] != (char *) NULL) &&
+			((joinFLD = disTable->Field (fields [2])) == (DBObjTableField *) NULL))
 			{ fprintf (stderr,"Invalid join field [%s]!\n",fields [2]); return (DBFault); }
 		if ((relateFLD != (DBObjTableField *) NULL) && (DBTableFieldIsCategory (relateFLD) != true))
 			{ fprintf (stderr,"Invalid relate field type!\n"); return (DBFault); }
@@ -411,9 +411,9 @@ DBInt RGlibNetworkAccumulate (DBObjData *netData,
 			 (joinFLD->Type () != DBVariableString))
 			{ fprintf (stderr,"Invalid join field type!\n"); return (DBFault); }
 
-		if (fields [3] != (char *) NULL) 
+		if (fields [3] != (char *) NULL)
 			{
-			if ((dateFLD = disTable->Field (fields [3])) == (DBObjTableField *) NULL) 
+			if ((dateFLD = disTable->Field (fields [3])) == (DBObjTableField *) NULL)
 				{ fprintf (stderr,"Invalid date field [%s]!\n",fields [3]); return (DBFault); }
 			}
 		else
@@ -454,7 +454,7 @@ DBInt RGlibNetworkAccumulate (DBObjData *netData,
 		cellTable->AddField (netAccum.DischFLD);
 		dischRec = disTable->First ();
 		}
-	
+
 	inGridIO = new DBGridIO (inGridData);
 	for (layerID = 0;layerID < inGridIO->LayerNum ();++layerID)
 		{
@@ -623,7 +623,7 @@ DBInt RGlibNetworkAccumulate (DBObjData *netData,
 			netAccum.GridIO->Value (outLayerRec,netIO->CellPosition (toCellRec),accumVal);
 			}
 		netAccum.GridIO->RecalcStats (outLayerRec);
-		if (netAccum.GridIO->LayerNum () < layerNum) outLayerRec = netAccum.GridIO->AddLayer ("Next Layer");
+		if (netAccum.GridIO->LayerNum () < layerNum) outLayerRec = netAccum.GridIO->AddLayer ((char *) "Next Layer");
 		}
 Stop:
 	outGridData->Flags (DBDataFlagDispModeContShadeSets,DBClear);
@@ -789,7 +789,7 @@ DBInt RGlibNetworkUpStreamAvg (DBObjData *netData,DBObjData *inGridData,DBObjDat
 		delete inGridIO;
 		return (DBFault);
 		}
-	
+
 	for (layerID = 0;layerID < inGridIO->LayerNum ();++layerID)
 		{
 		layerRec = inGridIO->Layer (layerID);
@@ -835,7 +835,7 @@ DBInt RGlibNetworkUpStreamAvg (DBObjData *netData,DBObjData *inGridData,DBObjDat
 			else	outGridIO->Value (outLayerRec,netIO->CellPosition (cellRec),DBDefaultMissingFloatVal);
 			}
 		outGridIO->RecalcStats (outLayerRec);
-		if (outGridIO->LayerNum () < layerNum) outLayerRec = outGridIO->AddLayer ("Next Layer");
+		if (outGridIO->LayerNum () < layerNum) outLayerRec = outGridIO->AddLayer ((char *) "Next Layer");
 		}
 Stop:
 	outGridData->Flags (DBDataFlagDispModeContShadeSets,DBClear);
@@ -846,7 +846,7 @@ Stop:
 	delete inGridIO;
 	return (progress == maxProgress ? DBSuccess : DBFault);
 	}
-	
+
 DBInt RGlibNetworkCellSlopes (DBObjData *netData,DBObjData *inGridData,DBObjData *outGridData)
 
 	{
@@ -879,7 +879,7 @@ DBInt RGlibNetworkCellSlopes (DBObjData *netData,DBObjData *inGridData,DBObjData
 		{
 		layerRec = inGridIO->Layer (layerID);
 		if ((layerRec->Flags () & DBObjectFlagIdle) == DBObjectFlagIdle) continue;
-		
+
 		outGridIO->RenameLayer (outLayerRec,layerRec->Name ());
 		for (pos.Row = 0;pos.Row < netIO->RowNum ();pos.Row++)
 			{
@@ -910,7 +910,7 @@ DBInt RGlibNetworkCellSlopes (DBObjData *netData,DBObjData *inGridData,DBObjData
 					}
 			}
 		outGridIO->RecalcStats (outLayerRec);
-		if (outGridIO->LayerNum () < layerNum) outLayerRec = outGridIO->AddLayer ("Next Layer");
+		if (outGridIO->LayerNum () < layerNum) outLayerRec = outGridIO->AddLayer ((char *) "Next Layer");
 		}
 Stop:
 	outGridData->Flags (DBDataFlagDispModeContShadeSets,DBClear);
@@ -918,7 +918,7 @@ Stop:
 	delete netIO;
 	delete outGridIO;
 	delete inGridIO;
-	return (progress == maxProgress ? DBSuccess : DBFault); 
+	return (progress == maxProgress ? DBSuccess : DBFault);
 	}
 
 DBInt RGlibNetworkBasinProf (DBObjData *netData,DBObjData *gridData,DBObjData *tblData)
@@ -961,7 +961,7 @@ DBInt RGlibNetworkBasinProf (DBObjData *netData,DBObjData *gridData,DBObjData *t
 		if ((layerRec->Flags () & DBObjectFlagIdle) == DBObjectFlagIdle) continue;
 		table->AddField (valueFLD = new DBObjTableField (layerRec->Name (),DBTableFieldFloat,"%8.3f",sizeof (DBFloat)));
 		valueFLD->FloatNoData (gridIO->MissingValue (layerRec));
-		}	
+		}
 
 	for (basinID = 0;basinID < netIO->BasinNum ();++basinID)
 		{
@@ -1031,7 +1031,7 @@ DBInt RGlibNetworkBasinStats (DBObjData *netData, DBObjData *grdData, DBObjData 
 		}
 	if (layerNum < 1)
 		{ fprintf (stderr,"No Layer to Process in RGlibNetworkBasinStats ()\n"); delete gridIO; return (DBFault); }
-	
+
 	table = tblData->Table (DBrNItems);
 	netIO = new DBNetworkIO (netData);
 	table->AddField (basinIDFLD	= new DBObjTableField (DBrNBasin,		DBTableFieldInt,		"%8d",						sizeof (DBInt)));
@@ -1060,7 +1060,7 @@ DBInt RGlibNetworkBasinStats (DBObjData *netData, DBObjData *grdData, DBObjData 
 				if (basinID != DBFault)
 					{
 					average = average / area;
-					stdDev = stdDev / area;	
+					stdDev = stdDev / area;
 					stdDev = stdDev - average * average;
 					stdDev = sqrt (stdDev);
 					minimumFLD->Float (tblRec,minimum);
@@ -1091,7 +1091,7 @@ DBInt RGlibNetworkBasinStats (DBObjData *netData, DBObjData *grdData, DBObjData 
 				}
 			}
 		average = average / area;
-		stdDev = stdDev / area;	
+		stdDev = stdDev / area;
 		stdDev = stdDev - average * average;
 		stdDev = sqrt (stdDev);
 		minimumFLD->Float (tblRec,minimum);
@@ -1175,7 +1175,7 @@ DBInt RGlibNetworkHeadStats (DBObjData *netData, DBObjData *grdData, DBObjData *
 				if (basinID != DBFault)
 					{
 					average = average / area;
-					stdDev = stdDev / area;	
+					stdDev = stdDev / area;
 					stdDev = stdDev - average * average;
 					stdDev = sqrt (stdDev);
 					minimumFLD->Float (tblRec,minimum);
@@ -1202,7 +1202,7 @@ DBInt RGlibNetworkHeadStats (DBObjData *netData, DBObjData *grdData, DBObjData *
 					divide = false;
 					for (dir = 0;dir < 8;++dir)
 						if ((fromCell = netIO->FromCell (cellRec,0x01 << dir,false)) == (DBObjRecord *) NULL)
-							{ divide = true; break; } 
+							{ divide = true; break; }
 						else
 							if (netIO->CellBasinID (fromCell) != basinID) { divide = true; break; }
 					}
@@ -1218,7 +1218,7 @@ DBInt RGlibNetworkHeadStats (DBObjData *netData, DBObjData *grdData, DBObjData *
 				}
 			}
 		average = average / area;
-		stdDev = stdDev / area;	
+		stdDev = stdDev / area;
 		stdDev = stdDev - average * average;
 		stdDev = sqrt (stdDev);
 		minimumFLD->Float (tblRec,minimum);
@@ -1360,7 +1360,7 @@ DBInt RGlibNetworkBasinDistrib (DBObjData *netData,DBObjData *grdData, DBObjData
 		{
 		layerRec = gridIO->Layer (layerID);
 		if ((layerRec->Flags () & DBObjectFlagIdle) == DBObjectFlagIdle) continue;
-	
+
 		basinID = DBFault;
 		if ((layerRec->Flags () & DBObjectFlagIdle) == DBObjectFlagIdle) continue;
 		for (cellID = 0;cellID < netIO->CellNum ();++cellID)
@@ -1464,13 +1464,13 @@ DBInt RGlibNetworkPsmRouting (DBObjData *netData,
 	for (layerID = 0;layerID < inIO->LayerNum ();++layerID)
 		{
 		inLayerRec  = inIO->Layer (layerID);
-		
+
 		for (cellID = 0;cellID < netIO->CellNum ();cellID++)
 			{
 			progress = layerID * netIO->CellNum () + cellID;
 			if (DBPause (progress * 100 / maxProgress)) goto Stop;
 			cellRec = netIO->Cell (cellID);
-			if (inIO->Value (inLayerRec,netIO->Center (cellRec),&inValue) == false) continue;	
+			if (inIO->Value (inLayerRec,netIO->Center (cellRec),&inValue) == false) continue;
 			inValue = inValue * netIO->CellArea (cellRec) * coeff / tFactor;
 			time = 0.0;
 			for (toCell = cellRec;toCell != (DBObjRecord *) NULL;toCell = netIO->ToCell (toCell))

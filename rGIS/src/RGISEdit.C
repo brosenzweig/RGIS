@@ -27,18 +27,18 @@ static void _RGISEditNameFieldCBK (Widget widget,void *data,XmAnyCallbackStruct 
 	DBObjRecord *record;
 	static Widget fieldSelect = (Widget) NULL;
 	widget = widget; data = data; callData = callData;
-	
+
 	if (table == (DBObjTable *) NULL) return;
-	if (fieldSelect == (Widget) NULL) fieldSelect = UISelectionCreate ("Field Selection");
+	if (fieldSelect == (Widget) NULL) fieldSelect = UISelectionCreate ((char *) "Field Selection");
 	fieldName = UISelectObject (fieldSelect,(DBObjectLIST<DBObject> *)(table->Fields ()),DBTableFieldIsString);
 	if (fieldName == (char *) NULL) return;
 	if ((field = table->Field (fieldName)) == (DBObjTableField *) NULL) return;
-	UIPauseDialogOpen ("Changing Record Names");
+	UIPauseDialogOpen ((char *) "Changing Record Names");
 	for (record = table->First ();record != (DBObjRecord *) NULL;record = table->Next ())
 		{
 		UIPause (record->RowID () * 100 / table->ItemNum ());
 		if ((record->Flags () & DBObjectFlagIdle) == DBObjectFlagIdle) continue;
-		record->Name (field->String (record));		
+		record->Name (field->String (record));
 		}
 	UIPauseDialogClose ();
 	}
@@ -52,7 +52,7 @@ static void _RGISEditJoinTableSelectCBK (Widget widget,Widget text,XmAnyCallback
 	int (*condFunc) (const DBObject *);
 
 	callData = callData;
-	if (select == NULL) select = UISelectionCreate ("Field Selection");
+	if (select == NULL) select = UISelectionCreate ((char *) "Field Selection");
 	XtVaGetValues (widget,XmNuserData, &condFunc, NULL);
 	XtVaGetValues (text,XmNuserData, &fields, NULL);
 	if ((field = UISelectObject (select,(DBObjectLIST<DBObject> *) fields,condFunc)) != NULL)
@@ -79,13 +79,13 @@ static void _RGISEditJoinTableCBK (Widget widget,void *data,XmAnyCallbackStruct 
 	widget = widget; data = data; callData = callData;
 	if (tableSelect == (Widget) NULL)
 		{
-		tableSelect = UISelectionCreate ("Table Selection");
+		tableSelect = UISelectionCreate ((char *) "Table Selection");
 		XmString string;
 
-		dShell = UIDialogForm ("Compare Fields",false);
+		dShell = UIDialogForm ((char *) "Compare Fields",false);
 		mainForm = UIDialogFormGetMainForm (dShell);
-		
-		string = XmStringCreate ("Select",UICharSetBold);
+
+		string = XmStringCreate ((char *) "Select",UICharSetBold);
 		field0Button = XtVaCreateManagedWidget ("RGISEditJoinTableField0Button",xmPushButtonWidgetClass,mainForm,
 								XmNtopAttachment,			XmATTACH_FORM,
 								XmNtopOffset,				10,
@@ -109,7 +109,7 @@ static void _RGISEditJoinTableCBK (Widget widget,void *data,XmAnyCallbackStruct 
 								XmNcolumns,					DBStringLength / 2,
 								NULL);
 		XtAddCallback (field0Button,XmNactivateCallback,(XtCallbackProc) _RGISEditJoinTableSelectCBK,field0TextF);
-		string = XmStringCreate ("Relate Field:",UICharSetBold);
+		string = XmStringCreate ((char *) "Relate Field:",UICharSetBold);
 		XtVaCreateManagedWidget ("RGISEditJoinTableField0NameLabel",xmLabelWidgetClass,mainForm,
 								XmNtopAttachment,			XmATTACH_OPPOSITE_WIDGET,
 								XmNtopWidget,				field0Button,
@@ -123,8 +123,8 @@ static void _RGISEditJoinTableCBK (Widget widget,void *data,XmAnyCallbackStruct 
 								XmNlabelString,			string,
 								NULL);
 		XmStringFree (string);
-		
-		string = XmStringCreate ("Select",UICharSetBold);
+
+		string = XmStringCreate ((char *) "Select",UICharSetBold);
 		field1Button = XtVaCreateManagedWidget ("RGISEditJoinTableField1Button",xmPushButtonWidgetClass,mainForm,
 								XmNtopAttachment,			XmATTACH_WIDGET,
 								XmNtopWidget,				field0Button,
@@ -151,7 +151,7 @@ static void _RGISEditJoinTableCBK (Widget widget,void *data,XmAnyCallbackStruct 
 								XmNcolumns,					DBStringLength / 2,
 								NULL);
 		XtAddCallback (field1Button,XmNactivateCallback,(XtCallbackProc) _RGISEditJoinTableSelectCBK,field1TextF);
-		string = XmStringCreate ("Join Field:",UICharSetBold);
+		string = XmStringCreate ((char *) "Join Field:",UICharSetBold);
 		XtVaCreateManagedWidget ("RGISEditJoinTableField1Label",xmLabelWidgetClass,mainForm,
 								XmNtopAttachment,			XmATTACH_OPPOSITE_WIDGET,
 								XmNtopWidget,				field1Button,
@@ -173,7 +173,7 @@ static void _RGISEditJoinTableCBK (Widget widget,void *data,XmAnyCallbackStruct 
 	if (selection == (char *) NULL)	return;
 	if ((joinTable = lnkData->Table (selection)) == (DBObjTable *) NULL)
 		{ fprintf (stderr,"Invalid Table in: _RGISEditJoinTableCBK ()\n"); return; }
-	
+
 	XtVaSetValues (field0TextF,XmNuserData, itemTable->Fields (), NULL);
 	XtVaSetValues (field1TextF,XmNuserData, joinTable->Fields (), NULL);
 	join = false;
@@ -205,14 +205,14 @@ static void _RGISEditJoinTableCBK (Widget widget,void *data,XmAnyCallbackStruct 
 					fprintf (stderr,"Invalid Data Type in: _RGISEditJoinTableCBK ()\n"); break;
 				}
 		else	XtVaSetValues (field0Button,	XmNuserData, DBTableFieldIsCategory, NULL);
-		
-		XtFree (f0Text);	XtFree (f1Text);	
+
+		XtFree (f0Text);	XtFree (f1Text);
 		}
 	UIDialogFormPopdown (dShell);
 
 	if (join)
 		{
-		UIPauseDialogOpen ("Joining Tables");
+		UIPauseDialogOpen ((char *) "Joining Tables");
 		RGLibTableJoin (itemTable, relateField, joinTable, joinField);
 		UIPauseDialogClose ();
 		}
@@ -230,11 +230,11 @@ static void _RGISEditAddFieldCBK (Widget widget,void *data,XmAnyCallbackStruct *
 	static Widget tableSelect = (Widget) NULL;
 
 	widget = widget; data = data; callData = callData;
-	if (tableSelect == (Widget) NULL) tableSelect = UISelectionCreate ("Table Selection");
+	if (tableSelect == (Widget) NULL) tableSelect = UISelectionCreate ((char *) "Table Selection");
 	if ((selection = UISelectObject (tableSelect,(DBObjectLIST<DBObject> *) dbData->Tables ())) == (char *) NULL) return;
 	if ((table = dbData->Table (selection)) == (DBObjTable *) NULL) return;
 	if ((field = UITableFieldEdit ()) != (DBObjTableField *) NULL)
-		table->AddField (field); 
+		table->AddField (field);
 	if ((tableCLS = (UITable *) dbData->Display (UITableName (dbData,table))) != (UITable *) NULL)
 		{
 		tableCLS->AddField (field);
@@ -253,13 +253,13 @@ static void _RGISEditRedefineFieldCBK (Widget widget,void *data,XmAnyCallbackStr
 	static Widget tableSelect = (Widget) NULL;
 
 	widget = widget; data = data; callData = callData;
-	if (tableSelect == (Widget) NULL) tableSelect = UISelectionCreate ("Table Selection");
+	if (tableSelect == (Widget) NULL) tableSelect = UISelectionCreate ((char *) "Table Selection");
 	selection = UISelectObject (tableSelect,(DBObjectLIST<DBObject> *) dbData->Tables ());
 	if (selection == (char *) NULL)	return;
 	if ((table = dbData->Table (selection)) == (DBObjTable *) NULL)
 		{ fprintf (stderr,"Invalid Table in: _RGISEditFieldsCBK ()\n"); return; }
-	
-	if ((UITableRedefineFields (table) == DBFault) && 
+
+	if ((UITableRedefineFields (table) == DBFault) &&
 		 ((tableCLS = (UITable *) dbData->Display (UITableName (dbData,table))) != (UITable *) NULL))
 		{
 		dbData->DispRemove (tableCLS);
@@ -278,13 +278,13 @@ static void _RGISEditDeleteFieldCBK (Widget widget,void *data,XmAnyCallbackStruc
 	static Widget fieldSelect = (Widget) NULL;
 
 	widget = widget; data = data; callData = callData;
-	if (tableSelect == (Widget) NULL) tableSelect = UISelectionCreate ("Table Selection");
-	if (fieldSelect == (Widget) NULL) fieldSelect = UISelectionCreate ("Field Selection");
+	if (tableSelect == (Widget) NULL) tableSelect = UISelectionCreate ((char *) "Table Selection");
+	if (fieldSelect == (Widget) NULL) fieldSelect = UISelectionCreate ((char *) "Field Selection");
 	selection = UISelectObject (tableSelect,(DBObjectLIST<DBObject> *) dbData->Tables ());
 	if (selection == (char *) NULL) return;
 	if ((table = dbData->Table (selection)) == (DBObjTable *) NULL) return;
 	selection = UISelectObject(fieldSelect,(DBObjectLIST<DBObject> *)(table->Fields()),DBTableFieldIsOptional);
-	if (selection != (char *) NULL) table->DeleteField (table->Field (selection)); 
+	if (selection != (char *) NULL) table->DeleteField (table->Field (selection));
 	}
 
 static void _RGISEditDeleteSelectionCBK (Widget widget,void *data,XmAnyCallbackStruct *callData)
@@ -298,8 +298,8 @@ static void _RGISEditDeleteSelectionCBK (Widget widget,void *data,XmAnyCallbackS
 	DBObjRecord *record;
 	static Widget tableSelect = (Widget) NULL;
 	widget = widget; data = data; callData = callData;
-	
-	if (tableSelect == (Widget) NULL) tableSelect = UISelectionCreate ("Table Selection");
+
+	if (tableSelect == (Widget) NULL) tableSelect = UISelectionCreate ((char *) "Table Selection");
 	selection = UISelectObject (tableSelect,(DBObjectLIST<DBObject> *) dbData->Tables ());
 	if (selection == (char *) NULL) return;
 	if (strcmp (selection,DBrNGroups) == 0) selection = DBrNItems;
@@ -330,7 +330,7 @@ static void _RGISEditDeleteSelectionCBK (Widget widget,void *data,XmAnyCallbackS
 			if ((record->Flags () & DBObjectFlagSelected) == DBObjectFlagSelected)
 				netIO->CellDelete (table->Item (recID));
 			}
-		UIPauseDialogOpen ("Re-building Network");
+		UIPauseDialogOpen ((char *) "Re-building Network");
 		netIO->Build ();
 		UIPauseDialogClose ();
 		delete netIO;
@@ -343,13 +343,13 @@ static void _RGISEditSymbolCBK (Widget widget,void *data,XmAnyCallbackStruct *ca
 	DBDataset *dataset = UIDataset ();
 	DBObjData *symData = dataset->Data ();
 	DBObjTable *symbols = symData->Table (DBrNSymbols);
-	
+
 	widget = widget; data = data; callData = callData;
 	switch (symData->Type ())
 		{
 		case DBTypeVectorPoint: UISymbolEdit (symbols,UISymbolMarker);	break;
 		case DBTypeVectorLine:  UISymbolEdit (symbols,UISymbolLine);	break;
-		case DBTypeVectorPolygon: 
+		case DBTypeVectorPolygon:
 		case DBTypeGridDiscrete:UISymbolEdit (symbols,UISymbolShade);	break;
 		case DBTypeNetwork:		UISymbolEdit (symbols,UISymbolStick);	break;
 		}
@@ -364,19 +364,19 @@ static void _RGISEditSymbolFieldCBK (Widget widget,void *data,XmAnyCallbackStruc
 	DBObjTable *table = dbData->Table (DBrNItems);
 	static Widget fieldSelect = (Widget) NULL;
 	widget = widget; data = data; callData = callData;
-	
+
 	if (table == (DBObjTable *) NULL) return;
-	if (fieldSelect == (Widget) NULL) fieldSelect = UISelectionCreate ("Field Selection");
+	if (fieldSelect == (Widget) NULL) fieldSelect = UISelectionCreate ((char *) "Field Selection");
 	if ((fieldName = UISelectObject (fieldSelect,(DBObjectLIST<DBObject> *) (table->Fields ()),DBTableFieldIsCategory)) == (char *) NULL) return;
-	UIPauseDialogOpen ("Building Symbols");
+	UIPauseDialogOpen ((char *) "Building Symbols");
 	RGlibGenFuncSymbolField (dbData,fieldName);
 	UIPauseDialogClose ();
 	}
 
 static UIMenuItem _RGISEditFieldsMenu [] = {
-	UIMenuItem ("Add",				RGISDataGroup,		UIMENU_NORULE,	(UIMenuCBK) _RGISEditAddFieldCBK,				"RGIS22MenuSystem.html#EditAll_Fields_Add"),
-	UIMenuItem ("Redefine",			RGISDataGroup,		UIMENU_NORULE,	(UIMenuCBK) _RGISEditRedefineFieldCBK,			"RGIS22MenuSystem.html#EditAll_Fields_Redefine"),
-	UIMenuItem ("Delete",			RGISDataGroup,		UIMENU_NORULE,	(UIMenuCBK) _RGISEditDeleteFieldCBK,			"RGIS22MenuSystem.html#EditAll_Fields_Delete"),
+	UIMenuItem ((char *) "Add",				RGISDataGroup,		UIMENU_NORULE,	(UIMenuCBK) _RGISEditAddFieldCBK,				(char *) "RGIS22MenuSystem.html#EditAll_Fields_Add"),
+	UIMenuItem ((char *) "Redefine",			RGISDataGroup,		UIMENU_NORULE,	(UIMenuCBK) _RGISEditRedefineFieldCBK,			(char *) "RGIS22MenuSystem.html#EditAll_Fields_Redefine"),
+	UIMenuItem ((char *) "Delete",			RGISDataGroup,		UIMENU_NORULE,	(UIMenuCBK) _RGISEditDeleteFieldCBK,			(char *) "RGIS22MenuSystem.html#EditAll_Fields_Delete"),
 	UIMenuItem ()};
 
 extern void RGISEditPointAddXYCBK (Widget, RGISWorkspace *,XmAnyCallbackStruct *);
@@ -403,32 +403,32 @@ extern void RGISEditNetDistToOceanCBK (Widget, RGISWorkspace *,XmAnyCallbackStru
 extern void RGISEditAdjustNetworkCBK (Widget, RGISWorkspace *,XmAnyCallbackStruct *);
 
 UIMenuItem RGISEditMenu [] = {
-	UIMenuItem ("Name Field",		RGISDataGroup,		UIMENU_NORULE,	(UIMenuCBK) _RGISEditNameFieldCBK,				"RGIS22MenuSystem.html#EditAll_NameField"),
-	UIMenuItem ("Join Table",		RGISDataGroup,		UIMENU_NORULE,	(UIMenuCBK) _RGISEditJoinTableCBK,				"RGIS22MenuSystem.html#EditAll_JoinTable"),
-	UIMenuItem ("Fields",			RGISDataGroup,		UIMENU_NORULE,	_RGISEditFieldsMenu),
-	UIMenuItem ("Delete Selection",RGISDataGroup,	UIMENU_NORULE,	(UIMenuCBK) _RGISEditDeleteSelectionCBK,		"RGIS22MenuSystem.html#EditAll_DeleteSelection"),
-	UIMenuItem ("Symbol Field",	RGISSymbolGroup,	UIMENU_NORULE,	(UIMenuCBK) _RGISEditSymbolFieldCBK,			"RGIS22MenuSystem.html#EditAll_SymbolField"),
-	UIMenuItem ("Symbols",			RGISSymbolGroup,	UIMENU_NORULE,	(UIMenuCBK) _RGISEditSymbolCBK,					"RGIS22MenuSystem.html#EditAll_Symbols"),
+	UIMenuItem ((char *) "Name Field",		RGISDataGroup,		UIMENU_NORULE,	(UIMenuCBK) _RGISEditNameFieldCBK,				(char *) "RGIS22MenuSystem.html#EditAll_NameField"),
+	UIMenuItem ((char *) "Join Table",		RGISDataGroup,		UIMENU_NORULE,	(UIMenuCBK) _RGISEditJoinTableCBK,				(char *) "RGIS22MenuSystem.html#EditAll_JoinTable"),
+	UIMenuItem ((char *) "Fields",			RGISDataGroup,		UIMENU_NORULE,	_RGISEditFieldsMenu),
+	UIMenuItem ((char *) "Delete Selection",RGISDataGroup,	UIMENU_NORULE,	(UIMenuCBK) _RGISEditDeleteSelectionCBK,		(char *) "RGIS22MenuSystem.html#EditAll_DeleteSelection"),
+	UIMenuItem ((char *) "Symbol Field",	RGISSymbolGroup,	UIMENU_NORULE,	(UIMenuCBK) _RGISEditSymbolFieldCBK,			(char *) "RGIS22MenuSystem.html#EditAll_SymbolField"),
+	UIMenuItem ((char *) "Symbols",			RGISSymbolGroup,	UIMENU_NORULE,	(UIMenuCBK) _RGISEditSymbolCBK,					(char *) "RGIS22MenuSystem.html#EditAll_Symbols"),
 	UIMenuItem (RGISPointGroup,	UIMENU_NORULE),
-	UIMenuItem ("AddXY",				RGISPointGroup,	UIMENU_NORULE,	(UIMenuCBK) RGISEditPointAddXYCBK,				"RGIS22MenuSystem.html#EditPoint_AddXY"),
-	UIMenuItem ("STN Coordinates",RGISPointGroup,	RGISLinkedNetworkGroup,		(UIMenuCBK) RGISEditPointSTNCoordsCBK,"RGIS22MenuSystem.html#EditPoint_STNCoord"),
+	UIMenuItem ((char *) "AddXY",				RGISPointGroup,	UIMENU_NORULE,	(UIMenuCBK) RGISEditPointAddXYCBK,				(char *) "RGIS22MenuSystem.html#EditPoint_AddXY"),
+	UIMenuItem ((char *) "STN Coordinates",RGISPointGroup,	RGISLinkedNetworkGroup,		(UIMenuCBK) RGISEditPointSTNCoordsCBK,(char *) "RGIS22MenuSystem.html#EditPoint_STNCoord"),
 	UIMenuItem (RGISLineGroup,		UIMENU_NORULE),
-	UIMenuItem ("River Directions",RGISLineGroup,	RGISLinkedContinuousGroup,(UIMenuCBK) RGISEditLineDirectionCBK,"RGIS22MenuSystem.html#EditLine_RiverDirection"),
+	UIMenuItem ((char *) "River Directions",RGISLineGroup,	RGISLinkedContinuousGroup,(UIMenuCBK) RGISEditLineDirectionCBK,(char *) "RGIS22MenuSystem.html#EditLine_RiverDirection"),
 	UIMenuItem (RGISPolyGroup,		UIMENU_NORULE),
-	UIMenuItem ("Four Color",		RGISPolyGroup,		UIMENU_NORULE,	(UIMenuCBK) RGISEditPolyFourColorCBK,			"RGIS22MenuSystem.html#EditPoly_FourColor"),
+	UIMenuItem ((char *) "Four Color",		RGISPolyGroup,		UIMENU_NORULE,	(UIMenuCBK) RGISEditPolyFourColorCBK,			(char *) "RGIS22MenuSystem.html#EditPoly_FourColor"),
 	UIMenuItem (RGISGridGroup,		UIMENU_NORULE),
-	UIMenuItem ("Date Layers",		RGISGridGroup,		UIMENU_NORULE,	(UIMenuCBK) RGISEditGridDateLayersCBK,			"RGIS22MenuSystem.html#EditGrid_DateLayers"),
-	UIMenuItem ("Rename Layer",	RGISGridGroup,		UIMENU_NORULE,	(UIMenuCBK) RGISEditGridRenameLayerCBK,		"RGIS22MenuSystem.html#EditGrid_RenameLayer"),
-	UIMenuItem ("Grid Statistics",RGISDiscreteGroup,UIMENU_NORULE,	(UIMenuCBK) RGISEditGridStatsCBK,				"RGIS22MenuSystem.html#EditGrid_GridStats"),
-	UIMenuItem ("Remove Pits",		RGISContinuousGroup,RGISLinkedNetworkGroup,(UIMenuCBK) RGISEditGridRemovePitsCBK,"RGIS22MenuSystem.html#EditGrid_RemovePits"),
-	UIMenuItem ("Network Filter",	RGISContinuousGroup,RGISLinkedNetworkGroup,(UIMenuCBK) RGISEditGridNetFilterCBK,"RGIS22MenuSystem.html#EditGrid_NetworkFilter"),
+	UIMenuItem ((char *) "Date Layers",		RGISGridGroup,		UIMENU_NORULE,	(UIMenuCBK) RGISEditGridDateLayersCBK,			(char *) "RGIS22MenuSystem.html#EditGrid_DateLayers"),
+	UIMenuItem ((char *) "Rename Layer",	RGISGridGroup,		UIMENU_NORULE,	(UIMenuCBK) RGISEditGridRenameLayerCBK,		(char *) "RGIS22MenuSystem.html#EditGrid_RenameLayer"),
+	UIMenuItem ((char *) "Grid Statistics",RGISDiscreteGroup,UIMENU_NORULE,	(UIMenuCBK) RGISEditGridStatsCBK,				(char *) "RGIS22MenuSystem.html#EditGrid_GridStats"),
+	UIMenuItem ((char *) "Remove Pits",		RGISContinuousGroup,RGISLinkedNetworkGroup,(UIMenuCBK) RGISEditGridRemovePitsCBK,(char *) "RGIS22MenuSystem.html#EditGrid_RemovePits"),
+	UIMenuItem ((char *) "Network Filter",	RGISContinuousGroup,RGISLinkedNetworkGroup,(UIMenuCBK) RGISEditGridNetFilterCBK,(char *) "RGIS22MenuSystem.html#EditGrid_NetworkFilter"),
 	UIMenuItem (RGISNetworkGroup,	UIMENU_NORULE),
-	UIMenuItem ("Build",				RGISNetworkGroup, UIMENU_NORULE, (UIMenuCBK) RGISEditNetBuildCBK,					"RGIS22MenuSystem.html#EditNet_Build"),
-	UIMenuItem ("Trim",				RGISNetworkGroup, UIMENU_NORULE, (UIMenuCBK) RGISEditNetTrimCBK,					"RGIS22MenuSystem.html#EditNet_Trim"),
-	UIMenuItem ("AddCellXY",		RGISNetworkGroup,	UIMENU_NORULE,	(UIMenuCBK) RGISEditNetAddCellXYCBK,			"RGIS22MenuSystem.html#EditNet_AddCellXY"),
-	UIMenuItem ("AddBasinXY",		RGISNetworkGroup,	UIMENU_NORULE,	(UIMenuCBK) RGISEditNetAddBasinXYCBK,			"RGIS22MenuSystem.html#EditNet_AddBasinXY"),
-	UIMenuItem ("Magnitude",		RGISNetworkGroup,	UIMENU_NORULE,	(UIMenuCBK)	RGISEditNetMagnitudeCBK,			"RGIS22MenuSystem.html#EditNet_Magnitude"),
-	UIMenuItem ("Distance to Mouth",RGISNetworkGroup,UIMENU_NORULE,(UIMenuCBK)	RGISEditNetDistToMouthCBK,			"RGIS22MenuSystem.html#EditNet_DistMouth"),
-	UIMenuItem ("Distance to Ocean",RGISNetworkGroup,UIMENU_NORULE,(UIMenuCBK)	RGISEditNetDistToOceanCBK,			"RGIS22MenuSystem.html#EditNet_DistOcean"),
-	UIMenuItem ("Adjust Network",	RGISNetworkGroup,	RGISLinkedLineGroup,		(UIMenuCBK) RGISEditAdjustNetworkCBK,"RGIS22MenuSystem.html#EditNet_Adjust"),
+	UIMenuItem ((char *) "Build",				RGISNetworkGroup, UIMENU_NORULE, (UIMenuCBK) RGISEditNetBuildCBK,					(char *) "RGIS22MenuSystem.html#EditNet_Build"),
+	UIMenuItem ((char *) "Trim",				RGISNetworkGroup, UIMENU_NORULE, (UIMenuCBK) RGISEditNetTrimCBK,					(char *) "RGIS22MenuSystem.html#EditNet_Trim"),
+	UIMenuItem ((char *) "AddCellXY",		RGISNetworkGroup,	UIMENU_NORULE,	(UIMenuCBK) RGISEditNetAddCellXYCBK,			(char *) "RGIS22MenuSystem.html#EditNet_AddCellXY"),
+	UIMenuItem ((char *) "AddBasinXY",		RGISNetworkGroup,	UIMENU_NORULE,	(UIMenuCBK) RGISEditNetAddBasinXYCBK,			(char *) "RGIS22MenuSystem.html#EditNet_AddBasinXY"),
+	UIMenuItem ((char *) "Magnitude",		RGISNetworkGroup,	UIMENU_NORULE,	(UIMenuCBK)	RGISEditNetMagnitudeCBK,			(char *) "RGIS22MenuSystem.html#EditNet_Magnitude"),
+	UIMenuItem ((char *) "Distance to Mouth",RGISNetworkGroup,UIMENU_NORULE,(UIMenuCBK)	RGISEditNetDistToMouthCBK,			(char *) "RGIS22MenuSystem.html#EditNet_DistMouth"),
+	UIMenuItem ((char *) "Distance to Ocean",RGISNetworkGroup,UIMENU_NORULE,(UIMenuCBK)	RGISEditNetDistToOceanCBK,			(char *) "RGIS22MenuSystem.html#EditNet_DistOcean"),
+	UIMenuItem ((char *) "Adjust Network",	RGISNetworkGroup,	RGISLinkedLineGroup,		(UIMenuCBK) RGISEditAdjustNetworkCBK,(char *) "RGIS22MenuSystem.html#EditNet_Adjust"),
 	UIMenuItem ()};

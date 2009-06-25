@@ -96,7 +96,7 @@ int main (int argc,char *argv [])
 
 	grdData = new DBObjData ();
 	ret = (argNum > 1) && (strcmp (argv [1],"-") != 0) ? grdData->Read (argv [1]) : grdData->Read (stdin);
-	if ((ret == DBFault) || (grdData->Type () & DBTypeGrid != DBTypeGrid))
+	if ((ret == DBFault) || ((grdData->Type () & DBTypeGrid) != DBTypeGrid))
 		{ delete grdData; return (CMfailed); }
 
 	if (title   != (char *) NULL) grdData->Name (title);

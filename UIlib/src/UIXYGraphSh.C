@@ -60,7 +60,7 @@ UIXYGraphShell::UIXYGraphShell (DBObjData *dbData) : DBObject (UIXYGraphShellStr
 	XmString string;
 	DBInt argNum;
 	Arg wargs [20];
-	Atom deleteWindowAtom = XmInternAtom(XtDisplay(UITopLevel ()),"WM_DELETE_WINDOW",FALSE);
+	Atom deleteWindowAtom = XmInternAtom(XtDisplay(UITopLevel ()),(char *) "WM_DELETE_WINDOW",FALSE);
 
 	sprintf (title,"XYGraph: %s",dbData->Name ());
 	DShell = XtVaCreatePopupShell ("UIXYGraphShellPopupShell",xmDialogShellWidgetClass,UITopLevel (),
@@ -71,7 +71,7 @@ UIXYGraphShell::UIXYGraphShell (DBObjData *dbData) : DBObject (UIXYGraphShellStr
 												XmNminWidth,					UIXYGraphShellMinWidth,
 												XmNminHeight,					UIXYGraphShellMinHeight,
 												NULL);
-	XmAddWMProtocolCallback (DShell,deleteWindowAtom,(XtCallbackProc) _UIXYGraphShellDeleteCBK,(XtPointer) this); 
+	XmAddWMProtocolCallback (DShell,deleteWindowAtom,(XtCallbackProc) _UIXYGraphShellDeleteCBK,(XtPointer) this);
 
 	mainForm = XtVaCreateWidget ("UIXYGraphShellMainForm",xmFormWidgetClass,DShell,
 												XmNshadowThickness,			0,
@@ -85,7 +85,7 @@ UIXYGraphShell::UIXYGraphShell (DBObjData *dbData) : DBObject (UIXYGraphShellStr
 												XmNbottomOffset,				10,
 												XmNshadowThickness,			0,
 												NULL);
-	string = XmStringCreate ("Select",UICharSetBold);
+	string = XmStringCreate ((char *) "Select",UICharSetBold);
 	button = XtVaCreateManagedWidget ("UIXYGraphShellTSButton",xmPushButtonWidgetClass,form,
 												XmNtopAttachment,				XmATTACH_FORM,
 												XmNtopOffset,					10,
@@ -97,7 +97,7 @@ UIXYGraphShell::UIXYGraphShell (DBObjData *dbData) : DBObject (UIXYGraphShellStr
 												XmNuserData,					(XtPointer) NULL,
 												NULL);
 	XmStringFree (string);
-	string = XmStringCreate ("Time Series:",UICharSetBold);
+	string = XmStringCreate ((char *) "Time Series:",UICharSetBold);
 	label = XtVaCreateManagedWidget ("UIXYGraphShellTSLabel",xmLabelWidgetClass,form,
 												XmNtopAttachment,				XmATTACH_OPPOSITE_WIDGET,
 												XmNtopWidget,					button,
@@ -125,7 +125,7 @@ UIXYGraphShell::UIXYGraphShell (DBObjData *dbData) : DBObject (UIXYGraphShellStr
 												NULL);
 	XtAddCallback (button,XmNactivateCallback,(XtCallbackProc) UIAuxObjectSelectCBK,TSDataFieldWGT);
 	XtAddCallback (button,XmNactivateCallback,(XtCallbackProc) _UIXYGraphShellSetDataCBK,this);
-	string = XmStringCreate ("Select",UICharSetBold);
+	string = XmStringCreate ((char *) "Select",UICharSetBold);
 	XAxisButtonWGT = XtVaCreateManagedWidget ("UIXYGraphShellXAxisButton",xmPushButtonWidgetClass,form,
 												XmNtopAttachment,				XmATTACH_WIDGET,
 												XmNtopWidget,					button,
@@ -154,7 +154,7 @@ UIXYGraphShell::UIXYGraphShell (DBObjData *dbData) : DBObject (UIXYGraphShellStr
 												NULL);
 	XtAddCallback (XAxisButtonWGT,XmNactivateCallback,(XtCallbackProc) UIAuxObjectSelectCBK,XAxisFieldWGT);
 	XtAddCallback (XAxisButtonWGT,XmNactivateCallback,(XtCallbackProc) _UIXYGraphShellConfigureCBK,this);
-	string = XmStringCreate ("X-Axis:",UICharSetBold);
+	string = XmStringCreate ((char *) "X-Axis:",UICharSetBold);
 	label = XtVaCreateManagedWidget ("UIXYGraphShellXAxisLabel",xmLabelWidgetClass,form,
 												XmNtopAttachment,				XmATTACH_OPPOSITE_WIDGET,
 												XmNtopWidget,					XAxisButtonWGT,
@@ -166,7 +166,7 @@ UIXYGraphShell::UIXYGraphShell (DBObjData *dbData) : DBObject (UIXYGraphShellStr
 												XmNlabelString,				string,
 												NULL);
 	XmStringFree (string);
-	string = XmStringCreate ("Select",UICharSetBold);
+	string = XmStringCreate ((char *) "Select",UICharSetBold);
 	YAxisButtonWGT = XtVaCreateManagedWidget ("UIXYGraphShellYAxisButton",xmPushButtonWidgetClass,form,
 												XmNtopAttachment,				XmATTACH_WIDGET,
 												XmNtopWidget,					XAxisButtonWGT,
@@ -194,7 +194,7 @@ UIXYGraphShell::UIXYGraphShell (DBObjData *dbData) : DBObject (UIXYGraphShellStr
 												NULL);
 	XtAddCallback (YAxisButtonWGT,XmNactivateCallback,(XtCallbackProc) UIAuxObjectSelectCBK,YAxisFieldWGT);
 	XtAddCallback (YAxisButtonWGT,XmNactivateCallback,(XtCallbackProc) _UIXYGraphShellSetSeriesCBK,this);
-	string = XmStringCreate ("Y-Axis:",UICharSetBold);
+	string = XmStringCreate ((char *) "Y-Axis:",UICharSetBold);
 	label = XtVaCreateManagedWidget ("UIXYGraphShellYAxisLabel",xmLabelWidgetClass,form,
 												XmNtopAttachment,				XmATTACH_OPPOSITE_WIDGET,
 												XmNtopWidget,					YAxisButtonWGT,
@@ -218,7 +218,7 @@ UIXYGraphShell::UIXYGraphShell (DBObjData *dbData) : DBObject (UIXYGraphShellStr
 												XmNbottomOffset,				10,
 												XmNshadowThickness,			0,
 												NULL);
-	string = XmStringCreate ("<- Add Series",UICharSetBold);
+	string = XmStringCreate ((char *) "<- Add Series",UICharSetBold);
 	AddButtonWGT = XtVaCreateManagedWidget ("UIXYGraphShellYAxisButton",xmPushButtonWidgetClass,subForm,
 												XmNtopAttachment,				XmATTACH_FORM,
 												XmNleftAttachment,			XmATTACH_FORM,
@@ -234,7 +234,7 @@ UIXYGraphShell::UIXYGraphShell (DBObjData *dbData) : DBObject (UIXYGraphShellStr
 	XmStringFree (string);
 	XtAddCallback (AddButtonWGT,XmNactivateCallback,(XtCallbackProc) _UIXYGraphShellAddSeriesCBK,this);
 	XtAddCallback (AddButtonWGT,XmNactivateCallback,(XtCallbackProc) _UIXYGraphShellConfigureCBK,this);
-	string = XmStringCreate ("Remove Series",UICharSetBold);
+	string = XmStringCreate ((char *) "Remove Series",UICharSetBold);
 	RemoveButtonWGT = XtVaCreateManagedWidget ("UIXYGraphShellYAxisButton",xmPushButtonWidgetClass,subForm,
 												XmNtopAttachment,				XmATTACH_FORM,
 												XmNleftAttachment,			XmATTACH_POSITION,
@@ -262,9 +262,9 @@ UIXYGraphShell::UIXYGraphShell (DBObjData *dbData) : DBObject (UIXYGraphShellStr
 	XtSetArg (wargs [argNum],	XmNbottomWidget,				subForm);						++argNum;
 	XtSetArg (wargs [argNum],	XmNshadowThickness,			2);								++argNum;
 	XtSetArg (wargs [argNum],	XmNselectionPolicy,			XmSINGLE_SELECT);				++argNum;
-	XtManageChild (SeriesListWGT = XmCreateScrolledList (form,"UIXYGraphShellSeriesList",wargs,argNum));
+	XtManageChild (SeriesListWGT = XmCreateScrolledList (form,(char *) "UIXYGraphShellSeriesList",wargs,argNum));
 	XtAddCallback (SeriesListWGT,XmNsingleSelectionCallback,	(XtCallbackProc) _UIXYGraphShellSetListCBK,this);
-	
+
 	argNum = 0;
 	XtSetArg (wargs [argNum],	XmNtopAttachment,				XmATTACH_FORM);				++argNum;
 	XtSetArg (wargs [argNum],	XmNtopOffset,					10);								++argNum;
@@ -275,7 +275,7 @@ UIXYGraphShell::UIXYGraphShell (DBObjData *dbData) : DBObject (UIXYGraphShellStr
 	XtSetArg (wargs [argNum],	XmNbottomAttachment,			XmATTACH_WIDGET);				++argNum;
 	XtSetArg (wargs [argNum],	XmNbottomWidget,				form);							++argNum;
 	XtSetArg (wargs [argNum],	XmNbottomOffset,				5);								++argNum;
-	Graph = new UIXYGraph (mainForm,"Text",wargs,argNum);
+	Graph = new UIXYGraph (mainForm,(char *) "Text",wargs,argNum);
 	XtVaSetValues (mainForm,XmNwidth, UIXYGraphShellMinWidth, XmNheight, UIXYGraphShellMinHeight, NULL);
 	XtManageChild (mainForm);
 	XtPopup (DShell,XtGrabNone);
@@ -289,7 +289,7 @@ UIXYGraphShell::~UIXYGraphShell ()
 
 	{
 	if (RelDataPTR == (DBObjData *) NULL) delete RelDataPTR;
-	delete Graph; 
+	delete Graph;
 	XtDestroyWidget (DShell);
 	}
 
@@ -299,7 +299,7 @@ void UIXYGraphShell::Configure (DBObjRecord *record)
 	DBInt i;
 	char *fieldName = XmTextFieldGetString (XAxisFieldWGT);
 	DBObjTableField *field;
-	
+
 	if (DataPTR == (DBObjData *) NULL) return;
 	if (RelDataPTR == (DBObjData *) NULL) return;
 	if (((XAxisFLD = (RelDataPTR->Table (DBrNItems))->Field (fieldName)) == (DBObjTableField *) NULL) ||
@@ -326,10 +326,10 @@ void UIXYGraphShell::SetData ()
 	DBObjRecord *relRecord = relTable->Item (tsName);
 	DBObjTableField *relDataFLD;
 	DBObjMetaEntry *metaEntry;
-	
+
 	if (relRecord == (DBObjRecord *) NULL)	return;
 	XtFree (tsName);
-	
+
 	relDataFLD = relTable->Field (DBrNRelateData);
 	RelFLD = relTable->Field (DBrNRelateField);
 	JoinFLD = relTable->Field (DBrNRelateJoinField);
@@ -344,8 +344,8 @@ void UIXYGraphShell::SetData ()
 			}
 		}
 	YFieldsPTR->DeleteAll ();
-	XmTextFieldSetString (XAxisFieldWGT,"");
-	XmTextFieldSetString (YAxisFieldWGT,"");
+	XmTextFieldSetString (XAxisFieldWGT,(char *) "");
+	XmTextFieldSetString (YAxisFieldWGT,(char *) "");
 	XmListDeleteAllItems (SeriesListWGT);
 	if ((RelDataPTR = dataset->Data (relDataFLD->String (relRecord))) == (DBObjData *) NULL)
 		{
@@ -388,7 +388,7 @@ void UIXYGraphShell::SetList (int itemPos)
 
 	{
 	DBObjTableField *field = YFieldsPTR->Item (itemPos - 1,true);
-	
+
 	if (field == (DBObjTableField *) NULL) return;
 	XmTextFieldSetString (YAxisFieldWGT,field->Name ());
 	XtSetSensitive (RemoveButtonWGT,true);
@@ -404,7 +404,7 @@ void UIXYGraphShell::SetSeries ()
 	if (field != (DBObjTableField *) NULL)
 		{
 		string = XmStringCreate (field->Name (),UICharSetNormal);
-		
+
 		if (XmListItemExists (SeriesListWGT,string))
 			{
 			XtSetSensitive (AddButtonWGT,false);
@@ -429,7 +429,7 @@ void UIXYGraphShell::AddSeries ()
 	XmString string;
 	DBObjectLIST<DBObjTableField> *fields = (RelDataPTR->Table (DBrNItems))->Fields ();
 	DBObjTableField *field = new DBObjTableField (*(fields->Item (fieldName)));
-	
+
 	XtFree (fieldName);
 	string = XmStringCreate (field->Name (),UICharSetNormal);
 	XmListAddItem (SeriesListWGT,string,0);
@@ -445,7 +445,7 @@ void UIXYGraphShell::RemoveSeries ()
 	{
 	XmString string;
 	DBObjTableField *field = YFieldsPTR->Item ();
-	
+
 	string = XmStringCreate (field->Name (),UICharSetNormal);
 	XmListDeleteItem (SeriesListWGT,string);
 	XmStringFree (string);

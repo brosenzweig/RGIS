@@ -40,7 +40,7 @@ class UINumberProp
 			strncpy (FormatSTR,format,sizeof (FormatSTR) - 1);
 			}
 		DBInt MinScale ()		{ return (MinScaleVAR); }
-		DBInt MaxScale ()		{ return (MaxScaleVAR); } 
+		DBInt MaxScale ()		{ return (MaxScaleVAR); }
 		DBInt ScaleValue (DBFloat value)
 			{
 			if (ModeVAR == UINumberInputModeLogarithmic)
@@ -60,9 +60,9 @@ class UINumberProp
 		char *ValueString (DBInt scaleValue)
 			{ return (ValueString (Value (scaleValue))); }
 	};
-		
+
 static void _UINumberInputScaleCBK (Widget widget,Widget form,XmScaleCallbackStruct *callData)
-	
+
 	{
 	UINumberProp *numberProp;
 
@@ -79,7 +79,7 @@ Widget UINumberInputCreate (Widget parent,char *labelText,Arg *wargs,DBInt argNu
 	XmString string;
 	UINumberProp *numberProp = new UINumberProp (min,max,mode,format);
 
-	form = XmCreateForm (parent,"UINumberInputScaleForm",wargs,argNum);
+	form = XmCreateForm (parent,(char *) "UINumberInputScaleForm",wargs,argNum);
 	XtVaSetValues (form, XmNshadowThickness,	0, XmNuserData,	numberProp, NULL);
 	XtManageChild (form);
 
@@ -88,7 +88,7 @@ Widget UINumberInputCreate (Widget parent,char *labelText,Arg *wargs,DBInt argNu
 												XmNrightAttachment,			XmATTACH_FORM,
 												XmNbottomAttachment,			XmATTACH_FORM,
 												NULL);
-	string = XmStringCreate ("NotSet",UICharSetNormal);
+	string = XmStringCreate ((char *) "NotSet",UICharSetNormal);
 	XtVaCreateManagedWidget (UINumberInputField + 1,xmLabelWidgetClass,frame,
 												XmNmarginWidth,				5,
 												XmNalignment,					XmALIGNMENT_END,
@@ -152,7 +152,7 @@ void UINumberInputSetValue (Widget form,DBFloat value)
 
 	{
 	UINumberProp *numberProp;
-	
+
 	XtVaGetValues (form,XmNuserData, &numberProp, NULL);
 	UIAuxSetLabelString (XtNameToWidget (form,UINumberInputField),numberProp->ValueString (value));
 	XmScaleSetValue (UINumberInputGetScale (form),numberProp->ScaleValue (value));
@@ -166,6 +166,6 @@ DBFloat UINumberInputGetValue (Widget form)
 
 	XtVaGetValues (form,XmNuserData, &numberProp, NULL);
 	XmScaleGetValue (UINumberInputGetScale (form),&scaleValue);
-	
+
 	return (numberProp->Value (scaleValue));
 	}

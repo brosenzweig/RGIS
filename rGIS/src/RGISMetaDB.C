@@ -27,7 +27,7 @@ static void _RGISMetaDBDeleteCBK (Widget widget,RGISWorkspace *workspace,XmAnyCa
 	}
 
 UIMenuItem RGISMetaDBMenu [] = {
-	UIMenuItem ("Refresh",	UIMENU_NORULE,		UIMENU_NORULE,	(UIMenuCBK) UIMenuNotImplemented, "RGIS22MenuSystem.html#MetaDB_Refresh"),
-	UIMenuItem ("Edit",		UIMENU_NORULE, 	UIMENU_NORULE,	(UIMenuCBK) UIMenuNotImplemented, "RGIS22MenuSystem.html#MetaDB_Edit"),
-	UIMenuItem ("Delete",	UIMENU_NORULE, 	UIMENU_NORULE,	(UIMenuCBK) _RGISMetaDBDeleteCBK, "RGIS22MenuSystem.html#MetaDB_Delete"),
+	UIMenuItem ((char *) "Refresh",	UIMENU_NORULE,		UIMENU_NORULE,	(UIMenuCBK) UIMenuNotImplemented, (char *) "RGIS22MenuSystem.html#MetaDB_Refresh"),
+	UIMenuItem ((char *) "Edit",		UIMENU_NORULE, 	UIMENU_NORULE,	(UIMenuCBK) UIMenuNotImplemented, (char *) "RGIS22MenuSystem.html#MetaDB_Edit"),
+	UIMenuItem ((char *) "Delete",	UIMENU_NORULE, 	UIMENU_NORULE,	(UIMenuCBK) _RGISMetaDBDeleteCBK, (char *) "RGIS22MenuSystem.html#MetaDB_Delete"),
 	UIMenuItem ()};

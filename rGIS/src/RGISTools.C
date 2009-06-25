@@ -20,8 +20,8 @@ static void _RGISToolsImportASCIITableCBK (Widget widget,RGISWorkspace *workspac
 	DBObjData *data = new DBObjData ("",DBTypeTable);
 
 	widget = widget; callData = callData;
-	if (fileSelect == NULL) fileSelect = UIFileSelectionCreate ("ASCII Import",NULL,"*.*",XmFILE_REGULAR);
-	
+	if (fileSelect == NULL) fileSelect = UIFileSelectionCreate ((char *) "ASCII Import",NULL,(char *) "*.*",XmFILE_REGULAR);
+
 	if (UIDataHeaderForm (data))
 		{
 		char *fileName;
@@ -79,14 +79,14 @@ static void _RGISToolsImportASCIINetCBK (Widget widget,RGISWorkspace *workspace,
 	static Widget fileSelect = NULL;
 
 	widget = widget; callData = callData;
-	if (fileSelect == NULL) fileSelect = UIFileSelectionCreate ("GHAAS Data Import",NULL,"*",XmFILE_REGULAR); 
+	if (fileSelect == NULL) fileSelect = UIFileSelectionCreate ((char *) "GHAAS Data Import",NULL,(char *) "*",XmFILE_REGULAR);
 	data->Document (DBDocSubject,"STNetwork");
 	if (UIDataHeaderForm (data))
 		{
 		char *fileName;
 
 		if ((fileName = UIFileSelection (fileSelect,true)) == NULL) { delete data; return; }
-		UIPauseDialogOpen ("Importing Networks");
+		UIPauseDialogOpen ((char *) "Importing Networks");
 		if (DBImportASCIINet (data,fileName) == DBFault)	delete data;
 		else workspace->CurrentData (data);
 		UIPauseDialogClose ();
@@ -106,8 +106,8 @@ static void _RGISToolsExportASCIICBK (Widget widget,RGISWorkspace *workspace,XmA
 
 	widget = widget; workspace = workspace; callData = callData;
 
-	if (tableSelect == (Widget) NULL) tableSelect = UISelectionCreate ("Table Selection");
-	if (fileSelect == NULL)	fileSelect = UIFileSelectionCreate ("ASCII Table",NULL,"*.txt",XmFILE_REGULAR);
+	if (tableSelect == (Widget) NULL) tableSelect = UISelectionCreate ((char *) "Table Selection");
+	if (fileSelect == NULL)	fileSelect = UIFileSelectionCreate ((char *) "ASCII Table",NULL,(char *) "*.txt",XmFILE_REGULAR);
 
 	table = data->Table (UISelectObject (tableSelect,(DBObjectLIST<DBObject> *) data->Tables ()));
 	if (table == (DBObjTable *) NULL) return;
@@ -131,7 +131,7 @@ static void _RGISToolsExportARCInfoCBK (Widget widget,RGISWorkspace *workspace,X
 	widget = widget; workspace = workspace; callData = callData;
 
 	if (dirSelect == NULL)
-		{ if ((dirSelect = UIFileSelectionCreate ("ARC/INFO Workspace",NULL,"w_*",XmFILE_DIRECTORY)) == NULL) return; }
+		{ if ((dirSelect = UIFileSelectionCreate ((char *) "ARC/INFO Workspace",NULL,(char *) "w_*",XmFILE_DIRECTORY)) == NULL) return; }
 	if ((selection = UIFileSelection (dirSelect,True)) == NULL) return;
 	switch (data->Type ())
 		{
@@ -144,7 +144,7 @@ static void _RGISToolsExportARCInfoCBK (Widget widget,RGISWorkspace *workspace,X
 		case DBTypeTable:						break;
 		}
 	}
-	
+
 static void _RGISToolsExportDMCBK (Widget widget,RGISWorkspace *workspace,XmAnyCallbackStruct *callData)
 
 	{
@@ -156,7 +156,7 @@ static void _RGISToolsExportDMCBK (Widget widget,RGISWorkspace *workspace,XmAnyC
 	widget = widget; workspace = workspace; callData = callData;
 
 	if (dirSelect == NULL)
-		{ if ((dirSelect = UIFileSelectionCreate ("DM Coverage",NULL,"M:*",XmFILE_REGULAR)) == NULL) return; }
+		{ if ((dirSelect = UIFileSelectionCreate ((char *) "DM Coverage",NULL,(char *) "M:*",XmFILE_REGULAR)) == NULL) return; }
 	if ((selection = UIFileSelection (dirSelect,False)) == NULL) return;
 
 	switch (data->Type ())
@@ -184,14 +184,14 @@ static void _RGISToolsExportNetworkCBK (Widget widget,RGISWorkspace *workspace,X
 	widget = widget; workspace = workspace; callData = callData;
 
 	if (dirSelect == NULL)
-		{ if ((dirSelect = UIFileSelectionCreate ("Network File",NULL,"*.txt",XmFILE_REGULAR)) == NULL) return; }
+		{ if ((dirSelect = UIFileSelectionCreate ((char *) "Network File",NULL,(char *) "*.txt",XmFILE_REGULAR)) == NULL) return; }
 	if ((selection = UIFileSelection (dirSelect,False)) == NULL) return;
 
 	if ((outFILE = fopen (selection,"w")) == (FILE *) NULL)
 		{ perror ("File Opening Error in: _RGISToolsExportNetworkCBK ()"); return; }
 	fprintf (outFILE,"\"CellID\"\t\"XCoord\"\t\"YCoord\"\t\"BasinID\"\t\"ToCell\"\t\"CellArea\"\t\"CellLength\"");
 	for (fieldID = 0;fieldID < cellTable->FieldNum (); fieldID++)
-		{ 
+		{
 		if ((field = cellTable->Field (fieldID)) == (DBObjTableField *) NULL)
 			{
 			if (fields != (DBObjTableField **) NULL) free (fields);
@@ -199,7 +199,7 @@ static void _RGISToolsExportNetworkCBK (Widget widget,RGISWorkspace *workspace,X
 			return;
 			}
 		if (field->Required ()) continue;
-		if ((fields = (DBObjTableField **) realloc (fields,(fieldNum + 1) * sizeof (DBObjTableField *))) == (DBObjTableField **) NULL) 
+		if ((fields = (DBObjTableField **) realloc (fields,(fieldNum + 1) * sizeof (DBObjTableField *))) == (DBObjTableField **) NULL)
 			{ perror ("Memory allocation error in: _RGISToolsExportNetworkCBK ()"); return; }
 		fields [fieldNum] = field;
 		fprintf (outFILE,"\t\"%s\"",field->Name ());
@@ -246,7 +246,7 @@ static void _RGISToolsDuplicateCBK (Widget widget,RGISWorkspace *workspace,XmAny
 	{
 	DBDataset *dataset = UIDataset ();
 	DBObjData *dbData = dataset->Data (), *newData;
-	
+
 	if (dbData == (DBObjData *) NULL) return;
 	widget = widget; callData = callData;
 	if (UIDataHeaderForm (newData = new DBObjData (*dbData)))
@@ -261,7 +261,7 @@ static void _RGISToolsNetBasinMouthCBK (Widget widget,RGISWorkspace *workspace,X
 	DBDataset *dataset = UIDataset ();
 	DBObjData *netData = dataset->Data (), *pntData;
 	DBNetworkIO *netIO;
-	
+
 	widget = widget; callData = callData;
 
 	if (netData == (DBObjData *) NULL)
@@ -300,7 +300,7 @@ static void _RGISToolsNetBasinMouthCBK (Widget widget,RGISWorkspace *workspace,X
 			backgroundFLD->Int (symRec,0);
 			}
 
-		UIPauseDialogOpen ("Creating Basin Mouth");
+		UIPauseDialogOpen ((char *) "Creating Basin Mouth");
 		for (basinID = 0;basinID < netIO->BasinNum ();++basinID)
 			{
 			basinRec = netIO->Basin (basinID);
@@ -330,27 +330,27 @@ void RGISToolsImportGridCBK (Widget,RGISWorkspace *,XmAnyCallbackStruct *);
 void RGISToolsImportGridDMCBK (Widget,RGISWorkspace *,XmAnyCallbackStruct *);
 
 static UIMenuItem _RGISToolsImportMenu [] = {
-	UIMenuItem ("ASCII Table",				UIMENU_NORULE,	UIMENU_NORULE,		(UIMenuCBK)  _RGISToolsImportASCIITableCBK,	"RGIS22MenuSystem.html#Tools_Import_ASCII"),
-	UIMenuItem ("ARC/Info (Vector)",		UIMENU_NORULE,	UIMENU_NORULE,		(UIMenuCBK) _RGISToolsImportARCInfoCBK,		"RGIS22MenuSystem.html#Tools_Import_ARCINFO"),
-	UIMenuItem ("Grid Matrix",				UIMENU_NORULE,	UIMENU_NORULE,		(UIMenuCBK) RGISToolsImportGridCBK,				"RGIS22MenuSystem.html#Tools_Import_GridI"),
-	UIMenuItem ("DM (Grid)",				UIMENU_NORULE,	UIMENU_NORULE,		(UIMenuCBK) RGISToolsImportGridDMCBK,			"RGIS22MenuSystem.html#Tools_Import_DM"),
-	UIMenuItem ("Network Grid",			UIMENU_NORULE,	UIMENU_NORULE,		(UIMenuCBK) _RGISToolsImportASCIINetCBK,		"RGIS22MenuSystem.html#Tools_Import_Network"),
+	UIMenuItem ((char *) "ASCII Table",				UIMENU_NORULE,	UIMENU_NORULE,		(UIMenuCBK)  _RGISToolsImportASCIITableCBK,	(char *) "RGIS22MenuSystem.html#Tools_Import_ASCII"),
+	UIMenuItem ((char *) "ARC/Info (Vector)",		UIMENU_NORULE,	UIMENU_NORULE,		(UIMenuCBK) _RGISToolsImportARCInfoCBK,		(char *) "RGIS22MenuSystem.html#Tools_Import_ARCINFO"),
+	UIMenuItem ((char *) "Grid Matrix",				UIMENU_NORULE,	UIMENU_NORULE,		(UIMenuCBK) RGISToolsImportGridCBK,				(char *) "RGIS22MenuSystem.html#Tools_Import_GridI"),
+	UIMenuItem ((char *) "DM (Grid)",				UIMENU_NORULE,	UIMENU_NORULE,		(UIMenuCBK) RGISToolsImportGridDMCBK,			(char *) "RGIS22MenuSystem.html#Tools_Import_DM"),
+	UIMenuItem ((char *) "Network Grid",			UIMENU_NORULE,	UIMENU_NORULE,		(UIMenuCBK) _RGISToolsImportASCIINetCBK,		(char *) "RGIS22MenuSystem.html#Tools_Import_Network"),
 	UIMenuItem ()};
 
 static UIMenuItem _RGISToolsExportMenu [] = {
-	UIMenuItem ("ASCII",						UIMENU_NORULE,	UIMENU_NORULE,		(UIMenuCBK) _RGISToolsExportASCIICBK,			"RGIS22MenuSystem.html#Tools_Export_ASCII"),
-	UIMenuItem ("ARC/Info",					UIMENU_NORULE,	UIMENU_NORULE,		(UIMenuCBK) _RGISToolsExportARCInfoCBK,		"RGIS22MenuSystem.html#Tools_Import_ARCINFO"),
-	UIMenuItem ("DM",							UIMENU_NORULE,	UIMENU_NORULE,		(UIMenuCBK) _RGISToolsExportDMCBK,				"RGIS22MenuSystem.html#Tools_Export_DM"),
-	UIMenuItem ("Network",					RGISNetworkGroup,	UIMENU_NORULE,	(UIMenuCBK) _RGISToolsExportNetworkCBK,		"RGIS22MenuSystem.html#Tools_Export_Network"),
+	UIMenuItem ((char *) "ASCII",						UIMENU_NORULE,	UIMENU_NORULE,		(UIMenuCBK) _RGISToolsExportASCIICBK,			(char *) "RGIS22MenuSystem.html#Tools_Export_ASCII"),
+	UIMenuItem ((char *) "ARC/Info",					UIMENU_NORULE,	UIMENU_NORULE,		(UIMenuCBK) _RGISToolsExportARCInfoCBK,		(char *) "RGIS22MenuSystem.html#Tools_Import_ARCINFO"),
+	UIMenuItem ((char *) "DM",							UIMENU_NORULE,	UIMENU_NORULE,		(UIMenuCBK) _RGISToolsExportDMCBK,				(char *) "RGIS22MenuSystem.html#Tools_Export_DM"),
+	UIMenuItem ((char *) "Network",					RGISNetworkGroup,	UIMENU_NORULE,	(UIMenuCBK) _RGISToolsExportNetworkCBK,		(char *) "RGIS22MenuSystem.html#Tools_Export_Network"),
 	UIMenuItem ()};
 
 extern void RGISToolsConvertToPointCBK (Widget,RGISWorkspace *,XmAnyCallbackStruct *);
 
 UIMenuItem RGISToolsMenu [] = {
-	UIMenuItem ("Import",					UIMENU_NORULE,	UIMENU_NORULE,		_RGISToolsImportMenu),
-	UIMenuItem ("Export",					UIMENU_NORULE,	RGISDataGroup,		_RGISToolsExportMenu),
+	UIMenuItem ((char *) "Import",					UIMENU_NORULE,	UIMENU_NORULE,		_RGISToolsImportMenu),
+	UIMenuItem ((char *) "Export",					UIMENU_NORULE,	RGISDataGroup,		_RGISToolsExportMenu),
 	UIMenuItem (RGISDataGroup,	UIMENU_NORULE),
-	UIMenuItem ("Duplicate",				RGISDataGroup,	UIMENU_NORULE,		(UIMenuCBK) _RGISToolsDuplicateCBK,				"RGIS22MenuSystem.html#Tools_Duplicate"),
-	UIMenuItem ("Convert to Point",		RGISDataGroup,	UIMENU_NORULE,		(UIMenuCBK) RGISToolsConvertToPointCBK,		"RGIS22MenuSystem.html#Tools_Convert2Point"),
-	UIMenuItem ("Create Basin Mouth",	RGISNetworkGroup,	UIMENU_NORULE,	(UIMenuCBK) _RGISToolsNetBasinMouthCBK,		"RGIS22MenuSystem.html#Tools_CreateBasinMouth"),
+	UIMenuItem ((char *) "Duplicate",				RGISDataGroup,	UIMENU_NORULE,		(UIMenuCBK) _RGISToolsDuplicateCBK,				(char *) "RGIS22MenuSystem.html#Tools_Duplicate"),
+	UIMenuItem ((char *) "Convert to Point",		RGISDataGroup,	UIMENU_NORULE,		(UIMenuCBK) RGISToolsConvertToPointCBK,		(char *) "RGIS22MenuSystem.html#Tools_Convert2Point"),
+	UIMenuItem ((char *) "Create Basin Mouth",	RGISNetworkGroup,	UIMENU_NORULE,	(UIMenuCBK) _RGISToolsNetBasinMouthCBK,		(char *) "RGIS22MenuSystem.html#Tools_CreateBasinMouth"),
 	UIMenuItem ()};

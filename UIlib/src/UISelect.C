@@ -17,7 +17,7 @@ balazs.fekete@unh.edu
 static char *_UISelection = NULL;
 
 static void _UINoMatchSelectionCallback (Widget widget,void *data,XmSelectionBoxCallbackStruct *callData)
-  { widget = widget; data = data; callData = callData; UIMessage ("Must Select!"); }
+  { widget = widget; data = data; callData = callData; UIMessage ((char *) "Must Select!"); }
 
 static void _UIOkSelectionCallback (Widget widget,void *data,XmSelectionBoxCallbackStruct *callData)
 
@@ -30,7 +30,7 @@ Widget UISelectionCreate (char *selectTitle)
 
 	{
 	Widget dShell, selection;
-	
+
 	dShell = XtVaCreatePopupShell (selectTitle,xmDialogShellWidgetClass,UITopLevel (),
 										XmNminWidth,				200,
 										XmNallowShellResize,		true,
@@ -84,15 +84,15 @@ char *UISelection (Widget widget,char *items,int itemSize,int itemNum)
 	}
 
 static DBInt _UISelectObjectAll (const DBObject *obj) { obj = obj; return (true); }
-	
+
 char *UISelectObject (Widget widget,DBObjectLIST<DBObject> *objList,DBInt (*condFunc) (const DBObject *))
 
 	{
 	int i = 0;
 	XmString *strings;
 	DBObject *obj;
-	
-	if (objList->ItemNum () < 1) { UIMessage ("Empty List"); return (NULL); }
+
+	if (objList->ItemNum () < 1) { UIMessage ((char *) "Empty List"); return (NULL); }
 	if ((strings = (XmString *) calloc	(objList->ItemNum (),sizeof (XmString))) == NULL)
 		{ perror ("Memory Allocation Error in: UISelectObject ()\n"); return (NULL); }
 

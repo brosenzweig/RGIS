@@ -28,7 +28,7 @@ static void _UIPauseCallback (Widget widget,int data,XmAnyCallbackStruct *callDa
 	widget = widget; data = data; callData = callData;
 	XtSetSensitive (_UIContButton,true);
 	XtSetSensitive (_UIPauseButton,false);
-	while (UILoop ()); 
+	while (UILoop ());
 	XtSetSensitive (_UIContButton,false);
 	XtSetSensitive (_UIPauseButton,true);
 	}
@@ -59,7 +59,7 @@ void UIPauseDialogOpen (char *title,DBInt dbPause)
 											XmNdialogStyle,			XmDIALOG_FULL_APPLICATION_MODAL,
 											XmNshadowThickness,		0,
 											NULL);
-		menuForm = XtVaCreateManagedWidget ("UIPauseMenuForm",xmFormWidgetClass,mainForm, 
+		menuForm = XtVaCreateManagedWidget ("UIPauseMenuForm",xmFormWidgetClass,mainForm,
 											XmNleftAttachment,		XmATTACH_FORM,
 											XmNrightAttachment, 		XmATTACH_FORM,
 											XmNbottomAttachment,		XmATTACH_FORM,
@@ -98,7 +98,7 @@ void UIPauseDialogOpen (char *title,DBInt dbPause)
 											XmNheight,					30,
 											XmNbackground,				UIColor (UIColorStandard,0),
 											NULL);
-		string = XmStringCreate ("Pause",UICharSetNormal);
+		string = XmStringCreate ((char *) "Pause",UICharSetNormal);
 		_UIPauseButton = XtVaCreateManagedWidget ("UIPauseButton",xmPushButtonWidgetClass,menuForm,
 											XmNtopAttachment,			XmATTACH_FORM,
 											XmNtopOffset,				10,
@@ -111,7 +111,7 @@ void UIPauseDialogOpen (char *title,DBInt dbPause)
 											XmNlabelString,			string,
 											NULL);
 		XmStringFree (string);
-		string = XmStringCreate ("Stop",UICharSetNormal);
+		string = XmStringCreate ((char *) "Stop",UICharSetNormal);
 		XtAddCallback (_UIPauseButton,XmNactivateCallback,(XtCallbackProc) _UIPauseCallback,0);
 
 		_UIStopButton = XtVaCreateManagedWidget ("UIPauseStopButton",xmPushButtonWidgetClass,menuForm,
@@ -128,7 +128,7 @@ void UIPauseDialogOpen (char *title,DBInt dbPause)
 		XmStringFree (string);
 		XtAddCallback (_UIStopButton,XmNactivateCallback,(XtCallbackProc) UIAuxSetBooleanFalseCBK,&cont);
 		XtAddCallback (_UIStopButton,XmNactivateCallback,(XtCallbackProc) UILoopStopCBK,NULL);
-		string = XmStringCreate ("Continue",UICharSetNormal);
+		string = XmStringCreate ((char *) "Continue",UICharSetNormal);
 		_UIContButton = XtVaCreateManagedWidget ("UIPauseContButton",xmPushButtonWidgetClass,menuForm,
 											XmNtopAttachment,			XmATTACH_FORM,
 											XmNtopOffset,				10,
@@ -157,7 +157,7 @@ int UIPause (int perCent)
 	static int prevPerCent = 0;
 	static GC gc = NULL;
 	XWindowAttributes xwa;
-	
+
 	if (_UIPauseDShell == NULL) return (false);
 
 	if (gc == NULL)

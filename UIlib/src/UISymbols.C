@@ -82,7 +82,7 @@ static void _UISymbolSetForegroundCBK (Widget widget,Widget text,XmAnyCallbackSt
 	{
 	UISymbol *editSymbol;
 	DBInt value;
-	
+
 	callData = callData;
 	XtVaGetValues (widget,XmNuserData, &value, NULL);
 	XtVaGetValues (text,XmNuserData, &editSymbol, NULL);
@@ -94,7 +94,7 @@ static void _UISymbolSetBackgroundCBK (Widget widget,Widget text,XmAnyCallbackSt
 	{
 	UISymbol *editSymbol;
 	DBInt value;
-	
+
 	callData = callData;
 	XtVaGetValues (widget,XmNuserData, &value, NULL);
 	XtVaGetValues (text,XmNuserData, &editSymbol, NULL);
@@ -106,7 +106,7 @@ static void _UISymbolSetStyleCBK (Widget widget,Widget text,XmAnyCallbackStruct 
 	{
 	UISymbol *editSymbol;
 	DBInt value;
-	
+
 	callData = callData;
 	XtVaGetValues (widget,XmNuserData, &value, NULL);
 	XtVaGetValues (text,XmNuserData, &editSymbol, NULL);
@@ -124,7 +124,7 @@ static void _UISymbolTextValueChangedCBK (Widget widget,Widget list,XmTextVerify
 	if (callData->reason != XmCR_VALUE_CHANGED) return;
 	if (!XmListGetSelectedPos (list,&itemPosList,&itemPosCount)) return;
 	if (itemPosCount > 1) { XtFree ((char *) itemPosList); return; }
-	
+
 	XtVaGetValues (widget, XmNuserData,	&editSymbol, NULL);
 	aString = XmTextFieldGetString (widget);
 	editSymbol->Name (aString);
@@ -149,19 +149,19 @@ static void _UISymbolListSelectCBK (Widget widget,Widget dShell,XmListCallbackSt
 	XtVaGetValues (widget,XmNuserData,	&editSymbols, NULL);
 
 	option = XtNameToWidget (dShell,UISymForegroundMenuName);
-	XtVaGetValues (option,XmNsubMenuId, &menu, NULL); 
+	XtVaGetValues (option,XmNsubMenuId, &menu, NULL);
 	_UISymSetButtonString (symString,editSymbols [symbol]->Foreground ());
 	XtVaSetValues (option, XmNmenuHistory, XtNameToWidget (menu,symString), NULL);
 
 	option = XtNameToWidget (dShell,UISymBackgroundMenuName);
-	XtVaGetValues (option,XmNsubMenuId, &menu, NULL); 
+	XtVaGetValues (option,XmNsubMenuId, &menu, NULL);
 	_UISymSetButtonString (symString,editSymbols [symbol]->Background ());
 	XtVaSetValues (option, XmNmenuHistory, XtNameToWidget (menu,symString), NULL);
 
 	_UISymSetButtonString (symString,editSymbols [symbol]->Style ());
 	if (XtIsManaged (option = XtNameToWidget (dShell,UISymMarkerMenuName)))
 		{
-		XtVaGetValues (option,XmNsubMenuId, &menu, NULL); 
+		XtVaGetValues (option,XmNsubMenuId, &menu, NULL);
 		XtVaSetValues (option, XmNmenuHistory, XtNameToWidget (menu,symString), NULL);
 		}
 	if (XtIsManaged (option = XtNameToWidget (dShell,UISymLineMenuName)))
@@ -174,7 +174,7 @@ static void _UISymbolListSelectCBK (Widget widget,Widget dShell,XmListCallbackSt
 		XtVaGetValues (option,XmNsubMenuId, &menu, NULL);
 		XtVaSetValues (option, XmNmenuHistory, XtNameToWidget (menu,symString), NULL);
 		}
-	XtVaSetValues (XtNameToWidget (dShell,UISymTextFieldName),XmNuserData, editSymbols [symbol], NULL);	
+	XtVaSetValues (XtNameToWidget (dShell,UISymTextFieldName),XmNuserData, editSymbols [symbol], NULL);
 	XmTextFieldSetString (XtNameToWidget (dShell,UISymTextFieldName),editSymbols [symbol]->Name ());
 	}
 
@@ -191,13 +191,13 @@ static void _UISymbolLoadNamesCBK (Widget widget,Widget list,XmAnyCallbackStruct
 	widget = widget; callData = callData;
 
 	if (select == NULL)
-		select = UIFileSelectionCreate ("Symbol Name file Selection",NULL,"*.txt",XmFILE_REGULAR); 
+		select = UIFileSelectionCreate ((char *) "Symbol Name file Selection",NULL,(char *) "*.txt",XmFILE_REGULAR);
 
 	XtVaGetValues (list,XmNuserData, &editSymbols, NULL);
 	XtVaGetValues (list,XmNitemCount, &symNum, NULL);
 
 	if ((fileName =  UIFileSelection (select,true)) == NULL) return;
-	
+
 	if ((file =  fopen (fileName,"r")) == NULL)
 		{ perror ("File Openning Error in: _UISymbolLoadNamesCBK ()"); return; }
 
@@ -229,7 +229,7 @@ static void _UISymbolLoadNamesCBK (Widget widget,Widget list,XmAnyCallbackStruct
 		XmTextFieldSetString (XtNameToWidget (XtParent (XtParent (XtParent (list))),UISymTextFieldName),editSymbols [selectPos [0]]->Name ());
 		XtFree ((char *) selectPos);
 		}
-	}	
+	}
 
 int UISymbolEdit (DBObjTable *symbols,int symbolType)
 
@@ -251,7 +251,7 @@ int UISymbolEdit (DBObjTable *symbols,int symbolType)
 		Widget mainForm, scrolledW, list, label, button, text, foreMenu, backMenu, rowCol, symMenu;
 		Pixmap markerPixmap, labelPixmap;
 
-		dShell = UIDialogForm ("Symbol Edit");
+		dShell = UIDialogForm ((char *) "Symbol Edit");
 		mainForm = UIDialogFormGetMainForm (dShell);
 		scrolledW = XtVaCreateManagedWidget ("UISymScrolledWindow",xmScrolledWindowWidgetClass,mainForm,
 													XmNtopAttachment,		XmATTACH_FORM,
@@ -264,7 +264,7 @@ int UISymbolEdit (DBObjTable *symbols,int symbolType)
 													XmNscrollBarDisplayPolicy,	XmSTATIC,
 													NULL);
 		XtAddCallback (list,XmNbrowseSelectionCallback,(XtCallbackProc) _UISymbolListSelectCBK,dShell);
-		string = XmStringCreate ("Symbol",UICharSetNormal);
+		string = XmStringCreate ((char *) "Symbol",UICharSetNormal);
 		label = XtVaCreateManagedWidget ("UISymbolLabel",xmLabelWidgetClass,mainForm,
 													XmNtopAttachment,		XmATTACH_WIDGET,
 													XmNtopWidget,			scrolledW,
@@ -272,7 +272,7 @@ int UISymbolEdit (DBObjTable *symbols,int symbolType)
 													XmNlabelString,		string,
 													NULL);
 		XmStringFree (string);
-		string = XmStringCreate ("Load Names",UICharSetNormal);
+		string = XmStringCreate ((char *) "Load Names",UICharSetNormal);
 		button = XtVaCreateManagedWidget (UISymLoadNamesButtonName + 1,xmPushButtonWidgetClass,mainForm,
 													XmNtopAttachment,		XmATTACH_WIDGET,
 													XmNtopWidget,			label,
@@ -292,8 +292,8 @@ int UISymbolEdit (DBObjTable *symbols,int symbolType)
 		XtAddCallback (text,XmNvalueChangedCallback,(XtCallbackProc) _UISymbolTextValueChangedCBK,list);
 		XtAddCallback (text,XmNvalueChangedCallback,(XtCallbackProc) UIAuxSetBooleanTrueCBK,&changed);
 
-		foreMenu = XmCreatePulldownMenu (mainForm,"UISymForegroundMenuPane",NULL,0);
-		backMenu = XmCreatePulldownMenu (mainForm,"UISymBackgroundMenuPane",NULL,0);
+		foreMenu = XmCreatePulldownMenu (mainForm,(char *) "UISymForegroundMenuPane",NULL,0);
+		backMenu = XmCreatePulldownMenu (mainForm,(char *) "UISymBackgroundMenuPane",NULL,0);
 
 		for (symNum = 0;symNum <  UIColorNum (UIColorStandard);symNum++)
 			{
@@ -317,7 +317,7 @@ int UISymbolEdit (DBObjTable *symbols,int symbolType)
 			XmStringFree (string);
 			}
 
-		string = XmStringCreate ("Foreground:",UICharSetNormal);
+		string = XmStringCreate ((char *) "Foreground:",UICharSetNormal);
 		foreMenu = XtVaCreateManagedWidget (UISymForegroundMenuName + 1,xmRowColumnWidgetClass,mainForm,
 													XmNtopAttachment,			XmATTACH_WIDGET,
 													XmNtopWidget,				text,
@@ -328,7 +328,7 @@ int UISymbolEdit (DBObjTable *symbols,int symbolType)
 													XmNtraversalOn,			false,
 													NULL);
 		XmStringFree (string);
-		string = XmStringCreate ("Background:",UICharSetNormal);
+		string = XmStringCreate ((char *) "Background:",UICharSetNormal);
 		backMenu = XtVaCreateManagedWidget (UISymBackgroundMenuName + 1,xmRowColumnWidgetClass,mainForm,
 													XmNtopAttachment,			XmATTACH_WIDGET,
 													XmNtopWidget,				foreMenu,
@@ -338,7 +338,7 @@ int UISymbolEdit (DBObjTable *symbols,int symbolType)
 													XmNrowColumnType,			XmMENU_OPTION,
 													XmNtraversalOn,			false,
 													NULL);
-		rowCol = XtVaCreateManagedWidget ("UISymbolRowCol",xmRowColumnWidgetClass,mainForm,	
+		rowCol = XtVaCreateManagedWidget ("UISymbolRowCol",xmRowColumnWidgetClass,mainForm,
 													XmNtopAttachment,			XmATTACH_WIDGET,
 													XmNtopWidget,				backMenu,
 													XmNrightAttachment,		XmATTACH_FORM,
@@ -350,7 +350,7 @@ int UISymbolEdit (DBObjTable *symbols,int symbolType)
 		xgcv.fill_style = FillTiled;
 		gc = XCreateGC (XtDisplay (UITopLevel ()),XtWindow (UITopLevel ()),GCForeground | GCBackground | GCFillStyle,&xgcv);
 
-		symMenu = XmCreatePulldownMenu (rowCol,"UISymShadeMenuPane",NULL,0);
+		symMenu = XmCreatePulldownMenu (rowCol,(char *) "UISymShadeMenuPane",NULL,0);
 		depth = DefaultDepth (XtDisplay (UITopLevel ()),DefaultScreen (XtDisplay (UITopLevel ())));
 		for (symNum = 0;(xgcv.tile = UIPattern (symNum,foreground,background)) != (Pixmap) NULL;symNum++)
 			{
@@ -367,8 +367,8 @@ int UISymbolEdit (DBObjTable *symbols,int symbolType)
 													NULL);
 			XtAddCallback (button,XmNactivateCallback,(XtCallbackProc) _UISymbolSetStyleCBK,text);
 			XtAddCallback (button,XmNactivateCallback,(XtCallbackProc) UIAuxSetBooleanTrueCBK,&changed);
-			}	
-		string = XmStringCreate ("Shade:",UICharSetNormal);		
+			}
+		string = XmStringCreate ((char *) "Shade:",UICharSetNormal);
 		symMenu = XtVaCreateWidget (UISymShadeMenuName + 1,xmRowColumnWidgetClass,rowCol,
 													XmNsubMenuId,				symMenu,
 													XmNlabelString,			string,
@@ -380,7 +380,7 @@ int UISymbolEdit (DBObjTable *symbols,int symbolType)
 		xgcv.foreground = background;
 		xgcv.fill_style = FillSolid;
 		XChangeGC (XtDisplay (UITopLevel ()),gc,GCForeground | GCFillStyle,&xgcv);
-		symMenu = XmCreatePulldownMenu (rowCol,"UISymMarkerMenuPane",NULL,0);
+		symMenu = XmCreatePulldownMenu (rowCol,(char *) "UISymMarkerMenuPane",NULL,0);
 		depth = DefaultDepth (XtDisplay (UITopLevel ()),DefaultScreen (XtDisplay (UITopLevel ())));
 		for (symNum = 0;(markerPixmap = UIMarker (symNum,foreground,background)) != (Pixmap) NULL;symNum++)
 			{
@@ -397,7 +397,7 @@ int UISymbolEdit (DBObjTable *symbols,int symbolType)
 			XtAddCallback (button,XmNactivateCallback,(XtCallbackProc) _UISymbolSetStyleCBK,text);
 			XtAddCallback (button,XmNactivateCallback,(XtCallbackProc) UIAuxSetBooleanTrueCBK,&changed);
 			}
-		string = XmStringCreate ("Marker:",UICharSetNormal);
+		string = XmStringCreate ((char *) "Marker:",UICharSetNormal);
 		symMenu = XtVaCreateWidget (UISymMarkerMenuName + 1,xmRowColumnWidgetClass,rowCol,
 													XmNsubMenuId,				symMenu,
 													XmNlabelString,			string,
@@ -406,7 +406,7 @@ int UISymbolEdit (DBObjTable *symbols,int symbolType)
 													NULL);
 		XmStringFree (string);
 
-		symMenu = XmCreatePulldownMenu (rowCol,"UISymLineMenuPane",NULL,0);
+		symMenu = XmCreatePulldownMenu (rowCol,(char *) "UISymLineMenuPane",NULL,0);
 		depth = DefaultDepth (XtDisplay (UITopLevel ()),DefaultScreen (XtDisplay (UITopLevel ())));
 		for (symNum = 0;symNum < 12;symNum++)
 			{
@@ -435,7 +435,7 @@ int UISymbolEdit (DBObjTable *symbols,int symbolType)
 			XtAddCallback (button,XmNactivateCallback,(XtCallbackProc) _UISymbolSetStyleCBK,text);
 			XtAddCallback (button,XmNactivateCallback,(XtCallbackProc) UIAuxSetBooleanTrueCBK,&changed);
 			}
-		string = XmStringCreate ("Line:",UICharSetNormal);
+		string = XmStringCreate ((char *) "Line:",UICharSetNormal);
 		symMenu = XtVaCreateWidget (UISymLineMenuName + 1,xmRowColumnWidgetClass,rowCol,
 													XmNsubMenuId,				symMenu,
 													XmNlabelString,			string,
@@ -452,7 +452,7 @@ int UISymbolEdit (DBObjTable *symbols,int symbolType)
 		case UISymbolLine:		XtManageChild (XtNameToWidget (dShell,UISymLineMenuName));		break;
 		case UISymbolShade:		XtManageChild (XtNameToWidget (dShell,UISymShadeMenuName));		break;
 		}
-		
+
 	if ((editSymbols = (UISymbol **) calloc (symbols->ItemNum (),sizeof (UISymbol *))) == NULL)
 		{
 		perror ("Memory Allocation Error in: UISymbolEdit (DBObjLIST *,int)");
@@ -464,7 +464,7 @@ int UISymbolEdit (DBObjTable *symbols,int symbolType)
 		editSymbols [symNum] = new UISymbol (symRecord,	symbols->Field (DBrNSymbolID),
 																		symbols->Field (DBrNForeground),
 																		symbols->Field (DBrNBackground),
-																		symbols->Field (DBrNStyle)); 
+																		symbols->Field (DBrNStyle));
 		string = XmStringCreate (editSymbols [symNum]->Name (),UICharSetNormal);
 		XmListAddItem (XtNameToWidget (dShell,UISymListName),string,++symNum);
 		XmStringFree (string);
@@ -483,9 +483,9 @@ int UISymbolEdit (DBObjTable *symbols,int symbolType)
 				if (editSymbols [symNum]->IsChanged ()) break;
 			XtSetSensitive (UIDialogFormGetOkButton (dShell),symNum == symbols->ItemNum () ? false : true);
 			}
-		
+
 	UIDialogFormPopdown (dShell);
-	
+
 	switch (symbolType)
 		{
 		case UISymbolMarker:		XtUnmanageChild (XtNameToWidget (dShell,UISymMarkerMenuName));	break;

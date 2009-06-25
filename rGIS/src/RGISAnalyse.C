@@ -58,7 +58,7 @@ extern void RGISAnNetworkCellSampleGridCBK (Widget, RGISWorkspace *,XmAnyCallbac
 static UIMenuItem _RGISAnalyseNetGridSampleMenu [] = {
 	UIMenuItem ((char *) "Single Layer",RGISNetworkGroup,		RGISLinkedGridGroup,				(UIMenuCBK) RGISAnalyseSingleSampleGridCBK,	(char *) "RGIS22MenuSystem.html#AnalyzeNet_GridSampling"),
 	UIMenuItem ((char *) "Multi Layer",	RGISNetworkGroup,		RGISLinkedGridGroup,				(UIMenuCBK) RGISAnalyseMultiSampleGridCBK,	(char *) "RGIS22MenuSystem.html#AnalyzeNet_GridSampling"),
-	UIMenuItem ((char *) "Cell",		RGISNetworkGroup,		RGISLinkedGridGroup,				(UIMenuCBK) RGISAnNetworkCellSampleGridCBK,	(char *) "RGIS22MenuSystem.html#AnalyzeNet_GridSampling"),
+	UIMenuItem ((char *) "Cell",			RGISNetworkGroup,		RGISLinkedGridGroup,				(UIMenuCBK) RGISAnNetworkCellSampleGridCBK,	(char *) "RGIS22MenuSystem.html#AnalyzeNet_GridSampling"),
 	UIMenuItem ()};
 
 
@@ -70,7 +70,7 @@ extern void RGISAnNetworkBasinDistribCBK (Widget,RGISWorkspace *,XmAnyCallbackSt
 
 static UIMenuItem _RGISAnalyseNetStatMenu [] = {
 	UIMenuItem ((char *) "Basin",			RGISNetworkGroup,		RGISLinkedContinuousGroup, 	(UIMenuCBK) RGISAnNetworkBasinStatsCBK,		(char *) "RGIS22MenuSystem.html#AnalyzeNet_Stats"),
-	UIMenuItem ((char *) "Headwater",	RGISNetworkGroup,		RGISLinkedContinuousGroup, 	(UIMenuCBK) RGISAnNetworkHeadStatsCBK ,			(char *) "RGIS22MenuSystem.html#AnalyzeNet_Stats"),
+	UIMenuItem ((char *) "Headwater",	RGISNetworkGroup,		RGISLinkedContinuousGroup, 	(UIMenuCBK) RGISAnNetworkHeadStatsCBK ,		(char *) "RGIS22MenuSystem.html#AnalyzeNet_Stats"),
 	UIMenuItem ((char *) "Divide",		RGISNetworkGroup,		RGISLinkedContinuousGroup, 	(UIMenuCBK) RGISAnNetworkDivideStatsCBK ,		(char *) "RGIS22MenuSystem.html#AnalyzeNet_Stats"),
 	UIMenuItem ((char *) "Histogram",	RGISNetworkGroup,		RGISLinkedContinuousGroup, 	(UIMenuCBK) RGISAnNetworkHistogramCBK,			(char *) "RGIS22MenuSystem.html#AnalyzeNet_Stats"),
 	UIMenuItem ((char *) "Category Distribution",RGISNetworkGroup,RGISLinkedDiscreteGroup, (UIMenuCBK) RGISAnNetworkBasinDistribCBK,		(char *) "RGIS22MenuSystem.html#AnalyzeNet_Stats"),
@@ -110,8 +110,8 @@ extern void RGISAnGContDivideCBK (Widget,RGISWorkspace *,XmAnyCallbackStruct *);
 
 static UIMenuItem _RGISAnalyseGContOperMenu [] = {
 	UIMenuItem ((char *) "Add",			RGISContinuousGroup,	RGISLinkedContinuousGroup, (UIMenuCBK) RGISAnGContAddCBK,			(char *) "RGIS22MenuSystem.html#AnalyzeCGrid_Operations_Add"),
-	UIMenuItem ((char *) "Subtract",	RGISContinuousGroup,	RGISLinkedContinuousGroup, (UIMenuCBK) RGISAnGContSubtractCBK,		(char *) "RGIS22MenuSystem.html#AnalyzeCGrid_Operations_Subtract"),
-	UIMenuItem ((char *) "Multiply",	RGISContinuousGroup,	RGISLinkedContinuousGroup, (UIMenuCBK) RGISAnGContMultiplyCBK,		(char *) "RGIS22MenuSystem.html#AnalyzeCGrid_Operations_Multiply"),
+	UIMenuItem ((char *) "Subtract",		RGISContinuousGroup,	RGISLinkedContinuousGroup, (UIMenuCBK) RGISAnGContSubtractCBK,		(char *) "RGIS22MenuSystem.html#AnalyzeCGrid_Operations_Subtract"),
+	UIMenuItem ((char *) "Multiply",		RGISContinuousGroup,	RGISLinkedContinuousGroup, (UIMenuCBK) RGISAnGContMultiplyCBK,		(char *) "RGIS22MenuSystem.html#AnalyzeCGrid_Operations_Multiply"),
 	UIMenuItem ((char *) "Divide",		RGISContinuousGroup,	RGISLinkedContinuousGroup, (UIMenuCBK) RGISAnGContDivideCBK,		(char *) "RGIS22MenuSystem.html#AnalyzeCGrid_Operations_Divide"),
 	UIMenuItem ()};
 

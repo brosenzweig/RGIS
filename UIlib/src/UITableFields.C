@@ -49,7 +49,7 @@ class UITableFieldSubForm : public DBObject
 		void Display ();
 		void  Type (DBInt type)
 			{
-			if (NewFieldPTR->Type () == type) return; 
+			if (NewFieldPTR->Type () == type) return;
 			NewFieldPTR->Type (type);
 			if (OldFieldPTR->Type () == type) { NewFieldPTR->Format (OldFieldPTR->Format ()); }
 			}
@@ -177,7 +177,7 @@ static void _UITableFieldSubFormSizeButtonCBK (Widget widget,DBInt size, XmAnyCa
 
 	{
 	UITableFieldSubForm *subForm;
-	
+
 	callData = callData;
 	XtVaGetValues (widget, XmNuserData, &subForm, NULL);
 	subForm->Size (size);
@@ -224,39 +224,39 @@ UITableFieldSubForm::UITableFieldSubForm (DBObjTableField *field)
 	}
 
 UITableFieldSubForm::UITableFieldSubForm (Widget parent,DBObjTableField *field)
-	
+
 	{
 	int i;
 	XmString string;
-			
+
 	OldFieldPTR = NewFieldPTR = field;
 	NewFieldPTR = new DBObjTableField (*field);
 	SubFormWGT = XtVaCreateManagedWidget ("UITableFieldSubForm",xmFormWidgetClass,parent,
 								XmNshadowThickness,		1,
 								NULL);
-	SizeMenuWGT = XmCreatePulldownMenu (SubFormWGT,"UITableFieldSubFormSizeMenu",NULL,0);
-	string = XmStringCreate ("Byte",UICharSetNormal);
+	SizeMenuWGT = XmCreatePulldownMenu (SubFormWGT,(char *) "UITableFieldSubFormSizeMenu",NULL,0);
+	string = XmStringCreate ((char *) "Byte",UICharSetNormal);
 	SizeButtonWGTs [0] = XtVaCreateManagedWidget ("UITableFieldSubFormSizeByteButton",xmPushButtonGadgetClass,SizeMenuWGT,
 								XmNlabelString,			string,
 								XmNuserData,				this,
 								NULL);
 	XmStringFree (string);
 	XtAddCallback (SizeButtonWGTs [0],XmNactivateCallback,(XtCallbackProc) _UITableFieldSubFormSizeButtonCBK,(XtPointer) sizeof (DBByte));
-	string = XmStringCreate ("Short",UICharSetNormal);
+	string = XmStringCreate ((char *) "Short",UICharSetNormal);
 	SizeButtonWGTs [1] = XtVaCreateManagedWidget ("UITableFieldSubFormSizeShortButton",xmPushButtonGadgetClass,SizeMenuWGT,
 								XmNlabelString,			string,
 								XmNuserData,				this,
 								NULL);
 	XmStringFree (string);
 	XtAddCallback (SizeButtonWGTs [1],XmNactivateCallback,(XtCallbackProc) _UITableFieldSubFormSizeButtonCBK,(XtPointer) sizeof (DBShort));
-	string = XmStringCreate ("Long",UICharSetNormal);
+	string = XmStringCreate ((char *) "Long",UICharSetNormal);
 	SizeButtonWGTs [2] = XtVaCreateManagedWidget ("UITableFieldSubFormSizeLongButton",xmPushButtonGadgetClass,SizeMenuWGT,
 								XmNlabelString,			string,
 								XmNuserData,				this,
 								NULL);
 	XmStringFree (string);
 	XtAddCallback (SizeButtonWGTs [2],XmNactivateCallback,(XtCallbackProc) _UITableFieldSubFormSizeButtonCBK,(XtPointer) sizeof (DBInt));
-	string = XmStringCreate ("Size:",UICharSetBold);
+	string = XmStringCreate ((char *) "Size:",UICharSetBold);
 	SizeMenuWGT = XtVaCreateManagedWidget ("UITableFieldSubFormSizeOptionMenu",xmRowColumnWidgetClass,SubFormWGT,
 								XmNtopAttachment,			XmATTACH_FORM,
 								XmNtopOffset,				15,
@@ -268,36 +268,36 @@ UITableFieldSubForm::UITableFieldSubForm (Widget parent,DBObjTableField *field)
 								XmNtraversalOn,			false,
 								NULL);
 	XmStringFree (string);
-	TypeMenuWGT = XmCreatePulldownMenu (SubFormWGT,"UITableFieldSubFormTypeMenu",NULL,0);
-	string = XmStringCreate ("Character",UICharSetNormal);
+	TypeMenuWGT = XmCreatePulldownMenu (SubFormWGT,(char *) "UITableFieldSubFormTypeMenu",NULL,0);
+	string = XmStringCreate ((char *) "Character",UICharSetNormal);
 	TypeButtonWGTs [0] = XtVaCreateManagedWidget ("UITableFieldSubFormCharButton",xmPushButtonGadgetClass,TypeMenuWGT,
 								XmNlabelString,			string,
 								XmNuserData,				this,
 								NULL);
 	XmStringFree (string);
 	XtAddCallback (TypeButtonWGTs [0],XmNactivateCallback,(XtCallbackProc) _UITableFieldSubFormTypeButtonCBK,(XtPointer) DBTableFieldString);
-	string = XmStringCreate ("Integer",UICharSetNormal);
+	string = XmStringCreate ((char *) "Integer",UICharSetNormal);
 	TypeButtonWGTs [1] = XtVaCreateManagedWidget ("UITableFieldSubFormIntButton",xmPushButtonGadgetClass,TypeMenuWGT,
 								XmNlabelString,			string,
 								XmNuserData,				this,
 								NULL);
 	XmStringFree (string);
 	XtAddCallback (TypeButtonWGTs [1],XmNactivateCallback,(XtCallbackProc) _UITableFieldSubFormTypeButtonCBK,(XtPointer) DBTableFieldInt);
-	string = XmStringCreate ("Float",UICharSetNormal);
+	string = XmStringCreate ((char *) "Float",UICharSetNormal);
 	TypeButtonWGTs [2] = XtVaCreateManagedWidget ("UITableFieldSubFormFloatButton",xmPushButtonGadgetClass,TypeMenuWGT,
 								XmNlabelString,			string,
 								XmNuserData,				this,
 								NULL);
 	XmStringFree (string);
 	XtAddCallback (TypeButtonWGTs [2],XmNactivateCallback,(XtCallbackProc) _UITableFieldSubFormTypeButtonCBK,(XtPointer) DBTableFieldFloat);
-	string = XmStringCreate ("Date",UICharSetNormal);
+	string = XmStringCreate ((char *) "Date",UICharSetNormal);
 	TypeButtonWGTs [3] = XtVaCreateManagedWidget ("UITableFieldSubFormDateButton",xmPushButtonGadgetClass,TypeMenuWGT,
 								XmNlabelString,			string,
 								XmNuserData,				this,
 								NULL);
 	XmStringFree (string);
 	XtAddCallback (TypeButtonWGTs [3],XmNactivateCallback,(XtCallbackProc) _UITableFieldSubFormTypeButtonCBK,(XtPointer) DBTableFieldDate);
-	string = XmStringCreate ("Type:",UICharSetBold);
+	string = XmStringCreate ((char *) "Type:",UICharSetBold);
 	TypeMenuWGT = XtVaCreateManagedWidget ("UITableFieldEditTypeOptionMenu",xmRowColumnWidgetClass,SubFormWGT,
 								XmNtopAttachment,			XmATTACH_OPPOSITE_WIDGET,
 								XmNtopWidget,				SizeMenuWGT,
@@ -324,7 +324,7 @@ UITableFieldSubForm::UITableFieldSubForm (Widget parent,DBObjTableField *field)
 								XmNcolumns,					DBStringLength,
 								XmNtraversalOn,			true,
 								NULL);
-	string = XmStringCreate ("Name:",UICharSetBold);
+	string = XmStringCreate ((char *) "Name:",UICharSetBold);
 	XtAddCallback (NameWGT,XmNvalueChangedCallback,(XtCallbackProc) _UITableFieldSubFormNameCBK,(XtPointer) NewFieldPTR);
 	XtVaCreateManagedWidget ("UITableFieldSubFormNameLabel",xmLabelGadgetClass,SubFormWGT,
 								XmNtopAttachment, 		XmATTACH_OPPOSITE_WIDGET,
@@ -340,7 +340,7 @@ UITableFieldSubForm::UITableFieldSubForm (Widget parent,DBObjTableField *field)
 								NULL);
 	XmStringFree (string);
 
-	string = XmStringCreate ("Width:",UICharSetBold);
+	string = XmStringCreate ((char *) "Width:",UICharSetBold);
 	XtVaCreateManagedWidget ("UITableFieldSubFormWidthLabel",xmLabelGadgetClass,SubFormWGT,
 								XmNtopAttachment,			XmATTACH_WIDGET,
 								XmNtopWidget,				NameWGT,
@@ -372,7 +372,7 @@ UITableFieldSubForm::UITableFieldSubForm (Widget parent,DBObjTableField *field)
 								XmNbottomAttachment,		XmATTACH_FORM,
 								XmNbottomOffset,			10,
 								NULL);
-	string = XmStringCreate ("data",UICharSetNormal);
+	string = XmStringCreate ((char *) "data",UICharSetNormal);
 	WidthLWGT = XtVaCreateManagedWidget ("UITableFieldSubFormWidthLabelF",xmLabelWidgetClass,WidthFWGT,
 								XmNmarginWidth,			5,
 								XmNalignment,				XmALIGNMENT_END,
@@ -380,7 +380,7 @@ UITableFieldSubForm::UITableFieldSubForm (Widget parent,DBObjTableField *field)
 								XmNrecomputeSize,			false,
 								NULL);
 	XmStringFree (string);
-	string = XmStringCreate ("Decimals:",UICharSetBold);
+	string = XmStringCreate ((char *) "Decimals:",UICharSetBold);
 	DecimalsLWGT = XtVaCreateManagedWidget ("UITableFieldSubFormDecimalsLabel",xmLabelWidgetClass,SubFormWGT,
 								XmNleftAttachment,		XmATTACH_WIDGET,
 								XmNleftWidget,				WidthFWGT,
@@ -404,7 +404,7 @@ UITableFieldSubForm::UITableFieldSubForm (Widget parent,DBObjTableField *field)
 								XmNtraversalOn,			false,
 								NULL);
 	XtAddCallback (DecimalsSWGT,XmNdragCallback,(XtCallbackProc) _UITableFieldSubFormDecimalScaleCBK,(XtPointer) NewFieldPTR);
-	string = XmStringCreate ("Idle",UICharSetBold);
+	string = XmStringCreate ((char *) "Idle",UICharSetBold);
 	IdleWGT = XtVaCreateManagedWidget ("UITableRedefineFieldNameFieldToggle",xmToggleButtonGadgetClass,SubFormWGT,
 								XmNleftAttachment,		XmATTACH_WIDGET,
 								XmNleftWidget,				NameWGT,
@@ -429,7 +429,7 @@ UITableFieldSubForm::UITableFieldSubForm (Widget parent,DBObjTableField *field)
 								XmNtraversalOn,			true,
 								NULL);
 	XtAddCallback (NodataFWGT,XmNlosingFocusCallback,(XtCallbackProc) _UITableFieldSubFormNodataCBK,(XtPointer) this);
-	string = XmStringCreate ("Nodata:",UICharSetBold);
+	string = XmStringCreate ((char *) "Nodata:",UICharSetBold);
 	NodataLWGT = XtVaCreateWidget ("UITableFieldSubFormWidthLabel",xmLabelWidgetClass,SubFormWGT,
 								XmNtopAttachment,			XmATTACH_OPPOSITE_WIDGET,
 								XmNtopWidget,				NodataFWGT,
@@ -475,7 +475,7 @@ UITableFieldSubForm::UITableFieldSubForm (Widget parent,DBObjTableField *field)
 	}
 
 void UITableFieldSubForm::Display ()
-	
+
 	{
 	int minimum, currentMin, maximum, currentMax, value;
 	char numberString [DBStringLength];
@@ -592,16 +592,16 @@ DBInt UITableRedefineFields (DBObjTable *table)
 	DBObjectLIST<DBObjTableField> *fields = table->Fields ();
 	UITableFieldSubForm *fieldSubForm;
 	DBObjectLIST<UITableFieldSubForm> *fieldSubFormList = new DBObjectLIST<UITableFieldSubForm> ("FieldubFormList");
-	XmString string; 
+	XmString string;
 	Widget dShell, mainForm, label, scrolledW, scrollBar, rowCol;
 
 	for (field = fields->First ();field != (DBObjTableField *) NULL;field = fields->Next ())
 		if (DBTableFieldIsVisible (field)) visibleCount++;
 
-	dShell = UIDialogForm ("Redefine Table");
+	dShell = UIDialogForm ((char *) "Redefine Table");
 	mainForm = UIDialogFormGetMainForm (dShell);
 
-	string = XmStringCreate ("Fields:",UICharSetBold);
+	string = XmStringCreate ((char *) "Fields:",UICharSetBold);
 	label = XtVaCreateManagedWidget ("UITableRedefineFieldsLabel",xmLabelGadgetClass,mainForm,
 								XmNtopAttachment,			XmATTACH_FORM,
 								XmNtopOffset,				10,

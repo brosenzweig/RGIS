@@ -22,18 +22,18 @@ void RGISEditLineDirectionCBK (Widget widget, RGISWorkspace *workspace,XmAnyCall
 	DBObjData *lineData = dataset->Data ();
 	DBObjData *gridData = lineData->LinkedData ();
 	DBVLineIO *lineIO = new DBVLineIO (lineData);
-	DBGridIO *gridIO = new DBGridIO (gridData);	
-	
+	DBGridIO *gridIO = new DBGridIO (gridData);
+
 	widget = widget; workspace = workspace; callData = callData;
-	UIPauseDialogOpen ("Changing Directionality");
+	UIPauseDialogOpen ((char *) "Changing Directionality");
 	for (lineRec = lineIO->FirstItem ();lineRec != (DBObjRecord *) NULL;lineRec = lineIO->NextItem ())
 		{
-		DBPause (lineRec->RowID () * 100 / lineIO->ItemNum ()); 
+		DBPause (lineRec->RowID () * 100 / lineIO->ItemNum ());
 		coord = lineIO->FromCoord (lineRec);
 		if (gridIO->Value (coord,&elev0) == false) continue;
 		coord = lineIO->ToCoord (lineRec);
 		if (gridIO->Value (coord,&elev1) == false) continue;
-		if (elev0 < elev1) lineIO->Flip (lineRec); 
+		if (elev0 < elev1) lineIO->Flip (lineRec);
 		}
 	UIPauseDialogClose ();
 	}

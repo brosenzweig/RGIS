@@ -27,28 +27,28 @@ static void _RGISARCInfoImportFileSelectCBK (Widget widget,Widget coverText,XmAn
 	static Widget fileSelect = NULL;
 	char *infoFile;
 	widget = widget; callData = callData;
-	
+
 	if (fileSelect == NULL)
-		fileSelect = UIFileSelectionCreate ("ARC/Info Coverage",NULL,"*",XmFILE_DIRECTORY);
-	
+		fileSelect = UIFileSelectionCreate ((char *) "ARC/Info Coverage",NULL,(char *) "*",XmFILE_DIRECTORY);
+
 	if ((infoFile = UIFileSelection (fileSelect,true)) != NULL)
 		{
-		if (_RGISARCTempTable  != (DBObjTable *) NULL) delete _RGISARCTempTable; 
-		_RGISARCTempTable = new DBObjTable ("ARCImp Temporary Table");
+		if (_RGISARCTempTable  != (DBObjTable *) NULL) delete _RGISARCTempTable;
+		_RGISARCTempTable = new DBObjTable ((char *) "ARCImp Temporary Table");
 		if (DBInfoGetFields (_RGISARCTempTable,DBInfoFileName (infoFile,_RGISARCDataType)) == DBFault)
-			{ UIMessage ("Missing Attribute Table"); delete _RGISARCTempTable; _RGISARCTempTable = ( DBObjTable *) NULL; return; }
+			{ UIMessage ((char *) "Missing Attribute Table"); delete _RGISARCTempTable; _RGISARCTempTable = ( DBObjTable *) NULL; return; }
 		XmTextFieldSetString (coverText,infoFile);
 		}
 	else
 		{
-		XmTextFieldSetString (coverText,"");
+		XmTextFieldSetString (coverText,(char *) "");
 		if (_RGISARCTempTable != NULL) { delete _RGISARCTempTable; _RGISARCTempTable = NULL; }
 		}
 	}
 
 static void _RGISARCInfoImportClearFieldCBK (Widget widget,Widget text, XmAnyCallbackStruct *callData)
 
-	{ callData = callData; if (strlen (XmTextFieldGetString (widget)) == 0) XmTextFieldSetString (text,""); }	
+	{ callData = callData; if (strlen (XmTextFieldGetString (widget)) == 0) XmTextFieldSetString (text,(char *) ""); }
 
 static void _RGISARCInfoImportFieldSelectCBK (Widget widget,Widget text,XmAnyCallbackStruct *callData)
 
@@ -58,7 +58,7 @@ static void _RGISARCInfoImportFieldSelectCBK (Widget widget,Widget text,XmAnyCal
 	int (*condFunc) (const DBObject *);
 
 	callData = callData;
-	if (select == NULL) select = UISelectionCreate ("ARC/Info Fields");
+	if (select == NULL) select = UISelectionCreate ((char *) "ARC/Info Fields");
 	XtVaGetValues (widget,XmNuserData, &condFunc, NULL);
 	if ((field = UISelectObject (select,(DBObjectLIST<DBObject> *) (_RGISARCTempTable->Fields ()),condFunc)) != NULL)
 		XmTextFieldSetString (text,field);
@@ -72,7 +72,7 @@ int _RGISARCInfoImport (DBObjData *vecData)
 	static int import;
 	static Widget dShell = NULL;
 	static Widget coverTextF, nameTextF, nameButton, symbolTextF, symbolButton;
-	
+
 	_RGISARCDataType = vecData->Type ();
 
 	if (dShell == NULL)
@@ -80,9 +80,9 @@ int _RGISARCInfoImport (DBObjData *vecData)
 		Widget mainForm, label, coverButton;
 		XmString string;
 
-		dShell = UIDialogForm ("ARC/Info Coverage Import");
+		dShell = UIDialogForm ((char *) "ARC/Info Coverage Import");
 		mainForm = UIDialogFormGetMainForm (dShell);
-		string = XmStringCreate ("Coverage:",UICharSetBold);
+		string = XmStringCreate ((char *) "Coverage:",UICharSetBold);
 		label = XtVaCreateManagedWidget ("RGISARCInfoImportFormCoverLabel",xmLabelWidgetClass,mainForm,
 								XmNtopAttachment,			XmATTACH_FORM,
 								XmNtopOffset,				10,
@@ -100,7 +100,7 @@ int _RGISARCInfoImport (DBObjData *vecData)
 								XmNmaxLength,				64,
 								XmNcolumns,					64,
 								NULL);
-		string = XmStringCreate ("Select",UICharSetBold);
+		string = XmStringCreate ((char *) "Select",UICharSetBold);
 		coverButton = XtVaCreateManagedWidget ("RGISARCInfoImportFormCoverLabel",xmPushButtonWidgetClass,mainForm,
 								XmNtopAttachment,			XmATTACH_FORM,
 								XmNtopOffset,				10,
@@ -114,7 +114,7 @@ int _RGISARCInfoImport (DBObjData *vecData)
 								NULL);
 		XtAddCallback (coverButton,XmNactivateCallback,(XtCallbackProc) _RGISARCInfoImportFileSelectCBK,coverTextF);
 		XmStringFree (string);
-		string = XmStringCreate ("Name Field:",UICharSetBold);
+		string = XmStringCreate ((char *) "Name Field:",UICharSetBold);
 		label = XtVaCreateManagedWidget ("RGISARCInfoImportFormSymbolIDLabel",xmLabelWidgetClass,mainForm,
 								XmNtopAttachment,			XmATTACH_WIDGET,
 								XmNtopWidget,				coverTextF,
@@ -136,7 +136,7 @@ int _RGISARCInfoImport (DBObjData *vecData)
 								XmNmaxLength,				DBStringLength,
 								XmNcolumns,					16,
 								NULL);
-		string = XmStringCreate ("Select",UICharSetBold);
+		string = XmStringCreate ((char *) "Select",UICharSetBold);
 		nameButton = XtVaCreateManagedWidget ("RGISARCInfoImportFormSymbolIDButton",xmPushButtonWidgetClass,mainForm,
 								XmNtopAttachment,			XmATTACH_WIDGET,
 								XmNtopWidget,				coverTextF,
@@ -152,7 +152,7 @@ int _RGISARCInfoImport (DBObjData *vecData)
 		XtAddCallback (coverTextF,XmNvalueChangedCallback,(XtCallbackProc) _RGISARCInfoImportClearFieldCBK,nameTextF);
 		XmStringFree (string);
 		XtSetSensitive (nameButton,False);
-		string = XmStringCreate ("Select",UICharSetBold);
+		string = XmStringCreate ((char *) "Select",UICharSetBold);
 		symbolButton = XtVaCreateManagedWidget ("RGISARCInfoImportFormSymbolNameButton",xmPushButtonWidgetClass,mainForm,
 								XmNtopAttachment,			XmATTACH_WIDGET,
 								XmNtopWidget,				coverTextF,
@@ -179,7 +179,7 @@ int _RGISARCInfoImport (DBObjData *vecData)
 								NULL);
 		XtAddCallback (symbolButton,XmNactivateCallback,(XtCallbackProc) _RGISARCInfoImportFieldSelectCBK,symbolTextF);
 		XtAddCallback (coverTextF,XmNvalueChangedCallback,(XtCallbackProc) _RGISARCInfoImportClearFieldCBK,symbolTextF);
-		string = XmStringCreate ("Symbol Field:",UICharSetBold);
+		string = XmStringCreate ((char *) "Symbol Field:",UICharSetBold);
 		label = XtVaCreateManagedWidget ("RGISARCInfoImportFormSymbolNameLabel",xmLabelWidgetClass,mainForm,
 								XmNtopAttachment,			XmATTACH_WIDGET,
 								XmNtopWidget,				coverTextF,
@@ -211,7 +211,7 @@ int _RGISARCInfoImport (DBObjData *vecData)
 		infoFile = XmTextFieldGetString (coverTextF);
 		nameField = XmTextFieldGetString (nameTextF);
 		symbolField = XmTextFieldGetString (symbolTextF);
-		UIPauseDialogOpen ("Loading ARC/Info Coverage");
+		UIPauseDialogOpen ((char *) "Loading ARC/Info Coverage");
 		ret = DBImportARCVector (vecData, infoFile,
 						 strlen (nameField) > 0   ? nameField 	 : (char *) NULL,
 						 strlen (symbolField) > 0 ? symbolField : (char *) NULL);

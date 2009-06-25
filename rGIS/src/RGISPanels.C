@@ -39,22 +39,22 @@ static void _RGISPanelFlagsToggleCBK (Widget widget,void *Flags,XmToggleButtonCa
 
 	{
 	DBObjData *data;
-	
+
 	XtVaGetValues (widget,XmNuserData, &data, NULL);
 	data->Flags ((DBUnsigned) ((char *) Flags - (char *) NULL),callData->set ? DBSet : DBClear);
 	}
-	
+
 static DBUnsigned _RGISVectorControlCodes [] = { DBDataFlagDispModeVecAnnotNone, DBDataFlagDispModeVecAnnotate, DBDataFlagDispModeVecAnnotSelect };
 
 RGISVecPanel::RGISVecPanel (Widget parent, Widget leftWidget) : RGISPanel (parent,leftWidget)
 
 	{
 	int toggle;
-	char *toggleNames [] = { "None", "Selected", "All" };
+	char *toggleNames [] = { (char *) "None", (char *) "Selected", (char *) "All" };
 	XmString string;
 	Widget label, toggleB;
 
-	string = XmStringCreate ("Annotation:",UICharSetBold);
+	string = XmStringCreate ((char *) "Annotation:",UICharSetBold);
 	label = XtVaCreateManagedWidget ("RGISVecPanelVerticalLabel",xmLabelWidgetClass,Form (),
 											XmNtopAttachment,			XmATTACH_FORM,
 											XmNtopOffset,				25,
@@ -93,7 +93,7 @@ RGISVecPanel::RGISVecPanel (Widget parent, Widget leftWidget) : RGISPanel (paren
 		XtAddCallback (toggleB,XmNvalueChangedCallback,(XtCallbackProc) _RGISPanelFlagsToggleCBK,(void *) _RGISVectorControlCodes [toggle]);
 		}
 
-	string = XmStringCreate ("Display",UICharSetNormal);
+	string = XmStringCreate ((char *) "Display",UICharSetNormal);
 	ActiveToggleWGT = XtVaCreateManagedWidget ("RGISVecPanelActiveToggleWGT",xmToggleButtonGadgetClass,Form (),
 											XmNleftAttachment,		XmATTACH_OPPOSITE_WIDGET,
 											XmNleftWidget,				RowColumnWGT,
@@ -107,7 +107,7 @@ RGISVecPanel::RGISVecPanel (Widget parent, Widget leftWidget) : RGISPanel (paren
 											NULL);
 	XmStringFree (string);
 	XtAddCallback (ActiveToggleWGT,XmNvalueChangedCallback,(XtCallbackProc) _RGISPanelFlagsToggleCBK,(void *) DBDataFlagHideIdle);
-	string = XmStringCreate ("Idle Items:",UICharSetBold);
+	string = XmStringCreate ((char *) "Idle Items:",UICharSetBold);
 	label = XtVaCreateManagedWidget ("RGISVecPanelVerticalLabel",xmLabelWidgetClass,Form (),
 											XmNtopAttachment,			XmATTACH_OPPOSITE_WIDGET,
 											XmNtopWidget,				ActiveToggleWGT,
@@ -125,7 +125,7 @@ Widget RGISVecPanel::Load (DBObjData *data)
 	{
 	int toggle, toggleNum;
 	WidgetList toggles;
-	
+
 	XtVaGetValues (RowColumnWGT,XmNchildren, &toggles, XmNnumChildren, &toggleNum, NULL);
 	for (toggle = 0;toggle < toggleNum; ++toggle)
 		{
@@ -136,7 +136,7 @@ Widget RGISVecPanel::Load (DBObjData *data)
 	XmToggleButtonGadgetSetState (ActiveToggleWGT,(data->Flags () & DBDataFlagHideIdle) == DBDataFlagHideIdle,False);
 	return (Form ());
 	}
-	
+
 static void _RGISGridLayerListCBK (Widget widget,void *dummy, XmListCallbackStruct *callData)
 
 	{
@@ -160,7 +160,7 @@ RGISGrdPanel::RGISGrdPanel (Widget parent, Widget leftWidget) : RGISPanel (paren
 	Widget label;
 	XmString string;
 
-	string = XmStringCreate ("Layers:",UICharSetBold);
+	string = XmStringCreate ((char *) "Layers:",UICharSetBold);
 	label = XtVaCreateManagedWidget ("RGISGrdPanelLayersLabel",xmLabelWidgetClass,Form (),
 											XmNtopAttachment,			XmATTACH_FORM,
 											XmNtopOffset,				10,
@@ -185,10 +185,10 @@ RGISGrdPanel::RGISGrdPanel (Widget parent, Widget leftWidget) : RGISPanel (paren
 	XtSetArg (wargs [argNum],	XmNshadowThickness,			2);					++argNum;
 	XtSetArg (wargs [argNum],	XmNselectionPolicy,			XmSINGLE_SELECT);	++argNum;
 	XtSetArg (wargs [argNum],	XmNtextColumns,				DBStringLength);	++argNum;
-	XtManageChild (LayerListWGT = XmCreateScrolledList (Form (),"RGISGrdPanelLayerList",wargs,argNum));
+	XtManageChild (LayerListWGT = XmCreateScrolledList (Form (),(char *) "RGISGrdPanelLayerList",wargs,argNum));
 	XtAddCallback (LayerListWGT,XmNsingleSelectionCallback,	(XtCallbackProc) _RGISGridLayerListCBK,(void *) NULL);
 
-	string = XmStringCreate ("Dynamic Shades",UICharSetBold);
+	string = XmStringCreate ((char *) "Dynamic Shades",UICharSetBold);
 	DynamicToggleWGT = XtVaCreateManagedWidget ("RGISGrdPanelDynamicToggleWGT",xmToggleButtonGadgetClass,Form (),
 											XmNtopAttachment,			XmATTACH_WIDGET,
 											XmNtopWidget,				LayerListWGT,
@@ -203,7 +203,7 @@ RGISGrdPanel::RGISGrdPanel (Widget parent, Widget leftWidget) : RGISPanel (paren
 											NULL);
 	XmStringFree (string);
 
-	string = XmStringCreate ("Annotate",UICharSetBold);
+	string = XmStringCreate ((char *) "Annotate",UICharSetBold);
 	AnnotateToggleWGT = XtVaCreateManagedWidget ("RGISNetGrdPanelAnnotToggleWGT",xmToggleButtonGadgetClass,Form (),
 											XmNtopAttachment,			XmATTACH_WIDGET,
 											XmNtopWidget,				LayerListWGT,
@@ -247,7 +247,7 @@ static void _RGISNetPanelColorCBK (Widget widget,void *Flags,XmAnyCallbackStruct
 
 	{
 	DBObjData *data;
-	
+
 	callData = callData;
 	XtVaGetValues (widget,XmNuserData, &data, NULL);
 	data->Flags (DBDataFlagDispModeNetColors,DBClear);
@@ -266,7 +266,7 @@ class RGISNetPanelColor
 			{
 			XmString string;
 			Widget button;
-			
+
 			string = XmStringCreate (NameSTR,UICharSetNormal);
 			button = XtVaCreateManagedWidget ("RGISNetworkInfoColorMenuButton",xmPushButtonGadgetClass,widget,
 														XmNlabelString,			string, NULL);
@@ -277,10 +277,10 @@ class RGISNetPanelColor
 	};
 
 static RGISNetPanelColor _RGISNetPanelColors [] = {
-	RGISNetPanelColor ("Uniform", DBDataFlagDispModeNetColorUniform),
-	RGISNetPanelColor ("Basins",	DBDataFlagDispModeNetColorBasin),
-	RGISNetPanelColor ("Symbol",	DBDataFlagDispModeNetColorSymbol)};
- 
+	RGISNetPanelColor ((char *) "Uniform", DBDataFlagDispModeNetColorUniform),
+	RGISNetPanelColor ((char *) "Basins",	DBDataFlagDispModeNetColorBasin),
+	RGISNetPanelColor ((char *) "Symbol",	DBDataFlagDispModeNetColorSymbol)};
+
 RGISNetPanel::RGISNetPanel (Widget parent, Widget leftWidget) : RGISPanel (parent,leftWidget)
 
 	{
@@ -288,12 +288,12 @@ RGISNetPanel::RGISNetPanel (Widget parent, Widget leftWidget) : RGISPanel (paren
 	Widget rowCol, label;
 	XmString string;
 
-	ColorMenuWGT = XmCreatePulldownMenu (Form (),"RGISNetPanelColorMenu",NULL,0);
+	ColorMenuWGT = XmCreatePulldownMenu (Form (),(char *) "RGISNetPanelColorMenu",NULL,0);
 
 	for (button = 0;button < (int) (sizeof (_RGISNetPanelColors) / sizeof (RGISNetPanelColor)); ++button)
 		_RGISNetPanelColors [button].MakeButton (ColorMenuWGT);
 
-	string = XmStringCreate ("Color Code:",UICharSetBold);
+	string = XmStringCreate ((char *) "Color Code:",UICharSetBold);
 	ColorMenuWGT = XtVaCreateManagedWidget ("RGISNetPanelColorMenu",xmRowColumnWidgetClass,Form (),
 											XmNtopAttachment,			XmATTACH_FORM,
 											XmNtopOffset,				25,
@@ -306,7 +306,7 @@ RGISNetPanel::RGISNetPanel (Widget parent, Widget leftWidget) : RGISPanel (paren
 											NULL);
 	XmStringFree (string);
 
-	string = XmStringCreate ("Stick Symbol:",UICharSetBold);
+	string = XmStringCreate ((char *) "Stick Symbol:",UICharSetBold);
 	label = XtVaCreateManagedWidget ("RGISNetPanelSymbolLabel",xmLabelWidgetClass,Form (),
 											XmNtopAttachment,			XmATTACH_WIDGET,
 											XmNtopWidget,				ColorMenuWGT,
@@ -336,7 +336,7 @@ RGISNetPanel::RGISNetPanel (Widget parent, Widget leftWidget) : RGISPanel (paren
 											XmNradioBehavior,			False,
 											XmNradioAlwaysOne,		False,
 											NULL);
-	string = XmStringCreate ("Direction",UICharSetNormal);
+	string = XmStringCreate ((char *) "Direction",UICharSetNormal);
 	FlowDirToggleWGT = XtVaCreateManagedWidget ("RGISNetPanelFlowDirToggleWGT",xmToggleButtonGadgetClass,rowCol,
 											XmNlabelString,			string,
 											XmNhighlightThickness,	0,
@@ -344,7 +344,7 @@ RGISNetPanel::RGISNetPanel (Widget parent, Widget leftWidget) : RGISPanel (paren
 											NULL);
 	XmStringFree (string);
 	XtAddCallback (FlowDirToggleWGT,XmNvalueChangedCallback,(XtCallbackProc) _RGISPanelFlagsToggleCBK,(void *) DBDataFlagDispModeNetDirection);
-	string = XmStringCreate ("Active Only",UICharSetNormal);
+	string = XmStringCreate ((char *) "Active Only",UICharSetNormal);
 	ActiveToggleWGT = XtVaCreateManagedWidget ("RGISNetPanelActiveToggleWGT",xmToggleButtonGadgetClass,rowCol,
 											XmNlabelString,			string,
 											XmNhighlightThickness,	0,
@@ -372,7 +372,7 @@ Widget RGISNetPanel::Load (DBObjData *data)
 	XtVaSetValues (FlowDirToggleWGT,	XmNuserData, data, NULL);
 	XmToggleButtonGadgetSetState (FlowDirToggleWGT,(data->Flags () & DBDataFlagDispModeNetDirection) == DBDataFlagDispModeNetDirection,False);
 	XtVaSetValues (ActiveToggleWGT,	XmNuserData, data, NULL);
-	XmToggleButtonGadgetSetState (ActiveToggleWGT,(data->Flags () & DBDataFlagHideIdle == DBDataFlagHideIdle),False);
+	XmToggleButtonGadgetSetState (ActiveToggleWGT,((data->Flags () & DBDataFlagHideIdle) == DBDataFlagHideIdle),False);
 	return (Form ());
 	}
 
@@ -401,14 +401,14 @@ static void _RGISGrpPanelNewCBK (Widget widget,RGISGrpPanel *grpPanel,XmAnyCallb
 	DBObjRecord *record;
 
 	widget = widget; callData = callData;
-	if ((groupName = UIGetString ("Group Name",16)) == (char *) NULL) return;
+	if ((groupName = UIGetString ((char *) "Group Name",16)) == (char *) NULL) return;
 	if (groupTable == (DBObjTable *) NULL)
 		{
 		DBObjTable *items  = dbData->Table (DBrNItems);
 		DBObjectLIST<DBObjTable> *tables  = dbData->Tables ();
 
 		DBTableFieldDefinition fieldDefs [] =	{
-					DBTableFieldDefinition (groupName,	DBTableFieldInt,	"%1d",sizeof (DBByte)),
+					DBTableFieldDefinition (groupName,	DBTableFieldInt,(char *) 	"%1d",sizeof (DBByte)),
 					DBTableFieldDefinition () };
 		tables->Add (groupTable = new DBObjTable (DBrNGroups,fieldDefs));
 		grpPanel->Groups (groupTable->Fields ());
@@ -435,7 +435,7 @@ static void _RGISGrpPanelDeleteCBK (Widget widget,RGISGrpPanel *grpPanel,XmAnyCa
 	static Widget fieldSelect = (Widget) NULL;
 
 	widget = widget; callData = callData;
-	if (fieldSelect == (Widget) NULL) fieldSelect = UISelectionCreate ("Group Selection");
+	if (fieldSelect == (Widget) NULL) fieldSelect = UISelectionCreate ((char *) "Group Selection");
 
 	if ((groupTable == (DBObjTable *) NULL) || (group == (DBObjTableField *) NULL)) return;
 	if (groupTable->FieldNum () == 1) grpPanel->Groups ((DBObjectLIST<DBObjTableField> *) NULL);
@@ -535,7 +535,7 @@ RGISGrpPanel::RGISGrpPanel (Widget parent, Widget leftWidget) : RGISPanel (paren
 									XmNbottomOffset,			15,
 									XmNshadowThickness,		0,
 									NULL);
-	string = XmStringCreate ("New",UICharSetBold);
+	string = XmStringCreate ((char *) "New",UICharSetBold);
 	newButton = XtVaCreateManagedWidget ("RGISGrpPanelNewButtonWGT",xmPushButtonGadgetClass,subForm,
 											XmNleftAttachment,		XmATTACH_FORM,
 											XmNrightAttachment,		XmATTACH_POSITION,
@@ -545,7 +545,7 @@ RGISGrpPanel::RGISGrpPanel (Widget parent, Widget leftWidget) : RGISPanel (paren
 											NULL);
 	XmStringFree (string);
 	XtAddCallback (newButton,XmNactivateCallback,(XtCallbackProc) _RGISGrpPanelNewCBK,(void *) this);
-	string = XmStringCreate ("Delete",UICharSetBold);
+	string = XmStringCreate ((char *) "Delete",UICharSetBold);
 	DeleteButtonWGT = XtVaCreateManagedWidget ("RGISGrpPanelLoadButtonWGT",xmPushButtonGadgetClass,subForm,
 											XmNleftAttachment,		XmATTACH_POSITION,
 											XmNleftPosition,			25,
@@ -557,7 +557,7 @@ RGISGrpPanel::RGISGrpPanel (Widget parent, Widget leftWidget) : RGISPanel (paren
 	XtSetSensitive (DeleteButtonWGT,False);
 	XmStringFree (string);
 	XtAddCallback (DeleteButtonWGT,XmNactivateCallback,(XtCallbackProc) _RGISGrpPanelDeleteCBK,(void *) this);
-	string = XmStringCreate ("Load",UICharSetBold);
+	string = XmStringCreate ((char *) "Load",UICharSetBold);
 	LoadButtonWGT = XtVaCreateManagedWidget ("RGISGrpPanelLoadButtonWGT",xmPushButtonGadgetClass,subForm,
 											XmNleftAttachment,		XmATTACH_POSITION,
 											XmNleftPosition,			50,
@@ -569,7 +569,7 @@ RGISGrpPanel::RGISGrpPanel (Widget parent, Widget leftWidget) : RGISPanel (paren
 	XtSetSensitive (LoadButtonWGT,False);
 	XmStringFree (string);
 	XtAddCallback (LoadButtonWGT,XmNactivateCallback,(XtCallbackProc) _RGISGrpPanelLoadCBK,(void *) this);
-	string = XmStringCreate ("Save",UICharSetBold);
+	string = XmStringCreate ((char *) "Save",UICharSetBold);
 	SaveButtonWGT = XtVaCreateManagedWidget ("RGISGrpPanelSaveButtonWGT",xmPushButtonGadgetClass,subForm,
 											XmNleftAttachment,		XmATTACH_POSITION,
 											XmNleftPosition,			75,
@@ -596,7 +596,7 @@ RGISGrpPanel::RGISGrpPanel (Widget parent, Widget leftWidget) : RGISPanel (paren
 	XtSetArg (wargs [argNum],	XmNshadowThickness,			2);					++argNum;
 	XtSetArg (wargs [argNum],	XmNselectionPolicy,			XmSINGLE_SELECT);	++argNum;
 	XtSetArg (wargs [argNum],	XmNtextColumns,				DBStringLength);	++argNum;
-	XtManageChild (GroupListWGT = XmCreateScrolledList (Form (),"RGISGrpPanelList",wargs,argNum));
+	XtManageChild (GroupListWGT = XmCreateScrolledList (Form (),(char *) "RGISGrpPanelList",wargs,argNum));
 	XtAddCallback (GroupListWGT,XmNsingleSelectionCallback,	(XtCallbackProc) _RGISGridGroupListCBK,(void *) this);
 	GroupLIST = (DBObjectLIST<DBObjTableField> *) NULL;
 	}
@@ -610,7 +610,7 @@ Widget RGISGrpPanel::Load (DBObjData *data)
 	if (groupTable != (DBObjTable *) NULL)
 		{
 		DBObjTableField *group;
-		
+
 		GroupLIST = groupTable->Fields ();
 		for (group = GroupLIST->First ();group != (DBObjTableField *) NULL;group = GroupLIST->Next ())
 			Add (group);

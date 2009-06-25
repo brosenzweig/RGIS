@@ -80,7 +80,7 @@ static void _UITableFieldConditionCBK (Widget widget,DBInt value,XmAnyCallbackSt
 
 	{
 	DBInt *cond;
-	
+
 	XtVaGetValues (widget,XmNuserData, &cond,NULL);
 	*cond = value;
 	}
@@ -109,61 +109,61 @@ static void _UITableFieldSelectCBK (Widget widget,DBInt select,XmAnyCallbackStru
 		{
 		Widget mainForm, toggleButton;
 
-		dShell = UIDialogForm ("Select Records");
+		dShell = UIDialogForm ((char *) "Select Records");
 		mainForm = UIDialogFormGetMainForm (dShell);
 		XtVaSetValues (mainForm,XmNuserData, uiTable, NULL);
 
-		condMenu = XmCreatePulldownMenu (mainForm,"UITableSelectCondMenu",NULL,0);
-		string = XmStringCreate (">",UICharSetNormal);
+		condMenu = XmCreatePulldownMenu (mainForm,(char *) "UITableSelectCondMenu",NULL,0);
+		string = XmStringCreate ((char *) ">",UICharSetNormal);
 		button = XtVaCreateManagedWidget ("UITableSelectCondButton",xmPushButtonGadgetClass,condMenu,
 								XmNlabelString,	string,
 								XmNuserData,		&cond,
 								NULL);
 		XtAddCallback (button,XmNactivateCallback,(XtCallbackProc) _UITableFieldConditionCBK,(XtPointer) cond++);
 		XmStringFree (string);
-		string = XmStringCreate (">=",UICharSetNormal);
+		string = XmStringCreate ((char *) ">=",UICharSetNormal);
 		button = XtVaCreateManagedWidget ("UITableSelectCondButton",xmPushButtonGadgetClass,condMenu,
 								XmNlabelString,	string,
 								XmNuserData,		&cond,
 								NULL);
 		XtAddCallback (button,XmNactivateCallback,(XtCallbackProc) _UITableFieldConditionCBK,(XtPointer) cond++);
 		XmStringFree (string);
-		string = XmStringCreate ("==",UICharSetNormal);
+		string = XmStringCreate ((char *) "==",UICharSetNormal);
 		button = XtVaCreateManagedWidget ("UITableSelectCondButton",xmPushButtonGadgetClass,condMenu,
 								XmNlabelString,	string,
 								XmNuserData,		&cond,
 								NULL);
 		XtAddCallback (button,XmNactivateCallback,(XtCallbackProc) _UITableFieldConditionCBK,(XtPointer) cond++);
 		XmStringFree (string);
-		string = XmStringCreate ("!=",UICharSetNormal);
+		string = XmStringCreate ((char *) "!=",UICharSetNormal);
 		button = XtVaCreateManagedWidget ("UITableSelectCondButton",xmPushButtonGadgetClass,condMenu,
 								XmNlabelString,	string,
 								XmNuserData,		&cond,
 								NULL);
 		XtAddCallback (button,XmNactivateCallback,(XtCallbackProc) _UITableFieldConditionCBK,(XtPointer) cond);
 		XmStringFree (string);
-		string = XmStringCreate ("<>",UICharSetNormal);
+		string = XmStringCreate ((char *) "<>",UICharSetNormal);
 		button = XtVaCreateManagedWidget ("UITableSelectCondButton",xmPushButtonGadgetClass,condMenu,
 								XmNlabelString,	string,
 								XmNuserData,		&cond,
 								NULL);
 		XtAddCallback (button,XmNactivateCallback,(XtCallbackProc) _UITableFieldConditionCBK,(XtPointer) cond++);
 		XmStringFree (string);
-		string = XmStringCreate ("<=",UICharSetNormal);
+		string = XmStringCreate ((char *) "<=",UICharSetNormal);
 		button = XtVaCreateManagedWidget ("UITableSelectCondButton",xmPushButtonGadgetClass,condMenu,
 								XmNlabelString,	string,
 								XmNuserData,		&cond,
 								NULL);
 		XtAddCallback (button,XmNactivateCallback,(XtCallbackProc) _UITableFieldConditionCBK,(XtPointer) cond++);
 		XmStringFree (string);
-		string = XmStringCreate ("<",UICharSetNormal);
+		string = XmStringCreate ((char *) "<",UICharSetNormal);
 		button = XtVaCreateManagedWidget ("UITableSelectCondButton",xmPushButtonGadgetClass,condMenu,
 								XmNlabelString,	string,
 								XmNuserData,		&cond,
 								NULL);
 		XtAddCallback (button,XmNactivateCallback,(XtCallbackProc) _UITableFieldConditionCBK,(XtPointer) cond++);
 		XmStringFree (string);
-		string = XmStringCreate ("Condition:",UICharSetBold);
+		string = XmStringCreate ((char *) "Condition:",UICharSetBold);
 		condMenu = XtVaCreateManagedWidget ("UITableSelectCondMenu",xmRowColumnWidgetClass,mainForm,
 											XmNtopAttachment,			XmATTACH_FORM,
 											XmNtopOffset,				10,
@@ -188,7 +188,7 @@ static void _UITableFieldSelectCBK (Widget widget,DBInt select,XmAnyCallbackStru
 											NULL);
 		XtAddCallback (UIDialogFormGetOkButton (dShell),XmNactivateCallback,(XtCallbackProc) UIAuxSetBooleanTrueCBK,&proc);
 		XtAddCallback (UIDialogFormGetCancelButton (dShell),XmNactivateCallback,(XtCallbackProc) UIAuxSetBooleanFalseCBK,&proc);
-		string = XmStringCreate ("Select",UICharSetBold);
+		string = XmStringCreate ((char *) "Select",UICharSetBold);
 		button = XtVaCreateManagedWidget ("UITableSelectCondButton",xmPushButtonGadgetClass,mainForm,
 											XmNtopAttachment,			XmATTACH_OPPOSITE_WIDGET,
 											XmNtopWidget,				fieldText,
@@ -204,7 +204,7 @@ static void _UITableFieldSelectCBK (Widget widget,DBInt select,XmAnyCallbackStru
 											NULL);
 		XmStringFree (string);
 		XtAddCallback (button,XmNactivateCallback,(XtCallbackProc) UIAuxObjectSelectCBK,fieldText);
-		string = XmStringCreate ("From Selection",UICharSetBold);
+		string = XmStringCreate ((char *) "From Selection",UICharSetBold);
 		toggleButton = XtVaCreateManagedWidget ("UITableSelectToggleButton",xmToggleButtonWidgetClass,mainForm,
 											XmNtopAttachment,			XmATTACH_WIDGET,
 											XmNtopWidget,				condMenu,
@@ -229,7 +229,7 @@ static void _UITableFieldSelectCBK (Widget widget,DBInt select,XmAnyCallbackStru
 	if (dbField->Type () == DBTableFieldString)
 			XtVaSetValues (button,XmNuserData, DBTableFieldIsString,  NULL);
 	else	XtVaSetValues (button,XmNuserData, DBTableFieldIsNumeric, NULL);
-	
+
 	UIDialogFormTitle (dShell,select ? (char *) "Select Records" : (char *) "Unselect Records");
 	UIDialogFormPopup (dShell);
 	while (UILoop ())
@@ -254,10 +254,10 @@ static void _UITableFieldSelectCBK (Widget widget,DBInt select,XmAnyCallbackStru
 			switch (dbField->Type ())
 				{
 				case DBTableFieldInt:
-					if (sscanf (text,"%d",&intVal) != 1) { UIMessage ("Invalid Integer Value"); goto Stop; }
+					if (sscanf (text,"%d",&intVal) != 1) { UIMessage ((char *) "Invalid Integer Value"); goto Stop; }
 					break;
 				case DBTableFieldFloat:
-					if (sscanf (text,"%lf",&floatVal) != 1) { UIMessage ("Invalid Float Value"); goto Stop; } 
+					if (sscanf (text,"%lf",&floatVal) != 1) { UIMessage ((char *) "Invalid Float Value"); goto Stop; }
 					break;
 				case DBTableFieldDate: dateVal.Set (text); break;
 				default:	break;
@@ -277,7 +277,7 @@ static void _UITableFieldSelectCBK (Widget widget,DBInt select,XmAnyCallbackStru
 				if (toggle) { if (select == DBSet) continue; }
 				else			{ if (select == DBClear) continue; }
 				}
-				
+
 			switch (dbField->Type ())
 				{
 				default:
@@ -311,7 +311,7 @@ static void _UITableFieldSelectCBK (Widget widget,DBInt select,XmAnyCallbackStru
 						}
 					break;
 				case DBTableFieldDate:
-					if (field != (DBObjTableField *) NULL ) dateVal = field->Date (record);	
+					if (field != (DBObjTableField *) NULL ) dateVal = field->Date (record);
 					if (dbField->Date (record) > dateVal)			ret = 1;
 					else if (dbField->Date (record) < dateVal)	ret = -1;
 					else ret = 0;
@@ -441,7 +441,7 @@ static void _UITableRecordIDSortCBK (Widget widget,DBInt dir,XmAnyCallbackStruct
 	table->ListReset ();
 	uiTable->Draw ();
 	}
-	
+
 static Widget _UITableCreateHeaderMenu (Widget widget)
 
 	{
@@ -449,15 +449,15 @@ static Widget _UITableCreateHeaderMenu (Widget widget)
 	int argNum = 0;
 	Widget button, subMenu;
 	XmString string;
-	
-	subMenu = XmCreatePulldownMenu (widget,"UITablePullDownMenu",wargs,argNum);
-	string = XmStringCreateSimple ("Ascending");
+
+	subMenu = XmCreatePulldownMenu (widget,(char *) "UITablePullDownMenu",wargs,argNum);
+	string = XmStringCreateSimple ((char *) "Ascending");
 	button = XtVaCreateManagedWidget ("UIFunctionButton",xmCascadeButtonWidgetClass, subMenu,
 																XmNlabelString,		string,
 																NULL);
 	XtAddCallback (button,XmNactivateCallback,(XtCallbackProc) _UITableRecordIDSortCBK,(XtPointer) false);
 	XmStringFree (string);
-	string = XmStringCreateSimple ("Descending");
+	string = XmStringCreateSimple ((char *) "Descending");
 	button = XtVaCreateManagedWidget ("UIFunctionButton",xmCascadeButtonWidgetClass, subMenu,
 																XmNlabelString,		string,
 																NULL);
@@ -473,16 +473,16 @@ static Widget _UITableCreateHeaderMenu (Widget widget,UITableField *uiField)
 	int argNum = 0;
 	Widget button, subMenu;
 	XmString string;
-	
-	subMenu = XmCreatePulldownMenu (widget,"UITablePullDownMenu",wargs,argNum);
-	string = XmStringCreateSimple ("Ascending");
+
+	subMenu = XmCreatePulldownMenu (widget,(char *) "UITablePullDownMenu",wargs,argNum);
+	string = XmStringCreateSimple ((char *) "Ascending");
 	button = XtVaCreateManagedWidget ("UIFunctionButton",xmCascadeButtonWidgetClass, subMenu,
 																XmNlabelString,		string,
 																XmNuserData,			uiField,
 																NULL);
 	XtAddCallback (button,XmNactivateCallback,(XtCallbackProc) _UITableFieldSortCBK,(XtPointer) false);
 	XmStringFree (string);
-	string = XmStringCreateSimple ("Descending");
+	string = XmStringCreateSimple ((char *) "Descending");
 	button = XtVaCreateManagedWidget ("UIFunctionButton",xmCascadeButtonWidgetClass, subMenu,
 																XmNlabelString,		string,
 																XmNuserData,			uiField,
@@ -491,7 +491,7 @@ static Widget _UITableCreateHeaderMenu (Widget widget,UITableField *uiField)
 	XmStringFree (string);
 	if (uiField == (UITableField *) NULL)
 		{
-		string = XmStringCreateSimple ("Selection");
+		string = XmStringCreateSimple ((char *) "Selection");
 		button = XtVaCreateManagedWidget ("UIFunctionButton",xmCascadeButtonWidgetClass, subMenu,
 																XmNlabelString,		string,
 																XmNuserData,			uiField,
@@ -501,21 +501,21 @@ static Widget _UITableCreateHeaderMenu (Widget widget,UITableField *uiField)
 		}
 	else
 		{
-		string = XmStringCreateSimple ("Select");
+		string = XmStringCreateSimple ((char *) "Select");
 		button = XtVaCreateManagedWidget ("UIFunctionButton",xmCascadeButtonWidgetClass, subMenu,
 																XmNlabelString,		string,
 																XmNuserData,			uiField,
 																NULL);
 		XtAddCallback (button,XmNactivateCallback,(XtCallbackProc) _UITableFieldSelectCBK,(XtPointer) DBSet);
 		XmStringFree (string);
-		string = XmStringCreateSimple ("Unselect");
+		string = XmStringCreateSimple ((char *) "Unselect");
 		button = XtVaCreateManagedWidget ("UIFunctionButton",xmCascadeButtonWidgetClass, subMenu,
 																XmNlabelString,		string,
 																XmNuserData,			uiField,
 																NULL);
 		XtAddCallback (button,XmNactivateCallback,(XtCallbackProc) _UITableFieldSelectCBK,(XtPointer) DBClear);
 		XmStringFree (string);
-		string = XmStringCreateSimple ("Unique");
+		string = XmStringCreateSimple ((char *) "Unique");
 		button = XtVaCreateManagedWidget ("UIFunctionButton",xmCascadeButtonWidgetClass, subMenu,
 																XmNlabelString,		string,
 																XmNuserData,			uiField,
@@ -534,7 +534,7 @@ UITableField::UITableField (Widget menuBar,DBObjTableField *field) : DBObject (f
 	DBObjTable *table;
 	DBObjRecord *record;
 	UITable *uiTable;
-	
+
 	string = XmStringCreate (field->Name (),UICharSetBold);
 
 	XtVaGetValues (XtParent (menuBar),XmNforeground,				&foreground,
@@ -642,23 +642,23 @@ static Widget _UITableCreateRecordNameMenu (Widget widget,UITableRecord *uiRecor
 	int argNum = 0;
 	Widget button, subMenu;
 	XmString string;
-	
+
 	XtSetArg (wargs [0], XmNuserData,	uiRecord); argNum++;
-	subMenu = XmCreatePulldownMenu (widget,"UITablePullDownMenu",wargs,argNum);
-	string = XmStringCreateSimple ("(Un)Select");
+	subMenu = XmCreatePulldownMenu (widget,(char *) "UITablePullDownMenu",wargs,argNum);
+	string = XmStringCreateSimple ((char *) "(Un)Select");
 	button = XtVaCreateManagedWidget ("UIFunctionButton",xmCascadeButtonWidgetClass, subMenu,
 																XmNlabelString,		string,
 																XmNuserData,			uiRecord,
 																NULL);
 	XtAddCallback (button,XmNactivateCallback,(XtCallbackProc) _UITableFieldSelectCBK,(XtPointer) uiRecord);
 	XmStringFree (string);
-	string = XmStringCreateSimple ("Idle");
+	string = XmStringCreateSimple ((char *) "Idle");
 	button = XtVaCreateManagedWidget ("UIFunctionButton",xmCascadeButtonWidgetClass, subMenu,
 																XmNlabelString,		string,
 																XmNuserData,			uiRecord,
 																NULL);
 	XmStringFree (string);
-	string = XmStringCreateSimple ("Edit");
+	string = XmStringCreateSimple ((char *) "Edit");
 	button = XtVaCreateManagedWidget ("UIFunctionButton",xmCascadeButtonWidgetClass, subMenu,
 																XmNlabelString,		string,
 																XmNuserData,			uiRecord,
@@ -742,7 +742,7 @@ void UITableRecord::Draw (UITableField *uiField)
 	background = (RecordPTR->Flags () & DBObjectFlagSelected) == DBObjectFlagSelected ?
 					 UIColor (UIColorStandard,7) : background;
 	XtVaSetValues (buttons [uiField->RowID ()],	XmNbackground,	background,	NULL);
-	
+
 	UIAuxSetLabelString (buttons [uiField->RowID ()],field->String (RecordPTR));
 	XtSetSensitive (buttons [uiField->RowID ()],(RecordPTR->Flags () & DBObjectFlagIdle) != DBObjectFlagIdle);
 	}
@@ -774,7 +774,7 @@ static void _UITableResizeACTION (Widget widget, XEvent *event, String *args,uns
 
 	{
 	UITable *tableCLS;
-	
+
 	args = args; argNum = argNum;
 	XtVaGetValues (widget, XmNuserData, &tableCLS, NULL);
 	tableCLS->Resize (event->xconfigure.height);
@@ -796,10 +796,10 @@ static void _UITableLoadSelectionCBK (Widget widget,UITable *uiTable,XmAnyCallba
 	DBObjTable *table = uiTable->Table ();
 	DBObjTableField *field;
 	DBObjRecord *record;
-	
+
 	widget = widget; callData = callData;
-	if (_UITableSelectionFieldSelect == (Widget) NULL) _UITableSelectionFieldSelect = UISelectionCreate ("Table Field Selection");
-	if (_UITableSelectionFileSelect == NULL)	_UITableSelectionFileSelect = UIFileSelectionCreate ("Selection File",NULL,"*.*",XmFILE_REGULAR);
+	if (_UITableSelectionFieldSelect == (Widget) NULL) _UITableSelectionFieldSelect = UISelectionCreate ((char *) "Table Field Selection");
+	if (_UITableSelectionFileSelect == NULL)	_UITableSelectionFileSelect = UIFileSelectionCreate ((char *) "Selection File",NULL,(char *) "*.*",XmFILE_REGULAR);
 	if ((selection = UISelectObject (_UITableSelectionFieldSelect,(DBObjectLIST<DBObject> *) (table->Fields ()),DBTableFieldIsCategory)) == (char *) NULL) return;
 	if ((field = table->Field (selection)) == (DBObjTableField *) NULL) return;
 	if ((selection = UIFileSelection (_UITableSelectionFileSelect,false)) == NULL) return;
@@ -831,7 +831,7 @@ static void _UITableLoadSelectionCBK (Widget widget,UITable *uiTable,XmAnyCallba
 	uiTable->Draw ();
 	if (strcmp (table->Name (),DBrNItems) == 0) UI2DViewRedrawAll ();
 	}
-	
+
 static void _UITableSaveSelectionCBK (Widget widget,UITable *uiTable,XmAnyCallbackStruct *callData)
 
 	{
@@ -840,10 +840,10 @@ static void _UITableSaveSelectionCBK (Widget widget,UITable *uiTable,XmAnyCallba
 	DBObjTable *table = uiTable->Table ();
 	DBObjTableField *field;
 	DBObjRecord *record;
-	
+
 	widget = widget; callData = callData;
-	if (_UITableSelectionFieldSelect == (Widget) NULL) _UITableSelectionFieldSelect = UISelectionCreate ("Table Field Selection");
-	if (_UITableSelectionFileSelect == NULL)	_UITableSelectionFileSelect = UIFileSelectionCreate ("Selection File",NULL,"*.*",XmFILE_REGULAR);
+	if (_UITableSelectionFieldSelect == (Widget) NULL) _UITableSelectionFieldSelect = UISelectionCreate ((char *) "Table Field Selection");
+	if (_UITableSelectionFileSelect == NULL)	_UITableSelectionFileSelect = UIFileSelectionCreate ((char *) "Selection File",NULL,(char *) "*.*",XmFILE_REGULAR);
 	if ((selection = UISelectObject (_UITableSelectionFieldSelect,(DBObjectLIST<DBObject> *) (table->Fields ()),DBTableFieldIsCategory)) == (char *) NULL) return;
 	if ((field = table->Field (selection)) == (DBObjTableField *) NULL) return;
 	if ((selection = UIFileSelection (_UITableSelectionFileSelect,false)) == NULL) return;
@@ -958,9 +958,9 @@ UITable::UITable (DBObjData *dbData, DBObjTable *table) : DBObjectLIST<UITableRe
 	Widget mainForm, menuBar, leftScrolledW, rightScrolledW, recordMenuBar, clipWindow, button;
 	XmString string;
 	XmFontList fontList;
-	XtActionsRec actionRec = { "resize",_UITableResizeACTION };
-	Atom deleteWindowAtom = XmInternAtom(XtDisplay(UITopLevel ()),"WM_DELETE_WINDOW",FALSE);
-	
+	XtActionsRec actionRec = { (char *) "resize",_UITableResizeACTION };
+	Atom deleteWindowAtom = XmInternAtom(XtDisplay(UITopLevel ()),(char *) "WM_DELETE_WINDOW",FALSE);
+
 	if (table == (DBObjTable *) NULL) return;
 	XtAppAddActions (UIApplicationContext (), &actionRec,1);
 	DataPTR = dbData;
@@ -976,15 +976,15 @@ UITable::UITable (DBObjData *dbData, DBObjTable *table) : DBObjectLIST<UITableRe
 												XmNtransient,					false,
 												XmNallowShellResize,			false,
 												NULL);
-	XmAddWMProtocolCallback (DShellWGT,deleteWindowAtom,(XtCallbackProc) _UITableDeleteCBK,(XtPointer) this); 
+	XmAddWMProtocolCallback (DShellWGT,deleteWindowAtom,(XtCallbackProc) _UITableDeleteCBK,(XtPointer) this);
 	mainForm = XtVaCreateWidget ("UITableMainForm",xmFormWidgetClass,DShellWGT,
 												XmNuserData,					this,
-												XmNshadowThickness,			0,												
+												XmNshadowThickness,			0,
 												NULL);
 	XtOverrideTranslations (mainForm,XtParseTranslationTable ("<Configure>: resize()"));
 	XtVaGetValues (mainForm,XmNforeground,	&foreground,XmNbackground,	&background,NULL);
 	iconPixmap = iconPixmap != (Pixmap) NULL ? iconPixmap :
-					 XmGetPixmap(XtScreen (UITopLevel()),"UNHTable",foreground,background);
+					 XmGetPixmap(XtScreen (UITopLevel()),(char *) "UNHTable",foreground,background);
 	XtVaSetValues (DShellWGT,XmNiconPixmap, iconPixmap,NULL);
 	menuBar = XtVaCreateManagedWidget ("UITableMenuBar",xmRowColumnWidgetClass,mainForm,
 												XmNtopAttachment,				XmATTACH_FORM,
@@ -1000,17 +1000,17 @@ UITable::UITable (DBObjData *dbData, DBObjTable *table) : DBObjectLIST<UITableRe
 												NULL);
 
 	loadPixmap = loadPixmap == (Pixmap) NULL ?
-					XmGetPixmap(XtScreen(UITopLevel()),"UNHLoad",  foreground,background) : loadPixmap;
+					XmGetPixmap(XtScreen(UITopLevel()),(char *) "UNHLoad",  foreground,background) : loadPixmap;
 	savePixmap = savePixmap == (Pixmap) NULL ?
-					XmGetPixmap(XtScreen(UITopLevel()),"UNHSave",  foreground,background) : savePixmap;
+					XmGetPixmap(XtScreen(UITopLevel()),(char *) "UNHSave",  foreground,background) : savePixmap;
 	clearPixmap = clearPixmap == (Pixmap) NULL ?
-					XmGetPixmap(XtScreen(UITopLevel()),"UNHClear", foreground,background) : clearPixmap;
+					XmGetPixmap(XtScreen(UITopLevel()),(char *) "UNHClear", foreground,background) : clearPixmap;
 	invertPixmap = invertPixmap == (Pixmap) NULL ?
-					XmGetPixmap(XtScreen(UITopLevel()),"UNHInvert", foreground,background) : invertPixmap;
+					XmGetPixmap(XtScreen(UITopLevel()),(char *) "UNHInvert", foreground,background) : invertPixmap;
 	setIdlePixmap = setIdlePixmap == (Pixmap) NULL ?
-					XmGetPixmap(XtScreen(UITopLevel()),"UNHSetIdle", foreground,background) : setIdlePixmap;
+					XmGetPixmap(XtScreen(UITopLevel()),(char *) "UNHSetIdle", foreground,background) : setIdlePixmap;
 	getIdlePixmap = getIdlePixmap == (Pixmap) NULL ?
-					XmGetPixmap(XtScreen(UITopLevel()),"UNHGetIdle", foreground,background) : getIdlePixmap;
+					XmGetPixmap(XtScreen(UITopLevel()),(char *) "UNHGetIdle", foreground,background) : getIdlePixmap;
 
 	button = XtVaCreateManagedWidget ("UILoadSelectionButton",xmPushButtonWidgetClass,menuBar,
 												XmNlabelType,					XmPIXMAP,
@@ -1123,7 +1123,7 @@ UITable::UITable (DBObjData *dbData, DBObjTable *table) : DBObjectLIST<UITableRe
 												XmNbackground,					background,
 												XmNuserData,					this,
 												NULL);
-	string = XmStringCreate ("RecordID",UICharSetBold);
+	string = XmStringCreate ((char *) "RecordID",UICharSetBold);
 	RecordIDButtonWGT = XtVaCreateManagedWidget ("UITableRecordNumberButton",xmCascadeButtonWidgetClass,recordMenuBar,
 												XmNlabelString,				string,
 												XmNhighlightThickness,		0,
@@ -1133,7 +1133,7 @@ UITable::UITable (DBObjData *dbData, DBObjTable *table) : DBObjectLIST<UITableRe
 												XmNbackground,					foreground,
 												NULL);
 	XmStringFree (string);
-	string = XmStringCreate ("Record Name",UICharSetBold);
+	string = XmStringCreate ((char *) "Record Name",UICharSetBold);
 	NameButtonWGT = XtVaCreateManagedWidget ("UITableRecordNameButton",xmCascadeButtonWidgetClass,recordMenuBar,
 												XmNlabelString,				string,
 												XmNhighlightThickness,		0,
@@ -1176,7 +1176,7 @@ UITable::UITable (DBObjData *dbData, DBObjTable *table) : DBObjectLIST<UITableRe
 	row = TablePTR->ItemNum () > 20 ? 20 :TablePTR->ItemNum ();
 	XtVaSetValues (mainForm,			XmNheight, 		BaseHeightVAR + row * (CellHeightVAR + UITableSpacing), NULL);
 	XtVaGetValues (RecordIDButtonWGT, XmNfontList, &fontList, XmNwidth, &RecordIDWidthVAR, NULL);
-	string = XmStringCreate ("9999999",UICharSetNormal);
+	string = XmStringCreate ((char *) "9999999",UICharSetNormal);
 	RecordIDWidthVAR = RecordIDWidthVAR > (XmStringWidth (fontList,string) + 2 * UITableMargin) ?
 							 RecordIDWidthVAR : (XmStringWidth (fontList,string) + 2 * UITableMargin);
 	NameWidthVAR = UITableRecordSpace - (RecordIDWidthVAR + 4 * UITableSpacing + 4);
@@ -1226,7 +1226,7 @@ void UITable::AddField (DBObjTableField *field)
 	{
 	UITableField *uiField = new UITableField (FieldMenuBarWGT,field);
 	UITableRecord *uiRecord;
-	
+
 	FieldsPTR->Add (uiField);
 	for (uiRecord = First ();uiRecord != (UITableRecord *) NULL;uiRecord = Next ())
 		uiRecord->AddField (uiField,CellHeightVAR);
@@ -1238,7 +1238,7 @@ void UITable::AddRecord (DBObjRecord *record)
 	DBInt width, row;
 	XmString string;
 	XmFontList fontList;
-	
+
 	XtVaGetValues (NameButtonWGT, XmNfontList, &fontList, NULL);
 	string = XmStringCreate (record->Name (),UICharSetNormal);
 	width = XmStringWidth (fontList,string);
@@ -1267,7 +1267,7 @@ void UITable::Draw (DBObjRecord *record)
 
 	{
 	UITableRecord *uiRecord;
-	
+
 	for (uiRecord = First ();uiRecord != (UITableRecord *) NULL;uiRecord =Next ())
 		if (uiRecord->Record () == record) break;
 	if (uiRecord != (UITableRecord *) NULL) uiRecord->Draw ();

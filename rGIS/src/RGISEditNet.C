@@ -20,8 +20,8 @@ void RGISEditNetBuildCBK (Widget widget,RGISWorkspace *workspace,XmAnyCallbackSt
 	DBNetworkIO *netIO = new DBNetworkIO (netData);
 
 	widget = widget; workspace = workspace; callData = callData;
-	
-	UIPauseDialogOpen ("Building Topological Networks");
+
+	UIPauseDialogOpen ((char *) "Building Topological Networks");
 	netIO->Build ();
 	UIPauseDialogClose ();
 
@@ -36,8 +36,8 @@ void RGISEditNetTrimCBK (Widget widget,RGISWorkspace *workspace,XmAnyCallbackStr
 	DBNetworkIO *netIO = new DBNetworkIO (netData);
 
 	widget = widget; callData = callData;
-	
-	UIPauseDialogOpen ("Building Topological Networks");
+
+	UIPauseDialogOpen ((char *) "Building Topological Networks");
 	netIO->Trim ();
 	workspace->CurrentData (netData);
 	UIPauseDialogClose ();
@@ -45,8 +45,8 @@ void RGISEditNetTrimCBK (Widget widget,RGISWorkspace *workspace,XmAnyCallbackStr
 	delete netIO;
 	}
 
-#define RGISNetCellXCoord "CellXCoord"
-#define RGISNetCellYCoord "CellYCoord"
+#define RGISNetCellXCoord ((char *) "CellXCoord")
+#define RGISNetCellYCoord ((char *) "CellYCoord")
 
 void RGISEditNetAddCellXYCBK (Widget widget, RGISWorkspace *workspace,XmAnyCallbackStruct *callData)
 
@@ -63,17 +63,17 @@ void RGISEditNetAddCellXYCBK (Widget widget, RGISWorkspace *workspace,XmAnyCallb
 	UITable *tableCLS = (UITable *) dbData->Display (UITableName (dbData,cellTable));
 
 	widget = widget; workspace = workspace; callData = callData;
-	UIPauseDialogOpen ("Adding XY Coordinates");
+	UIPauseDialogOpen ((char *) "Adding XY Coordinates");
 	if (xCoordFLD == NULL)
 		{
-		xCoordFLD = new DBObjTableField (RGISNetCellXCoord,DBTableFieldFloat,"%10.3f",sizeof (DBFloat4));
+		xCoordFLD = new DBObjTableField (RGISNetCellXCoord,DBTableFieldFloat,(char *) "%10.3f",sizeof (DBFloat4));
 		cellTable->AddField (xCoordFLD);
 		if (tableCLS != (UITable *) NULL) tableCLS->AddField (xCoordFLD);
 		UIPause (40);
 		}
 	if (yCoordFLD == NULL)
 		{
-		yCoordFLD = new DBObjTableField (RGISNetCellYCoord,DBTableFieldFloat,"%10.3f",sizeof (DBFloat4));
+		yCoordFLD = new DBObjTableField (RGISNetCellYCoord,DBTableFieldFloat,(char *) "%10.3f",sizeof (DBFloat4));
 		cellTable->AddField (yCoordFLD);
 		if (tableCLS != (UITable *) NULL) tableCLS->AddField (yCoordFLD);
 		UIPause (80);
@@ -109,17 +109,17 @@ void RGISEditNetAddBasinXYCBK (Widget widget, RGISWorkspace *workspace,XmAnyCall
 	UITable *tableCLS = (UITable *) dbData->Display (UITableName (dbData,itemTable));
 
 	widget = widget; workspace = workspace; callData = callData;
-	UIPauseDialogOpen ("Adding XY Coordinates");
+	UIPauseDialogOpen ((char *) "Adding XY Coordinates");
 	if (xCoordFLD == NULL)
 		{
-		xCoordFLD = new DBObjTableField (RGISNetMouthXCoord,DBTableFieldFloat,"%10.3f",sizeof (DBFloat4));
+		xCoordFLD = new DBObjTableField (RGISNetMouthXCoord,DBTableFieldFloat,(char *) "%10.3f",sizeof (DBFloat4));
 		itemTable->AddField (xCoordFLD);
 		if (tableCLS != (UITable *) NULL) tableCLS->AddField (xCoordFLD);
 		UIPause (40);
 		}
 	if (yCoordFLD == NULL)
 		{
-		yCoordFLD = new DBObjTableField (RGISNetMouthYCoord,DBTableFieldFloat,"%10.3f",sizeof (DBFloat4));
+		yCoordFLD = new DBObjTableField (RGISNetMouthYCoord,DBTableFieldFloat,(char *) "%10.3f",sizeof (DBFloat4));
 		itemTable->AddField (yCoordFLD);
 		if (tableCLS != (UITable *) NULL) tableCLS->AddField (yCoordFLD);
 		UIPause (80);
@@ -143,7 +143,7 @@ static  DBObjRecord **_RGISReallocCellList (DBObjRecord **cellList,DBInt &maxCel
 	if (cellNum <= maxCellNum) return (cellList);
 	maxCellNum = cellNum;
 	if ((cellList = (DBObjRecord **) realloc (cellList, maxCellNum * sizeof (DBObjRecord *))) == (DBObjRecord **) NULL)
-		{ perror ("Memory Allocation Error in: _RGISEditAdjustNetworkCBK "); return ((DBObjRecord **) NULL); } 
+		{ perror ("Memory Allocation Error in: _RGISEditAdjustNetworkCBK "); return ((DBObjRecord **) NULL); }
 	return (cellList);
 	}
 
@@ -153,9 +153,9 @@ void RGISEditNetMagnitudeCBK (Widget widget, RGISWorkspace *workspace,XmAnyCallb
 	DBDataset *dataset = UIDataset ();
 	DBObjData *netData = dataset->Data ();
 	DBNetworkIO *netIO = new DBNetworkIO (netData);
-	
+
 	widget = widget; workspace = workspace; callData = callData;
-	UIPauseDialogOpen ("Calculate Shreve Magnitude");
+	UIPauseDialogOpen ((char *) "Calculate Shreve Magnitude");
 	netIO->SetMagnitude ();
 	UIPauseDialogClose ();
 	delete netIO;
@@ -167,9 +167,9 @@ void RGISEditNetDistToMouthCBK (Widget widget, RGISWorkspace *workspace,XmAnyCal
 	DBDataset *dataset = UIDataset ();
 	DBObjData *netData = dataset->Data ();
 	DBNetworkIO *netIO = new DBNetworkIO (netData);
-	
+
 	widget = widget; workspace = workspace; callData = callData;
-	UIPauseDialogOpen ("Calculate Distance from Ocean");
+	UIPauseDialogOpen ((char *) "Calculate Distance from Ocean");
 	netIO->SetDistToMouth ();
 	UIPauseDialogClose ();
 	delete netIO;
@@ -181,9 +181,9 @@ void RGISEditNetDistToOceanCBK (Widget widget, RGISWorkspace *workspace,XmAnyCal
 	DBDataset *dataset = UIDataset ();
 	DBObjData *netData = dataset->Data ();
 	DBNetworkIO *netIO = new DBNetworkIO (netData);
-	
+
 	widget = widget; workspace = workspace; callData = callData;
-	UIPauseDialogOpen ("Calculate Distance to Ocean");
+	UIPauseDialogOpen ((char *) "Calculate Distance to Ocean");
 	netIO->SetDistToOcean ();
 	UIPauseDialogClose ();
 	delete netIO;
@@ -201,9 +201,9 @@ void RGISEditAdjustNetworkCBK (Widget widget, RGISWorkspace *workspace,XmAnyCall
 	DBObjData *lineData = netData->LinkedData ();
 	DBNetworkIO *netIO = new DBNetworkIO (netData);
 	DBVLineIO *lineIO = new DBVLineIO (lineData);
-	
+
 	widget = widget; workspace = workspace; callData = callData;
-	UIPauseDialogOpen ("Adjusting Networks");
+	UIPauseDialogOpen ((char *) "Adjusting Networks");
 	cellNum = 0;
 	for (lineRec = lineIO->FirstItem ();lineRec != (DBObjRecord *) NULL; lineRec = lineIO->NextItem ())
 		{
@@ -215,7 +215,7 @@ void RGISEditAdjustNetworkCBK (Widget widget, RGISWorkspace *workspace,XmAnyCall
 		if ((vertexNum = lineIO->VertexNum (lineRec)) > 0)
 			{
 			vertexes = lineIO->Vertexes (lineRec);
-			for (vertex = 0; vertex < vertexNum; ++vertex)	
+			for (vertex = 0; vertex < vertexNum; ++vertex)
 				{
 				if ((cellList = _RGISReallocCellList (cellList,maxCellNum,cellNum + 1)) == (DBObjRecord **) NULL) return;
 				if ((cellList [cellNum] = netIO->Cell (vertexes [vertex])) == (DBObjRecord *) NULL)
@@ -262,21 +262,21 @@ void RGISEditAdjustNetworkCBK (Widget widget, RGISWorkspace *workspace,XmAnyCall
  			{
 			pos0 = netIO->CellPosition (cellList [cell]);
 			pos1 = netIO->CellPosition (cellList [cell + 1]);
-			if ((pos0.Col <  pos1.Col) && (pos0.Row == pos1.Row))	dir = DBNetDirE;	
-			else if ((pos0.Col <  pos1.Col) && (pos0.Row >  pos1.Row))	dir = DBNetDirSE;	
-			else if ((pos0.Col == pos1.Col) && (pos0.Row >  pos1.Row))	dir = DBNetDirS;	
-			else if ((pos0.Col >  pos1.Col) && (pos0.Row >  pos1.Row))	dir = DBNetDirSW;	
-			else if ((pos0.Col >  pos1.Col) && (pos0.Row == pos1.Row))	dir = DBNetDirW;	
-			else if ((pos0.Col >  pos1.Col) && (pos0.Row <  pos1.Row))	dir = DBNetDirNW;	
-			else if ((pos0.Col == pos1.Col) && (pos0.Row <  pos1.Row))	dir = DBNetDirN;	
+			if ((pos0.Col <  pos1.Col) && (pos0.Row == pos1.Row))	dir = DBNetDirE;
+			else if ((pos0.Col <  pos1.Col) && (pos0.Row >  pos1.Row))	dir = DBNetDirSE;
+			else if ((pos0.Col == pos1.Col) && (pos0.Row >  pos1.Row))	dir = DBNetDirS;
+			else if ((pos0.Col >  pos1.Col) && (pos0.Row >  pos1.Row))	dir = DBNetDirSW;
+			else if ((pos0.Col >  pos1.Col) && (pos0.Row == pos1.Row))	dir = DBNetDirW;
+			else if ((pos0.Col >  pos1.Col) && (pos0.Row <  pos1.Row))	dir = DBNetDirNW;
+			else if ((pos0.Col == pos1.Col) && (pos0.Row <  pos1.Row))	dir = DBNetDirN;
 			else if ((pos0.Col <  pos1.Col) && (pos0.Row <  pos1.Row))	dir = DBNetDirNE;
 //			printf ("%5d   %3d %3d  %3d %3d  %2x\n",lineRec->RowID (),pos0.Col, pos0.Row, pos1.Col, pos1.Row,dir);
 			netIO->CellDirection (cellList [cell],dir);
 			}
 		}
-	if (maxCellNum > 0) free (cellList); 	
+	if (maxCellNum > 0) free (cellList);
 	UIPauseDialogClose ();
-	UIPauseDialogOpen ("Building Networks");
+	UIPauseDialogOpen ((char *) "Building Networks");
 //	netIO->Build ();
 	UIPauseDialogClose ();
 	}

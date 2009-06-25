@@ -135,7 +135,7 @@ DBInt RGlibGridResampling (DBObjData *inGData, DBObjRecord *noDataRec, DBObjData
 			default:
 				fprintf (stderr,"Invalid Data Type in: RGlibPointSubbasinCenter ()\n");	goto Stop;
 			}
-		if (outGridIO->LayerNum () < layerNum) outLayerRec = outGridIO->AddLayer ("Next Layer");
+		if (outGridIO->LayerNum () < layerNum) outLayerRec = outGridIO->AddLayer ((char *) "Next Layer");
 		}
 Stop:
 	delete inGridIO;
@@ -542,7 +542,7 @@ DBInt RGlibGridReclassDiscrete (DBObjData *srcData,char *srcFieldName,DBObjData 
 						}
 					else	dstIO->Value (dstLayerRec,pos,DBFault);
 			}
-		if (dstIO->LayerNum () < srcIO->LayerNum ()) dstIO->AddLayer ("Next Layer");
+		if (dstIO->LayerNum () < srcIO->LayerNum ()) dstIO->AddLayer ((char *) "Next Layer");
 		}
 Stop:
 	delete srcIO;
@@ -622,7 +622,7 @@ DBInt RGlibGridReclassContinuous (DBObjData *srcData,char *srcFieldName,DBObjDat
 					else	dstIO->Value (dstLayerRec,pos,dstIO->MissingValue (dstLayerRec));
 			}
 		dstIO->RecalcStats (dstLayerRec);
-		if (dstIO->LayerNum () < srcIO->LayerNum ()) dstIO->AddLayer ("Next Layer");
+		if (dstIO->LayerNum () < srcIO->LayerNum ()) dstIO->AddLayer ((char *) "Next Layer");
 		}
 
 Stop:
@@ -686,7 +686,7 @@ DBInt RGlibGridMakeDiscrete (DBObjData *srcData, DBObjData *dstData, float binVa
 					}
 				else dstGridIO->Value (dstLayerRec,pos,DBFault);
 			}
-		if (dstGridIO->LayerNum () < srcGridIO->LayerNum ()) dstGridIO->AddLayer ("Next Layer");
+		if (dstGridIO->LayerNum () < srcGridIO->LayerNum ()) dstGridIO->AddLayer ((char *) "Next Layer");
 		}
 Stop:
 	if (progress == maxProgress)
@@ -1023,23 +1023,23 @@ DBInt RGlibGridCellStats (DBObjData *srcData,DBObjData *statData)
 	DBGridIO *statIO = new DBGridIO (statData);
 
 	if (srcIO->LayerNum () <= 2) { delete srcIO; delete statIO; return (DBFault); }
-	statIO->RenameLayer (statIO->Layer ((DBInt) 0),"Average");
-	statIO->AddLayer ("Minimum");
-	statIO->AddLayer ("Maximum");
-	statIO->AddLayer ("Range");
-	statIO->AddLayer ("Relative Range");
-	statIO->AddLayer ("StdDev");
-	statIO->AddLayer ("ObsNum");
+	statIO->RenameLayer (statIO->Layer ((DBInt) 0),(char *) "Average");
+	statIO->AddLayer ((char *) "Minimum");
+	statIO->AddLayer ((char *) "Maximum");
+	statIO->AddLayer ((char *) "Range");
+	statIO->AddLayer ((char *) "Relative Range");
+	statIO->AddLayer ((char *) "StdDev");
+	statIO->AddLayer ((char *) "ObsNum");
 	if (srcIO->LayerNum () > DBMathRegressionMin)
 		{
-		statIO->AddLayer ("InterceptB0");
-		statIO->AddLayer ("SlopeB1");
-		statIO->AddLayer ("CorrelationCoefficient");
-		statIO->AddLayer ("RegressionRSquared");
-		statIO->AddLayer ("B0Boundary");
-		statIO->AddLayer ("B1Boundary");
-		statIO->AddLayer ("Significance");
-		statIO->AddLayer ("SigSlopeB1");
+		statIO->AddLayer ((char *) "InterceptB0");
+		statIO->AddLayer ((char *) "SlopeB1");
+		statIO->AddLayer ((char *) "CorrelationCoefficient");
+		statIO->AddLayer ((char *) "RegressionRSquared");
+		statIO->AddLayer ((char *) "B0Boundary");
+		statIO->AddLayer ((char *) "B1Boundary");
+		statIO->AddLayer ((char *) "Significance");
+		statIO->AddLayer ((char *) "SigSlopeB1");
 		}
 
 	for (pos.Row = 0;pos.Row < srcIO->RowNum ();++pos.Row)
@@ -1130,14 +1130,14 @@ DBInt RGlibGridBivarCellStats (DBObjData *xSrcData,DBObjData *ySrcData, DBObjDat
 	if (xSrcGridIO->LayerNum () < DBMathRegressionMin)
 		{ fprintf (stderr,"Insufficent number of layers in: RGlibGridBivarCellStats ()\n"); goto Stop; }
 
-	statGridIO->RenameLayer (statGridIO->Layer ((DBInt) 0),"InterceptB0");
-	statGridIO->AddLayer ("SlopeB1");
-	statGridIO->AddLayer ("CorrelationCoefficient");
-	statGridIO->AddLayer ("RegressionRSquared");
-	statGridIO->AddLayer ("B0Boundary");
-	statGridIO->AddLayer ("B1Boundary");
-	statGridIO->AddLayer ("Significance");
-	statGridIO->AddLayer ("SigSlopeB1");
+	statGridIO->RenameLayer (statGridIO->Layer ((DBInt) 0),(char *) "InterceptB0");
+	statGridIO->AddLayer ((char *) "SlopeB1");
+	statGridIO->AddLayer ((char *) "CorrelationCoefficient");
+	statGridIO->AddLayer ((char *) "RegressionRSquared");
+	statGridIO->AddLayer ((char *) "B0Boundary");
+	statGridIO->AddLayer ((char *) "B1Boundary");
+	statGridIO->AddLayer ((char *) "Significance");
+	statGridIO->AddLayer ((char *) "SigSlopeB1");
 
 	for (pos.Row = 0;pos.Row < xSrcGridIO->RowNum ();++pos.Row)
 		{
@@ -1677,7 +1677,7 @@ DBInt RGlibMinMax (DBObjData *tsData,DBObjData *data,bool doMin)
 					gridIO->Value (pos,layerID);
 			else	gridIO->Value (pos,gridIO->MissingValue ());
 			}
-	gridIO->RenameLayer ("XXXX");
+	gridIO->RenameLayer ((char *) "XXXX");
 	gridIO->RecalcStats ();
 
 	delete tsGridIO;

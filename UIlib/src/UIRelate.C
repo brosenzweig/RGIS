@@ -99,7 +99,7 @@ static void _UIRelateNameChangedCBK (Widget widget,char *nameSTR,XmAnyCallbackSt
 	char *text = XmTextFieldGetString (widget);
 	int length;
 	callData = callData;
-	
+
 	XtVaGetValues (widget, XmNuserData, 	&length, NULL);
 	strncpy (nameSTR,text,length - 1);
 	XtFree (text);
@@ -123,7 +123,7 @@ static void _UIRelateDataSelectButtonCBK (Widget widget,Widget dataField,XmAnyCa
 		}
 	else
 		{
-		XmTextFieldSetString (dataField,"");
+		XmTextFieldSetString (dataField,(char *) "");
 		relateCLS->RData ((DBObjData *) NULL);
 		XtSetSensitive (XtNameToWidget (XtParent (widget),UIRelateJoinFieldButton),false);
 		}
@@ -144,7 +144,7 @@ static void _UIRelateFieldSelectButtonCBK (Widget widget,DBInt fieldCode,XmAnyCa
 	widget = widget; callData = callData;
 	XtVaGetValues (widget, XmNuserData, 	&relateCLS, NULL);
 
-	if (selectField == (Widget) NULL) selectField = UISelectionCreate ("Select Field");
+	if (selectField == (Widget) NULL) selectField = UISelectionCreate ((char *) "Select Field");
 	switch (fieldCode)
 		{
 		case UIRelateField:
@@ -155,7 +155,7 @@ static void _UIRelateFieldSelectButtonCBK (Widget widget,DBInt fieldCode,XmAnyCa
 				field = itemTBL->Field (relateCLS->JoinFieldSTR);
 				fieldType = field->Type ();
 				}
-			else	fieldType = DBFault;	
+			else	fieldType = DBFault;
 			data = relateCLS->PData ();
 			itemTBL = data->Table (DBrNItems);
 			fieldSTR = relateCLS->RelateFieldSTR;
@@ -169,7 +169,7 @@ static void _UIRelateFieldSelectButtonCBK (Widget widget,DBInt fieldCode,XmAnyCa
 				field = itemTBL->Field (relateCLS->RelateFieldSTR);
 				fieldType = field->Type ();
 				}
-			else	fieldType = DBFault;	
+			else	fieldType = DBFault;
 			data = relateCLS->RData ();
 			itemTBL = data->Table (DBrNItems);
 			fieldSTR = relateCLS->JoinFieldSTR;
@@ -197,15 +197,15 @@ DBInt UIRelateData (DBObjData *data, DBObjRecord *relRec)
 	static int save;
 	static Widget dShell, mainForm = (Widget) NULL;
 	static UIRelate relateCLS;
-	
+
 	if (data == (DBObjData *) NULL) return (DBFault);
-	
+
 	if (dShell == (Widget) NULL)
 		{
 		Widget fieldTextF, dataField, button;
 		XmString string;
-		
-		dShell = UIDialogForm ("Relates");
+
+		dShell = UIDialogForm ((char *) "Relates");
 		XtAddCallback (UIDialogFormGetOkButton (dShell),XmNactivateCallback,(XtCallbackProc) UIAuxSetBooleanTrueCBK,&save);
 		mainForm = UIDialogFormGetMainForm (dShell);
 
@@ -219,7 +219,7 @@ DBInt UIRelateData (DBObjData *data, DBObjRecord *relRec)
 														XmNuserData,				DBStringLength,
 														NULL);
 		XtAddCallback (fieldTextF,XmNvalueChangedCallback,(XtCallbackProc) _UIRelateNameChangedCBK,(XtPointer) relateCLS.RelateNameSTR);
-		string = XmStringCreate ("Relate Name:",UICharSetBold);
+		string = XmStringCreate ((char *) "Relate Name:",UICharSetBold);
 		XtVaCreateManagedWidget ("UIRelateNameLabel",xmLabelGadgetClass,mainForm,
 														XmNtopAttachment,			XmATTACH_OPPOSITE_WIDGET,
 														XmNtopWidget,				fieldTextF,
@@ -231,7 +231,7 @@ DBInt UIRelateData (DBObjData *data, DBObjRecord *relRec)
 														XmNlabelString,			string,
 														NULL);
 		XmStringFree (string);
-		
+
 
 		dataField = XtVaCreateManagedWidget (UIRelateDataTextF + 1,xmTextFieldWidgetClass,mainForm,
 														XmNtopAttachment,			XmATTACH_WIDGET,
@@ -244,7 +244,7 @@ DBInt UIRelateData (DBObjData *data, DBObjRecord *relRec)
 														XmNuserData,				DBDataNameLen,
 														NULL);
 		XtAddCallback (dataField,XmNvalueChangedCallback,(XtCallbackProc) _UIRelateNameChangedCBK,(XtPointer) relateCLS.DataNameSTR);
-		string = XmStringCreate ("Relate Data:",UICharSetBold);
+		string = XmStringCreate ((char *) "Relate Data:",UICharSetBold);
 		XtVaCreateManagedWidget ("UIRelateNameLabel",xmLabelGadgetClass,mainForm,
 														XmNtopAttachment,			XmATTACH_OPPOSITE_WIDGET,
 														XmNtopWidget,				dataField,
@@ -256,7 +256,7 @@ DBInt UIRelateData (DBObjData *data, DBObjRecord *relRec)
 														XmNlabelString,			string,
 														NULL);
 		XmStringFree (string);
-		string = XmStringCreate ("Select",UICharSetBold);
+		string = XmStringCreate ((char *) "Select",UICharSetBold);
 		button = XtVaCreateManagedWidget ("UIRelateJoinFieldSelectButton",xmPushButtonGadgetClass,mainForm,
 														XmNtopAttachment,			XmATTACH_OPPOSITE_WIDGET,
 														XmNtopWidget,				dataField,
@@ -287,7 +287,7 @@ DBInt UIRelateData (DBObjData *data, DBObjRecord *relRec)
 														XmNuserData,				DBStringLength,
 														NULL);
 		XtAddCallback (fieldTextF,XmNvalueChangedCallback,(XtCallbackProc) _UIRelateNameChangedCBK,(XtPointer) relateCLS.RelateFieldSTR);
-		string = XmStringCreate ("Relate Field:",UICharSetBold);
+		string = XmStringCreate ((char *) "Relate Field:",UICharSetBold);
 		XtVaCreateManagedWidget ("UIRelateFieldLabel",xmLabelGadgetClass,mainForm,
 														XmNtopAttachment,			XmATTACH_OPPOSITE_WIDGET,
 														XmNtopWidget,				fieldTextF,
@@ -299,7 +299,7 @@ DBInt UIRelateData (DBObjData *data, DBObjRecord *relRec)
 														XmNlabelString,			string,
 														NULL);
 		XmStringFree (string);
-		string = XmStringCreate ("Select",UICharSetBold);
+		string = XmStringCreate ((char *) "Select",UICharSetBold);
 		button = XtVaCreateManagedWidget ("UIRelateFieldSelectButton",xmPushButtonGadgetClass,mainForm,
 														XmNtopAttachment,			XmATTACH_OPPOSITE_WIDGET,
 														XmNtopWidget,				fieldTextF,
@@ -327,7 +327,7 @@ DBInt UIRelateData (DBObjData *data, DBObjRecord *relRec)
 														NULL);
 		XtAddCallback (fieldTextF,XmNvalueChangedCallback,(XtCallbackProc) _UIRelateNameChangedCBK,(XtPointer) relateCLS.JoinFieldSTR);
 
-		string = XmStringCreate ("Join Field:",UICharSetBold);
+		string = XmStringCreate ((char *) "Join Field:",UICharSetBold);
 		XtVaCreateManagedWidget ("UIRelateJoinFieldLabel",xmLabelGadgetClass,mainForm,
 														XmNtopAttachment,			XmATTACH_OPPOSITE_WIDGET,
 														XmNtopWidget,				fieldTextF,
@@ -339,7 +339,7 @@ DBInt UIRelateData (DBObjData *data, DBObjRecord *relRec)
 														XmNlabelString,			string,
 														NULL);
 		XmStringFree (string);
-		string = XmStringCreate ("Select",UICharSetBold);
+		string = XmStringCreate ((char *) "Select",UICharSetBold);
 		button = XtVaCreateManagedWidget (UIRelateJoinFieldButton + 1,xmPushButtonGadgetClass,mainForm,
 														XmNtopAttachment,			XmATTACH_OPPOSITE_WIDGET,
 														XmNtopWidget,				fieldTextF,
@@ -358,7 +358,7 @@ DBInt UIRelateData (DBObjData *data, DBObjRecord *relRec)
 		XtAddCallback (button,XmNactivateCallback,(XtCallbackProc) _UIRelateFieldSelectButtonCBK,(XtPointer) UIRelateJoinField);
 		XtSetSensitive (button,false);
 		}
-	
+
 	relateCLS.Initialize (data,relRec);
 	XmTextFieldSetString (XtNameToWidget (mainForm,UIRelateNameTextF),relateCLS.RelateNameSTR);
 	XmTextFieldSetString (XtNameToWidget (mainForm,UIRelateDataTextF),relateCLS.DataNameSTR);

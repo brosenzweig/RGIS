@@ -471,7 +471,7 @@ void RGISAnalysePointSubbasinStatsCBK (Widget widget, RGISWorkspace *workspace,X
 
 	tblData  = new DBObjData ("",DBTypeTable);
 	tblData->Document (DBDocGeoDomain,pntData->Document (DBDocGeoDomain));
-	tblData->Document (DBDocSubject,"Subbasin Statistics");
+	tblData->Document (DBDocSubject,(char *) "Subbasin Statistics");
 	if (UIDataHeaderForm (tblData))
 		{
 		UIPauseDialogOpen ((char *) "Calculating Statistics");

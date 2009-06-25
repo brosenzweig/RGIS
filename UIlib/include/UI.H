@@ -415,7 +415,7 @@ class UIAttribView : public DBObject
 		void Raise () const;
 	};
 
-#define UIAttribViewSTR "UIAttribView"
+#define UIAttribViewSTR ((char *) "UIAttribView")
 
 Widget UIInitialize (char *,char *,char *,UIMenuItem [],void *,int *argc, char *argv [],int,int,bool,bool);
 Widget UITopLevel (void);

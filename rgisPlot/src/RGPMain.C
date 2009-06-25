@@ -26,7 +26,7 @@ int main (int argc,char **argv)
 
 	{
 	int argPos, argNum = argc;
-	char charBuffer [RGPBufferSIZE], panelTitle [RGPBufferSIZE], *outFile = "rgisplot";
+	char charBuffer [RGPBufferSIZE], panelTitle [RGPBufferSIZE], *outFile = (char *) "rgisplot";
 	int panelRow, panelCol, panelRowNum,panelColNum, defaultLW;
 	DBInt dataNum, entryNum = 0;
 	DBInt ret, mode = 0, device = 0, format = 0, layout = 0;
@@ -122,7 +122,7 @@ int main (int argc,char **argv)
 		case 0: cpgopen ("/XWINDOW");	break;
 		case 1:
 			{
-			char *formatStrings [] = { "CPS", "GIF", "PPM" };
+			char *formatStrings [] = { (char *) "CPS", (char *) "GIF", (char *) "PPM" };
 			sprintf (charBuffer,layout == 0 ? "%s/V%s" : "%s/%s", outFile, formatStrings [format]);
 			cpgopen (charBuffer);
 			} break;
@@ -138,7 +138,7 @@ int main (int argc,char **argv)
 		else
 			if (RGPPrintError (mode,entryNum,"Panel layout input error")) goto Stop;
 		} while (true);
-	
+
 	RGPInitPenColors ();
 	cpgsubp (panelColNum,panelRowNum);
 	cpgqlw (&defaultLW);
@@ -209,8 +209,8 @@ int main (int argc,char **argv)
 			cpgslw (2);
 			cpgsch (2.5);
 			cpgmtxt ("T",1.5,0.5,0.5,panelTitle);
-			cpgslw (defaultLW);			
-			}	
+			cpgslw (defaultLW);
+			}
 Stop:
 	cpgend ();
 	return (ret);

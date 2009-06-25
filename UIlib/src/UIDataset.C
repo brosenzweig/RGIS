@@ -17,10 +17,10 @@ char *UIDatasetSubject ()
 	{
 	static Widget select = NULL;
 	DBDataset *dataset;
-	
-	if (select == NULL) select = UISelectionCreate ("Subjects");
+
+	if (select == NULL) select = UISelectionCreate ((char *) "Subjects");
 	dataset = UIDataset ();
-	
+
 	return (UISelectObject (select,(DBObjectLIST<DBObject> *) dataset->SubjectList ()));
 	}
 
@@ -29,10 +29,10 @@ char *UIDatasetGeoDomain ()
 	{
 	static Widget select = NULL;
 	DBDataset *dataset;
-	
-	if (select == NULL) select = UISelectionCreate ("Geographic Domains");
+
+	if (select == NULL) select = UISelectionCreate ((char *) "Geographic Domains");
 	dataset = UIDataset ();
-	
+
 	return (UISelectObject (select,(DBObjectLIST<DBObject> *) dataset->GeoDomainList ()));
 	}
 
@@ -49,14 +49,14 @@ static DBInt _UIDatasetMetaCond (const DBObject *obj)
 	if ((_UIDatasetSubject == (char *) NULL) && (_UIDatasetGeoDomain == (char *) NULL) && (_UIDatasetType == DBFault)) return (true);
 	if ((_UIDatasetSubject == (char *) NULL) && (_UIDatasetGeoDomain != (char *) NULL) && (_UIDatasetType == DBFault) &&
 		(strcmp (_UIDatasetGeoDomain,metaObj->GeoDomain ()) == 0)) return (true);
-	if ((_UIDatasetSubject != (char *) NULL) && (_UIDatasetGeoDomain == (char *) NULL) && (_UIDatasetType == DBFault) && 
+	if ((_UIDatasetSubject != (char *) NULL) && (_UIDatasetGeoDomain == (char *) NULL) && (_UIDatasetType == DBFault) &&
 		(strcmp (_UIDatasetSubject,metaObj->Subject ()) == 0))	return (true);
 	if ((_UIDatasetSubject != (char *) NULL) && (_UIDatasetGeoDomain != (char *) NULL) && (_UIDatasetType == DBFault) &&
 		(strcmp (_UIDatasetGeoDomain,metaObj->GeoDomain ()) == 0) &&
 		(strcmp (_UIDatasetSubject,metaObj->Subject ()) == 0))	return (true);
 	if ((_UIDatasetSubject == (char *) NULL) && (_UIDatasetGeoDomain != (char *) NULL) && (_UIDatasetType == metaObj->Type ()) &&
 		(strcmp (_UIDatasetGeoDomain,metaObj->GeoDomain ()) == 0)) return (true);
-	if ((_UIDatasetSubject != (char *) NULL) && (_UIDatasetGeoDomain == (char *) NULL) && (_UIDatasetType == metaObj->Type ()) && 
+	if ((_UIDatasetSubject != (char *) NULL) && (_UIDatasetGeoDomain == (char *) NULL) && (_UIDatasetType == metaObj->Type ()) &&
 		(strcmp (_UIDatasetSubject,metaObj->Subject ()) == 0))	return (true);
 	if ((_UIDatasetSubject != (char *) NULL) && (_UIDatasetGeoDomain != (char *) NULL) && (_UIDatasetType == metaObj->Type ()) &&
 		(strcmp (_UIDatasetGeoDomain,metaObj->GeoDomain ()) == 0) &&
@@ -74,10 +74,10 @@ DBObjMetaEntry *UIDatasetMetaData (char *subject,char *domain,DBInt type)
 	_UIDatasetGeoDomain = domain;
 	_UIDatasetSubject = subject;
 	_UIDatasetType = type;
- 
-	if (select == NULL) select = UISelectionCreate ("Meta Database");
+
+	if (select == NULL) select = UISelectionCreate ((char *) "Meta Database");
 	dataset = UIDataset ();
-	
+
 	dataName = UISelectObject (select,(DBObjectLIST<DBObject> *) dataset->MetaList (),_UIDatasetMetaCond);
 	if (dataName != (char *) NULL)	return (dataset->Meta (dataName));
 	return ((DBObjMetaEntry *) NULL);
@@ -99,8 +99,8 @@ DBObjData *UIDatasetSelectData (DBObjData *data)
 	char *dataName;
 	static Widget select = NULL;
 	DBDataset *dataset = UIDataset ();
-	
-	if (select == NULL) select = UISelectionCreate ("Dataset");
+
+	if (select == NULL) select = UISelectionCreate ((char *) "Dataset");
 
 	_UIExcludeData = data;
 	dataName = UISelectObject (select,(DBObjectLIST<DBObject> *) dataset->DataList (),_UIDatasetDataCond);
@@ -118,7 +118,7 @@ DBObjData *UIDatasetOpenData (char *subject,char *geoDomain,DBInt type)
 
 	{
 	DBObjMetaEntry *metaEntry;
-	
+
 	if ((metaEntry = UIDatasetMetaData (subject,geoDomain,type)) != (DBObjMetaEntry *) NULL)
 		{
 		DBObjData *data = new DBObjData ();

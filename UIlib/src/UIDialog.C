@@ -23,7 +23,7 @@ void UIMessage (char *message)
 		XmString messageString;
 
 	messageString = XmStringCreate (message,UICharSetNormal);
-	if (dialogWidget == NULL) 
+	if (dialogWidget == NULL)
 		{
 		dShell =  XtVaCreatePopupShell ("UIQuestionDialogShell",xmDialogShellWidgetClass,UITopLevel (),
 									XmNallowShellResize,			true,
@@ -33,9 +33,9 @@ void UIMessage (char *message)
 		dialogWidget = XtVaCreateManagedWidget ("UIWarningDialog",xmMessageBoxWidgetClass,dShell,
 									XmNnoResize,			true,
 									XmNautoUnmanage,		false,
-									XmNdialogTitle,		XmStringCreate ("Warning",UICharSetNormal),
+									XmNdialogTitle,		XmStringCreate ((char *) "Warning",UICharSetNormal),
 									XmNdialogStyle,		XmDIALOG_FULL_APPLICATION_MODAL,
-									XmNokLabelString,		XmStringCreate ("Accept",UICharSetNormal),
+									XmNokLabelString,		XmStringCreate ((char *) "Accept",UICharSetNormal),
 									XmNdialogType,			XmDIALOG_WARNING,
 									NULL);
 		XtAddCallback (dialogWidget,XmNokCallback,(XtCallbackProc) UIAuxSetBooleanTrueCBK,&answer);
@@ -59,8 +59,8 @@ int UIYesOrNo (char *message)
 	Widget dShell;
 	static Widget dialogWidget = NULL;
 	XmString messageString;
-	
-	if (dialogWidget == NULL) 
+
+	if (dialogWidget == NULL)
 		{
 		dShell =  XtVaCreatePopupShell ("UIQuestionDialogShell",xmDialogShellWidgetClass,UITopLevel (),
 									XmNallowShellResize,			true,
@@ -70,10 +70,10 @@ int UIYesOrNo (char *message)
 		dialogWidget = XtVaCreateManagedWidget ("UIQuestionDialog",xmMessageBoxWidgetClass,dShell,
 									XmNnoResize,			true,
 									XmNautoUnmanage,		false,
-									XmNdialogTitle,		XmStringCreate ("Question",UICharSetNormal),
+									XmNdialogTitle,		XmStringCreate ((char *) "Question",UICharSetNormal),
 									XmNdialogStyle,		XmDIALOG_FULL_APPLICATION_MODAL,
-									XmNokLabelString,		XmStringCreate ("Yes",UICharSetNormal),
-									XmNcancelLabelString,XmStringCreate ("No",UICharSetNormal),
+									XmNokLabelString,		XmStringCreate ((char *) "Yes",UICharSetNormal),
+									XmNcancelLabelString,XmStringCreate ((char *) "No",UICharSetNormal),
 									NULL);
 		XtAddCallback(dialogWidget,XmNokCallback,(XtCallbackProc) UIAuxSetBooleanTrueCBK,&answer);
 		XtAddCallback(dialogWidget,XmNokCallback,(XtCallbackProc) UILoopStopCBK,0);
