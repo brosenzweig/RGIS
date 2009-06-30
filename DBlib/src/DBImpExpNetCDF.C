@@ -1013,7 +1013,7 @@ DBInt DBImportNetCDF (DBObjData *data,const char *filename)
 	int rowNum = 0, colNum = 0, layerNum = 0, layerID, colID, rowID;
 	double *vector, *latitudes, *longitudes;
 	double *timeSteps;
-	double missingValue;
+	double missingValue, fillValue;
 	double scaleFactor, dataOffset;
 	DBCoordinate cellSize;
 	DBRegion extent;
@@ -1340,7 +1340,9 @@ DBInt DBImportNetCDF (DBObjData *data,const char *filename)
 				return (DBFault);
 				}
 			else varUnit [attlen] = '\0';
-			if ((status = nc_get_att_double (ncid,id, "missing_value", &missingValue)) != NC_NOERR) missingValue = -9999.0;
+			if ((status = nc_get_att_double (ncid, id, "_FillValue",    &fillValue))    != NC_NOERR) fillValue    = -9999.0;
+			if (((status = nc_get_att_double (ncid,id, "missing_value", &missingValue)) != NC_NOERR) ||
+			    CMmathEqualValues (fillValue, missingValue)) missingValue = -9999.0; // TODO I am not sure if it is a good idea.
 			if ((status = nc_get_att_double (ncid,id, "scale_factor",  &scaleFactor))  != NC_NOERR) scaleFactor  = 1.0;
 			if ((status = nc_get_att_double (ncid,id, "add_offset",    &dataOffset))   != NC_NOERR) dataOffset   = 0.0;
 			varid = id;
@@ -1446,10 +1448,12 @@ DBInt DBImportNetCDF (DBObjData *data,const char *filename)
 				nc_close (ncid);
 				return (DBFault);
 				}
+			for (colID = 0;colID < colNum;colID++)
+				vector [colID] = CMmathEqualValues (vector [colID], fillValue) ? missingValue : scaleFactor * vector [colID] + dataOffset;
 			if (longitudes [0] < longitudes [1])
-				for (colID = 0;colID < colNum;colID++) ((float *) (dataRec->Data ())) [colNum * rowID + colID] = scaleFactor * vector [colID]              + dataOffset;
+				for (colID = 0;colID < colNum;colID++) ((float *) (dataRec->Data ())) [colNum * rowID + colID] = vector [colID];
 			else
-				for (colID = 0;colID < colNum;colID++) ((float *) (dataRec->Data ())) [colNum * rowID + colID] = scaleFactor * vector [colNum - colID - 1] + dataOffset;
+				for (colID = 0;colID < colNum;colID++) ((float *) (dataRec->Data ())) [colNum * rowID + colID] = vector [colNum - colID - 1];
 			}
 		}
 	gridIO = new DBGridIO (data);
