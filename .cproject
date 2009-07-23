@@ -9,14 +9,10 @@
 <folderInfo id="preference.org.eclipse.cdt.managedbuilder.core.configurationDataProvider.2090464510." name="/" resourcePath="">
 <toolChain id="org.eclipse.cdt.build.core.prefbase.toolchain.1596308491" name="No ToolChain" resourceTypeBasedDiscovery="false" superClass="org.eclipse.cdt.build.core.prefbase.toolchain">
 <targetPlatform binaryParser="org.eclipse.cdt.core.GNU_ELF;org.eclipse.cdt.core.MachO;org.eclipse.cdt.core.ELF" id="org.eclipse.cdt.build.core.prefbase.toolchain.1596308491.2057384974" name=""/>
-<builder id="org.eclipse.cdt.build.core.settings.default.builder.697259889" keepEnvironmentInBuildfile="false" name="Gnu Make Builder" superClass="org.eclipse.cdt.build.core.settings.default.builder">
-<outputEntries>
-<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="outputPath" name=""/>
-</outputEntries>
-</builder>
+<builder id="org.eclipse.cdt.build.core.settings.default.builder.697259889" keepEnvironmentInBuildfile="false" name="Gnu Make Builder" superClass="org.eclipse.cdt.build.core.settings.default.builder"/>
 <tool id="org.eclipse.cdt.build.core.settings.holder.libs.771763664" name="holder for library settings" superClass="org.eclipse.cdt.build.core.settings.holder.libs"/>
 <tool id="org.eclipse.cdt.build.core.settings.holder.908274627" name="GNU C++" superClass="org.eclipse.cdt.build.core.settings.holder">
-<option id="org.eclipse.cdt.build.core.settings.holder.undef.incpaths.1590279028" name="Undefined Include Paths" superClass="org.eclipse.cdt.build.core.settings.holder.undef.incpaths" valueType="undefIncludePath">
+<option id="org.eclipse.cdt.build.core.settings.holder.undef.incpaths.1334861225" superClass="org.eclipse.cdt.build.core.settings.holder.undef.incpaths" valueType="undefIncludePath">
 <listOptionValue builtIn="false" value="/usr/include/c++/4.3/i486-linux-gnu"/>
 <listOptionValue builtIn="false" value="/home/balazs/Eclipse/RGIS/RGlib/include"/>
 <listOptionValue builtIn="false" value="/usr/include/c++/4.3"/>
@@ -31,14 +27,24 @@
 <listOptionValue builtIn="false" value="/home/balazs/Eclipse/RGIS/rgisPlot/include"/>
 <listOptionValue builtIn="false" value="/usr/lib/gcc/i486-linux-gnu/4.3.3/include-fixed"/>
 <listOptionValue builtIn="false" value="/home/balazs/Eclipse/RGIS/UIlib/include"/>
-<listOptionValue builtIn="false" value="/usr/local/include"/>
 <listOptionValue builtIn="false" value="/home/balazs/Eclipse/RGIS/MFlib/include"/>
+<listOptionValue builtIn="false" value="/usr/local/include"/>
 </option>
-<option id="org.eclipse.cdt.build.core.settings.holder.incpaths.2053997294" name="Include Paths" superClass="org.eclipse.cdt.build.core.settings.holder.incpaths"/>
+<option id="org.eclipse.cdt.build.core.settings.holder.incpaths.1710634769" superClass="org.eclipse.cdt.build.core.settings.holder.incpaths" valueType="includePath">
+<listOptionValue builtIn="false" value="&quot;${workspace_loc:/RGIS/Flib/include}&quot;"/>
+<listOptionValue builtIn="false" value="&quot;${workspace_loc:/RGIS/rgisPlot/include}&quot;"/>
+<listOptionValue builtIn="false" value="&quot;${workspace_loc:/RGIS/rCommands/include}&quot;"/>
+<listOptionValue builtIn="false" value="&quot;${workspace_loc:/RGIS/rGIS/include}&quot;"/>
+<listOptionValue builtIn="false" value="&quot;${workspace_loc:/RGIS/UIlib/include}&quot;"/>
+<listOptionValue builtIn="false" value="&quot;${workspace_loc:/RGIS/RGlib/include}&quot;"/>
+<listOptionValue builtIn="false" value="&quot;${workspace_loc:/RGIS/DBlib/include}&quot;"/>
+<listOptionValue builtIn="false" value="&quot;${workspace_loc:/RGIS/CMlib/include}&quot;"/>
+<listOptionValue builtIn="false" value="&quot;${workspace_loc:/RGIS/MFlib/include}&quot;"/>
+</option>
 <inputType id="org.eclipse.cdt.build.core.settings.holder.inType.1412343868" languageId="org.eclipse.cdt.core.g++" languageName="GNU C++" sourceContentType="org.eclipse.cdt.core.cxxSource,org.eclipse.cdt.core.cxxHeader" superClass="org.eclipse.cdt.build.core.settings.holder.inType"/>
 </tool>
 <tool id="org.eclipse.cdt.build.core.settings.holder.1934079396" name="GNU C" superClass="org.eclipse.cdt.build.core.settings.holder">
-<option id="org.eclipse.cdt.build.core.settings.holder.undef.incpaths.363005039" name="Undefined Include Paths" superClass="org.eclipse.cdt.build.core.settings.holder.undef.incpaths" valueType="undefIncludePath">
+<option id="org.eclipse.cdt.build.core.settings.holder.undef.incpaths.1863367062" superClass="org.eclipse.cdt.build.core.settings.holder.undef.incpaths" valueType="undefIncludePath">
 <listOptionValue builtIn="false" value="/usr/include/c++/4.3/i486-linux-gnu"/>
 <listOptionValue builtIn="false" value="/home/balazs/Eclipse/RGIS/RGlib/include"/>
 <listOptionValue builtIn="false" value="/usr/include/c++/4.3"/>
@@ -53,14 +59,24 @@
 <listOptionValue builtIn="false" value="/home/balazs/Eclipse/RGIS/rgisPlot/include"/>
 <listOptionValue builtIn="false" value="/usr/lib/gcc/i486-linux-gnu/4.3.3/include-fixed"/>
 <listOptionValue builtIn="false" value="/home/balazs/Eclipse/RGIS/UIlib/include"/>
-<listOptionValue builtIn="false" value="/usr/local/include"/>
 <listOptionValue builtIn="false" value="/home/balazs/Eclipse/RGIS/MFlib/include"/>
+<listOptionValue builtIn="false" value="/usr/local/include"/>
 </option>
-<option id="org.eclipse.cdt.build.core.settings.holder.incpaths.794432290" name="Include Paths" superClass="org.eclipse.cdt.build.core.settings.holder.incpaths"/>
+<option id="org.eclipse.cdt.build.core.settings.holder.incpaths.29338463" superClass="org.eclipse.cdt.build.core.settings.holder.incpaths" valueType="includePath">
+<listOptionValue builtIn="false" value="&quot;${workspace_loc:/RGIS/Flib/include}&quot;"/>
+<listOptionValue builtIn="false" value="&quot;${workspace_loc:/RGIS/rgisPlot/include}&quot;"/>
+<listOptionValue builtIn="false" value="&quot;${workspace_loc:/RGIS/rCommands/include}&quot;"/>
+<listOptionValue builtIn="false" value="&quot;${workspace_loc:/RGIS/rGIS/include}&quot;"/>
+<listOptionValue builtIn="false" value="&quot;${workspace_loc:/RGIS/UIlib/include}&quot;"/>
+<listOptionValue builtIn="false" value="&quot;${workspace_loc:/RGIS/RGlib/include}&quot;"/>
+<listOptionValue builtIn="false" value="&quot;${workspace_loc:/RGIS/DBlib/include}&quot;"/>
+<listOptionValue builtIn="false" value="&quot;${workspace_loc:/RGIS/CMlib/include}&quot;"/>
+<listOptionValue builtIn="false" value="&quot;${workspace_loc:/RGIS/MFlib/include}&quot;"/>
+</option>
 <inputType id="org.eclipse.cdt.build.core.settings.holder.inType.175791016" languageId="org.eclipse.cdt.core.gcc" languageName="GNU C" sourceContentType="org.eclipse.cdt.core.cSource,org.eclipse.cdt.core.cHeader" superClass="org.eclipse.cdt.build.core.settings.holder.inType"/>
 </tool>
 <tool id="org.eclipse.cdt.build.core.settings.holder.1464288362" name="Assembly" superClass="org.eclipse.cdt.build.core.settings.holder">
-<option id="org.eclipse.cdt.build.core.settings.holder.undef.incpaths.1717369074" name="Undefined Include Paths" superClass="org.eclipse.cdt.build.core.settings.holder.undef.incpaths" valueType="undefIncludePath">
+<option id="org.eclipse.cdt.build.core.settings.holder.undef.incpaths.1056494499" superClass="org.eclipse.cdt.build.core.settings.holder.undef.incpaths" valueType="undefIncludePath">
 <listOptionValue builtIn="false" value="/usr/include/c++/4.3/i486-linux-gnu"/>
 <listOptionValue builtIn="false" value="/home/balazs/Eclipse/RGIS/RGlib/include"/>
 <listOptionValue builtIn="false" value="/usr/include/c++/4.3"/>
@@ -75,10 +91,20 @@
 <listOptionValue builtIn="false" value="/home/balazs/Eclipse/RGIS/rgisPlot/include"/>
 <listOptionValue builtIn="false" value="/usr/lib/gcc/i486-linux-gnu/4.3.3/include-fixed"/>
 <listOptionValue builtIn="false" value="/home/balazs/Eclipse/RGIS/UIlib/include"/>
-<listOptionValue builtIn="false" value="/usr/local/include"/>
 <listOptionValue builtIn="false" value="/home/balazs/Eclipse/RGIS/MFlib/include"/>
+<listOptionValue builtIn="false" value="/usr/local/include"/>
 </option>
-<option id="org.eclipse.cdt.build.core.settings.holder.incpaths.193670243" name="Include Paths" superClass="org.eclipse.cdt.build.core.settings.holder.incpaths"/>
+<option id="org.eclipse.cdt.build.core.settings.holder.incpaths.501945710" superClass="org.eclipse.cdt.build.core.settings.holder.incpaths" valueType="includePath">
+<listOptionValue builtIn="false" value="&quot;${workspace_loc:/RGIS/Flib/include}&quot;"/>
+<listOptionValue builtIn="false" value="&quot;${workspace_loc:/RGIS/rgisPlot/include}&quot;"/>
+<listOptionValue builtIn="false" value="&quot;${workspace_loc:/RGIS/rCommands/include}&quot;"/>
+<listOptionValue builtIn="false" value="&quot;${workspace_loc:/RGIS/rGIS/include}&quot;"/>
+<listOptionValue builtIn="false" value="&quot;${workspace_loc:/RGIS/UIlib/include}&quot;"/>
+<listOptionValue builtIn="false" value="&quot;${workspace_loc:/RGIS/RGlib/include}&quot;"/>
+<listOptionValue builtIn="false" value="&quot;${workspace_loc:/RGIS/DBlib/include}&quot;"/>
+<listOptionValue builtIn="false" value="&quot;${workspace_loc:/RGIS/CMlib/include}&quot;"/>
+<listOptionValue builtIn="false" value="&quot;${workspace_loc:/RGIS/MFlib/include}&quot;"/>
+</option>
 <inputType id="org.eclipse.cdt.build.core.settings.holder.inType.318078339" languageId="org.eclipse.cdt.core.assembly" languageName="Assembly" sourceContentType="org.eclipse.cdt.core.asmSource" superClass="org.eclipse.cdt.build.core.settings.holder.inType"/>
 </tool>
 </toolChain>
