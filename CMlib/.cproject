@@ -17,7 +17,7 @@
 <listOptionValue builtIn="false" value="/usr/lib/gcc/i686-apple-darwin9/4.0.1/include"/>
 <listOptionValue builtIn="false" value="/usr/include"/>
 </option>
-<option id="org.eclipse.cdt.build.core.settings.holder.incpaths.718540494" name="Include Paths" superClass="org.eclipse.cdt.build.core.settings.holder.incpaths" valueType="includePath"/>
+<option id="org.eclipse.cdt.build.core.settings.holder.incpaths.718540494" name="Include Paths" superClass="org.eclipse.cdt.build.core.settings.holder.incpaths"/>
 <inputType id="org.eclipse.cdt.build.core.settings.holder.inType.2109233258" languageId="org.eclipse.cdt.core.g++" languageName="GNU C++" sourceContentType="org.eclipse.cdt.core.cxxSource,org.eclipse.cdt.core.cxxHeader" superClass="org.eclipse.cdt.build.core.settings.holder.inType"/>
 </tool>
 <tool id="org.eclipse.cdt.build.core.settings.holder.757461720" name="GNU C" superClass="org.eclipse.cdt.build.core.settings.holder">
@@ -26,16 +26,18 @@
 <listOptionValue builtIn="false" value="/usr/lib/gcc/i686-apple-darwin9/4.0.1/include"/>
 <listOptionValue builtIn="false" value="/usr/include"/>
 </option>
-<option id="org.eclipse.cdt.build.core.settings.holder.incpaths.2011267689" name="Include Paths" superClass="org.eclipse.cdt.build.core.settings.holder.incpaths" valueType="includePath"/>
+<option id="org.eclipse.cdt.build.core.settings.holder.incpaths.2011267689" name="Include Paths" superClass="org.eclipse.cdt.build.core.settings.holder.incpaths"/>
 <inputType id="org.eclipse.cdt.build.core.settings.holder.inType.1744567755" languageId="org.eclipse.cdt.core.gcc" languageName="GNU C" sourceContentType="org.eclipse.cdt.core.cSource,org.eclipse.cdt.core.cHeader" superClass="org.eclipse.cdt.build.core.settings.holder.inType"/>
 </tool>
 <tool id="org.eclipse.cdt.build.core.settings.holder.639190066" name="Assembly" superClass="org.eclipse.cdt.build.core.settings.holder">
 <option id="org.eclipse.cdt.build.core.settings.holder.undef.incpaths.983486576" name="Undefined Include Paths" superClass="org.eclipse.cdt.build.core.settings.holder.undef.incpaths" valueType="undefIncludePath">
-<listOptionValue builtIn="false" value="/usr/local/include"/>
-<listOptionValue builtIn="false" value="/usr/lib/gcc/i686-apple-darwin9/4.0.1/include"/>
+<listOptionValue builtIn="false" value="/usr/lib/gcc/i486-linux-gnu/4.3.3/include"/>
 <listOptionValue builtIn="false" value="/usr/include"/>
+<listOptionValue builtIn="false" value="/home/balazs/Eclipse/CMlib/include"/>
+<listOptionValue builtIn="false" value="/usr/lib/gcc/i486-linux-gnu/4.3.3/include-fixed"/>
+<listOptionValue builtIn="false" value="/usr/local/include"/>
 </option>
-<option id="org.eclipse.cdt.build.core.settings.holder.incpaths.1531154800" name="Include Paths" superClass="org.eclipse.cdt.build.core.settings.holder.incpaths" valueType="includePath"/>
+<option id="org.eclipse.cdt.build.core.settings.holder.incpaths.1531154800" name="Include Paths" superClass="org.eclipse.cdt.build.core.settings.holder.incpaths"/>
 <inputType id="org.eclipse.cdt.build.core.settings.holder.inType.1678564366" languageId="org.eclipse.cdt.core.assembly" languageName="Assembly" sourceContentType="org.eclipse.cdt.core.asmSource" superClass="org.eclipse.cdt.build.core.settings.holder.inType"/>
 </tool>
 </toolChain>
