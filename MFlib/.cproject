@@ -17,44 +17,29 @@
 <tool id="org.eclipse.cdt.build.core.settings.holder.libs.1960376233" name="holder for library settings" superClass="org.eclipse.cdt.build.core.settings.holder.libs"/>
 <tool id="org.eclipse.cdt.build.core.settings.holder.620493840" name="GNU C++" superClass="org.eclipse.cdt.build.core.settings.holder">
 <option id="org.eclipse.cdt.build.core.settings.holder.undef.incpaths.409203944" name="Undefined Include Paths" superClass="org.eclipse.cdt.build.core.settings.holder.undef.incpaths" valueType="undefIncludePath">
-<listOptionValue builtIn="false" value="/System/Library/Frameworks"/>
 <listOptionValue builtIn="false" value="/usr/local/include"/>
-<listOptionValue builtIn="false" value="/usr/lib/gcc/i686-apple-darwin8/4.0.1/include"/>
 <listOptionValue builtIn="false" value="/usr/lib/gcc/i686-apple-darwin9/4.0.1/include"/>
-<listOptionValue builtIn="false" value="/Library/Frameworks"/>
+<listOptionValue builtIn="false" value="/usr/include"/>
 </option>
-<option id="org.eclipse.cdt.build.core.settings.holder.incpaths.1668988456" name="Include Paths" superClass="org.eclipse.cdt.build.core.settings.holder.incpaths" valueType="includePath">
-<listOptionValue builtIn="false" value="&quot;${workspace_loc:/CMlib/include}&quot;"/>
-<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MFlib/include}&quot;"/>
-</option>
+<option id="org.eclipse.cdt.build.core.settings.holder.incpaths.1668988456" name="Include Paths" superClass="org.eclipse.cdt.build.core.settings.holder.incpaths" valueType="includePath"/>
 <inputType id="org.eclipse.cdt.build.core.settings.holder.inType.333758944" languageId="org.eclipse.cdt.core.g++" languageName="GNU C++" sourceContentType="org.eclipse.cdt.core.cxxSource,org.eclipse.cdt.core.cxxHeader" superClass="org.eclipse.cdt.build.core.settings.holder.inType"/>
 </tool>
 <tool id="org.eclipse.cdt.build.core.settings.holder.260333786" name="GNU C" superClass="org.eclipse.cdt.build.core.settings.holder">
 <option id="org.eclipse.cdt.build.core.settings.holder.undef.incpaths.2052200064" name="Undefined Include Paths" superClass="org.eclipse.cdt.build.core.settings.holder.undef.incpaths" valueType="undefIncludePath">
-<listOptionValue builtIn="false" value="/System/Library/Frameworks"/>
 <listOptionValue builtIn="false" value="/usr/local/include"/>
-<listOptionValue builtIn="false" value="/usr/lib/gcc/i686-apple-darwin8/4.0.1/include"/>
 <listOptionValue builtIn="false" value="/usr/lib/gcc/i686-apple-darwin9/4.0.1/include"/>
-<listOptionValue builtIn="false" value="/Library/Frameworks"/>
+<listOptionValue builtIn="false" value="/usr/include"/>
 </option>
-<option id="org.eclipse.cdt.build.core.settings.holder.incpaths.1122533393" name="Include Paths" superClass="org.eclipse.cdt.build.core.settings.holder.incpaths" valueType="includePath">
-<listOptionValue builtIn="false" value="&quot;${workspace_loc:/CMlib/include}&quot;"/>
-<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MFlib/include}&quot;"/>
-</option>
+<option id="org.eclipse.cdt.build.core.settings.holder.incpaths.1122533393" name="Include Paths" superClass="org.eclipse.cdt.build.core.settings.holder.incpaths" valueType="includePath"/>
 <inputType id="org.eclipse.cdt.build.core.settings.holder.inType.45180931" languageId="org.eclipse.cdt.core.gcc" languageName="GNU C" sourceContentType="org.eclipse.cdt.core.cSource,org.eclipse.cdt.core.cHeader" superClass="org.eclipse.cdt.build.core.settings.holder.inType"/>
 </tool>
 <tool id="org.eclipse.cdt.build.core.settings.holder.874946568" name="Assembly" superClass="org.eclipse.cdt.build.core.settings.holder">
 <option id="org.eclipse.cdt.build.core.settings.holder.undef.incpaths.1252687243" name="Undefined Include Paths" superClass="org.eclipse.cdt.build.core.settings.holder.undef.incpaths" valueType="undefIncludePath">
-<listOptionValue builtIn="false" value="/System/Library/Frameworks"/>
 <listOptionValue builtIn="false" value="/usr/local/include"/>
-<listOptionValue builtIn="false" value="/usr/lib/gcc/i686-apple-darwin8/4.0.1/include"/>
 <listOptionValue builtIn="false" value="/usr/lib/gcc/i686-apple-darwin9/4.0.1/include"/>
-<listOptionValue builtIn="false" value="/Library/Frameworks"/>
+<listOptionValue builtIn="false" value="/usr/include"/>
 </option>
-<option id="org.eclipse.cdt.build.core.settings.holder.incpaths.823506504" name="Include Paths" superClass="org.eclipse.cdt.build.core.settings.holder.incpaths" valueType="includePath">
-<listOptionValue builtIn="false" value="&quot;${workspace_loc:/CMlib/include}&quot;"/>
-<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MFlib/include}&quot;"/>
-</option>
+<option id="org.eclipse.cdt.build.core.settings.holder.incpaths.823506504" name="Include Paths" superClass="org.eclipse.cdt.build.core.settings.holder.incpaths" valueType="includePath"/>
 <inputType id="org.eclipse.cdt.build.core.settings.holder.inType.2090951753" languageId="org.eclipse.cdt.core.assembly" languageName="Assembly" sourceContentType="org.eclipse.cdt.core.asmSource" superClass="org.eclipse.cdt.build.core.settings.holder.inType"/>
 </tool>
 </toolChain>
