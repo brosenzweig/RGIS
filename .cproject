@@ -24,6 +24,7 @@
 <listOptionValue builtIn="false" value="/sw/include"/>
 <listOptionValue builtIn="false" value="/usr/lib/gcc/i686-apple-darwin9/4.0.1/include"/>
 <listOptionValue builtIn="false" value="/usr/include/c++/4.0.0/i686-apple-darwin9"/>
+<listOptionValue builtIn="false" value="/usr/include"/>
 <listOptionValue builtIn="false" value="/opt/local/include"/>
 <listOptionValue builtIn="false" value="/sw/lib/pgplot"/>
 </option>
@@ -39,6 +40,7 @@
 <listOptionValue builtIn="false" value="/sw/include"/>
 <listOptionValue builtIn="false" value="/usr/lib/gcc/i686-apple-darwin9/4.0.1/include"/>
 <listOptionValue builtIn="false" value="/usr/include/c++/4.0.0/i686-apple-darwin9"/>
+<listOptionValue builtIn="false" value="/usr/include"/>
 <listOptionValue builtIn="false" value="/opt/local/include"/>
 <listOptionValue builtIn="false" value="/sw/lib/pgplot"/>
 </option>
@@ -54,6 +56,7 @@
 <listOptionValue builtIn="false" value="/sw/include"/>
 <listOptionValue builtIn="false" value="/usr/lib/gcc/i686-apple-darwin9/4.0.1/include"/>
 <listOptionValue builtIn="false" value="/usr/include/c++/4.0.0/i686-apple-darwin9"/>
+<listOptionValue builtIn="false" value="/usr/include"/>
 <listOptionValue builtIn="false" value="/opt/local/include"/>
 <listOptionValue builtIn="false" value="/sw/lib/pgplot"/>
 </option>
