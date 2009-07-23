@@ -50,6 +50,7 @@ UTILS = $(BIN)/dsAggregate\
         $(BIN)/netCellSlopes\
         $(BIN)/netUpstreamAvg\
         $(BIN)/netErosion\
+        $(BIN)/netImportASCII\
         $(BIN)/netTransfer\
         $(BIN)/netDefragment\
         $(BIN)/netCells2Grid\
