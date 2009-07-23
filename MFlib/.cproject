@@ -25,7 +25,7 @@
 <listOptionValue builtIn="false" value="/usr/local/include"/>
 </option>
 <option id="org.eclipse.cdt.build.core.settings.holder.incpaths.1668988456" name="Include Paths" superClass="org.eclipse.cdt.build.core.settings.holder.incpaths" valueType="includePath">
-<listOptionValue builtIn="false" value="&quot;${workspace_loc:/CMlib/include}&quot;"/>
+<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MFlib/include}&quot;"/>
 </option>
 <inputType id="org.eclipse.cdt.build.core.settings.holder.inType.333758944" languageId="org.eclipse.cdt.core.g++" languageName="GNU C++" sourceContentType="org.eclipse.cdt.core.cxxSource,org.eclipse.cdt.core.cxxHeader" superClass="org.eclipse.cdt.build.core.settings.holder.inType"/>
 </tool>
@@ -39,7 +39,7 @@
 <listOptionValue builtIn="false" value="/usr/local/include"/>
 </option>
 <option id="org.eclipse.cdt.build.core.settings.holder.incpaths.1122533393" name="Include Paths" superClass="org.eclipse.cdt.build.core.settings.holder.incpaths" valueType="includePath">
-<listOptionValue builtIn="false" value="&quot;${workspace_loc:/CMlib/include}&quot;"/>
+<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MFlib/include}&quot;"/>
 </option>
 <inputType id="org.eclipse.cdt.build.core.settings.holder.inType.45180931" languageId="org.eclipse.cdt.core.gcc" languageName="GNU C" sourceContentType="org.eclipse.cdt.core.cSource,org.eclipse.cdt.core.cHeader" superClass="org.eclipse.cdt.build.core.settings.holder.inType"/>
 </tool>
@@ -53,7 +53,7 @@
 <listOptionValue builtIn="false" value="/usr/local/include"/>
 </option>
 <option id="org.eclipse.cdt.build.core.settings.holder.incpaths.823506504" name="Include Paths" superClass="org.eclipse.cdt.build.core.settings.holder.incpaths" valueType="includePath">
-<listOptionValue builtIn="false" value="&quot;${workspace_loc:/CMlib/include}&quot;"/>
+<listOptionValue builtIn="false" value="&quot;${workspace_loc:/MFlib/include}&quot;"/>
 </option>
 <inputType id="org.eclipse.cdt.build.core.settings.holder.inType.2090951753" languageId="org.eclipse.cdt.core.assembly" languageName="Assembly" sourceContentType="org.eclipse.cdt.core.asmSource" superClass="org.eclipse.cdt.build.core.settings.holder.inType"/>
 </tool>
