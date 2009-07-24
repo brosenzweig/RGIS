@@ -113,7 +113,7 @@ float  MFModelGetYCoord    (int);
 float  MFModelGetLongitude (int);
 float  MFModelGetLatitude  (int);
 int    MFModelGetDownLink  (int, size_t);
-float  MFModelGetArea      (int); 
+float  MFModelGetArea      (int);
 float  MFModelGetLength    (int);
 float  MFModelGet_dt       ();
 void   MFDefEntering       (char *);
@@ -125,6 +125,7 @@ bool   MFVarWriteHeader (MFVarHeader_t *,FILE *);
 
 typedef struct MFObject_s {
 	int ID;
+	bool   State, Locked;
 	short  DLinkNum, ULinkNum;
 	float XCoord, YCoord, Lon, Lat;
 	float Area, Length;
@@ -150,8 +151,8 @@ int   MFDateGetCurrentDay   ();
 int   MFDateGetCurrentMonth ();
 int   MFDateGetCurrentYear  ();
 
-float MFModelGetArea (int );	
-	
+float MFModelGetArea (int );
+
 char *MFDateAdvance ();
 bool  MFDateSetStart   (char *);
 bool  MFDateSetEnd     (char *);
@@ -163,7 +164,7 @@ char *MFDateTimeStepUnit   (int);
 int   MFDateTimeStepLength ();
 void  MFDateRewind ();
 
-float MFRungeKutta (float,float,float,float (*deltaFunc) (float,float)); 
+float MFRungeKutta (float,float,float,float (*deltaFunc) (float,float));
 
 #if defined(__cplusplus)
 }

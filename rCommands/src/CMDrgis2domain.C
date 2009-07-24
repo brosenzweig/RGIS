@@ -34,7 +34,7 @@ int main (int argc,char *argv [])
 			{
 			if ((argNum = CMargShiftLeft (argPos,argv,argNum)) <= argPos)
 				{ CMmsgPrint (CMmsgUsrError,"Missing length correction!\n");  return (CMfailed); }
-			if (sscanf (argv [argPos],"%lf", &lCorrection) != 1) 
+			if (sscanf (argv [argPos],"%lf", &lCorrection) != 1)
 				{ CMmsgPrint (CMmsgUsrError, "Invalid length correction!\n"); return (CMfailed); }
 			if ((argNum = CMargShiftLeft (argPos,argv,argNum)) <= argPos) break;
 			continue;
@@ -59,7 +59,7 @@ int main (int argc,char *argv [])
 
 	data = new DBObjData ();
 	ret = (argNum > 1) && (strcmp (argv [1],"-") != 0) ? data->Read (argv [1]) : data->Read (stdin);
-	
+
 	if ((domain = (MFDomain_t *) calloc (1,sizeof (MFDomain_t))) != (MFDomain_t *) NULL)
 		{
 		domain->Objects = (MFObject_t *) NULL;
@@ -77,6 +77,8 @@ int main (int argc,char *argv [])
 					objRec = pntIO->Item (objID);
 					coord = pntIO->Coordinate (objRec);
 					domain->Objects [objID].ID = objRec->RowID ();
+					domain->Objects [objID].State    = false;
+					domain->Objects [objID].Locked   = false;
 					domain->Objects [objID].DLinkNum = 0;
 					domain->Objects [objID].ULinkNum = 0;
 					domain->Objects [objID].DLinks = (size_t *) NULL;
@@ -109,6 +111,8 @@ int main (int argc,char *argv [])
 					objRec = netIO->Cell (objID);
 					coord = netIO->Center (objRec);
 					domain->Objects [objID].ID = objRec->RowID ();
+					domain->Objects [objID].State    = false;
+					domain->Objects [objID].Locked   = false;
 					domain->Objects [objID].DLinkNum = 0;
 					domain->Objects [objID].ULinkNum = 0;
 					domain->Objects [objID].XCoord = domain->Objects [objID].Lon = coord.X;
@@ -120,7 +124,7 @@ int main (int argc,char *argv [])
 						size = (domain->Objects [objID].DLinkNum + 1) * sizeof (size_t);
 						if ((domain->Objects [objID].DLinks = (size_t *) realloc (domain->Objects [objID].DLinks,size)) == (size_t *) NULL)
 							{ perror ("Memory Allocation Error"); MFDomainFree (domain);	goto Stop; }
-						domain->Objects [objID].DLinks [domain->Objects [objID].DLinkNum] = nextCell->RowID ();	
+						domain->Objects [objID].DLinks [domain->Objects [objID].DLinkNum] = nextCell->RowID ();
 						domain->Objects [objID].DLinkNum++;
 					}
 					for (dir = 0;dir < 8;++dir)
@@ -129,7 +133,7 @@ int main (int argc,char *argv [])
 							size = (domain->Objects [objID].ULinkNum + 1) * sizeof (size_t);
 							if ((domain->Objects [objID].ULinks = (size_t *) realloc (domain->Objects [objID].ULinks,size)) == (size_t *) NULL)
 								{ perror ("Memory Allocation Error"); MFDomainFree (domain);goto Stop; }
-							domain->Objects [objID].ULinks [domain->Objects [objID].ULinkNum] = nextCell->RowID ();	
+							domain->Objects [objID].ULinks [domain->Objects [objID].ULinkNum] = nextCell->RowID ();
 							domain->Objects [objID].ULinkNum++;
 							}
 					}
