@@ -48,7 +48,7 @@ static DBInt modifyDate (DBObjData *dbData, int timeStep,
 		    ((stepDate.Minute () > 0) && (gridIO->LayerNum () > 365 * 24 * 60 / interval)))
 			{
 			//todo: handle this better!
-			printf("(Climatology)There seems to be more than a year's worth of layers!\n"); 
+			printf("(Climatology)There seems to be more than a year's worth of layers!\n");
 			printf("(Climatology)I suggest you define the year, or change the step interval\n");
 			delete gridIO;
 			return (CMfailed);
@@ -60,7 +60,7 @@ static DBInt modifyDate (DBObjData *dbData, int timeStep,
 	//every moth of a year and so on.. the first layer will indicate everything down to the
 	//minute, and the next layers will omit anything that isnt different.
 
-	date.Set (year,month,day,hour,minute); 
+	date.Set (year,month,day,hour,minute);
 
 	for (layerID = 0;layerID < gridIO->LayerNum ();++layerID)
 		{
@@ -76,25 +76,27 @@ int main(int argc, char* argv[])
 
 	{
 	int argPos, argNum = argc, ret, verbose = false;
-	int startYear   = DBDefaultMissingIntVal;
-	int startMonth  = DBDefaultMissingIntVal;
-	int startDay    = DBDefaultMissingIntVal;
-	int startHour   = DBDefaultMissingIntVal;
-	int startMinute = DBDefaultMissingIntVal;
+	int startYear    = DBDefaultMissingIntVal;
+	int startMonth   = DBDefaultMissingIntVal;
+	int startDay     = DBDefaultMissingIntVal;
+	int startHour    = DBDefaultMissingIntVal;
+	int startMinute  = DBDefaultMissingIntVal;
 	int timeInterval = 1; // this is defined by the -n field
+	int shadeSet     = DBDataFlagDispModeContGreyScale;
+	bool changeShadeSet = false;
 	DBObjData *dbData;
 	DBInt timeStep = DBFault;
-  
+
 	for (argPos = 1;argPos < argNum; )
 		{
-		if (CMargTest (argv [argPos],"-s","--step"))
+		if (CMargTest (argv [argPos],"-e","--step"))
 			{
 			const char *timeStepStr [] = { "year", "month", "day", "hour", "minute", (char *) NULL };
 			int timeStepCodes [] = { DBTimeStepYear,
 											 DBTimeStepMonth,
 											 DBTimeStepDay,
 											 DBTimeStepHour,
-											 DBTimeStepMinute }; 
+											 DBTimeStepMinute };
 			if ((argNum = CMargShiftLeft (argPos,argv,argNum)) <= argPos)
 				{ CMmsgPrint (CMmsgUsrError,"Time step variable step is not defined!\n"); return (CMfailed); }
 			if ((timeStep = CMoptLookup (timeStepStr,argv[argPos],true)) == DBFault)
@@ -159,6 +161,24 @@ int main(int argc, char* argv[])
 			if ((argNum = CMargShiftLeft (argPos,argv,argNum)) <= argPos) break;
 			continue;
 			}
+		if (CMargTest (argv [argPos],"-s","--shadeset"))
+			{
+			int shadeCodes [] = {	DBDataFlagDispModeContStandard,
+			                        DBDataFlagDispModeContGreyScale,
+			                        DBDataFlagDispModeContBlueScale,
+			                        DBDataFlagDispModeContBlueRed,
+			                        DBDataFlagDispModeContElevation };
+			const char *shadeSets [] = { "standard","grey","blue","blue-to-red","elevation", (char *) NULL };
+
+			if ((argNum = CMargShiftLeft (argPos,argv,argNum)) <= argPos)
+				{ CMmsgPrint (CMmsgUsrError,"Missing shadeset!\n");     return (CMfailed); }
+			if ((shadeSet = CMoptLookup (shadeSets,argv [argPos],true)) == CMfailed)
+				{ CMmsgPrint (CMmsgUsrError,"Invalid shadeset!\n");     return (CMfailed); }
+			shadeSet = shadeCodes [shadeSet];
+			changeShadeSet = true;
+			if ((argNum = CMargShiftLeft (argPos,argv,argNum)) <= argPos) break;
+			continue;
+			}
 		if (CMargTest (argv [argPos],"-h","--help"))
 			{
 			CMmsgPrint (CMmsgInfo,"%s [options] <input grid> <output grid>\n",CMprgName(argv[0]));
@@ -167,7 +187,8 @@ int main(int argc, char* argv[])
 			CMmsgPrint (CMmsgInfo,"     -d,--day       [beginning day]\n");
 			CMmsgPrint (CMmsgInfo,"     -r,--hour      [beginning hour]\n");
 			CMmsgPrint (CMmsgInfo,"     -i,--minute    [beginning minute]\n");
-			CMmsgPrint (CMmsgInfo,"     -s,--step      [year|month|day|hour|minute]\n");
+			CMmsgPrint (CMmsgInfo,"     -e,--step      [year|month|day|hour|minute]\n");
+			CMmsgPrint (CMmsgInfo,"     -s,--shadeset  [standard|grey|blue|blue-to-red|elevation]\n");
 			CMmsgPrint (CMmsgInfo,"     -n,--number    [number of intervals]\n");
 			CMmsgPrint (CMmsgInfo,"     -V,--verbose\n");
 			CMmsgPrint (CMmsgInfo,"     -h,--help\n");
@@ -177,7 +198,7 @@ int main(int argc, char* argv[])
 			{ CMmsgPrint (CMmsgUsrError,"Unknown option: %s!\n",argv [argPos]); return (CMfailed); }
 			argPos++;
 			}
-  
+
 	switch (timeStep)
 		{
 		case DBFault: CMmsgPrint (CMmsgUsrError,"Missing time step!\n"); return (CMfailed);
@@ -194,9 +215,13 @@ int main(int argc, char* argv[])
 	dbData = new DBObjData ();
 	ret = (argNum > 1) && (strcmp (argv [1],"-") != 0) ? dbData->Read (argv [1]) : dbData->Read (stdin);
 	if ((ret == DBFault) ||
-		 ((dbData->Type () != DBTypeGridContinuous) && 
-		 (dbData->Type () != DBTypeGridDiscrete))) { delete dbData; return (CMfailed); }
-
+		 ((dbData->Type () != DBTypeGridContinuous) &&
+		  (dbData->Type () != DBTypeGridDiscrete))) { delete dbData; return (CMfailed); }
+	if (changeShadeSet && (dbData->Type () == DBTypeGridContinuous))
+		{
+		dbData->Flags (DBDataFlagDispModeContShadeSets,DBClear);
+		dbData->Flags (shadeSet, DBSet);
+		}
 	if (modifyDate(dbData,timeStep,startYear,startMonth,startDay,startHour,startMinute,timeInterval)
 		  	== DBSuccess)
 		ret = (argNum > 2) && (strcmp (argv [2],"-") != 0) ? dbData->Write (argv [2]) : dbData->Write (stdout);
