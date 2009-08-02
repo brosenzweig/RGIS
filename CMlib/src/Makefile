@@ -12,7 +12,8 @@ OBJS = $(OBJ)/cmArgParse.o\
        $(OBJ)/cmBuffer.o\
        $(OBJ)/cmMath.o\
        $(OBJ)/cmMessage.o\
-       $(OBJ)/cmString.o
+       $(OBJ)/cmString.o\
+       $(OBJ)/cmThreads.o
 
 all: $(TARGET)
 
