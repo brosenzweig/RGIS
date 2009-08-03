@@ -104,6 +104,7 @@ CMthreadTeam_p CMthreadTeamCreate (size_t threadNum) {
 	pthread_attr_init (&thread_attr);
 	pthread_attr_setdetachstate(&thread_attr, PTHREAD_CREATE_JOINABLE);
 
+	pthread_mutex_lock (&(team->Mutex));
 	for (threadId = 0; threadId < team->ThreadNum; ++threadId) {
 		team->Threads [threadId].Id             = threadId;
 		team->Threads [threadId].CompletedTasks = 0;
@@ -115,11 +116,10 @@ CMthreadTeam_p CMthreadTeamCreate (size_t threadNum) {
 			return ((CMthreadTeam_p) NULL);
 		}
 		printf ("Master: Waiting for signal from thread# %d\n",(int) team->Threads [threadId].Id);
-		pthread_mutex_lock     (&(team->Mutex));
 		pthread_cond_wait      (&(team->SlaveSignal), &(team->Mutex));
-		pthread_mutex_unlock   (&(team->Mutex));
 		printf ("Master: Received signal from thread# %d\n",(int) team->Threads [threadId].Id);
 	}
+	pthread_mutex_unlock (&(team->Mutex));
 	pthread_attr_destroy(&thread_attr);
 	return (team);
 }
