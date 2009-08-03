@@ -47,34 +47,43 @@ void CMthreadJobDestroy (CMthreadJob_p job) {
 static void *_CMthreadWork (void *dataPtr) {
 	CMthreadData_p data = (CMthreadData_p) dataPtr;
 	size_t taskId;
+	bool cont;
 	CMthreadTeam_p team = (CMthreadTeam_p) data->TeamPtr;
+	CMthreadJob_p  job;
 
 	pthread_mutex_lock   (&(team->Mutex));
 	pthread_cond_signal  (&(team->SlaveSignal));
 	pthread_mutex_unlock (&(team->Mutex));
-	printf ("Thread#%d: Up and running\n",(int) data->Id);
 
 	 while (true) {
-		printf ("I am thread#%d waiting for Begin condition\n",(int) data->Id);
 		pthread_mutex_lock   (&(team->Mutex));
+		printf ("Thread#%d: Waiting for Begin condition\n",(int) data->Id);
 		pthread_cond_wait    (&(team->MasterSignal), &(team->Mutex));
+		job = team->Job;
 		pthread_mutex_unlock (&(team->Mutex));
-		printf ("I am thread#%d waiting for pick up some work\n",(int) data->Id);
-		if (team->Job == (CMthreadJob_p) NULL) break;
-		while (team->Job->LastId < team->Job->TaskNum) {
+		if (job == (CMthreadJob_p) NULL) {
+			printf ("Thread#%d: Quitting\n",(int) data->Id);
+			break;
+		}
+		cont = true;
+		do {
 			pthread_mutex_lock (&(team->Mutex));
-			taskId = team->Job->LastId;
-			team->Job->LastId++;
-			if (team->Job->LastId == team->Job->TaskNum) {
-				printf ("I am thread#%d sending completation signal to master\n",(int) data->Id);
+			taskId = job->LastId;
+			job->LastId++;
+			if (job->LastId == job->TaskNum) {
+				printf ("Thread#%d: Sending completation signal to master\n",(int) data->Id);
 				pthread_cond_signal  (&team->SlaveSignal);
 			}
 			pthread_mutex_unlock (&(team->Mutex));
-//			printf ("I am thread#%d working on task# %d\n",(int) data->Id,(int)  taskId);
-			team->Job->UserFunc (team->Job->UserData, taskId);
-//			printf ("I am thread#%d finished task# %d\n",  (int) data->Id,(int)  taskId);
-			data->CompletedTasks++;
-		}
+			if (taskId  < job->TaskNum) {
+				job->UserFunc (job->UserData, taskId);
+				data->CompletedTasks++;
+			}
+			else {
+				cont = false;
+				printf ("Thread#%d: Job Finished\n",(int) data->Id);
+			}
+		} while (cont);
 	}
 	pthread_exit((void *) 0);
 }
@@ -115,9 +124,7 @@ CMthreadTeam_p CMthreadTeamCreate (size_t threadNum) {
 			free (team);
 			return ((CMthreadTeam_p) NULL);
 		}
-		printf ("Master: Waiting for signal from thread# %d\n",(int) team->Threads [threadId].Id);
 		pthread_cond_wait      (&(team->SlaveSignal), &(team->Mutex));
-		printf ("Master: Received signal from thread# %d\n",(int) team->Threads [threadId].Id);
 	}
 	pthread_mutex_unlock (&(team->Mutex));
 	pthread_attr_destroy(&thread_attr);
@@ -126,13 +133,13 @@ CMthreadTeam_p CMthreadTeamCreate (size_t threadNum) {
 
 void CMthreadTeamJobExecute (CMthreadTeam_p team, CMthreadJob_p job) {
 	pthread_mutex_lock     (&(team->Mutex));
-	printf ("I am master broadcasting a begin signal\n");
+	printf ("Master: broadcasting a begin signal\n");
 	team->Job   = job;
 	job->LastId = 0;
 
 	pthread_cond_broadcast (&(team->MasterSignal));
-	printf ("I am master waiting of an end signal\n");
 	pthread_cond_wait      (&(team->SlaveSignal), &(team->Mutex));
+	printf ("Master: Received an end signal\n");
 	team->Job  = (CMthreadJob_p) NULL;
 	pthread_mutex_unlock   (&(team->Mutex));
 }
@@ -142,8 +149,10 @@ void CMthreadTeamDestroy (CMthreadTeam_p team) {
 	size_t completedTasks = 0;
 	void  *status;
 
+	pthread_mutex_lock (&(team->Mutex));
 	team->Job = (CMthreadJob_p) NULL;
 	pthread_cond_broadcast (&(team->MasterSignal));
+	pthread_mutex_unlock (&(team->Mutex));
 	for (threadId = 0;threadId < team->ThreadNum;++threadId) {
 		pthread_join(team->Threads [threadId].Thread, &status);
 		completedTasks += team->Threads [threadId].CompletedTasks;
