@@ -67,6 +67,8 @@ CMreturn      CMthreadJobTaskDependece (CMthreadJob_p, size_t, size_t);
 typedef struct CMthreadData_s {
 	size_t          Id;
 	pthread_t       Thread;
+	pthread_mutex_t Mutex;
+	pthread_cond_t  Signal;
 	size_t          CompletedTasks;
 	void           *TeamPtr;
 } CMthreadData_t,  *CMthreadData_p;
@@ -75,8 +77,7 @@ typedef struct CMthreadTeam_s {
 	CMthreadData_p  Threads;
 	size_t          ThreadNum;
 	pthread_mutex_t Mutex;
-	pthread_cond_t  MasterSignal;
-	pthread_cond_t  SlaveSignal;
+	pthread_cond_t  Signal;
 	CMthreadJob_p   Job;
 } CMthreadTeam_t, *CMthreadTeam_p;
 
