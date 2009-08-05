@@ -50,14 +50,16 @@ typedef struct CMthreadTask_s {
 	size_t Dependence;
 } CMthreadTask_t, *CMthreadTask_p;
 
-typedef void (*CMthreadUserFunc) (void *, size_t);
+typedef void (*CMthreadUserFunc) (void *, void *, size_t);
 
 typedef struct CMthreadJob_s {
 	CMthreadTask_p   Tasks;
 	size_t           TaskNum;
 	int              LastId;
 	CMthreadUserFunc UserFunc;
-	void            *UserData;
+	void            *CommonData;
+	void           **ThreadData;
+	size_t           ThreadNum;
 } CMthreadJob_t, *CMthreadJob_p;
 
 CMthreadJob_p CMthreadJobCreate        (size_t taskNum, CMthreadUserFunc, void *);

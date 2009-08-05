@@ -1,7 +1,7 @@
 #include <stdlib.h>
 #include <cm.h>
 
-CMthreadJob_p CMthreadJobCreate (size_t taskNum, CMthreadUserFunc userFunc, void *userData) {
+CMthreadJob_p CMthreadJobCreate (size_t taskNum, CMthreadUserFunc userFunc, void *commonData) {
 	size_t taskId;
 	CMthreadJob_p job;
 
@@ -23,7 +23,9 @@ CMthreadJob_p CMthreadJobCreate (size_t taskNum, CMthreadUserFunc userFunc, void
 	}
 	job->LastId   = job->TaskNum;
 	job->UserFunc = userFunc;
-	job->UserData = (void *) userData;
+	job->CommonData = (void *) commonData;
+	job->ThreadData = (void **) NULL;
+	job->ThreadNum  = 0;
 	return (job);
 }
 
@@ -75,7 +77,7 @@ static void *_CMthreadWork (void *dataPtr) {
 				if (taskId == (job->LastId  - 1)) job->LastId--;
 				job->Tasks [taskId].Locked = true;
 				pthread_mutex_unlock (&(team->MasterMutex));
-				job->UserFunc (job->UserData, taskId);
+				job->UserFunc (job->CommonData, job->ThreadData == (void **) NULL ? (void *) NULL : job->ThreadData [data->Id], taskId);
 				data->CompletedTasks++;
 				pthread_mutex_lock   (&(team->MasterMutex));
 				job->Tasks [taskId].Locked    = false;
@@ -158,7 +160,8 @@ void CMthreadTeamJobExecute (CMthreadTeam_p team, CMthreadJob_p job) {
 		team->Job  = (CMthreadJob_p) NULL;
 	}
 	else {
-		for (taskId = job->LastId - 1;taskId >= 0; taskId--) job->UserFunc (job->UserData, taskId);
+		for (taskId = job->LastId - 1;taskId >= 0; taskId--)
+			job->UserFunc (job->CommonData,job->ThreadData == (void **) NULL ? (void *) NULL : job->ThreadData [0], taskId);
 	}
 }
 
