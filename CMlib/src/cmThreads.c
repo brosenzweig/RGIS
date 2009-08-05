@@ -47,7 +47,6 @@ void CMthreadJobDestroy (CMthreadJob_p job) {
 static void *_CMthreadWork (void *dataPtr) {
 	CMthreadData_p data = (CMthreadData_p) dataPtr;
 	int taskId;
-	bool dependence;
 	CMthreadTeam_p team = (CMthreadTeam_p) data->TeamPtr;
 	CMthreadJob_p  job;
 
@@ -75,7 +74,6 @@ static void *_CMthreadWork (void *dataPtr) {
 					(job->Tasks [job->Tasks [taskId].Dependence].Completed == false)) continue;
 				if (taskId == (job->LastId  - 1)) job->LastId--;
 				job->Tasks [taskId].Locked = true;
-//				printf ("Thread#%d: working on task %d (%d)\n",(int) data->Id, (int) taskId,(int) job->LastId);
 				pthread_mutex_unlock (&(team->MasterMutex));
 				job->UserFunc (job->UserData, taskId);
 				data->CompletedTasks++;
@@ -111,10 +109,11 @@ CMthreadTeam_p CMthreadTeamCreate (size_t threadNum) {
 	team->ThreadNum = threadNum;
 	team->Job       = (CMthreadJob_p) NULL;
 
-	pthread_mutex_init (&(team->MasterMutex),  NULL);
-	pthread_cond_init  (&(team->MasterSignal), NULL);
-	pthread_mutex_init (&(team->WorkerMutex),  NULL);
-	pthread_cond_init  (&(team->WorkerSignal), NULL);
+	pthread_mutex_init (&(team->MasterMutex),   NULL);
+	pthread_cond_init  (&(team->MasterSignal),  NULL);
+	pthread_mutex_init (&(team->WorkerMutex),   NULL);
+	pthread_cond_init  (&(team->WorkerSignal),  NULL);
+	pthread_mutex_init (&(team->ProcessMutex),  NULL);
 
 	pthread_attr_init (&thread_attr);
 	pthread_attr_setdetachstate(&thread_attr, PTHREAD_CREATE_JOINABLE);
@@ -141,21 +140,26 @@ void CMthreadTeamJobExecute (CMthreadTeam_p team, CMthreadJob_p job) {
 	size_t completed = 0;
 	int taskId;
 
-	pthread_mutex_lock     (&(team->MasterMutex));
-	team->Job   = job;
-	job->LastId = job->TaskNum;
-	pthread_cond_broadcast (&(team->MasterSignal));
-	pthread_mutex_unlock   (&(team->MasterMutex));
+	if (team != (CMthreadTeam_p) NULL) {
+		pthread_mutex_lock     (&(team->MasterMutex));
+		team->Job   = job;
+		job->LastId = job->TaskNum;
+		pthread_cond_broadcast (&(team->MasterSignal));
+		pthread_mutex_unlock   (&(team->MasterMutex));
 
-	while (completed < team->ThreadNum) {
-		pthread_mutex_lock     (&(team->WorkerMutex));
-		pthread_cond_wait      (&(team->WorkerSignal), &(team->WorkerMutex));
-		completed++;
-		pthread_mutex_unlock   (&(team->WorkerMutex));
+		while (completed < team->ThreadNum) {
+			pthread_mutex_lock     (&(team->WorkerMutex));
+			pthread_cond_wait      (&(team->WorkerSignal), &(team->WorkerMutex));
+			completed++;
+			pthread_mutex_unlock   (&(team->WorkerMutex));
+		}
+		printf ("Master: Finished job\n");
+		for (taskId = 0;taskId < job->TaskNum; ++taskId) job->Tasks [taskId].Completed = false;
+		team->Job  = (CMthreadJob_p) NULL;
 	}
-	printf ("Master: Finished job\n");
-	for (taskId = 0;taskId < job->TaskNum; ++taskId) job->Tasks [taskId].Completed = false;
-	team->Job  = (CMthreadJob_p) NULL;
+	else {
+		for (taskId = job->LastId - 1;taskId >= 0; taskId--) job->UserFunc (job->UserData, taskId);
+	}
 }
 
 void CMthreadTeamDestroy (CMthreadTeam_p team) {
@@ -163,25 +167,32 @@ void CMthreadTeamDestroy (CMthreadTeam_p team) {
 	size_t completedTasks = 0;
 	void  *status;
 
-	pthread_mutex_lock (&(team->MasterMutex));
-	team->Job = (CMthreadJob_p) NULL;
-	pthread_cond_broadcast (&(team->MasterSignal));
-	pthread_mutex_unlock (&(team->MasterMutex));
-	for (threadId = 0;threadId < team->ThreadNum;++threadId) {
-		pthread_join(team->Threads [threadId].Thread, &status);
-		completedTasks += team->Threads [threadId].CompletedTasks;
+	if (team != (CMthreadTeam_p) NULL) {
+		pthread_mutex_lock (&(team->MasterMutex));
+		team->Job = (CMthreadJob_p) NULL;
+		pthread_cond_broadcast (&(team->MasterSignal));
+		pthread_mutex_unlock (&(team->MasterMutex));
+		for (threadId = 0;threadId < team->ThreadNum;++threadId) {
+			pthread_join(team->Threads [threadId].Thread, &status);
+			completedTasks += team->Threads [threadId].CompletedTasks;
+		}
+		for (threadId = 0;threadId < team->ThreadNum;++threadId) {
+			printf ("Threads#%d completed %d tasks (%6.2f of the total)\n",
+					(int)   team->Threads [threadId].Id,
+					(int)   team->Threads [threadId].CompletedTasks,
+					(float) team->Threads [threadId].CompletedTasks * 100.0 / (float) completedTasks);
+		}
+		pthread_mutex_destroy (&(team->MasterMutex));
+		pthread_cond_destroy  (&(team->MasterSignal));
+		pthread_mutex_destroy (&(team->WorkerMutex));
+		pthread_cond_destroy  (&(team->WorkerSignal));
+		pthread_mutex_destroy (&(team->ProcessMutex));
+		pthread_exit(NULL);
+		free (team->Threads);
+		free (team);
 	}
-	for (threadId = 0;threadId < team->ThreadNum;++threadId) {
-		printf ("Threads#%d completed %d tasks (%6.2f of the total)\n",
-				(int)   team->Threads [threadId].Id,
-				(int)   team->Threads [threadId].CompletedTasks,
-				(float) team->Threads [threadId].CompletedTasks * 100.0 / (float) completedTasks);
-	}
-	pthread_mutex_destroy (&(team->MasterMutex));
-	pthread_cond_destroy  (&(team->MasterSignal));
-	pthread_mutex_destroy (&(team->WorkerMutex));
-	pthread_cond_destroy  (&(team->WorkerSignal));
-	pthread_exit(NULL);
-	free (team->Threads);
-	free (team);
 }
+
+void CMthreadTeamLock   (CMthreadTeam_p team) { if (team != (CMthreadTeam_p) NULL) pthread_mutex_lock     (&(team->ProcessMutex)); }
+
+void CMthreadTeamUnlock (CMthreadTeam_p team) { if (team != (CMthreadTeam_p) NULL) pthread_mutex_unlock   (&(team->ProcessMutex)); }

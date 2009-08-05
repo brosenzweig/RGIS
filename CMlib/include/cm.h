@@ -78,12 +78,15 @@ typedef struct CMthreadTeam_s {
 	pthread_cond_t  MasterSignal;
 	pthread_mutex_t WorkerMutex;
 	pthread_cond_t  WorkerSignal;
+	pthread_mutex_t ProcessMutex;
 	CMthreadJob_p   Job;
 } CMthreadTeam_t, *CMthreadTeam_p;
 
 CMthreadTeam_p CMthreadTeamCreate     (size_t threadNum);
 void           CMthreadTeamDestroy    (CMthreadTeam_p);
 void           CMthreadTeamJobExecute (CMthreadTeam_p, CMthreadJob_p);
+void           CMthreadTeamLock       (CMthreadTeam_p);
+void           CMthreadTeamUnock      (CMthreadTeam_p);
 
 #if defined(__cplusplus)
 }
