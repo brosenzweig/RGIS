@@ -19,15 +19,15 @@ CMthreadJob_p CMthreadJobCreate (size_t taskNum, CMthreadUserFunc userFunc, void
 		job->Tasks [taskId].Id         = taskId;
 		job->Tasks [taskId].Completed  = false;
 		job->Tasks [taskId].Locked     = false;
-		job->Tasks [taskId].Dependence = taskId;
+		job->Tasks [taskId].Dependence = job->TaskNum;
 	}
-	job->LastId   = 0;
+	job->LastId   = job->TaskNum;
 	job->UserFunc = userFunc;
 	job->UserData = (void *) userData;
 	return (job);
 }
 
-CMreturn CMthreadJobTaskDependece (CMthreadJob_p job, size_t taskId, size_t dependence) {
+CMreturn CMthreadJobTaskDependence (CMthreadJob_p job, size_t taskId, size_t dependence) {
 	if (taskId > job->TaskNum) {
 		CMmsgPrint (CMmsgAppError,"Invalid task in %s%d\n",__FILE__,__LINE__);
 		return (CMfailed);
@@ -46,7 +46,8 @@ void CMthreadJobDestroy (CMthreadJob_p job) {
 }
 static void *_CMthreadWork (void *dataPtr) {
 	CMthreadData_p data = (CMthreadData_p) dataPtr;
-	size_t taskId;
+	int taskId;
+	bool dependence;
 	CMthreadTeam_p team = (CMthreadTeam_p) data->TeamPtr;
 	CMthreadJob_p  job;
 
@@ -56,7 +57,6 @@ static void *_CMthreadWork (void *dataPtr) {
 
 	pthread_mutex_lock   (&(team->MasterMutex));
 	while (true) {
-		printf ("Thread#%d: Is waiting\n",(int) data->Id);
 		pthread_cond_wait    (&(team->MasterSignal), &(team->MasterMutex));
 		printf ("Thread#%d: Starting job\n",(int) data->Id);
 		job = team->Job;
@@ -64,13 +64,25 @@ static void *_CMthreadWork (void *dataPtr) {
 			printf ("Thread#%d: Quitting\n",(int) data->Id);
 			break;
 		}
-		while ((taskId = job->LastId) < job->TaskNum) {
-			job->LastId++;
-			pthread_mutex_unlock (&(team->MasterMutex));
-//			printf ("Thread#%d: working on task %d\n",(int) data->Id, (int) taskId);
-			job->UserFunc (job->UserData, taskId);
-			data->CompletedTasks++;
-			pthread_mutex_lock   (&(team->MasterMutex));
+		while (job->LastId > 0) {
+			for (taskId = job->LastId - 1;taskId >= 0; taskId--) {
+				if (job->Tasks [taskId].Completed) {
+					if (taskId == (job->LastId  - 1)) job->LastId--;
+					continue;
+				}
+				if (job->Tasks [taskId].Locked)    continue;
+				if ((job->Tasks [taskId].Dependence < job->TaskNum) &&
+					(job->Tasks [job->Tasks [taskId].Dependence].Completed == false)) continue;
+				if (taskId == (job->LastId  - 1)) job->LastId--;
+				job->Tasks [taskId].Locked = true;
+//				printf ("Thread#%d: working on task %d (%d)\n",(int) data->Id, (int) taskId,(int) job->LastId);
+				pthread_mutex_unlock (&(team->MasterMutex));
+				job->UserFunc (job->UserData, taskId);
+				data->CompletedTasks++;
+				pthread_mutex_lock   (&(team->MasterMutex));
+				job->Tasks [taskId].Locked    = false;
+				job->Tasks [taskId].Completed = true;
+			}
 		}
 		pthread_mutex_lock   (&(team->WorkerMutex));
 		printf ("Thread#%d: Ending job\n",(int) data->Id);
@@ -127,20 +139,22 @@ CMthreadTeam_p CMthreadTeamCreate (size_t threadNum) {
 
 void CMthreadTeamJobExecute (CMthreadTeam_p team, CMthreadJob_p job) {
 	size_t completed = 0;
+	int taskId;
 
 	pthread_mutex_lock     (&(team->MasterMutex));
 	team->Job   = job;
-	job->LastId = 0;
+	job->LastId = job->TaskNum;
 	pthread_cond_broadcast (&(team->MasterSignal));
 	pthread_mutex_unlock   (&(team->MasterMutex));
 
 	while (completed < team->ThreadNum) {
 		pthread_mutex_lock     (&(team->WorkerMutex));
 		pthread_cond_wait      (&(team->WorkerSignal), &(team->WorkerMutex));
-		printf ("Master: Received an end signal\n");
 		completed++;
 		pthread_mutex_unlock   (&(team->WorkerMutex));
 	}
+	printf ("Master: Finished job\n");
+	for (taskId = 0;taskId < job->TaskNum; ++taskId) job->Tasks [taskId].Completed = false;
 	team->Job  = (CMthreadJob_p) NULL;
 }
 
