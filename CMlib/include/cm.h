@@ -44,28 +44,6 @@ bool    CMmathEqualValues (double,double);
 #define CMmathMaximum(a,b) (((a) > (b)) ? (a) : (b))
 #define CMyesNoString(cond) (cond ? "yes" : "no")
 
-typedef struct CMthreadTask_s {
-	size_t Id;
-	bool   Completed, Locked;
-	size_t Dependence;
-} CMthreadTask_t, *CMthreadTask_p;
-
-typedef void (*CMthreadUserFunc) (void *, void *, size_t);
-
-typedef struct CMthreadJob_s {
-	CMthreadTask_p   Tasks;
-	size_t           TaskNum;
-	int              LastId;
-	CMthreadUserFunc UserFunc;
-	void            *CommonData;
-	void           **ThreadData;
-	size_t           ThreadNum;
-} CMthreadJob_t, *CMthreadJob_p;
-
-CMthreadJob_p CMthreadJobCreate        (size_t taskNum, CMthreadUserFunc, void *);
-void          CMthreadJobDestroy       (CMthreadJob_p);
-CMreturn      CMthreadJobTaskDependence (CMthreadJob_p, size_t, size_t);
-
 typedef struct CMthreadData_s {
 	size_t          Id;
 	pthread_t       Thread;
@@ -81,14 +59,36 @@ typedef struct CMthreadTeam_s {
 	pthread_mutex_t WorkerMutex;
 	pthread_cond_t  WorkerSignal;
 	pthread_mutex_t ProcessMutex;
-	CMthreadJob_p   Job;
+	void           *JobPtr;
 } CMthreadTeam_t, *CMthreadTeam_p;
 
 CMthreadTeam_p CMthreadTeamCreate     (size_t threadNum);
 void           CMthreadTeamDestroy    (CMthreadTeam_p);
-void           CMthreadTeamJobExecute (CMthreadTeam_p, CMthreadJob_p);
 void           CMthreadTeamLock       (CMthreadTeam_p);
 void           CMthreadTeamUnock      (CMthreadTeam_p);
+
+typedef void  (*CMthreadUserExecFunc)  (void *, void *, size_t);
+typedef void *(*CMthreadUserAllocFunc) (void *);
+
+typedef struct CMthreadTask_s {
+	size_t Id;
+	bool   Completed, Locked;
+	size_t Dependence;
+} CMthreadTask_t, *CMthreadTask_p;
+
+typedef struct CMthreadJob_s {
+	CMthreadTask_p       Tasks;
+	size_t               TaskNum;
+	int                  LastId;
+	CMthreadUserExecFunc UserFunc;
+	void                *CommonData;
+	void               **ThreadData;
+} CMthreadJob_t, *CMthreadJob_p;
+
+CMthreadJob_p CMthreadJobCreate         (CMthreadTeam_p, void *, size_t, CMthreadUserExecFunc, CMthreadUserAllocFunc);
+void          CMthreadJobDestroy        (CMthreadJob_p);
+void          CMthreadJobExecute        (CMthreadTeam_p, CMthreadJob_p);
+CMreturn      CMthreadJobTaskDependence (CMthreadJob_p,  size_t, size_t);
 
 #if defined(__cplusplus)
 }

@@ -1,8 +1,13 @@
 #include <stdlib.h>
 #include <cm.h>
 
-CMthreadJob_p CMthreadJobCreate (size_t taskNum, CMthreadUserFunc userFunc, void *commonData) {
-	size_t taskId;
+CMthreadJob_p CMthreadJobCreate (CMthreadTeam_p team,
+		                         void *commonData,
+		                         size_t taskNum,
+		                         CMthreadUserExecFunc  execFunc,
+		                         CMthreadUserAllocFunc allocFunc) {
+	size_t taskId, threadNum;
+	int    threadId;
 	CMthreadJob_p job;
 
 	if ((job = (CMthreadJob_p) malloc (sizeof (CMthreadJob_t))) == (CMthreadJob_p) NULL) {
@@ -22,10 +27,26 @@ CMthreadJob_p CMthreadJobCreate (size_t taskNum, CMthreadUserFunc userFunc, void
 		job->Tasks [taskId].Dependence = job->TaskNum;
 	}
 	job->LastId   = job->TaskNum;
-	job->UserFunc = userFunc;
+	job->UserFunc = execFunc;
 	job->CommonData = (void *) commonData;
-	job->ThreadData = (void **) NULL;
-	job->ThreadNum  = 0;
+	if (allocFunc != (CMthreadUserAllocFunc) NULL) {
+		threadNum = team->ThreadNum > 0 ? team->ThreadNum : 1;
+		if ((job->ThreadData = (void **) calloc (threadNum, sizeof (void *))) == (void **) NULL) {
+			CMmsgPrint (CMmsgSysError, "Memory allocation error in %s:%d\n",__FILE__,__LINE__);
+			free (job);
+			return ((CMthreadJob_p) NULL);
+		}
+		for (threadId = 0;threadId < threadNum;++threadId) {
+			if ((job->ThreadData [threadId] = allocFunc (commonData)) == (void *) NULL) {
+				CMmsgPrint (CMmsgSysError, "Memory allocation error in %s:%d\n",__FILE__,__LINE__);
+				for (--threadId;threadId >= 0; --threadId) free (job->ThreadData [threadId]);
+				free (job->ThreadData);
+				free (job);
+				return ((CMthreadJob_p) NULL);
+			}
+		}
+	}
+	else job->ThreadData = (void **) NULL;
 	return (job);
 }
 
@@ -60,7 +81,7 @@ static void *_CMthreadWork (void *dataPtr) {
 	while (true) {
 		pthread_cond_wait    (&(team->MasterSignal), &(team->MasterMutex));
 		printf ("Thread#%d: Starting job\n",(int) data->Id);
-		job = team->Job;
+		job = (CMthreadJob_p) team->JobPtr;
 		if (job == (CMthreadJob_p) NULL) {
 			printf ("Thread#%d: Quitting\n",(int) data->Id);
 			break;
@@ -93,6 +114,35 @@ static void *_CMthreadWork (void *dataPtr) {
 	pthread_exit((void *) 0);
 }
 
+void CMthreadJobExecute (CMthreadTeam_p team, CMthreadJob_p job) {
+	size_t completed = 0;
+	int taskId;
+
+	if (team != (CMthreadTeam_p) NULL) {
+		pthread_mutex_lock     (&(team->MasterMutex));
+		team->JobPtr = (void *) job;
+		job->LastId  = job->TaskNum;
+		pthread_cond_broadcast (&(team->MasterSignal));
+		pthread_mutex_unlock   (&(team->MasterMutex));
+
+		while (completed < team->ThreadNum) {
+			pthread_mutex_lock     (&(team->WorkerMutex));
+			pthread_cond_wait      (&(team->WorkerSignal), &(team->WorkerMutex));
+			completed++;
+			pthread_mutex_unlock   (&(team->WorkerMutex));
+		}
+		printf ("Master: Finished job\n");
+		for (taskId = 0;taskId < job->TaskNum; ++taskId) job->Tasks [taskId].Completed = false;
+		team->JobPtr  = (void *) NULL;
+	}
+	else {
+		for (taskId = job->LastId - 1;taskId >= 0; taskId--)
+			job->UserFunc (job->CommonData,
+			               job->ThreadData == (void **) NULL ? (void *) NULL : job->ThreadData [0],
+			               taskId);
+	}
+}
+
 CMthreadTeam_p CMthreadTeamCreate (size_t threadNum) {
 	int ret;
 	size_t threadId;
@@ -109,7 +159,7 @@ CMthreadTeam_p CMthreadTeamCreate (size_t threadNum) {
 		return ((CMthreadTeam_p) NULL);
 	}
 	team->ThreadNum = threadNum;
-	team->Job       = (CMthreadJob_p) NULL;
+	team->JobPtr    = (void *) NULL;
 
 	pthread_mutex_init (&(team->MasterMutex),   NULL);
 	pthread_cond_init  (&(team->MasterSignal),  NULL);
@@ -138,33 +188,6 @@ CMthreadTeam_p CMthreadTeamCreate (size_t threadNum) {
 	return (team);
 }
 
-void CMthreadTeamJobExecute (CMthreadTeam_p team, CMthreadJob_p job) {
-	size_t completed = 0;
-	int taskId;
-
-	if (team != (CMthreadTeam_p) NULL) {
-		pthread_mutex_lock     (&(team->MasterMutex));
-		team->Job   = job;
-		job->LastId = job->TaskNum;
-		pthread_cond_broadcast (&(team->MasterSignal));
-		pthread_mutex_unlock   (&(team->MasterMutex));
-
-		while (completed < team->ThreadNum) {
-			pthread_mutex_lock     (&(team->WorkerMutex));
-			pthread_cond_wait      (&(team->WorkerSignal), &(team->WorkerMutex));
-			completed++;
-			pthread_mutex_unlock   (&(team->WorkerMutex));
-		}
-		printf ("Master: Finished job\n");
-		for (taskId = 0;taskId < job->TaskNum; ++taskId) job->Tasks [taskId].Completed = false;
-		team->Job  = (CMthreadJob_p) NULL;
-	}
-	else {
-		for (taskId = job->LastId - 1;taskId >= 0; taskId--)
-			job->UserFunc (job->CommonData,job->ThreadData == (void **) NULL ? (void *) NULL : job->ThreadData [0], taskId);
-	}
-}
-
 void CMthreadTeamDestroy (CMthreadTeam_p team) {
 	size_t threadId;
 	size_t completedTasks = 0;
@@ -172,7 +195,7 @@ void CMthreadTeamDestroy (CMthreadTeam_p team) {
 
 	if (team != (CMthreadTeam_p) NULL) {
 		pthread_mutex_lock (&(team->MasterMutex));
-		team->Job = (CMthreadJob_p) NULL;
+		team->JobPtr = (void *) NULL;
 		pthread_cond_broadcast (&(team->MasterSignal));
 		pthread_mutex_unlock (&(team->MasterMutex));
 		for (threadId = 0;threadId < team->ThreadNum;++threadId) {
