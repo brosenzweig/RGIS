@@ -345,8 +345,8 @@ class DBPosition
 	{
 	private:
 	public:
-		DBShort Row;
-		DBShort Col;
+		DBUShort Row;
+		DBUShort Col;
 		DBPosition () { Row = 0; Col = 0; }
 		DBPosition (const DBPosition &pos) { Row = pos.Row; Col = pos.Col; }
 		friend DBPosition operator+ (DBPosition pos0,DBPosition pos1)

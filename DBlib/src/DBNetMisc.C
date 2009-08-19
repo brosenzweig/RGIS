@@ -18,7 +18,7 @@ balazs.fekete@unh.edu
 DBNetworkIO::DBNetworkIO (DBObjData *data)
 	{
 	DBObjTableField *layerFLD;
-	
+
 	DataPTR = data;
 	BasinTable	= data->Table (DBrNItems);
 	CellTable	= data->Table (DBrNCells);
@@ -57,7 +57,7 @@ DBNetworkIO::DBNetworkIO (DBObjData *data)
 	CellWidthFLD	= LayerTable->Field (DBrNCellWidth);
 	CellHeightFLD	= LayerTable->Field (DBrNCellHeight);
 	layerFLD			= LayerTable->Field (DBrNLayer);
-		
+
 	if ((LayerRecord = LayerTable->Item (DBrNLookupGrid)) == (DBObjRecord *) NULL)
 		{ fprintf (stderr,"Bailing Out like ARC/INFO in: DBNetworkIO::DBNetworkIO\n"); exit (-1); }
 	if((DataRec	= layerFLD->Record (LayerRecord)) == (DBObjRecord *) NULL)
@@ -84,9 +84,9 @@ DBInt DBNetworkIO::Coord2Pos (DBCoordinate coord,DBPosition &pos) const
 
 	{
 	DBInt ret = DataPTR->Extent ().InRegion (coord) ? DBSuccess : DBFault;
- 
- 	pos.Col = (DBShort) floor ((coord.X - DataPTR->Extent ().LowerLeft.X ) / CellWidth ());
-	pos.Row = (DBShort) floor ((coord.Y - DataPTR->Extent ().LowerLeft.Y ) / CellHeight ());
+
+ 	pos.Col = (DBUShort) floor ((coord.X - DataPTR->Extent ().LowerLeft.X ) / CellWidth ());
+	pos.Row = (DBUShort) floor ((coord.Y - DataPTR->Extent ().LowerLeft.Y ) / CellHeight ());
 	return (ret);
 	}
 
@@ -98,7 +98,7 @@ DBInt DBNetworkIO::Pos2Coord (DBPosition pos,DBCoordinate &coord) const
 	if (pos.Row < 0) ret = DBFault;
 	if (pos.Col >= ColNum ()) ret = DBFault;
 	if (pos.Row >= RowNum ()) ret = DBFault;
-	
+
 	coord.X = DataPTR->Extent ().LowerLeft.X + pos.Col * CellWidth  () + CellWidth  () / 2.0;
 	coord.Y = DataPTR->Extent ().LowerLeft.Y + pos.Row * CellHeight () + CellHeight () / 2.0;
 	return (ret);
@@ -108,7 +108,7 @@ DBCoordinate DBNetworkIO::Center (const DBObjRecord *cellRec) const
 	{
 	DBCoordinate coord;
 	DBPosition cellPos = PositionFLD->Position (cellRec);
-	
+
 	coord.X = DataPTR->Extent ().LowerLeft.X + cellPos.Col * CellWidth  () + CellWidth  () / 2.0;
 	coord.Y = DataPTR->Extent ().LowerLeft.Y + cellPos.Row * CellHeight () + CellHeight () / 2.0;
 	return (coord);
@@ -134,7 +134,7 @@ DBObjRecord *DBNetworkIO::Cell (DBPosition pos) const
 	if (pos.Row < 0) return ((DBObjRecord *) NULL);
 	if (pos.Col >= ColNum ()) return ((DBObjRecord *) NULL);
 	if (pos.Row >= RowNum ()) return ((DBObjRecord *) NULL);
-	
+
 	if ((cellID = ((DBInt *) DataRec->Data ()) [pos.Row * ColNum () + pos.Col ]) == DBFault) return ((DBObjRecord *) NULL);
 	return (CellTable->Item (cellID));
 	}
@@ -152,7 +152,7 @@ DBObjRecord *DBNetworkIO::Cell (DBPosition pos,DBFloat area) const
 	if (pos.Row < 0) return ((DBObjRecord *) NULL);
 	if (pos.Col >= ColNum ()) return ((DBObjRecord *) NULL);
 	if (pos.Row >= RowNum ()) return ((DBObjRecord *) NULL);
-	
+
 	if ((cellID = ((DBInt *) DataRec->Data ()) [pos.Row * ColNum () + pos.Col ]) == DBFault)
 		return ((DBObjRecord *) NULL);
 	cellRec = CellTable->Item (cellID);
@@ -184,11 +184,11 @@ DBObjRecord *DBNetworkIO::ToCell (const DBObjRecord *cellRec) const
 	{
 	DBInt toCell;
 	DBPosition pos;
-	
+
 	if (cellRec == (DBObjRecord *) NULL) return ((DBObjRecord *) NULL);
 	toCell = ToCellFLD->Int (cellRec);
 	pos = PositionFLD->Position (cellRec);
-	
+
 	if (toCell == 0x0L) return ((DBObjRecord *) NULL);
 	if ((toCell == DBNetDirNW) || (toCell == DBNetDirN) || (toCell == DBNetDirNE)) pos.Row++;
 	if ((toCell == DBNetDirSE) || (toCell == DBNetDirS) || (toCell == DBNetDirSW)) pos.Row--;
@@ -202,7 +202,7 @@ DBObjRecord *DBNetworkIO::FromCell (const DBObjRecord *cellRec,DBInt dir,DBInt s
 	{
 	DBInt fromCell;
 	DBPosition pos;
-	
+
 	if (cellRec == (DBObjRecord *) NULL) return ((DBObjRecord *) NULL);
 	if (sameBasin)
 		{
@@ -223,7 +223,7 @@ DBObjRecord *DBNetworkIO::FromCell (const DBObjRecord *cellRec) const
 	DBInt dir, maxDir = DBFault;
 	DBObjRecord *fromCell;
 	DBFloat area, maxArea = -DBHugeVal;
-	
+
 	for (dir = 0;dir < 8;++dir)
 	if ((fromCell = FromCell (cellRec,0x01 << dir)) != (DBObjRecord *) NULL)
 		{
@@ -234,7 +234,7 @@ DBObjRecord *DBNetworkIO::FromCell (const DBObjRecord *cellRec) const
 	}
 
 DBObjRecord *DBNetworkIO::HeadCell (const DBObjRecord *cellRec) const
-	
+
 	{
 	DBObjRecord *headCell;
 
@@ -247,7 +247,7 @@ void DBNetworkIO::UpStreamSearch (DBObjRecord *cellRec,DBNetworkACTION forAction
 	{
 	DBInt dir;
 	DBObjRecord *fromCell;
-	
+
 	if ((forAction != (DBNetworkACTION) NULL) && ((*forAction) (this,cellRec,data) == true))
 		{
 		for (dir = 0;dir < 8;++dir)
@@ -264,7 +264,7 @@ void DBNetworkIO::DownStreamSearch (DBObjRecord *cellRec,DBNetworkACTION forActi
 
 	if ((forAction != (DBNetworkACTION) NULL) && ((*forAction) (this,cellRec,data) == true))
 		if ((toCell = ToCell (cellRec)) != (DBObjRecord *) NULL)
-			DownStreamSearch (toCell,forAction,backAction,data); 
+			DownStreamSearch (toCell,forAction,backAction,data);
 	if (backAction != (DBNetworkACTION) NULL) (*backAction) (this,cellRec,data);
 	}
 
@@ -275,7 +275,7 @@ DBInt DBNetworkSelect (DBNetworkIO *netIO,DBObjRecord *cellRec)
 	netIO = netIO; cellRec->Flags (DBObjectFlagSelected,DBSet);
 	return (true);
 	}
- 
+
 DBInt DBNetworkUnselect (DBNetworkIO *netIO,DBObjRecord *cellRec)
 
 	{
@@ -296,7 +296,7 @@ DBObjRecord *DBNetworkIO::CellAdd (DBPosition pos)
 	if (pos.Row < 0) return ((DBObjRecord *) NULL);
 	if (pos.Col >= ColNum ()) return ((DBObjRecord *) NULL);
 	if (pos.Row >= RowNum ()) return ((DBObjRecord *) NULL);
-	
+
 	if (((DBInt *) DataRec->Data ()) [pos.Row * ColNum () + pos.Col] != DBFault) return ((DBObjRecord *) NULL);
 
 	sprintf (nameSTR,"Cell:%6d",CellNum ());
@@ -323,16 +323,16 @@ DBObjRecord *DBNetworkIO::CellAdd (DBPosition pos)
 	CellAreaFLD->Float (cellRec,0.0);
 	SubbasinLengthFLD->Float (cellRec,0.0);
 	SubbasinAreaFLD->Float (cellRec,0.0);
-	return (cellRec);	
+	return (cellRec);
 	}
 
 DBInt DBNetworkIO::CellRotate (DBObjRecord *cellRec,DBInt dir)
 
 	{
 	DBInt toDir;
-	
+
 	if (cellRec == (DBObjRecord *) NULL) return (DBFault);
-	
+
 	toDir = CellDirection (cellRec);
 	if (toDir == DBNull) { toDir = DBNetDirN; return (DBSuccess); }
 	if (dir)	toDir = toDir == DBNetDirNE ? DBNetDirE  : toDir << 0x01;
@@ -373,14 +373,14 @@ void DBNetworkIO::Climb (DBObjRecord *cellRec,DBInt level)
 			else if ((cells == maxCell) && (maxLength <  SubbasinLengthFLD->Float (fromCell)))
 				{ maxLength = SubbasinLengthFLD->Float (fromCell); maxDir = 0x01 << dir; }
 			if (OrderFLD->Int (fromCell) == maxOrder) { orderNo++; continue; }
-			if (OrderFLD->Int (fromCell) > maxOrder) 
+			if (OrderFLD->Int (fromCell) > maxOrder)
 				{ maxOrder = OrderFLD->Int (fromCell); orderNo = 1; }
 			}
 	OrderFLD->Int (cellRec,maxOrder + (orderNo > 1 ? 1 : 0));
 
 	if (maxDir != 0)
 		{
-		fromCell = FromCell (cellRec,maxDir);	
+		fromCell = FromCell (cellRec,maxDir);
 		SubbasinLengthFLD->Float (cellRec,SubbasinLengthFLD->Float (cellRec) + SubbasinLengthFLD->Float (fromCell));
 		UpCellPosFLD->Position (cellRec,UpCellPosFLD->Position (fromCell));
 		}
@@ -568,7 +568,7 @@ DBInt DBNetworkIO::Build ()
 			 (strlen (basinRec->Name ()) < 1))
 			{
 			sprintf (nameStr,"GHAASBasin%d",basinRec->RowID () + 1);
-			basinRec->Name (nameStr); 
+			basinRec->Name (nameStr);
 			}
 		ColorFLD->Int (basinRec,DBFault);
 		BasinOrderFLD->Int (basinRec,CellOrder (MouthCell (basinRec)));
@@ -616,7 +616,7 @@ int DBNetworkIO::Trim ()
 	DBRegion extent = DataPTR->Extent ();
 	DBObjRecord *cellRec;
 	DBCoordinate coord;
-	
+
 	min.Row = RowNum ();
 	min.Col = ColNum ();
 	max.Row = max.Col = 0;
@@ -644,7 +644,7 @@ int DBNetworkIO::Trim ()
 	coord.Y = min.Row * CellHeight ();
 	extent.LowerLeft = extent.LowerLeft + coord;
 	coord.X = (ColNum () - max.Col - 1) * CellWidth ();
-	coord.Y = (RowNum () - max.Row - 1) * CellHeight (); 
+	coord.Y = (RowNum () - max.Row - 1) * CellHeight ();
 	extent.UpperRight = extent.UpperRight - coord;
 	DataPTR->Extent (extent);
 
@@ -652,7 +652,7 @@ int DBNetworkIO::Trim ()
 	col = max.Col - min.Col + 1;
 	RowNumFLD->Int (LayerRecord,row);
 	ColNumFLD->Int (LayerRecord,col);
-	
+
 	DataRec->Realloc (row * col * sizeof (int));
 
 	for (row = 0;row < RowNum ();row++)	for (col = 0;col < ColNum ();col++)

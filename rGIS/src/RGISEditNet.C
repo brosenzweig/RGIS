@@ -233,7 +233,7 @@ void RGISEditAdjustNetworkCBK (Widget widget, RGISWorkspace *workspace,XmAnyCall
 						for (pos.Row = pos0.Row; pos.Row  != pos1.Row;
 							  pos.Row = (pos0.Row < pos1.Row) ? pos.Row + 1 : pos.Row - 1)
 							{
-							pos.Col = pos0.Col + (DBShort) (((pos.Row - pos0.Row) * (pos1.Col - pos0.Col)) / (pos1.Row - pos0.Row));
+							pos.Col = pos0.Col + (DBUShort) ((((DBInt) pos.Row - (DBInt) pos0.Row) * ((DBInt) pos1.Col - (DBInt) pos0.Col)) / ((DBInt) pos1.Row - (DBInt) pos0.Row));
 							if ((cellList = _RGISReallocCellList (cellList,maxCellNum,cellNum + 1)) == (DBObjRecord **) NULL) return;
 							if ((cellRec = netIO->Cell (pos)) != (DBObjRecord *) NULL)
 								{
@@ -246,7 +246,7 @@ void RGISEditAdjustNetworkCBK (Widget widget, RGISWorkspace *workspace,XmAnyCall
 						for (pos.Col = pos0.Col; pos.Col != pos1.Col;
 							  pos.Col = (pos0.Col < pos1.Col) ? pos.Col + 1 : pos.Col - 1)
 							{
-							pos.Row = pos0.Row + (DBShort) (((pos.Col - pos0.Col) * (pos1.Row - pos0.Row)) / (pos1.Col - pos0.Col));
+							pos.Row = pos0.Row + (DBUShort) ((((DBInt) pos.Col - (DBInt) pos0.Col) * ((DBInt) pos1.Row - (DBInt) pos0.Row)) / ((DBInt) pos1.Col - (DBInt) pos0.Col));
 							if ((cellList = _RGISReallocCellList (cellList,maxCellNum,cellNum + 1)) == (DBObjRecord **) NULL) return;
 							if ((cellRec = netIO->Cell (pos)) != (DBObjRecord *) NULL)
 								{
