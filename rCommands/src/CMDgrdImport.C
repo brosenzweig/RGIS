@@ -425,7 +425,7 @@ int main(int argc, char* argv[])
 				return 0;
 			}
 		valueSizeFLD->Int (layerRec,itemSize);
-		if ((dataRec = new DBObjRecord (layerRec->Name (),colNum * rowNum * valueSizeFLD->Int (layerRec),valueSizeFLD->Int (layerRec))) == (DBObjRecord *) NULL)
+		if ((dataRec = new DBObjRecord (layerRec->Name (),(DBUnsigned) colNum * (DBUnsigned) rowNum * (DBUnsigned) valueSizeFLD->Int (layerRec),valueSizeFLD->Int (layerRec))) == (DBObjRecord *) NULL)
 			{ fclose (inFILE); delete grdData; return 0; }
 		(grdData->Arrays ())->Add (dataRec);
 		layerFLD->Record (layerRec,dataRec);

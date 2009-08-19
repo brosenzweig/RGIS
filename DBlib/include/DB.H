@@ -595,8 +595,8 @@ class DBObject : public DBObjectHeader
 class DBObjRecord : public DBObject
 	{
 	private:
-		DBInt LengthVAR;
-		DBInt ItemSizeVAR;
+		DBUnsigned LengthVAR;
+		DBUnsigned ItemSizeVAR;
 		DBAddress DataPTR;
 		void Swap ()
 			{
@@ -606,13 +606,13 @@ class DBObjRecord : public DBObject
 	public:
 		DBObjRecord () : DBObject ("",sizeof (DBObjRecord))
 			{ LengthVAR = 0; ItemSizeVAR = 0; DataPTR = (DBAddress) NULL; }
-		DBObjRecord (const char *name,DBInt length,DBInt itemSize) : DBObject (name,sizeof (DBObjRecord))
+		DBObjRecord (const char *name,DBUnsigned length,DBInt itemSize) : DBObject (name,sizeof (DBObjRecord))
 			{
 			DataPTR = length > 0 ? (DBAddress) ((char *) malloc (length) - (char *) NULL) : (DBAddress) NULL;
 			LengthVAR = DataPTR == (DBAddress) NULL ? 0 : length;
 			ItemSizeVAR = itemSize;
 			}
-		DBObjRecord (const char *name,DBInt length) : DBObject (name,sizeof (DBObjRecord))
+		DBObjRecord (const char *name,DBUnsigned length) : DBObject (name,sizeof (DBObjRecord))
 			{
 			DataPTR = length > 0 ? (DBAddress) ((char *) malloc (length) - (char *) NULL) : (DBAddress) NULL;
 			LengthVAR = DataPTR == (DBAddress) NULL ? 0 : length;

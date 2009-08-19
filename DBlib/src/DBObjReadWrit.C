@@ -62,16 +62,16 @@ int DBObjRecord::Read (FILE *file,int swap)
 	if (fread ((char *) this + sizeof (DBObject),sizeof (DBObjRecord) - sizeof (DBObject) - sizeof (DBAddress),1,file) != 1)
 		{ perror ("File Reading Error in: DBObjRecord::Read ()"); return (DBFault); }
 	if (swap) Swap ();
-	
+
 	if ((DataPTR = (DBAddress) ((char *) malloc (LengthVAR) - (char *) NULL)) == (DBAddress) NULL)
 		{ perror ("Memory Allocation Error in: DBObjRecord::Read ()"); return (DBFault); }
 	if (fread ((char *) NULL + DataPTR,LengthVAR,1,file) != 1)
 		{ perror ("File Reading Error in: DBObjRecord::Read ()"); return (DBFault); }
 	if (swap && ItemSizeVAR > 0)
 		{
-		DBInt i;
+		DBUnsigned i;
 		void (*swapFunc) (void *);
-				
+
 		switch (ItemSizeVAR)
 			{
 			case 1:	swapFunc = (void (*) (void *)) NULL; break;
@@ -103,7 +103,7 @@ int DBObjRecord::Write (FILE *file)
 int DBObjTableField::Read (FILE *file,int swap)
 
 	{
-	if (DBObject::Read (file,swap) != DBSuccess) return (DBFault);	
+	if (DBObject::Read (file,swap) != DBSuccess) return (DBFault);
 	if (fread ((char *) this + sizeof (DBObject),sizeof (DBObjTableField) - sizeof (DBObject),1,file) != 1)
 		{ perror ("File Reading Error in: DBObjTableField::Read ()"); return (DBFault); }
 	if (swap) Swap ();
@@ -114,7 +114,7 @@ int DBObjTableField::Read (FILE *file,int swap)
 int DBObjTableField::Write (FILE *file)
 
 	{
-	if (DBObject::Write (file) != DBSuccess) return (DBFault);	
+	if (DBObject::Write (file) != DBSuccess) return (DBFault);
 	if (fwrite ((char *) this + sizeof (DBObject),sizeof (DBObjTableField) - sizeof (DBObject),1,file) != 1)
 		{ perror ("File Writing Error in: DBObjTableField::Write ()"); return (DBFault); }
 	return (DBSuccess);
@@ -135,7 +135,7 @@ int DBObjTable::Read (FILE *file,int swap)
 	if (FieldPTR->Read (file,swap) != DBSuccess)  return (DBFault);
 	for (id = 0;id < FieldPTR->ItemNum ();++id)
 		if (FieldPTR->ReadItem (file,id,swap) == DBFault) return (DBFault);
-	
+
 	RecordLengthVAR = 0;
 	for (field = FieldPTR->First ();field != (DBObjTableField *) NULL;field = FieldPTR->Next ())
 		RecordLengthVAR = RecordLengthVAR > field->StartByte () + field->Length () ?
@@ -227,7 +227,7 @@ int DBObjData::Read (const char *fileName)
 
 	{
 	FILE *file;
-	
+
 	if ((file = fopen (fileName,"r")) == (FILE *) NULL)
 		{
 		perror ("File Opening Error in: DBObjData::Read ()");
@@ -243,7 +243,7 @@ int DBObjData::Read (FILE *file)
 
 	{
 	int swap;
-	
+
 	DocsPTR->DeleteAll ();
 	ArraysPTR->DeleteAll ();
 	TablesPTR->DeleteAll ();
@@ -279,14 +279,14 @@ int DBObjData::Write (const char *fileName)
 	{
 	DBInt ret;
 	FILE *file;
-	
+
 	if ((file = fopen (fileName,"w")) == (FILE *) NULL)
 		{ perror ("File Opening Error in: DBObjData::Write ()"); return (DBFault); }
 	ret = Write (file);
 	fclose (file);
 	return (ret);
 	}
-	
+
 int DBObjData::Write (FILE *file)
 
 	{
@@ -294,7 +294,7 @@ int DBObjData::Write (FILE *file)
 	if (DBDataHeader::Write (file) == DBFault) return (DBFault);
 	return (_Write (file));
 	}
-	
+
 int DBObjData::_Write (FILE *file)
 
 	{
