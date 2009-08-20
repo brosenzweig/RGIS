@@ -119,7 +119,7 @@ int main (int argc,char *argv [])
 			{
 			CMmsgPrint (CMmsgInfo,"%s [options] <input file> <output file>\n",CMprgName(argv[0]));
 			CMmsgPrint (CMmsgInfo,"     -z,--size      [box size]\n");
-			CMmsgPrint (CMmsgInfo,"     -m,--method    [average|minimum|maximum]\n");
+			CMmsgPrint (CMmsgInfo,"     -m,--method    [average|minimum|maximum|sum]\n");
 			CMmsgPrint (CMmsgInfo,"     -t,--title     [dataset title]\n");
 			CMmsgPrint (CMmsgInfo,"     -u,--subject   [subject]\n");
 			CMmsgPrint (CMmsgInfo,"     -d,--domain    [domain]\n");
