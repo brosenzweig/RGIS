@@ -200,10 +200,13 @@ DBFloat DBGridIO::Minimum (DBInt layer) const
 DBInt DBGridIO::Coord2Pos (DBCoordinate coord,DBPosition &pos) const
 
 	{
- 	pos.Col = (DBUShort) floor ((coord.X - DataPTR->Extent ().LowerLeft.X ) / CellWidth ());
-	pos.Row = (DBUShort) floor ((coord.Y - DataPTR->Extent ().LowerLeft.Y ) / CellHeight ());
-	if ((pos.Col < 0) || (pos.Col >= ColNum ())) return (DBFault);
-	if ((pos.Row < 0) || (pos.Row >= RowNum ())) return (DBFault);
+	DBInt row, col;
+ 	col = (DBInt) floor ((coord.X - DataPTR->Extent ().LowerLeft.X ) / CellWidth ());
+	row = (DBInt) floor ((coord.Y - DataPTR->Extent ().LowerLeft.Y ) / CellHeight ());
+	pos.Col = (DBUShort) col;
+	pos.Row = (DBUShort) row;
+	if ((col < 0) || (col >= ColNum ())) return (DBFault);
+	if ((row < 0) || (row >= RowNum ())) return (DBFault);
 	return (DBSuccess);
 	}
 
@@ -211,8 +214,8 @@ DBInt DBGridIO::Pos2Coord (DBPosition pos,DBCoordinate &coord) const
 
 	{
 	DBInt ret = DBSuccess;
-	if (pos.Col < 0) ret = DBFault;
-	if (pos.Row < 0) ret = DBFault;
+//	if (pos.Col < 0) ret = DBFault; TODO: I am not sure what to do here!
+//	if (pos.Row < 0) ret = DBFault;
 	if (pos.Col >= ColNum ()) ret = DBFault;
 	if (pos.Row >= RowNum ()) ret = DBFault;
 
@@ -227,8 +230,8 @@ DBInt DBGridIO::Value (DBObjRecord *layerRec,DBPosition pos,DBInt value)
 	DBInt j;
 	DBObjRecord *dataRec = LayerFLD->Record (layerRec);
 
-	if (pos.Col < 0) return (false);
-	if (pos.Row < 0) return (false);
+//	if (pos.Col < 0) return (false); TODO: No longer possible.
+//	if (pos.Row < 0) return (false);
 	if (pos.Col >= DimensionVAR.Col) return (false);
 	if (pos.Row >= DimensionVAR.Row) return (false);
 
@@ -260,8 +263,8 @@ DBInt DBGridIO::Value (DBObjRecord *layerRec,DBPosition pos,DBInt *value) const
 	DBInt j;
 	DBObjRecord *dataRec = LayerFLD->Record (layerRec);
 
-	if (pos.Col < 0) return (false);
-	if (pos.Row < 0) return (false);
+//	if (pos.Col < 0) return (false); TODO: No longer possible
+//	if (pos.Row < 0) return (false);
 	if (pos.Col >= DimensionVAR.Col) return (false);
 	if (pos.Row >= DimensionVAR.Row) return (false);
 
@@ -296,8 +299,8 @@ DBInt DBGridIO::Value (DBObjRecord *layerRec,DBPosition pos,DBFloat *value) cons
 	DBObjRecord *dataRec = LayerFLD->Record (layerRec);
 	DBFloat missingValue = MissingValueFLD->Float (ItemTable->Item (layerRec->RowID ()));
 
-	if (pos.Col < 0) return (false);
-	if (pos.Row < 0) return (false);
+//	if (pos.Col < 0) return (false); No longer possible
+//	if (pos.Row < 0) return (false);
 	if (pos.Col >= DimensionVAR.Col) return (false);
 	if (pos.Row >= DimensionVAR.Row) return (false);
 
@@ -329,8 +332,8 @@ DBInt DBGridIO::Value (DBObjRecord *layerRec,DBPosition pos,DBFloat value)
 	DBInt j = DimensionVAR.Col * (DimensionVAR.Row - pos.Row - 1) + pos.Col;
 	DBObjRecord *dataRec = LayerFLD->Record (layerRec);
 
-	if (pos.Col < 0) return (DBFault);
-	if (pos.Row < 0) return (DBFault);
+//	if (pos.Col < 0) return (DBFault); No longer possible
+//	if (pos.Row < 0) return (DBFault);
 	if (pos.Col >= DimensionVAR.Col) return (DBFault);
 	if (pos.Row >= DimensionVAR.Row) return (DBFault);
 
@@ -359,8 +362,10 @@ DBInt DBGridIO::Value (DBObjRecord *layerRec,DBCoordinate coord,DBFloat *value) 
 
 	{
 	DBInt i, j, pointNum;
+	DBInt row [9], col [9];
+	DBPosition pos;
 	DBCoordinate cellCoord;
-	DBPosition pos [9], cellPos;
+	DBPosition cellPos;
 	DBFloat precision, dist, wAvg, sumWeight, retVal;
 	DBObjRecord *dataRec = LayerFLD->Record (layerRec);
 	DBFloat missingValue = MissingValueFLD->Float (ItemTable->Item ());
@@ -395,20 +400,22 @@ DBInt DBGridIO::Value (DBObjRecord *layerRec,DBCoordinate coord,DBFloat *value) 
 			}
 		if (!CMmathEqualValues (retVal,missingValue)) { *value = retVal;	return (true); }
 		}
-	pos [0].Col = cellPos.Col;
-	pos [0].Row = cellPos.Row;
-	if (coord.X < cellCoord.X) pos [0].Col -= 1;
-	if (coord.Y < cellCoord.Y) pos [0].Row -= 1;
-	pos [1].Col = pos [0].Col + 1;
-	pos [1].Row = pos [0].Row;
-	pos [2].Col = pos [0].Col + 1;
-	pos [2].Row = pos [0].Row + 1;
-	pos [3].Col = pos [0].Col;
-	pos [3].Row = pos [0].Row + 1;
+	col [0] = cellPos.Col;
+	row [0] = cellPos.Row;
+	if (coord.X < cellCoord.X) col [0] -= 1;
+	if (coord.Y < cellCoord.Y) row [0] -= 1;
+	col [1] = col [0] + 1;
+	row [1] = row [0];
+	col [2] = col [0] + 1;
+	row [2] = row [0] + 1;
+	col [3] = col [0];
+	row [3] = row [0] + 1;
 
-	Pos2Coord (pos [0],cellCoord);
+	pos.Col = col [0];
+	pos.Row = row [0];
+	Pos2Coord (pos,cellCoord);
 	if ((coord.X - cellCoord.X) > (3.0 * CellWidth () / 4.0))	i = 1;
-	else if ((coord.X - cellCoord.X) > (CellWidth () / 4.0))		i = 0;
+	else if ((coord.X - cellCoord.X) > (CellWidth () / 4.0))	i = 0;
 	else i = -1;
 	if ((coord.Y - cellCoord.Y) > (3.0 * CellHeight () / 4.0))	j = 1;
 	else if ((coord.Y - cellCoord.Y) > (CellHeight () / 4.0))	j = 0;
@@ -418,38 +425,38 @@ DBInt DBGridIO::Value (DBObjRecord *layerRec,DBCoordinate coord,DBFloat *value) 
 		{
 		if (i == 0)
 			{
-			pos [4].Row = pos [5].Row = j > 0 ? pos [2].Row + 1 : pos [0].Row - 1;
-			pos [4].Col = pos [0].Col;
-			pos [5].Col = pos [2].Col;
+			row [4] = row [5] = j > 0 ? row [2] + 1 : row [0] - 1;
+			col [4] = col [0];
+			col [5] = col [2];
 			pointNum = 6;
 			}
 		else if (j == 0)
 			{
-			pos [4].Row = pos [0].Row;
-			pos [5].Row = pos [2].Row;
-			pos [4].Col = pos [5].Col = i > 0 ? pos [2].Col + 1 : pos [0].Col - 1;
+			row [4] = row [0];
+			row [5] = row [2];
+			col [4] = col [5] = i > 0 ? col [2] + 1 : col [0] - 1;
 			pointNum = 6;
 			}
 		else
 			{
-			pos [7].Row = pos [0].Row;
-			pos [8].Row = pos [2].Row;
+			row [7] = row [0];
+			row [8] = row [2];
 			if (j > 0)
-				pos [4].Row = pos [5].Row = pos [6].Row = pos [2].Row + 1;
+				row [4] = row [5] = row [6] = row [2] + 1;
 			else
-				pos [4].Row = pos [5].Row = pos [6].Row = pos [0].Row - 1;
+				row [4] = row [5] = row [6] = row [0] - 1;
 
 			if (i > 0)
 				{
-				pos [4].Col = pos [0].Col;
-				pos [5].Col = pos [2].Col;
-				pos [6].Col = pos [7].Col = pos [8].Col = pos [2].Col + 1;
+				col [4] = col [0];
+				col [5] = col [2];
+				col [6] = col [7] = col [8] = col [2] + 1;
 				}
 			else
 				{
-				pos [5].Col = pos [0].Col;
-				pos [6].Col = pos [2].Col;
-				pos [4].Col = pos [7].Col = pos [8].Col = pos [0].Col - 1;
+				col [5] = col [0];
+				col [6] = col [2];
+				col [4] = col [7] = col [8] = col [0] - 1;
 				}
 			pointNum = 9;
 			}
@@ -459,12 +466,12 @@ DBInt DBGridIO::Value (DBObjRecord *layerRec,DBCoordinate coord,DBFloat *value) 
 	wAvg = sumWeight = 0.0;
 	for (i = 0;i < pointNum; ++i)
 		{
-		if (pos [i].Col < 0) continue;
-		if (pos [i].Row < 0) continue;
-		if (pos [i].Col >= DimensionVAR.Col) continue;
-		if (pos [i].Row >= DimensionVAR.Row) continue;
+		if (col [i] < 0) continue;
+		if (row [i] < 0) continue;
+		if (col [i] >= DimensionVAR.Col) continue;
+		if (row [i] >= DimensionVAR.Row) continue;
 
-		j = DimensionVAR.Col * (DimensionVAR.Row - pos [i].Row - 1) + pos [i].Col;
+		j = DimensionVAR.Col * (DimensionVAR.Row - row [i] - 1) + col [i];
 		switch (ValueTypeVAR)
 			{
 			case DBTableFieldFloat:
@@ -485,10 +492,12 @@ DBInt DBGridIO::Value (DBObjRecord *layerRec,DBCoordinate coord,DBFloat *value) 
 			}
 		if (CMmathEqualValues (retVal,missingValue))
 			{
-			if ((pos [i].Col == cellPos.Col) && (pos [i].Row == cellPos.Row)) return (false);
+			if ((col [i] == cellPos.Col) && (row [i] == cellPos.Row)) return (false);
 			else continue;
 			}
-		Pos2Coord (pos [i],cellCoord);
+		pos.Row = (DBUShort) row [i];
+		pos.Col = (DBUShort) col [i];
+		Pos2Coord (pos,cellCoord);
 		if (pointNum > 1)
 			{
 			dist = DBMathCoordinateDistance (distFunc,coord,cellCoord);

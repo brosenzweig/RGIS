@@ -29,6 +29,7 @@ int DBExportARCGridLayer (DBObjData *data,DBObjRecord *layerRec,const char *file
 int DBExportARCGridLayer (DBObjData *data,DBObjRecord *layerRec,FILE *file)
 
 	{
+	DBInt row, col;
 	DBPosition pos;
 	DBGridIO *gridIO = new DBGridIO (data);
 
@@ -41,21 +42,29 @@ int DBExportARCGridLayer (DBObjData *data,DBObjRecord *layerRec,FILE *file)
 		{
 		DBFloat value;
 		fprintf (file,"NODATA_value  %f\n",gridIO->MissingValue ());
-		for (pos.Row = gridIO->RowNum () - 1;pos.Row >= 0;pos.Row--)
+		for (row = gridIO->RowNum () - 1;row >= 0;row--)
 			{
-			for (pos.Col = 0;pos.Col < gridIO->ColNum ();pos.Col++)
+			for (col = 0;col < gridIO->ColNum ();col++)
+				{
+				pos.Row = row;
+				pos.Col = col;
 				if (gridIO->Value (layerRec,pos,&value))	fprintf (file," %f",value);
 				else	fprintf (file," %f",gridIO->MissingValue ());
+				}
 			fprintf (file,"\n");
 			}
 		}
 	else
 		{
 		fprintf (file,"NODATA_value  %d\n",DBDefaultMissingIntVal);
-		for (pos.Row = gridIO->RowNum () - 1;pos.Row >= 0;pos.Row--)
+		for (row = gridIO->RowNum () - 1;row >= 0;row--)
 			{
-			for (pos.Col = 0;pos.Col < gridIO->ColNum ();pos.Col++)
+			for (col = 0;col < gridIO->ColNum ();col++)
+				{
+				pos.Row = row;
+				pos.Col = col;
 				fprintf (file," %d",gridIO->GridValue (layerRec,pos));
+				}
 			fprintf (file,"\n");
 			}
 		}
