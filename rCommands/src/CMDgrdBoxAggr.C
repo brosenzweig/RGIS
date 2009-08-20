@@ -15,7 +15,7 @@ balazs.fekete@unh.edu
 #include <DBio.H>
 #include <RG.H>
 
-typedef enum { CMDboxAverage, CMDboxMinimum, CMDboxMaximum } CMDboxMethod;
+typedef enum { CMDboxAverage, CMDboxMinimum, CMDboxMaximum, CMDboxSum } CMDboxMethod;
 int main (int argc,char *argv [])
 
 	{
@@ -48,8 +48,8 @@ int main (int argc,char *argv [])
 			if ((argNum = CMargShiftLeft(argPos,argv,argNum)) <= argPos)
 				{ CMmsgPrint (CMmsgUsrError, "Missing aggregate method!\n"); return (CMfailed); }
 			else {
-				const char *options [] = { "average", "minimum", "maximum", (char *) NULL };
-				CMDboxMethod methods [] = { CMDboxAverage, CMDboxMinimum, CMDboxMaximum };
+				const char *options [] = { "average", "minimum", "maximum", "sum", (char *) NULL };
+				CMDboxMethod methods [] = { CMDboxAverage, CMDboxMinimum, CMDboxMaximum , CMDboxSum };
 				DBInt code;
 
 				if ((code = CMoptLookup (options,argv [argPos],false)) == CMfailed) {
@@ -196,6 +196,7 @@ int main (int argc,char *argv [])
 					count [pos.Row * outGridIO->ColNum () + pos.Col] += 1;
 					switch (method)
 						{
+						case CMDboxSum:
 						case CMDboxAverage:
 							array [pos.Row * outGridIO->ColNum () + pos.Col] += var;
 							break;
