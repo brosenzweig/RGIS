@@ -31,7 +31,7 @@ int DBImportASCIINet (DBObjData *netData,const char *fileName)
 	FILE *file;
 	char buffer [81];
 	char nameSTR [DBStringLength];
-	DBInt i, j, rowNum, colNum, cornerType, noData, gridVal;
+	DBInt i, j, row, col, rowNum, colNum, cornerType, noData, gridVal;
 	DBFloat cellSize;
 	DBPosition pos;
 	DBCoordinate coord;
@@ -65,7 +65,7 @@ int DBImportASCIINet (DBObjData *netData,const char *fileName)
 
 	DBObjRecord *layerRec, *dataRec, *cellRec, *basinRec;
 	DBNetworkIO *netIO;
-	
+
 	if ((file = fopen (fileName,"r")) == NULL)
 		{ perror ("File Opening Error in: DBImportASCIINet ()"); return (DBFault); }
 
@@ -94,7 +94,7 @@ int DBImportASCIINet (DBObjData *netData,const char *fileName)
 				sscanf (buffer + strlen (NODATA),"%d",&noData);
 			}
 	layerTable->Add (DBrNLookupGrid);
-	if ((layerRec = layerTable->Item (DBrNLookupGrid)) == (DBObjRecord *) NULL) 
+	if ((layerRec = layerTable->Item (DBrNLookupGrid)) == (DBObjRecord *) NULL)
 		{ fprintf (stderr,"Network Layer Creation Error in: DBImportASCIINet ()\n"); return (DBFault); }
 	 printf ("%f %f\n",coord.X,coord.Y);
 	cellWidthFLD->Float  (layerRec,cellSize);
@@ -107,8 +107,11 @@ int DBImportASCIINet (DBObjData *netData,const char *fileName)
 		return (DBFault);
 	layerFLD->Record (layerRec,dataRec);
 	(netData->Arrays ())->Add (dataRec);
-	for (pos.Row = rowNum - 1;pos.Row >= 0;--pos.Row)
-		for (pos.Col = 0;pos.Col < colNum;++pos.Col)
+	for (row = rowNum - 1;row >= 0;--row)
+		for (col = 0;col < colNum;++col)
+			{
+			pos.Row = row;
+			pos.Col = col;
 			if (fscanf (file,"%d", &gridVal) != 1)
 				{ perror ("File Reading Error in: DBImportASCIINet ()"); return (DBFault); }
 			else
@@ -130,10 +133,11 @@ int DBImportASCIINet (DBObjData *netData,const char *fileName)
 					cellAreaFLD->Float	(cellRec,(DBFloat) 0.0);
 					subbasinLengthFLD->Float(cellRec,(DBFloat) 0.0);
 					subbasinAreaFLD->Float	(cellRec,(DBFloat) 0.0);
-				
+
 					((DBInt *) dataRec->Data ()) [pos.Row * colNum + pos.Col] = cellRec->RowID ();
 					}
 				}
+			}
 	sprintf (nameSTR,"GHAASBasin%d",(DBInt) 0);
 	basinRec = basinTable->Add (nameSTR);
 	mouthPosFLD->Position	(basinRec,positionFLD->Position (cellTable->Item (0)));
