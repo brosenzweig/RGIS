@@ -19,6 +19,7 @@ DBInt DBGridCont2Network (DBObjData *gridData,DBObjData *netData)
 	DBInt basinID, layerID, zLayerID, zLayerNum, dir, maxDir, projection = gridData->Projection (), *zones;
 	DBFloat elev0, elev1, delta, maxDelta, distance;
 	DBCoordinate coord0, coord1;
+	DBInt row, col;
 	DBPosition pos, auxPos;
 	char nameSTR [DBStringLength];
 	DBObjTable *basinTable = netData->Table (DBrNItems);
@@ -50,7 +51,7 @@ DBInt DBGridCont2Network (DBObjData *gridData,DBObjData *netData)
 	DBObjTableField *layerFLD = layerTable->Field (DBrNLayer);
 	DBObjData *zGridData = gridData->LinkedData ();
 	DBGridIO *gridIO = new DBGridIO (gridData), *zGridIO;
-	DBNetworkIO *networkIO;	
+	DBNetworkIO *networkIO;
 
 	if ((zGridData != (DBObjData *) NULL) && ((zGridData->Type () == DBTypeGridDiscrete) || (zGridData->Type () == DBTypeGridContinuous)))
 		{
@@ -58,7 +59,7 @@ DBInt DBGridCont2Network (DBObjData *gridData,DBObjData *netData)
 		zLayerNum = zGridIO->LayerNum () + 1;
 		}
 	else { zGridIO = (DBGridIO *) NULL; zLayerNum = 1; }
-				  
+
 	if ((zones = (DBInt *) calloc (9 * zLayerNum,sizeof (DBInt))) == (DBInt *) NULL)
 		{
 		perror ("Memory Allocation Error in: DBGridCont2Network ()");
@@ -67,7 +68,7 @@ DBInt DBGridCont2Network (DBObjData *gridData,DBObjData *netData)
 		return (DBFault);
 		}
 	layerTable->Add (DBrNLookupGrid);
-	if ((layerRec = layerTable->Item (DBrNLookupGrid)) == (DBObjRecord *) NULL) 
+	if ((layerRec = layerTable->Item (DBrNLookupGrid)) == (DBObjRecord *) NULL)
 		{
 		free (zones);
 		if (zGridIO != (DBGridIO *) NULL) delete zGridIO;
@@ -110,11 +111,16 @@ DBInt DBGridCont2Network (DBObjData *gridData,DBObjData *netData)
 					if ((layerRec->Flags () & DBObjectFlagIdle) == DBObjectFlagIdle) continue;
 					for (dir = 0;dir < 8;++dir)
 						{
-						auxPos = pos;
-						if (((0x01 << dir) == DBNetDirNW) || ((0x01 << dir) == DBNetDirN) || ((0x01 << dir) == DBNetDirNE)) auxPos.Row++;
-						if (((0x01 << dir) == DBNetDirSE) || ((0x01 << dir) == DBNetDirS) || ((0x01 << dir) == DBNetDirSW)) auxPos.Row--;
-						if (((0x01 << dir) == DBNetDirNE) || ((0x01 << dir) == DBNetDirE) || ((0x01 << dir) == DBNetDirSE)) auxPos.Col++;
-						if (((0x01 << dir) == DBNetDirNW) || ((0x01 << dir) == DBNetDirW) || ((0x01 << dir) == DBNetDirSW)) auxPos.Col--;
+						row = pos.Row;
+						col = pos.Col;
+						if (((0x01 << dir) == DBNetDirNW) || ((0x01 << dir) == DBNetDirN) || ((0x01 << dir) == DBNetDirNE)) row++;
+						if (((0x01 << dir) == DBNetDirSE) || ((0x01 << dir) == DBNetDirS) || ((0x01 << dir) == DBNetDirSW)) row--;
+						if (((0x01 << dir) == DBNetDirNE) || ((0x01 << dir) == DBNetDirE) || ((0x01 << dir) == DBNetDirSE)) col++;
+						if (((0x01 << dir) == DBNetDirNW) || ((0x01 << dir) == DBNetDirW) || ((0x01 << dir) == DBNetDirSW)) col--;
+						if (row < 0) continue;
+						if (col < 0) continue;
+						if (row >= gridIO->RowNum ()) continue;
+						if (col >= gridIO->ColNum ()) continue;
 						gridIO->Pos2Coord (auxPos,coord1);
 						switch (zGridData->Type ())
 							{
@@ -142,20 +148,23 @@ DBInt DBGridCont2Network (DBObjData *gridData,DBObjData *netData)
 					{
 					delta = maxDelta = (DBFloat) 0.0;
 					maxDir = 0;
-				
+
 					for (zLayerID = 0;zLayerID < zLayerNum;++zLayerID)
 						{
 						for (dir = 0;dir < 8;++dir)
 							{
-							auxPos = pos;
-							if (((0x01 << dir) == DBNetDirNW) || ((0x01 << dir) == DBNetDirN) || ((0x01 << dir) == DBNetDirNE)) auxPos.Row++;
-							if (((0x01 << dir) == DBNetDirSE) || ((0x01 << dir) == DBNetDirS) || ((0x01 << dir) == DBNetDirSW)) auxPos.Row--;
-							if (((0x01 << dir) == DBNetDirNE) || ((0x01 << dir) == DBNetDirE) || ((0x01 << dir) == DBNetDirSE)) auxPos.Col++;
-							if (((0x01 << dir) == DBNetDirNW) || ((0x01 << dir) == DBNetDirW) || ((0x01 << dir) == DBNetDirSW)) auxPos.Col--;
-							if (auxPos.Col < 0) continue;
-							if (auxPos.Row < 0) continue;
-							if (auxPos.Col >= gridIO->ColNum ()) continue;
-							if (auxPos.Row >= gridIO->RowNum ()) continue;
+							row = pos.Row;
+							col = pos.Col;
+							if (((0x01 << dir) == DBNetDirNW) || ((0x01 << dir) == DBNetDirN) || ((0x01 << dir) == DBNetDirNE)) row++;
+							if (((0x01 << dir) == DBNetDirSE) || ((0x01 << dir) == DBNetDirS) || ((0x01 << dir) == DBNetDirSW)) row--;
+							if (((0x01 << dir) == DBNetDirNE) || ((0x01 << dir) == DBNetDirE) || ((0x01 << dir) == DBNetDirSE)) col++;
+							if (((0x01 << dir) == DBNetDirNW) || ((0x01 << dir) == DBNetDirW) || ((0x01 << dir) == DBNetDirSW)) col--;
+							if (col < 0) continue;
+							if (row < 0) continue;
+							if (col >= gridIO->ColNum ()) continue;
+							if (row >= gridIO->RowNum ()) continue;
+							auxPos.Row = row;
+							auxPos.Col = col;
 							gridIO->Pos2Coord (auxPos,coord1);
 							if ((zones [zLayerID * 9 + dir] == zones [zLayerID * 9 + 8]) && (gridIO->Value (layerRec,auxPos,&elev1)))
 								{

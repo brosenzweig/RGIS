@@ -292,8 +292,8 @@ DBObjRecord *DBNetworkIO::CellAdd (DBPosition pos)
 	DBPosition fromPos;
 	DBObjRecord *cellRec;
 
-	if (pos.Col < 0) return ((DBObjRecord *) NULL);
-	if (pos.Row < 0) return ((DBObjRecord *) NULL);
+//	if (pos.Col < 0) return ((DBObjRecord *) NULL); TODO: No longer possible
+//	if (pos.Row < 0) return ((DBObjRecord *) NULL);
 	if (pos.Col >= ColNum ()) return ((DBObjRecord *) NULL);
 	if (pos.Row >= RowNum ()) return ((DBObjRecord *) NULL);
 
