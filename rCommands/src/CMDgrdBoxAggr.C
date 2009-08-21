@@ -159,7 +159,7 @@ int main (int argc,char *argv [])
 	outData->Document (DBDocVersion,version);
 	outData->Flags (DBDataFlagDispModeContShadeSets,DBClear);
 	outData->Flags (shadeSet,DBSet);
-
+	outData->Projection (inData->Projection());
 	outGridIO = new DBGridIO (outData);
 	outGridIO->MissingValue (inGridIO->MissingValue ());
 	if ((count = (DBInt *)   calloc (outGridIO->ColNum () * outGridIO->RowNum (), sizeof (DBInt)))   == (DBInt *)   NULL)
