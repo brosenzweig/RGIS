@@ -110,18 +110,18 @@ DBObjTable *_DBCreateDataBlockNetCells ()
 
 	{
 	DBTableFieldDefinition fieldDefs [] =
-		{	DBTableFieldDefinition (DBrNPosition,		DBTableFieldPosition,DBHiddenField,	    sizeof (DBPosition),true),
-			DBTableFieldDefinition (DBrNToCell,			DBTableFieldInt,     (char *) "%2X",    sizeof (DBByte),true),
-			DBTableFieldDefinition (DBrNFromCell,		DBTableFieldInt,     (char *) "%2X",    sizeof (DBByte),true),
-			DBTableFieldDefinition (DBrNOrder,			DBTableFieldInt,     (char *) "%2d",    sizeof (DBByte),true),
-			DBTableFieldDefinition (DBrNBasin,			DBTableFieldInt,     (char *) "%8d",    sizeof (DBInt),true),
-			DBTableFieldDefinition (DBrNBasinCells,	DBTableFieldInt,         (char *) "%8d",    sizeof (DBInt),true),
-			DBTableFieldDefinition (DBrNTravel,			DBTableFieldInt,     (char *) "%8d",    sizeof (DBInt),true),
-			DBTableFieldDefinition (DBrNUpCellPos,		DBTableFieldPosition,DBHiddenField,     sizeof (DBPosition),true),
-			DBTableFieldDefinition (DBrNCellArea,		DBTableFieldFloat,   (char *) "%10.1f", sizeof (DBFloat4),true),
-			DBTableFieldDefinition (DBrNCellLength,	DBTableFieldFloat,       (char *) "%10.1f", sizeof (DBFloat4),true),
-			DBTableFieldDefinition (DBrNSubbasinArea,	DBTableFieldFloat,   (char *) "%10.1f", sizeof (DBFloat4),true),
-			DBTableFieldDefinition (DBrNSubbasinLength,DBTableFieldFloat,    (char *) "%10.1f", sizeof (DBFloat4),true),
+		{	DBTableFieldDefinition (DBrNPosition,       DBTableFieldPosition,DBHiddenField,	    sizeof (DBPosition),true),
+			DBTableFieldDefinition (DBrNToCell,         DBTableFieldInt,     (char *) "%2X",    sizeof (DBByte),true),
+			DBTableFieldDefinition (DBrNFromCell,       DBTableFieldInt,     (char *) "%2X",    sizeof (DBByte),true),
+			DBTableFieldDefinition (DBrNOrder,          DBTableFieldInt,     (char *) "%2d",    sizeof (DBByte),true),
+			DBTableFieldDefinition (DBrNBasin,          DBTableFieldInt,     (char *) "%8d",    sizeof (DBInt),true),
+			DBTableFieldDefinition (DBrNBasinCells,     DBTableFieldInt,     (char *) "%8d",    sizeof (DBInt),true),
+			DBTableFieldDefinition (DBrNTravel,         DBTableFieldInt,     (char *) "%8d",    sizeof (DBInt),true),
+			DBTableFieldDefinition (DBrNUpCellPos,      DBTableFieldPosition,DBHiddenField,     sizeof (DBPosition),true),
+			DBTableFieldDefinition (DBrNCellArea,       DBTableFieldFloat,   (char *) "%10.1f", sizeof (DBFloat4),true),
+			DBTableFieldDefinition (DBrNCellLength,     DBTableFieldFloat,   (char *) "%10.1f", sizeof (DBFloat4),true),
+			DBTableFieldDefinition (DBrNSubbasinArea,   DBTableFieldFloat,   (char *) "%10.1f", sizeof (DBFloat4),true),
+			DBTableFieldDefinition (DBrNSubbasinLength, DBTableFieldFloat,   (char *) "%10.1f", sizeof (DBFloat4),true),
 			DBTableFieldDefinition () };
 	return (new DBObjTable (DBrNCells,fieldDefs));
 	}
@@ -130,8 +130,8 @@ DBObjTable *_DBCreateDataBlockGridLayers ()
 
 	{
 	DBTableFieldDefinition fieldDefs [] =
-		{	DBTableFieldDefinition (DBrNRowNum,			DBTableFieldInt,        (char *) "%6d",   sizeof (DBShort),true),
-			DBTableFieldDefinition (DBrNColNum,			DBTableFieldInt,        (char *) "%6d",   sizeof (DBShort),true),
+		{	DBTableFieldDefinition (DBrNRowNum,			DBTableFieldInt,        (char *) "%6d",   sizeof (DBInt),true),
+			DBTableFieldDefinition (DBrNColNum,			DBTableFieldInt,        (char *) "%6d",   sizeof (DBInt),true),
 			DBTableFieldDefinition (DBrNValueType,		DBTableFieldInt,        (char *) "%1d",   sizeof (DBByte),true),
 			DBTableFieldDefinition (DBrNValueSize,		DBTableFieldInt,        (char *) "%1d",   sizeof (DBByte),true),
 			DBTableFieldDefinition (DBrNCellWidth,		DBTableFieldFloat,      (char *) "%8.3f", sizeof (DBFloat),true),
