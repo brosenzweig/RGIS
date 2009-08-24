@@ -670,7 +670,7 @@ static DBInt _DBExportNetCDFTable (DBObjTable *table,int ncid)
 				{
 				char rowName [NC_MAX_NAME], colName [NC_MAX_NAME];
 				int rvarid, cvarid;
-				int row, col;
+				DBPosition pos;
 
 				sprintf (rowName,"%s_row",fieldName);
 				sprintf (colName,"%s_col",fieldName);
@@ -678,17 +678,14 @@ static DBInt _DBExportNetCDFTable (DBObjTable *table,int ncid)
 				    ((status = nc_def_var (ncid,colName,NC_INT,(int) 1,dimids,&cvarid))  == NC_NOERR) &&
 					 ((status = nc_enddef (ncid)) == NC_NOERR))
 					{
-					DBPosition pos;
 
 					for (itemID = 0;itemID < table->ItemNum ();itemID++)
 						{
 						itemRec = table->Item (itemID);
 						pos = fieldRec->Position (itemRec);
-						row = pos.Row;
-						col = pos.Col;
 						index [0] = itemID;
-						if (((status = nc_put_var1_int (ncid,cvarid,index, &col)) != NC_NOERR) ||
-						    ((status = nc_put_var1_int (ncid,rvarid,index, &row)) != NC_NOERR))
+						if (((status = nc_put_var1_int (ncid,cvarid,index, &pos.Col)) != NC_NOERR) ||
+						    ((status = nc_put_var1_int (ncid,rvarid,index, &pos.Row)) != NC_NOERR))
 							{ fprintf(stderr, "NC Error: %s [%s]\n", nc_strerror(status),fieldRec->Name ()); return (DBFault); }
 						}
 					if ((status = nc_redef  (ncid)) != NC_NOERR) { fprintf(stderr, "NC Error: %s\n", nc_strerror(status)); return (DBFault); }

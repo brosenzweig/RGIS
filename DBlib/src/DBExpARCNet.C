@@ -17,7 +17,6 @@ DBInt DBNetworkExportASCIIGridDir (DBObjData *netData,char *fileName)
 
 	{
 	FILE *file;
-	DBInt row, col;
 	DBPosition pos;
 	DBCoordinate cellSize;
 	DBRegion extent = netData->Extent ();
@@ -34,14 +33,10 @@ DBInt DBNetworkExportASCIIGridDir (DBObjData *netData,char *fileName)
 	fprintf (file,"cellsize      %f\n",cellSize.X);
 	fprintf (file,"NODATA_value  %d\n",DBFault);
 
-	for (row = netIO->RowNum () - 1;row >= 0; --row)
+	for (pos.Row = netIO->RowNum () - 1;pos.Row >= 0; --pos.Row)
 		{
-		for (col = 0; col < netIO->ColNum (); ++col)
-			{
-			pos.Row = row;
-			pos.Col = col;
+		for (pos.Col = 0; pos.Col < netIO->ColNum (); ++pos.Col)
 			fprintf (file," %d",netIO->ToCellDir (netIO->Cell (pos)));
-			}
 		fprintf (file,"\n");
 		}
 	fclose (file);
@@ -53,7 +48,6 @@ DBInt DBNetworkExportASCIIGridBasin (DBObjData *netData,char *fileName)
 
 	{
 	FILE *file;
-	DBInt row, col;
 	DBPosition pos;
 	DBCoordinate cellSize;
 	DBRegion extent = netData->Extent ();
@@ -70,14 +64,10 @@ DBInt DBNetworkExportASCIIGridBasin (DBObjData *netData,char *fileName)
 	fprintf (file,"cellsize      %f\n",cellSize.X);
 	fprintf (file,"NODATA_value  %d\n",DBFault);
 
-	for (row = netIO->RowNum () - 1;row >= 0; --row)
+	for (pos.Row = netIO->RowNum () - 1;pos.Row >= 0; --pos.Row)
 		{
-		for (col = 0; col < netIO->ColNum (); ++col)
-			{
-			pos.Row = row;
-			pos.Col = col;
+		for (pos.Col = 0; pos.Col < netIO->ColNum (); ++pos.Col)
 			fprintf (file," %d",netIO->CellBasinID (netIO->Cell (pos)));
-			}
 		fprintf (file,"\n");
 		}
 	fclose (file);
@@ -89,7 +79,6 @@ DBInt DBNetworkExportASCIIGridOrder (DBObjData *netData,char *fileName)
 
 	{
 	FILE *file;
-	DBInt row, col;
 	DBPosition pos;
 	DBCoordinate cellSize;
 	DBRegion extent = netData->Extent ();
@@ -106,14 +95,10 @@ DBInt DBNetworkExportASCIIGridOrder (DBObjData *netData,char *fileName)
 	fprintf (file,"cellsize      %f\n",cellSize.X);
 	fprintf (file,"NODATA_value  %d\n",DBFault);
 
-	for (row = netIO->RowNum () - 1;row >= 0; --row)
+	for (pos.Row = netIO->RowNum () - 1;pos.Row >= 0; --pos.Row)
 		{
-		for (col = 0; col < netIO->ColNum (); ++col)
-			{
-			pos.Row = row;
-			pos.Col = col;
+		for (pos.Col = 0; pos.Col < netIO->ColNum (); ++pos.Col)
 			fprintf (file," %d",netIO->CellOrder (netIO->Cell (pos)));
-			}
 		fprintf (file,"\n");
 		}
 	fclose (file);
@@ -125,7 +110,6 @@ DBInt DBNetworkExportASCIIGridArea (DBObjData *netData,char *fileName)
 
 	{
 	FILE *file;
-	DBInt row, col;
 	DBPosition pos;
 	DBCoordinate cellSize;
 	DBRegion extent = netData->Extent ();
@@ -143,15 +127,11 @@ DBInt DBNetworkExportASCIIGridArea (DBObjData *netData,char *fileName)
 	fprintf (file,"cellsize      %f\n",cellSize.X);
 	fprintf (file,"NODATA_value  %f\n",-9999.0);
 
-	for (row = netIO->RowNum () - 1;row >= 0; --row)
+	for (pos.Row = netIO->RowNum () - 1;pos.Row >= 0; --pos.Row)
 		{
-		for (col = 0; col < netIO->ColNum (); ++col)
-			{
-			pos.Row = row;
-			pos.Col = col;
+		for (pos.Col = 0; pos.Col < netIO->ColNum (); ++pos.Col)
 			if ((cellRec = netIO->Cell (pos)) == (DBObjRecord *) NULL)	fprintf (file," %f",-9999.0);
 			else	fprintf (file," %f",netIO->CellBasinArea (cellRec));
-			}
 		fprintf (file,"\n");
 		}
 	fclose (file);
@@ -163,7 +143,6 @@ DBInt DBNetworkExportASCIIGridLength (DBObjData *netData,char *fileName)
 
 	{
 	FILE *file;
-	DBInt row, col;
 	DBPosition pos;
 	DBCoordinate cellSize;
 	DBRegion extent = netData->Extent ();
@@ -181,15 +160,11 @@ DBInt DBNetworkExportASCIIGridLength (DBObjData *netData,char *fileName)
 	fprintf (file,"cellsize      %f\n",cellSize.X);
 	fprintf (file,"NODATA_value  %f\n",-9999.0);
 
-	for (row = netIO->RowNum () - 1;row >= 0; --row)
+	for (pos.Row = netIO->RowNum () - 1;pos.Row >= 0; --pos.Row)
 		{
-		for (col = 0; col < netIO->ColNum (); ++col)
-			{
-			pos.Row = row;
-			pos.Col = col;
+		for (pos.Col = 0; pos.Col < netIO->ColNum (); ++pos.Col)
 			if ((cellRec = netIO->Cell (pos)) == (DBObjRecord *) NULL)	fprintf (file," %f",-9999.0);
 			else	fprintf (file," %f",netIO->CellBasinLength (cellRec));
-			}
 		fprintf (file,"\n");
 		}
 	fclose (file);
@@ -201,7 +176,6 @@ DBInt DBNetworkExportASCIIGridDistToMouth (DBObjData *netData,char *fileName)
 
 	{
 	FILE *file;
-	DBInt row, col;
 	DBPosition pos;
 	DBCoordinate cellSize;
 	DBRegion extent = netData->Extent ();
@@ -220,15 +194,11 @@ DBInt DBNetworkExportASCIIGridDistToMouth (DBObjData *netData,char *fileName)
 	fprintf (file,"cellsize      %f\n",cellSize.X);
 	fprintf (file,"NODATA_value  %f\n",-9999.0);
 
-	for (row = netIO->RowNum () - 1;row >= 0; --row)
+	for (pos.Row = netIO->RowNum () - 1;pos.Row >= 0; --pos.Row)
 		{
-		for (col = 0; col < netIO->ColNum (); ++col)
-			{
-			pos.Row = row;
-			pos.Col = col;
+		for (pos.Col = 0; pos.Col < netIO->ColNum (); ++pos.Col)
 			if ((cellRec = netIO->Cell (pos)) == (DBObjRecord *) NULL)	fprintf (file," %f",-9999.0);
 			else	fprintf (file," %f",netIO->CellDistToMouth (cellRec));
-			}
 		fprintf (file,"\n");
 		}
 	fclose (file);
@@ -240,7 +210,6 @@ DBInt DBNetworkExportASCIIGridDistToOcean (DBObjData *netData,char *fileName)
 
 	{
 	FILE *file;
-	DBInt row, col;
 	DBPosition pos;
 	DBCoordinate cellSize;
 	DBRegion extent = netData->Extent ();
@@ -259,15 +228,11 @@ DBInt DBNetworkExportASCIIGridDistToOcean (DBObjData *netData,char *fileName)
 	fprintf (file,"cellsize      %f\n",cellSize.X);
 	fprintf (file,"NODATA_value  %f\n",-9999.0);
 
-	for (row = netIO->RowNum () - 1;row >= 0; --row)
+	for (pos.Row = netIO->RowNum () - 1;pos.Row >= 0; --pos.Row)
 		{
-		for (col = 0; col < netIO->ColNum (); ++col)
-			{
-			pos.Row = row;
-			pos.Col = col;
+		for (pos.Col = 0; pos.Col < netIO->ColNum (); ++pos.Col)
 			if ((cellRec = netIO->Cell (pos)) == (DBObjRecord *) NULL)	fprintf (file," %f",-9999.0);
 			else	fprintf (file," %f",netIO->CellDistToOcean (cellRec));
-			}
 		fprintf (file,"\n");
 		}
 	fclose (file);

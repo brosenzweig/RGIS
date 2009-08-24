@@ -30,7 +30,7 @@ DBObjData *DBNetworkToGrid (DBObjData *netData,DBInt type)
 	DBObjTableField *layerFLD 		= layerTable->Field (DBrNLayer);
 	DBNetworkIO *netIO;
 	DBGridIO *gridIO;
-	
+
 	grdData->Projection (netData->Projection ());
 	grdData->Precision  (netData->Precision ());
 	grdData->MaxScale   (netData->MaxScale ());
@@ -39,7 +39,7 @@ DBObjData *DBNetworkToGrid (DBObjData *netData,DBInt type)
 	grdData->Document   (DBDocGeoDomain,netData->Document (DBDocGeoDomain));
 
 	netIO = new DBNetworkIO (netData);
-	
+
 	layerTable->Add ("FirstLayer");
 	if ((layerRec = layerTable->Item ()) == (DBObjRecord *) NULL)
 		{ delete netIO; return ((DBObjData *) NULL); }
@@ -62,7 +62,7 @@ DBObjData *DBNetworkToGrid (DBObjData *netData,DBInt type)
 			delete grdData;
 			delete netIO;
 			return ((DBObjData *) NULL);
-		}			
+		}
 	if ((dataRec = new DBObjRecord (layerRec->Name (),netIO->ColNum () * netIO->RowNum () * valueSizeFLD->Int (layerRec),valueSizeFLD->Int (layerRec))) == (DBObjRecord *) NULL)
 		{ delete netIO; return ((DBObjData *) NULL); }
 	(grdData->Arrays ())->Add (dataRec);

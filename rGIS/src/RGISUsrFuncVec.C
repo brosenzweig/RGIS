@@ -28,7 +28,7 @@ void _RGISUserFuncionVector (DBObjData *data,UI2DView *view,XEvent *event)
 	if (event->type != ButtonPress) return;
 	if (DBTypeVector != (data->Type () & DBTypeVector))
 		{ fprintf (stderr,"Invalid data Type in: _RGISUserFuncionVector ()\n"); }
-	
+
 	sX = event->xbutton.x;
 	sY = event->xbutton.y;
 	view->Window2Map  (sX,sY, &coord.X, &coord.Y);
@@ -69,7 +69,7 @@ void _RGISUserFuncionVector (DBObjData *data,UI2DView *view,XEvent *event)
 				if ((record = pointIO->Item (coord)) != (DBObjRecord *) NULL)
 					{
 					coord = pointIO->Coordinate (record);
-				
+
 					view->Map2Window (coord.X,coord.Y,&sX,&sY);
 					if (UIGetLine (view->DrawingArea (),event,sX,sY,&x,&y))
 						{

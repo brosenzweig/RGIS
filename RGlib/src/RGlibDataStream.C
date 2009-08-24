@@ -107,7 +107,7 @@ DBInt RGlibRGIS2DataStream (DBObjData *grdData,DBObjData *tmplData,char *fieldNa
 				tmplGrdIO = new DBGridIO (tmplData);
 				varHeader.ItemNum = gridIO->RowNum () * gridIO->ColNum ();
 				break;
-			case DBTypeNetwork:	
+			case DBTypeNetwork:
 				tmplNetIO = new DBNetworkIO (tmplData);
 				varHeader.ItemNum = tmplNetIO->CellNum ();
 				break;
@@ -116,10 +116,10 @@ DBInt RGlibRGIS2DataStream (DBObjData *grdData,DBObjData *tmplData,char *fieldNa
 		}
 	if ((data = (void *) calloc (varHeader.ItemNum,itemSize)) == (void *) NULL)
 		{
-		fprintf (stderr,"Error! Allocating %d items of %d size in: RGlibRGIS2DataStream!\n",varHeader.ItemNum,itemSize); 
+		fprintf (stderr,"Error! Allocating %d items of %d size in: RGlibRGIS2DataStream!\n",varHeader.ItemNum,itemSize);
 		return (DBFault);
 		}
-	
+
 /**************************************************************
 *                                                             *
 * Point template                                              *
@@ -202,7 +202,7 @@ DBInt RGlibRGIS2DataStream (DBObjData *grdData,DBObjData *tmplData,char *fieldNa
 			}
 		delete tmplPntIO;
 		}
-	
+
 /**************************************************************
 *                                                             *
 * Grid Template (default when no template coverage is given.  *
@@ -212,7 +212,7 @@ DBInt RGlibRGIS2DataStream (DBObjData *grdData,DBObjData *tmplData,char *fieldNa
 		{
 		DBPosition pos;
 		DBCoordinate coord;
-	
+
 		if (fieldPTR == (DBObjTableField *) NULL)
 			{
 			for (layerID = 0;layerID < gridIO->LayerNum ();++layerID)
@@ -263,7 +263,7 @@ DBInt RGlibRGIS2DataStream (DBObjData *grdData,DBObjData *tmplData,char *fieldNa
 					{ perror ("Error: Writing record header in: RGlibRGIS2DataStream ()\n");	ret = DBFault; break; }
 				if ((DBInt) fwrite (data,itemSize,varHeader.ItemNum,outFile) != varHeader.ItemNum)
 					{ perror ("Error: Writing data in: RGlibRGIS2DataStream ()\n");				ret = DBFault; break; }
-				} 
+				}
 			}
 		else
 			{
@@ -315,7 +315,7 @@ DBInt RGlibRGIS2DataStream (DBObjData *grdData,DBObjData *tmplData,char *fieldNa
 *                                                             *
 **************************************************************/
 	else if (tmplNetIO != (DBNetworkIO *) NULL)
-		{ 
+		{
 		DBObjRecord *cellRec;
 
 		if (fieldPTR == (DBObjTableField *) NULL)
@@ -536,7 +536,7 @@ DBInt RGlibDataStream2RGIS (DBObjData *outData,DBObjData *tmplData, FILE *inFile
 				for (cellID = 0;cellID < netIO->CellNum ();++cellID)
 					{
 					pos = netIO->CellPosition (netIO->Cell (cellID));
-			
+
 					switch (header.DataType)
 						{
 						case MFByte:	val = (DBFloat) (((char *)   data) [cellID]); break;

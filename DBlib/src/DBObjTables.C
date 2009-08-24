@@ -551,15 +551,35 @@ DBRegion DBObjTableField::Region (const DBObjRecord *record) const
 	memcpy (&value,(char *) record->Data () + StartByte (),sizeof (DBRegion)); return (value);
 	}
 
-void DBObjTableField::Position (DBObjRecord  *record,DBPosition value)
+void DBObjTableField::UShortPosition (DBObjRecord  *record,DBUShortPosition uPos)
 
-	{ memcpy ((char *) record->Data () + StartByte (),&value,sizeof (DBPosition)); }
+	{ memcpy ((char *) record->Data () + StartByte (),&uPos,sizeof (DBUShortPosition)); }
+
+DBUShortPosition DBObjTableField::UShortPosition (const DBObjRecord *record) const
+
+	{
+	DBUShortPosition uPos;
+	memcpy (&uPos,(char *) record->Data () + StartByte (),sizeof (DBUShortPosition));
+	return (uPos);
+	}
+
+void DBObjTableField::Position (DBObjRecord  *record,DBPosition iPos)
+
+	{
+	DBUShortPosition uPos;
+	uPos.Col = iPos.Col;
+	uPos.Row = iPos.Row;
+	UShortPosition (record, uPos);
+	}
 
 DBPosition DBObjTableField::Position (const DBObjRecord *record) const
 
 	{
-	DBPosition   value;
-	memcpy (&value,(char *) record->Data () + StartByte (),sizeof (DBPosition)); return (value);
+	DBUShortPosition uPos = UShortPosition (record);
+	DBPosition    iPos;
+	iPos.Col = uPos.Col;
+	iPos.Row = uPos.Row;
+	return (iPos);
 	}
 
 DBInt DBObjTableField::FormatWidth () const

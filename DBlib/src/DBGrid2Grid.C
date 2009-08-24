@@ -75,7 +75,7 @@ DBObjData *DBGridToGrid (DBObjData *srcGridData,DBInt type, DBInt valueType, DBI
 	DBObjTableField *valueSizeFLD = layerTable->Field (DBrNValueSize);
 	DBObjTableField *layerFLD 		= layerTable->Field (DBrNLayer);
 	DBGridIO *gridIO;
-	
+
 	grdData->Projection (srcGridData->Projection ());
 	grdData->Precision  (srcGridData->Precision ());
 	grdData->MaxScale   (srcGridData->MaxScale ());
@@ -85,7 +85,7 @@ DBObjData *DBGridToGrid (DBObjData *srcGridData,DBInt type, DBInt valueType, DBI
 	grdData->Document   (DBDocSubject,  srcGridData->Document (DBDocSubject));
 
 	gridIO = new DBGridIO (srcGridData);
-	
+
 	layerTable->Add ("FirstLayer");
 	if ((layerRec = layerTable->Item ()) == (DBObjRecord *) NULL)
 		{ delete gridIO; return ((DBObjData *) NULL); }
@@ -93,7 +93,7 @@ DBObjData *DBGridToGrid (DBObjData *srcGridData,DBInt type, DBInt valueType, DBI
 	colNumFLD->Int (layerRec,gridIO->ColNum ());
 	cellWidthFLD->Float  (layerRec,gridIO->CellWidth ());
 	cellHeightFLD->Float (layerRec,gridIO->CellHeight ());
-	
+
 	valueTypeFLD->Int (layerRec,valueType);
 	valueSizeFLD->Int (layerRec,valueSize);
 	if ((srcGridData->Type () == type) && (type == DBTypeGridContinuous))
@@ -195,7 +195,7 @@ DBObjData *DBGridCreate (char *title,DBRegion extent,DBCoordinate cellSize,DBInt
 
 	(data->Arrays ())->Add (dataRec);
 	layerFLD->Record (layerRec,dataRec);
-	
+
 	if (type == DBTypeGridContinuous)
 		{
 		itemTable->Add (layerRec->Name ());
@@ -279,7 +279,7 @@ DBInt DBGridAppend (DBObjData *grdData, DBObjData *appData)
 							grdIO->Value (grdLayerRec,pos,grdRec->RowID ());
 							}
 						else	grdIO->Value (grdLayerRec,pos, DBFault);
-						} 
+						}
 				grdIO->DiscreteStats ();
 				} break;
 			}

@@ -25,7 +25,7 @@ DBInt RGlibPointSTNCoordinates (DBObjData *dbData,DBObjTableField *field)
 	DBVPointIO *pointIO;
 	DBNetworkIO *netIO;
 	DBObjRecord *pntRec, *cellRec;
-	
+
 	if (linkedData == (DBObjData *) NULL) return (DBFault);
 	pointIO = new DBVPointIO (dbData);
 	netIO = new DBNetworkIO (linkedData);
@@ -233,7 +233,7 @@ DBInt RGlibPointSTNCharacteristics (DBObjData *dbData)
 		color = 1;
 Start:
 		for (cellID = mouthID;cellID < cellTable->ItemNum ();++cellID)
-			{			
+			{
 			cellRec = cellTable->Item (cellID);
 			if (netIO->CellBasinID (cellRec) != basinID) break;
 			if (_RGlibTEMPPointIDFLD->Int (cellRec) != pointID) continue;
@@ -250,7 +250,7 @@ Start:
 			}
 		colorFLD->Int (pointRec,color);
 		}
-	ret = DBSuccess;	
+	ret = DBSuccess;
 Stop:
 	pointTable->ListSort ();
 	cellTable->DeleteField (_RGlibTEMPPointIDFLD);
@@ -265,7 +265,7 @@ static DBInt _RGlibSubbasinCenterAction (DBNetworkIO *netIO,DBObjRecord *cellRec
 	DBCoordinate coord = netIO->Center (cellRec);
 	massCoord->X += coord.X;
 	massCoord->Y += coord.Y;
-	return (true); 
+	return (true);
 	}
 
 DBInt RGlibPointSubbasinCenter (DBObjData *pntData, DBObjData *netData)
@@ -558,7 +558,7 @@ DBInt RGlibPointSubbasinStats (DBObjData *pntData, DBObjData *netData, DBObjData
 			_RGlibSubbasinStdDev = 0.0;
 			netIO->UpStreamSearch (netIO->Cell (pointIO->Coordinate (pntRec)),(DBNetworkACTION) _RGlibSubbasinStatistics);
 			_RGlibSubbasinMean = _RGlibSubbasinMean / _RGlibSubbasinArea;
-			_RGlibSubbasinStdDev = _RGlibSubbasinStdDev / _RGlibSubbasinArea;	
+			_RGlibSubbasinStdDev = _RGlibSubbasinStdDev / _RGlibSubbasinArea;
 			_RGlibSubbasinStdDev = _RGlibSubbasinStdDev - _RGlibSubbasinMean * _RGlibSubbasinMean;
 			_RGlibSubbasinStdDev = sqrt (_RGlibSubbasinStdDev);
 			minimumFLD->Float (tblRec,_RGlibSubbasinMin);

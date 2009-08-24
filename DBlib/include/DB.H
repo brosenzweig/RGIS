@@ -341,63 +341,25 @@ class DBRegion
 		void Swap () { UpperRight.Swap (); LowerLeft.Swap (); }
 	};
 
-class DBPosition
+class DBUShortPosition
 	{
 	private:
 	public:
 		DBUShort Row;
 		DBUShort Col;
+		DBUShortPosition () { Row = 0; Col = 0; }
+		DBUShortPosition (const DBUShortPosition &pos) { Row = pos.Row; Col = pos.Col; }
+		void Swap () { DBByteOrderSwapHalfWord (&Row); DBByteOrderSwapHalfWord (&Col);}
+	};
+
+class DBPosition
+	{
+	private:
+	public:
+		DBInt Row;
+		DBInt Col;
 		DBPosition () { Row = 0; Col = 0; }
 		DBPosition (const DBPosition &pos) { Row = pos.Row; Col = pos.Col; }
-		friend DBPosition operator+ (DBPosition pos0,DBPosition pos1)
-			{
-			DBPosition retPos;
-			retPos.Col = pos0.Col + pos1.Col; retPos.Row = pos0.Row + pos1.Row;
-			return (retPos);
-			}
-		friend DBPosition operator+ (DBPosition pos0,DBShort delta)
-			{
-			DBPosition retPos;
-			retPos.Col = pos0.Col + delta; retPos.Row = pos0.Row + delta;
-			return (retPos);
-			}
-		friend DBPosition operator- (DBPosition pos0,DBPosition pos1)
-			{
-			DBPosition retPos;
-			retPos.Col = pos0.Col - pos1.Col; retPos.Row = pos0.Row - pos1.Row;
-			return (retPos);
-			}
-		friend DBPosition operator- (DBPosition pos0,DBShort delta)
-			{
-			DBPosition retPos;
-			retPos.Col = pos0.Col - delta; retPos.Row = pos0.Row - delta;
-			return (retPos);
-			}
-		friend DBPosition operator* (DBPosition pos0,DBPosition pos1)
-			{
-			DBPosition retPos;
-			retPos.Col = pos0.Col * pos1.Col; retPos.Row = pos0.Row * pos1.Row;
-			return (retPos);
-			}
-		friend DBPosition operator* (DBPosition pos0,DBShort scalar)
-			{
-			DBPosition retPos;
-			retPos.Col = pos0.Col * scalar; retPos.Row = pos0.Row * scalar;
-			return (retPos);
-			}
-		friend DBPosition operator/ (DBPosition pos0,DBPosition pos1)
-			{
-			DBPosition retPos;
-			retPos.Col = pos0.Col / pos1.Col; retPos.Row = pos0.Row / pos1.Row;
-			return (retPos);
-			}
-		friend DBPosition operator/ (DBPosition pos0,DBShort scalar)
-			{
-			DBPosition retPos;
-			retPos.Col = pos0.Col / scalar; retPos.Row = pos0.Row / scalar;
-			return (retPos);
-			}
-		void Swap () { DBByteOrderSwapHalfWord (&Row); DBByteOrderSwapHalfWord (&Col);}
 	};
 
 #define DBTimeStepMinute	(0x01)
@@ -977,13 +939,13 @@ class DBObjTableField : public DBObject
 		DBUShort	LengthVAR;
 		char FormatSTR [DBStringLength];
 		union	{
-				DBProperties<DBByte>		BytePROP;
-				DBProperties<DBShort>	ShortPROP;
-				DBProperties<DBInt>		IntPROP;
-				DBProperties<DBFloat4>	Float4PROP;
-				DBProperties<DBFloat>	FloatPROP;
-				DBProperties<DBDate>		DatePROP;
-				DBInt							RecordPROP;
+				DBProperties<DBByte>    BytePROP;
+				DBProperties<DBShort>   ShortPROP;
+				DBProperties<DBInt>     IntPROP;
+				DBProperties<DBFloat4>  Float4PROP;
+				DBProperties<DBFloat>   FloatPROP;
+				DBProperties<DBDate>    DatePROP;
+				DBInt                   RecordPROP;
 				};
 		void Initialize (DBInt,const char *, DBUnsigned,DBInt);
 		void Swap ();
@@ -1014,14 +976,14 @@ class DBObjTableField : public DBObject
 		DBInt Required ()	 const { return (RequiredVAR); }
 		void Required (DBInt required) { RequiredVAR = required; }
 
-		void	RecordProp (DBInt prop) { RecordPROP = prop; }
-		DBInt RecordProp ()				{ return (RecordPROP); }
+		void  RecordProp (DBInt prop) { RecordPROP = prop; }
+		DBInt RecordProp ()           { return (RecordPROP); }
 
-		void				String	 	(DBObjRecord *, const char *);
-		char 				*String 		(const DBObjRecord *) const;
-		void  			Int 			(DBObjRecord *, DBInt );
-		DBInt 			Int 			(const DBObjRecord *) const;
-		DBInt				IntNoData	(void) const
+		void  String (DBObjRecord *, const char *);
+		char *String (const DBObjRecord *) const;
+		void  Int    (DBObjRecord *, DBInt );
+		DBInt Int    (const DBObjRecord *) const;
+		DBInt IntNoData (void) const
 			{
 			switch (LengthVAR)
 				{
@@ -1030,7 +992,7 @@ class DBObjTableField : public DBObject
 				default:						return (IntPROP.NoData ());
 				}
 			}
-		void				IntNoData	(DBInt noData)
+		void IntNoData	(DBInt noData)
 			{
 			switch (LengthVAR)
 				{
@@ -1039,23 +1001,25 @@ class DBObjTableField : public DBObject
 				default: 					IntPROP.NoData (noData);				break;
 				}
 			}
-		void				Float 		(DBObjRecord *, DBFloat);
-		DBFloat			Float 		(const DBObjRecord *) const;
-		DBFloat			FloatNoData	(void) const
+		void     Float (DBObjRecord *, DBFloat);
+		DBFloat  Float (const DBObjRecord *) const;
+		DBFloat  FloatNoData (void) const
 			{ switch (LengthVAR) { case sizeof (DBFloat4): return ((DBFloat) Float4PROP.NoData ()); default: return (FloatPROP.NoData ()); } }
-		void			FloatNoData	(DBFloat noData)
+		void FloatNoData (DBFloat noData)
 			{ switch (LengthVAR) { case sizeof (DBFloat4): Float4PROP.NoData ((DBFloat4) noData); break; default: FloatPROP.NoData (noData); break; } }
-		void				Date  		(DBObjRecord *, DBDate);
-		DBDate			Date 			(const DBObjRecord *) const;
-		DBDate			DateNoData	(void) const { DBDate date; date.Set (""); return (date); }
-		void				Record 		(DBObjRecord *, DBObjRecord *);
-		DBObjRecord		*Record		(const DBObjRecord *) const;
-		void				Coordinate 	(DBObjRecord *, DBCoordinate);
-		DBCoordinate	Coordinate	(const DBObjRecord *) const;
-		void				Region		(DBObjRecord *, DBRegion);
-		DBRegion			Region		(const DBObjRecord *) const;
-		void				Position		(DBObjRecord *, DBPosition);
-		DBPosition		Position		(const DBObjRecord *) const;
+		void    Date (DBObjRecord *, DBDate);
+		DBDate  Date (const DBObjRecord *) const;
+		DBDate DateNoData (void) const { DBDate date; date.Set (""); return (date); }
+		void   Record (DBObjRecord *, DBObjRecord *);
+		DBObjRecord *Record (const DBObjRecord *) const;
+		void   Coordinate 	(DBObjRecord *, DBCoordinate);
+		DBCoordinate Coordinate	(const DBObjRecord *) const;
+		void     Region (DBObjRecord *, DBRegion);
+		DBRegion Region (const DBObjRecord *) const;
+		void             Position (DBObjRecord *, DBPosition);
+		DBPosition    Position (const DBObjRecord *) const;
+		void             UShortPosition (DBObjRecord *, DBUShortPosition);
+		DBUShortPosition UShortPosition (const DBObjRecord *) const;
 		int Read	 (FILE *,int);
 		int Write (FILE *);
 	};

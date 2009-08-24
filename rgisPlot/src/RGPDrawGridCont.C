@@ -16,46 +16,46 @@ balazs.fekete@unh.edu
 
 static RGPColorMapEntry _RGPGreyColors [] = {
 		{ 255, 	255,	255},
-		{ 255, 	255,	255},	
+		{ 255, 	255,	255},
 		{ 32,		32,	32}};
 
 static RGPColorMapEntry _RGPBlueColors [] = {
 		{ 240,	240,	240},
-		{ 255, 	255,	255},	
-		{ 0, 		255,	255},	
-		{ 0, 		0,		255},	
-		{ 0, 		0,		165},	
-		{ 0,		0,		100}};	
+		{ 255, 	255,	255},
+		{ 0, 		255,	255},
+		{ 0, 		0,		255},
+		{ 0, 		0,		165},
+		{ 0,		0,		100}};
 
 static RGPColorMapEntry _RGPRedColors [] = {
 		{ 240,	240,	240},
-		{ 255, 	255,	255},	
-		{ 255, 	0,		0},	
-		{ 160, 	0,		0},	
-		{ 80, 	0,	 	0}};	
+		{ 255, 	255,	255},
+		{ 255, 	0,		0},
+		{ 160, 	0,		0},
+		{ 80, 	0,	 	0}};
 
 static RGPColorMapEntry _RGPBlueRedColors [] = {
 		{ 240,	240,	240},
-		{ 0,		0,		100},	
-		{ 0, 		0,		255},	
-		{ 0, 		255,	255},	
-		{ 255, 	255,	255},	
-		{ 255, 	0,		0},	
-		{ 200, 	0,		0},	
-		{ 60, 	0,	 	0}};	
+		{ 0,		0,		100},
+		{ 0, 		0,		255},
+		{ 0, 		255,	255},
+		{ 255, 	255,	255},
+		{ 255, 	0,		0},
+		{ 200, 	0,		0},
+		{ 60, 	0,	 	0}};
 
 static RGPColorMapEntry _RGPElevationColors [] = {
 		{ 0,		240,	255},
-		{ 0,		92,	0},	
-		{ 0,		255,	0},	
-		{ 255,	255,	0},	
-		{ 200,	200,	112},	
+		{ 0,		92,	0},
+		{ 0,		255,	0},
+		{ 255,	255,	0},
+		{ 200,	200,	112},
 		{ 120,	40,	0},
 		{ 60,		0,		0}};
 
 #define RGPColorNum(colorList) (int) (sizeof (colorList) / sizeof (RGPColorMapEntry))
-			
-		
+
+
 
 DBInt RGPDrawGridContinuous (DBInt mode, DBInt *entryNum, DBObjData *grdData)
 
@@ -73,7 +73,7 @@ DBInt RGPDrawGridContinuous (DBInt mode, DBInt *entryNum, DBObjData *grdData)
 	DBRegion extent = grdData->Extent ();
 	DBObjRecord *layerRec;
 	DBGridIO *gridIO = new DBGridIO (grdData);
-	
+
 	do {
 		RGPPrintMessage (mode,entryNum,"Grid Layer:");
 		if (fgets (charBuffer,sizeof (charBuffer) - 2,stdin) == (char *) NULL) { ret = DBFault; goto Stop; }
@@ -83,7 +83,7 @@ DBInt RGPDrawGridContinuous (DBInt mode, DBInt *entryNum, DBObjData *grdData)
 		sprintf (errorMsg,"Invalid grid layer [%s]",charBuffer);
 		if (RGPPrintError (mode,*entryNum,errorMsg)) { ret = DBFault; goto Stop;}
  		} while (true);
-		
+
 	do	{
 		RGPPrintMessage (mode,entryNum,"Colormap [default|grey|blue|red-blue|elevation|custom]:");
 		if (fgets (charBuffer,sizeof (charBuffer) - 2,stdin) == (char *) NULL) { ret = DBFault; goto Stop; }
@@ -107,7 +107,7 @@ DBInt RGPDrawGridContinuous (DBInt mode, DBInt *entryNum, DBObjData *grdData)
 				case DBDataFlagDispModeContBlueRed:
 					shadeNum = RGPSetColorMap (_RGPBlueRedColors,	RGPColorNum (_RGPBlueRedColors));	break;
 				case DBDataFlagDispModeContElevation:
-					shadeNum = RGPSetColorMap (_RGPElevationColors,	RGPColorNum (_RGPElevationColors));	break;	
+					shadeNum = RGPSetColorMap (_RGPElevationColors,	RGPColorNum (_RGPElevationColors));	break;
 				}
 			break;
 		case 1:	shadeNum = RGPSetColorMap (_RGPGreyColors,		RGPColorNum (_RGPGreyColors));		break;
@@ -198,7 +198,7 @@ DBInt RGPDrawGridContinuous (DBInt mode, DBInt *entryNum, DBObjData *grdData)
 	RGPPrintMessage (mode,entryNum,"Unit:");
 	if ((fgets (charBuffer,sizeof (charBuffer) - 2,stdin) == (char *) NULL) || (sscanf (charBuffer,"%f",&unit) != 1))
 		{ RGPPrintError (mode,*entryNum,"Unit input error"), ret = DBFault; goto Stop; }
-	
+
 	RGPPrintMessage (mode,entryNum,"Unit label:");
 	if (fgets (charBuffer,sizeof (charBuffer) - 2,stdin) == (char *) NULL)
 		{ RGPPrintError (mode,*entryNum,"Unit label input error"); ret = DBFault; goto Stop; }

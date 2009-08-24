@@ -94,8 +94,8 @@ DBInt DBNetworkIO::Pos2Coord (DBPosition pos,DBCoordinate &coord) const
 
 	{
 	DBInt ret = DBSuccess;
-//	if (pos.Col < 0) ret = DBFault; TODO: No longer possible
-//	if (pos.Row < 0) ret = DBFault;
+	if (pos.Col < 0) ret = DBFault;
+	if (pos.Row < 0) ret = DBFault;
 	if (pos.Col >= ColNum ()) ret = DBFault;
 	if (pos.Row >= RowNum ()) ret = DBFault;
 
@@ -130,8 +130,8 @@ DBObjRecord *DBNetworkIO::Cell (DBPosition pos) const
 
 	{
 	DBInt cellID;
-//	if (pos.Col < 0) return ((DBObjRecord *) NULL); TODO: No longer possible
-//	if (pos.Row < 0) return ((DBObjRecord *) NULL);
+	if (pos.Col < 0) return ((DBObjRecord *) NULL);
+	if (pos.Row < 0) return ((DBObjRecord *) NULL);
 	if (pos.Col >= ColNum ()) return ((DBObjRecord *) NULL);
 	if (pos.Row >= RowNum ()) return ((DBObjRecord *) NULL);
 
@@ -148,8 +148,8 @@ DBObjRecord *DBNetworkIO::Cell (DBPosition pos,DBFloat area) const
 	DBObjRecord *cellRec, *bestCellRec, *retCellRec;
 	DBPosition cellPos;
 
-//	if (pos.Col < 0) return ((DBObjRecord *) NULL); TODO: No longer possible
-//	if (pos.Row < 0) return ((DBObjRecord *) NULL);
+	if (pos.Col < 0) return ((DBObjRecord *) NULL);
+	if (pos.Row < 0) return ((DBObjRecord *) NULL);
 	if (pos.Col >= ColNum ()) return ((DBObjRecord *) NULL);
 	if (pos.Row >= RowNum ()) return ((DBObjRecord *) NULL);
 
@@ -209,7 +209,7 @@ DBObjRecord *DBNetworkIO::FromCell (const DBObjRecord *cellRec,DBInt dir,DBInt s
 		fromCell = FromCellFLD->Int (cellRec);
 		if ((fromCell & dir) != dir) return ((DBObjRecord *) NULL);
 		}
-	pos = PositionFLD->Position (cellRec); // TODO: Potential problem
+	pos = PositionFLD->Position (cellRec);
 	if ((dir == DBNetDirNW) || (dir == DBNetDirN) || (dir == DBNetDirNE)) pos.Row++;
 	if ((dir == DBNetDirSE) || (dir == DBNetDirS) || (dir == DBNetDirSW)) pos.Row--;
 	if ((dir == DBNetDirNE) || (dir == DBNetDirE) || (dir == DBNetDirSE)) pos.Col++;
@@ -292,8 +292,8 @@ DBObjRecord *DBNetworkIO::CellAdd (DBPosition pos)
 	DBPosition fromPos;
 	DBObjRecord *cellRec;
 
-//	if (pos.Col < 0) return ((DBObjRecord *) NULL); TODO: No longer possible
-//	if (pos.Row < 0) return ((DBObjRecord *) NULL);
+	if (pos.Col < 0) return ((DBObjRecord *) NULL);
+	if (pos.Row < 0) return ((DBObjRecord *) NULL);
 	if (pos.Col >= ColNum ()) return ((DBObjRecord *) NULL);
 	if (pos.Row >= RowNum ()) return ((DBObjRecord *) NULL);
 
@@ -637,7 +637,8 @@ int DBNetworkIO::Trim ()
 		DBPause (33 + 33 * i / CellNum ());
 		cellRec = CellTable->Item (i);
 		pos = CellPosition (cellRec);
-		pos = pos - min;
+		pos.Row = pos.Row - min.Row;
+		pos.Col = pos.Col = min.Col;
 		PositionFLD->Position (cellRec,pos);
 		}
 	coord.X = min.Col * CellWidth ();

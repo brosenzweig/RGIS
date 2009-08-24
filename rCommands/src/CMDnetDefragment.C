@@ -236,7 +236,7 @@ DBInt RGlibNetworkDefragment (DBObjData *netData, DBObjData *elevData,DBFloat ma
 			pourElev = _RGlibNetworkBasinElev [cBasinID] + maxClimb;
 			if (CMmathEqualValues (_RGlibNetworkBasinElev [cBasinID],grdIO->Minimum ())) continue;
 			toCell = pourCell = mouthCell = netIO->MouthCell (netIO->Basin (cBasinID));
-			if (netIO->CellDirection (mouthCell) != 0x0)         continue; 
+			if (netIO->CellDirection (mouthCell) != 0x0)         continue;
 
 			pourDir = 0x0;
 			cellNum  = mouthCell->RowID () + netIO->CellBasinCells (mouthCell);
@@ -273,7 +273,7 @@ DBInt RGlibNetworkDefragment (DBObjData *netData, DBObjData *elevData,DBFloat ma
 			if ((pourCell = netIO->Cell (pourPos)) != (DBObjRecord *) NULL)
 				{
 				nBasinID = basinIDs [netIO->CellBasinID (pourCell) - 1];
-				cellRec = netIO->MouthCell (netIO->Basin (nBasinID));  
+				cellRec = netIO->MouthCell (netIO->Basin (nBasinID));
 				if ((netIO->CellDirection (cellRec) == 0x0) &&
 				    ((grdIO->Value (layerRec,netIO->Center (cellRec),&elev) != false) &&
 					 (_RGlibNetworkBasinElev [cBasinID] < elev))) continue;

@@ -19,7 +19,7 @@ class DBVectorIO
 		DBObjTable *SymbolTable;
 
 		DBObjTableField *SymbolFLD;
-		
+
 		DBObjTableField *SymbolIDFLD;
 		DBObjTableField *ForegroundFLD;
 		DBObjTableField *BackgroundFLD;
@@ -101,7 +101,7 @@ class DBVLineIO : public DBVectorIO
 		DBCoordinate NodeCoord (const DBObjRecord *nodeRec) const
 			{ return (NodeCoordFLD->Coordinate (nodeRec)); }
 		DBCoordinate FromCoord (const DBObjRecord *lineRec) const
-			{ return (NodeCoord (FromNodeFLD->Record (lineRec))); } 
+			{ return (NodeCoord (FromNodeFLD->Record (lineRec))); }
 		DBCoordinate ToCoord (const DBObjRecord *lineRec) const
 			{ return (NodeCoord (ToNodeFLD->Record (lineRec))); }
 		DBInt VertexNum (const DBObjRecord *lineRec) const { return (VertexNumFLD->Int (lineRec)); }
@@ -211,7 +211,7 @@ class DBGridIO
 			if (layerRec == (DBObjRecord *) NULL) return (DBFault);
 			else	return (Value (layerRec,pos,value));
 			}
-		DBInt Value (DBPosition pos,DBInt *value)	const { return (Value (LayerTable->Item (),pos,value)); } 
+		DBInt Value (DBPosition pos,DBInt *value)	const { return (Value (LayerTable->Item (),pos,value)); }
 		DBInt Value (DBPosition pos,DBInt value)			{ return (Value (LayerTable->Item (),pos,value)); }
 		DBInt Value (DBObjRecord *layerRec,DBCoordinate coord,DBInt *value) const
 			{
@@ -224,7 +224,7 @@ class DBGridIO
 			DBPosition pos;
 			if (Coord2Pos (coord,pos) == DBFault) return (DBFault);
 			return (Value (layerRec,pos,value));
-			} 
+			}
 		DBInt Value (DBInt layerID,DBCoordinate coord, DBInt *value) const
 			{
 			DBObjRecord *layerRec = LayerTable->Item (layerID);
@@ -237,8 +237,8 @@ class DBGridIO
 			if (layerRec == (DBObjRecord *) NULL) return (DBFault);
 			else	return (Value (layerRec,coord,value));
 			}
-		DBInt Value (DBCoordinate coord,DBInt *value) const	{ return (Value (LayerTable->Item (),coord,value)); } 
-		DBInt Value (DBCoordinate coord,DBInt value)				{ return (Value (LayerTable->Item (),coord,value)); } 
+		DBInt Value (DBCoordinate coord,DBInt *value) const	{ return (Value (LayerTable->Item (),coord,value)); }
+		DBInt Value (DBCoordinate coord,DBInt value)				{ return (Value (LayerTable->Item (),coord,value)); }
 
 		DBInt Value (DBObjRecord *,DBPosition,DBFloat *) const;
 		DBInt Value (DBObjRecord *,DBPosition,DBFloat);
@@ -254,7 +254,7 @@ class DBGridIO
 			if (layerRec == (DBObjRecord *) NULL) return (DBFault);
 			else	return (Value (layerRec,pos,value));
 			}
-		DBInt Value (DBPosition pos,DBFloat *value) const	{ return (Value (LayerTable->Item (),pos,value)); } 
+		DBInt Value (DBPosition pos,DBFloat *value) const	{ return (Value (LayerTable->Item (),pos,value)); }
 		DBInt Value (DBPosition pos,DBFloat value)			{ return (Value (LayerTable->Item (),pos,value)); }
 		DBInt Value (DBObjRecord *,DBCoordinate,DBFloat *) const;
 		DBInt Value (DBObjRecord *layerRec,DBCoordinate coord,DBFloat value)
@@ -275,8 +275,8 @@ class DBGridIO
 			if (layerRec == (DBObjRecord *) NULL) return (DBFault);
 			else	return (Value (layerRec,coord,value));
 			}
-		DBInt Value (DBCoordinate coord,DBFloat *value) const { return (Value (LayerTable->Item (),coord,value)); } 
-		DBInt Value (DBCoordinate coord,DBFloat value)			{ return (Value (LayerTable->Item (),coord,value)); } 
+		DBInt Value (DBCoordinate coord,DBFloat *value) const { return (Value (LayerTable->Item (),coord,value)); }
+		DBInt Value (DBCoordinate coord,DBFloat value)			{ return (Value (LayerTable->Item (),coord,value)); }
 
 		DBFloat MissingValue (DBObjRecord *layerRec)	const	{ return (MissingValueFLD->Float (ItemTable->Item (layerRec->RowID ()))); }
 		void MissingValue (DBObjRecord *layerRec,DBFloat value)
@@ -287,7 +287,7 @@ class DBGridIO
 			DBInt layerID;
 			for (layerID = 0;layerID < LayerNum ();++layerID) MissingValue (LayerTable->Item (layerID),value);
 			}
-		
+
 		DBObjRecord *GridItem (DBObjRecord *,DBPosition) const;
 		DBObjRecord *GridItem (DBPosition pos)	const { return (GridItem (LayerTable->Item (),pos)); }
 		DBObjRecord *GridItem (DBObjRecord *layerRec,DBCoordinate coord) const
@@ -310,14 +310,14 @@ class DBGridIO
 			if (gridRec == NULL) return (DBFault);
 			else	return (GridValueFLD->Int (gridRec));
 			}
-		DBInt GridValue (DBCoordinate coord) const { return (GridValue (LayerTable->Item (),coord)); }	
+		DBInt GridValue (DBCoordinate coord) const { return (GridValue (LayerTable->Item (),coord)); }
 		DBInt SymbolFGColor (DBObjRecord *itemRec)
 			{
 			DBObjRecord *symRec;
 			if (itemRec == (DBObjRecord *) NULL) return (DBFault);
 			symRec = SymbolFLD->Record (itemRec);
 			if (symRec == (DBObjRecord *) NULL)	return (DBFault);
-			return (ForegroundFLD->Int (symRec)); 
+			return (ForegroundFLD->Int (symRec));
 			}
 		DBInt SymbolFGColor (DBPosition pos) { return (SymbolFGColor (GridItem (pos))); }
 		DBInt SymbolFGColor (DBCoordinate coord) { return (SymbolFGColor (GridItem (coord))); }
@@ -327,7 +327,7 @@ class DBGridIO
 			if (itemRec == (DBObjRecord *) NULL) return (DBFault);
 			symRec = SymbolFLD->Record (itemRec);
 			if (symRec == (DBObjRecord *) NULL)	return (DBFault);
-			return (BackgroundFLD->Int (symRec)); 
+			return (BackgroundFLD->Int (symRec));
 			}
 		DBInt SymbolBGColor (DBPosition pos) { return (SymbolBGColor (GridItem (pos))); }
 		DBInt SymbolBGColor (DBCoordinate coord) { return (SymbolBGColor (GridItem (coord))); }
@@ -337,7 +337,7 @@ class DBGridIO
 			if (itemRec == (DBObjRecord *) NULL) return (DBFault);
 			symRec = SymbolFLD->Record (itemRec);
 			if (symRec == (DBObjRecord *) NULL)	return (DBFault);
-			return (BackgroundFLD->Int (symRec)); 
+			return (BackgroundFLD->Int (symRec));
 			}
 		DBInt SymbolStyle (DBPosition pos) { return (SymbolStyle (GridItem (pos))); }
 		DBInt SymbolStyle (DBCoordinate coord) { return (SymbolStyle (GridItem (coord))); }
@@ -441,7 +441,7 @@ class DBNetworkIO
 			{ DBCoordinate coord (CellHeightFLD->Float (LayerRecord),CellWidthFLD->Float (LayerRecord)); return (coord); }
 		DBShort RowNum () const { return (RowNumFLD->Int (LayerRecord)); }
 		DBShort ColNum () const { return (ColNumFLD->Int (LayerRecord)); }
-		
+
 		DBInt Coord2Pos (DBCoordinate,DBPosition &) const;
 		DBInt Pos2Coord (DBPosition,DBCoordinate &) const;
 
@@ -482,7 +482,7 @@ class DBNetworkIO
 		DBFloat		CellBasinArea	(const DBObjRecord *cellRec)	const { return (SubbasinAreaFLD->Float (cellRec)); }
 		DBCoordinate Center (const DBObjRecord *) const;
 		DBCoordinate Delta  (const DBObjRecord *) const;
-		
+
 		DBObjRecord *Cell (DBInt id)		const { return (CellTable->Item (id)); }
 		DBObjRecord *Cell (DBPosition)	const;
 		DBObjRecord *Cell (DBPosition,DBFloat)	const;
@@ -490,7 +490,7 @@ class DBNetworkIO
 			{ DBPosition pos; if (Coord2Pos (coord,pos) == DBSuccess) return (Cell (pos)); else return ((DBObjRecord *) NULL); }
 		DBObjRecord *Cell (DBCoordinate coord,DBFloat area)	const
 			{ DBPosition pos; if (Coord2Pos (coord,pos) == DBSuccess) return (Cell (pos,area)); else return ((DBObjRecord *) NULL); }
-	
+
 		DBObjRecord *ToCell (const DBObjRecord *) const;
 		DBInt ToCellDir (const DBObjRecord *cellRec) const
 			{ if (cellRec == (DBObjRecord *) NULL) return (DBFault); else return (ToCellFLD->Int (cellRec)); }
@@ -532,9 +532,9 @@ class DBNetworkIO
 		DBInt			CellDirection (DBCoordinate coord) { return (CellDirection (Cell (coord))); }
 
 		DBInt			CellRotate (DBObjRecord *,DBInt dir);
-		DBInt			CellRotate (DBPosition position,DBInt dir) { return (CellRotate (Cell (position),dir)); }	
-		DBInt			CellRotate (DBCoordinate coord,DBInt dir) { return (CellRotate (Cell (coord),dir)); }	
-		
+		DBInt			CellRotate (DBPosition position,DBInt dir) { return (CellRotate (Cell (position),dir)); }
+		DBInt			CellRotate (DBCoordinate coord,DBInt dir) { return (CellRotate (Cell (coord),dir)); }
+
 		DBInt			Build ();
 		DBInt			Trim ();
 		void 			SetDistToMouth ();

@@ -127,7 +127,7 @@ int DBObjTable::Read (FILE *file,int swap)
 	DBDate date;
 	DBCoordinate coord;
 	DBRegion region;
-	DBPosition pos;
+	DBUShortPosition pos;
 	DBObjRecord *record;
 	DBObjTableField *field;
 
@@ -155,15 +155,15 @@ int DBObjTable::Read (FILE *file,int swap)
 				case DBTableFieldDataRec:
 					switch (field->Length ())
 						{
-						case 2: DBByteOrderSwapHalfWord	((char *) record->Data () + field->StartByte ());	break;
-						case 4: DBByteOrderSwapWord 		((char *) record->Data () + field->StartByte ());	break;
+						case 2: DBByteOrderSwapHalfWord ((char *) record->Data () + field->StartByte ());	break;
+						case 4: DBByteOrderSwapWord     ((char *) record->Data () + field->StartByte ());	break;
 						case 8: DBByteOrderSwapLongWord	((char *) record->Data () + field->StartByte ());	break;
 						}
 					break;
-				case DBTableFieldDate:     date   = field->Date (record);       date.Swap ();   field->Date (record,date);        break;
-				case DBTableFieldCoord:    coord  = field->Coordinate (record); coord.Swap ();  field->Coordinate (record,coord); break;
-				case DBTableFieldRegion:   region = field->Region (record);     region.Swap (); field->Region (record,region);    break;
-				case DBTableFieldPosition: pos    = field->Position (record);   pos.Swap ();    field->Position (record,pos);     break;
+				case DBTableFieldDate:     date   = field->Date (record);           date.Swap ();   field->Date (record,date);          break;
+				case DBTableFieldCoord:    coord  = field->Coordinate (record);     coord.Swap ();  field->Coordinate (record,coord);   break;
+				case DBTableFieldRegion:   region = field->Region (record);         region.Swap (); field->Region (record,region);      break;
+				case DBTableFieldPosition: pos    = field->UShortPosition (record); pos.Swap ();    field->UShortPosition (record,pos); break;
 				default: break;
 				}
 			}

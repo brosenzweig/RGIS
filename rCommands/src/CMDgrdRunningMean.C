@@ -28,7 +28,7 @@ int main(int argc, char* argv[])
 	DBObjData *inData,   *outData;
 	DBGridIO  *inGridIO, *outGridIO;
 	DBObjRecord *inLayerRec, *outLayerRec;
-  
+
 	for (argPos = 1;argPos < argNum; )
 		{
 		if (CMargTest (argv [argPos],"-k","--kernelsize"))
@@ -146,7 +146,7 @@ int main(int argc, char* argv[])
 	if (title   != (char *) NULL) outData->Name     (title);
 	if (subject != (char *) NULL) outData->Document (DBDocSubject,   subject);
 	if (domain  != (char *) NULL) outData->Document (DBDocGeoDomain, domain);
-	if (version != (char *) NULL) outData->Document (DBDocVersion,   version);	
+	if (version != (char *) NULL) outData->Document (DBDocVersion,   version);
 	outGridIO = new DBGridIO (outData);
 
 	layerNum = inGridIO->LayerNum ();

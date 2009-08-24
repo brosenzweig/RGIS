@@ -32,7 +32,7 @@ int UI2DView::DrawMesh ()
 	if (!XmFontListInitFontContext (&fonContext,UISmallFontList()))	return (DBFault);
 	if (!XmFontListGetNextFont (fonContext,&charSet,&font))           return (DBFault);
 	XmFontListFreeFontContext (fonContext);
- 
+
 	xgcv.foreground = UIColor (UIColorStandard,1);
 	xgcv.background = UIColor (UIColorStandard,0);
 	xgcv.font = font->fid;
@@ -53,7 +53,7 @@ int UI2DView::DrawMesh ()
 
 	trans.X = (int) (viewLL.X / mesh) * mesh;
 	trans.Y = (int) (viewLL.Y / mesh) * mesh;
-	
+
 	my = viewLL.Y;
 	for (mx = trans.X; mx < viewUR.X; mx += mesh)
 		{
@@ -98,7 +98,7 @@ int UI2DView::DrawMesh ()
 		xmString = XmStringCreate (string,UICharSetNormal);
 		XmStringExtent (UISmallFontList (),xmString,&width,&height);
 		XmStringDraw (XtDisplay (DrawingAreaW),XtWindow (DrawingAreaW),UISmallFontList (),xmString,
-						  gc, wx - maxWidth,Height () - height, maxWidth, XmALIGNMENT_END, XmSTRING_DIRECTION_L_TO_R, NULL); 
+						  gc, wx - maxWidth,Height () - height, maxWidth, XmALIGNMENT_END, XmSTRING_DIRECTION_L_TO_R, NULL);
 		XmStringFree (xmString);
 		}
 	mx = viewUR.X;
@@ -109,7 +109,7 @@ int UI2DView::DrawMesh ()
 		xmString = XmStringCreate (string,UICharSetNormal);
 		XmStringExtent (UISmallFontList (),xmString,&width,&height);
 		XmStringDraw (XtDisplay (DrawingAreaW),XtWindow (DrawingAreaW),UISmallFontList (),xmString,
-						  gc,5,wy - height,maxWidth,XmALIGNMENT_CENTER,XmSTRING_DIRECTION_L_TO_R,NULL); 
+						  gc,5,wy - height,maxWidth,XmALIGNMENT_CENTER,XmSTRING_DIRECTION_L_TO_R,NULL);
 		XmStringFree (xmString);
 		}
 
@@ -124,7 +124,7 @@ void UI2DView::DrawPointObject (DBVPointIO *pointIO,DBObjRecord *record,GC gc)
 	DBInt foreground, style;
 	DBCoordinate coord;
 	Pixmap pixmap;
-	
+
 	if (ViewEXT.InRegion (coord = pointIO->Coordinate  (record)) == false) return;
 
 	foreground = (record->Flags () & DBObjectFlagSelected) == DBObjectFlagSelected ?
@@ -167,12 +167,12 @@ void UI2DView::DrawLineObject (DBVLineIO *lineIO, DBObjRecord *record,GC gc)
 	if ((record->Flags () & DBObjectFlagSelected) == DBObjectFlagSelected)
 		{
 		xgcv.foreground = UIColor (UIColorStandard,lineIO->ItemBackground (record));
-		xgcv.background = UIColor (UIColorStandard,lineIO->ItemForeground (record)); 
+		xgcv.background = UIColor (UIColorStandard,lineIO->ItemForeground (record));
 		}
 	else
-		{	
+		{
 		xgcv.foreground = UIColor (UIColorStandard,lineIO->ItemForeground (record));
-		xgcv.background = UIColor (UIColorStandard,lineIO->ItemBackground (record)); 
+		xgcv.background = UIColor (UIColorStandard,lineIO->ItemBackground (record));
 		}
 	xgcv.line_width = lWidth;
 	xgcv.line_style = lStyle;
@@ -218,10 +218,10 @@ void UI2DView::DrawPolyObject (DBVPolyIO *polyIO, DBObjRecord *record,GC gc)
 	DBInt vertex, i;
 	DBCoordinate *coords;
 	XGCValues xgcv;
-	
+
 	if (ViewEXT.InRegion (polyIO->Extent (record)) == false) return;
 	xgcv.foreground = UIColor (UIColorStandard,polyIO->ItemForeground (record));
-	xgcv.background = UIColor (UIColorStandard,polyIO->ItemBackground (record)); 
+	xgcv.background = UIColor (UIColorStandard,polyIO->ItemBackground (record));
 	XChangeGC (XtDisplay (DrawingAreaW),gc,GCForeground | GCBackground,&xgcv);
 	if (polyIO->VertexNum (record) > MaxVertexNumVAR)
 		{
@@ -245,10 +245,10 @@ void UI2DView::DrawPolygons (DBObjData *data,GC gc)
 	{
 	DBObjRecord *record;
 	DBVPolyIO *polyIO;
-	
+
 	if (ActiveEXT.InRegion (data->Extent ()) == false) return;
 	polyIO = new DBVPolyIO (data);
-	
+
 	for (record = polyIO->FirstItem ();record != (DBObjRecord *) NULL;record = polyIO->NextItem ())
 		DrawPolyObject (polyIO,record,gc);
 	delete polyIO;
@@ -264,7 +264,7 @@ void UI2DView::DrawVectorAnnotation (DBVectorIO *vectorIO, DBObjRecord *record,G
 	DBObjData *dbData = vectorIO->Data ();
 	DBRegion extent;
 	XmString xmString;
-	
+
 	extent = dbData->Extent (record);
 	if (ViewEXT.InRegion (extent) == false) return;
 	if ((dbData->Flags () & DBDataFlagDispModeVecAnnotSelect) == DBDataFlagDispModeVecAnnotSelect) { flags = record->Flags ();record->Flags (DBObjectFlagSelected,true); }
@@ -276,7 +276,7 @@ void UI2DView::DrawVectorAnnotation (DBVectorIO *vectorIO, DBObjRecord *record,G
 	XmStringExtent (UINormalFontList (),xmString,&width,&height);
 	if (dbData->Type () == DBTypeVectorPoint)
 			{ offsetX = 0; offsetY = height; }
-	else	{ offsetX = width / 2; offsetY = 0; } 
+	else	{ offsetX = width / 2; offsetY = 0; }
 	XmStringDraw   (XtDisplay (DrawingAreaW), XtWindow (DrawingAreaW), UINormalFontList (), xmString,
 			gc,sX - offsetX,sY - offsetY,width, XmALIGNMENT_CENTER,XmSTRING_DIRECTION_L_TO_R,NULL);
 	XmStringFree (xmString);
@@ -288,10 +288,10 @@ void UI2DView::DrawVectorAnnotations (DBObjData *data,GC gc)
 	{
 	DBObjRecord *record;
 	DBVectorIO *vectorIO;
-	
+
 	if (ActiveEXT.InRegion (data->Extent ()) == false) return;
 	vectorIO = new DBVectorIO (data);
-	
+
 	for (record = vectorIO->FirstItem ();record != (DBObjRecord *) NULL;record = vectorIO->NextItem ())
 		DrawVectorAnnotation (vectorIO,record,gc);
 	delete vectorIO;
@@ -308,7 +308,7 @@ static DBInt _UI2DViewContinuousSingleShadeFunc (DBGridIO *gridIO,DBCoordinate c
 	DBPosition pos;
 	DBInt retPixel;
 	DBFloat value;
-	
+
 	if (gridIO->Coord2Pos (coord,pos) == DBFault) return (DBFault);
 	if (gridIO->Value (pos,&value) == false) return (DBFault);
 	retPixel = (DBInt) ((DBFloat) (UIColorNum (_UI2DViewContPosShades)) * (value - _UI2DViewContMinValue) / (_UI2DViewContMaxValue - _UI2DViewContMinValue));
@@ -324,7 +324,7 @@ static DBInt _UI2DViewContinuousDualShadeFunc (DBGridIO *gridIO,DBCoordinate coo
 	DBFloat value;
 
 	if (gridIO->Coord2Pos (coord,pos) == DBFault) return (DBFault);
-	if (gridIO->Value (pos,&value) == false) return (DBFault); 
+	if (gridIO->Value (pos,&value) == false) return (DBFault);
 	if (value >= 0.0)
 		{
 		retPixel = _UI2DViewContMinValue < 0.0 ?
@@ -336,7 +336,7 @@ static DBInt _UI2DViewContinuousDualShadeFunc (DBGridIO *gridIO,DBCoordinate coo
 	else
 		{
 		retPixel = _UI2DViewContMaxValue > 0.0 ?
-					(DBInt) floor ((DBFloat) (UIColorNum (_UI2DViewContNegShades)) * (0.0 - value) / (0.0 - _UI2DViewContMinValue)) : 
+					(DBInt) floor ((DBFloat) (UIColorNum (_UI2DViewContNegShades)) * (0.0 - value) / (0.0 - _UI2DViewContMinValue)) :
 					(DBInt) floor ((DBFloat) (UIColorNum (_UI2DViewContNegShades)) * (_UI2DViewContMaxValue - value) / (_UI2DViewContMaxValue - _UI2DViewContMinValue));
 		if (retPixel >= UIColorNum (_UI2DViewContNegShades)) retPixel -= 1;
 		return (UIColor (_UI2DViewContNegShades,retPixel));
@@ -553,7 +553,7 @@ void UI2DView::DrawNetworkCell(DBNetworkIO *netIO,DBObjRecord *cellRec,DBUnsigne
 		XDrawLine (XtDisplay (DrawingAreaW),XtWindow  (DrawingAreaW),gc,sX0, sY0, sX1,sY1);
 		}
 	}
-	
+
 void UI2DView::DrawNetwork(DBObjData *data,GC gc)
 
 	{
@@ -565,7 +565,7 @@ void UI2DView::DrawNetwork(DBObjData *data,GC gc)
 	DBNetworkIO *netIO;
 	DBObjRecord *cellRec, *basinRec;
 	XGCValues xgcv;
-	
+
 	if (ActiveEXT.InRegion (dataExtent) == false) return;
 	netIO = new DBNetworkIO (data);
 
@@ -606,7 +606,7 @@ void UI2DView::DrawNetwork(DBObjData *data,GC gc)
 	else
 		{
 		DBInt basinID = DBFault;
-	
+
 		xgcv.foreground = UIColor (UIColorStandard,UIStandardYellow);
 		XChangeGC (XtDisplay (DrawingAreaW),gc,GCForeground,&xgcv);
 		for (cellID = 0;cellID < netIO->CellNum ();++cellID)
@@ -625,7 +625,7 @@ void UI2DView::DrawNetwork(DBObjData *data,GC gc)
 				DrawNetworkCellBox (netIO,cellRec,gc);
 				}
 			}
-	
+
 		xgcv.foreground = UIColor (UIColorStandard,1);
 		XChangeGC (XtDisplay (DrawingAreaW),gc,GCForeground,&xgcv);
 		basinID = DBFault;
@@ -663,9 +663,9 @@ void UI2DView::Draw ()
 	XChangeWindowAttributes (XtDisplay (DrawingAreaW),XtWindow (DrawingAreaW),CWCursor,&xswa);
 	Clear ();
 
-	if (!XmFontListInitFontContext (&fonContext,UISmallFontList())) return; 
+	if (!XmFontListInitFontContext (&fonContext,UISmallFontList())) return;
 	if (!XmFontListGetNextFont (fonContext,&charSet,&font)) 	return;
-	XmFontListFreeFontContext (fonContext);	
+	XmFontListFreeFontContext (fonContext);
 
 	xgcv.foreground = UIColor (UIColorStandard,0);
 	xgcv.foreground = UIColor (UIColorStandard,1);
@@ -709,7 +709,7 @@ void UI2DView::Draw ()
 	for (data = dataset->FirstData ();data != (DBObjData *) NULL;data = dataset->NextData ())
 		if (((data->Flags () & DBDataFlagDisplay) == DBDataFlagDisplay) &&
 			  ((data->Type () & DBTypeVector) == DBTypeVector) &&
-			  (((data->Flags () & DBDataFlagDispModeVecAnnotate) == DBDataFlagDispModeVecAnnotate) || 
+			  (((data->Flags () & DBDataFlagDispModeVecAnnotate) == DBDataFlagDispModeVecAnnotate) ||
 			   ((data->Flags () & DBDataFlagDispModeVecAnnotSelect) == DBDataFlagDispModeVecAnnotSelect)))
 			{
 			XSetRegion (XtDisplay (DrawingAreaW),gc,FullRegion);

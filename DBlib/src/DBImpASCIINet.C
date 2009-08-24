@@ -14,14 +14,14 @@ balazs.fekete@unh.edu
 #include <DB.H>
 #include <DBio.H>
 
-#define NCOLS "ncols"
-#define NROWS "nrows"
+#define NCOLS     "ncols"
+#define NROWS     "nrows"
 #define XLLCORNER "xllcorner"
 #define YLLCORNER "yllcorner"
-#define XLLCENTER	"xllcenter"
-#define YLLCENTER	"yllcenter"
-#define CELLSIZE	"cellsize"
-#define NODATA		"nodata_value"
+#define XLLCENTER "xllcenter"
+#define YLLCENTER "yllcenter"
+#define CELLSIZE  "cellsize"
+#define NODATA    "nodata_value"
 #define CORNER 0
 #define CENTER 1
 
@@ -31,7 +31,7 @@ int DBImportASCIINet (DBObjData *netData,const char *fileName)
 	FILE *file;
 	char buffer [81];
 	char nameSTR [DBStringLength];
-	DBInt i, j, row, col, rowNum, colNum, cornerType, noData, gridVal;
+	DBInt i, j, rowNum, colNum, cornerType, noData, gridVal;
 	DBFloat cellSize;
 	DBPosition pos;
 	DBCoordinate coord;
@@ -107,11 +107,9 @@ int DBImportASCIINet (DBObjData *netData,const char *fileName)
 		return (DBFault);
 	layerFLD->Record (layerRec,dataRec);
 	(netData->Arrays ())->Add (dataRec);
-	for (row = rowNum - 1;row >= 0;--row)
-		for (col = 0;col < colNum;++col)
+	for (pos.Row = rowNum - 1;pos.Row >= 0;--pos.Row)
+		for (pos.Col = 0;pos.Col < colNum;++pos.Col)
 			{
-			pos.Row = row;
-			pos.Col = col;
 			if (fscanf (file,"%d", &gridVal) != 1)
 				{ perror ("File Reading Error in: DBImportASCIINet ()"); return (DBFault); }
 			else

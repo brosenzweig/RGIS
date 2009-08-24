@@ -214,8 +214,8 @@ DBInt DBGridIO::Pos2Coord (DBPosition pos,DBCoordinate &coord) const
 
 	{
 	DBInt ret = DBSuccess;
-//	if (pos.Col < 0) ret = DBFault; TODO: I am not sure what to do here!
-//	if (pos.Row < 0) ret = DBFault;
+	if (pos.Col < 0) ret = DBFault;
+	if (pos.Row < 0) ret = DBFault;
 	if (pos.Col >= ColNum ()) ret = DBFault;
 	if (pos.Row >= RowNum ()) ret = DBFault;
 
@@ -230,8 +230,8 @@ DBInt DBGridIO::Value (DBObjRecord *layerRec,DBPosition pos,DBInt value)
 	DBInt j;
 	DBObjRecord *dataRec = LayerFLD->Record (layerRec);
 
-//	if (pos.Col < 0) return (false); TODO: No longer possible.
-//	if (pos.Row < 0) return (false);
+	if (pos.Col < 0) return (false);
+	if (pos.Row < 0) return (false);
 	if (pos.Col >= DimensionVAR.Col) return (false);
 	if (pos.Row >= DimensionVAR.Row) return (false);
 
@@ -263,8 +263,8 @@ DBInt DBGridIO::Value (DBObjRecord *layerRec,DBPosition pos,DBInt *value) const
 	DBInt j;
 	DBObjRecord *dataRec = LayerFLD->Record (layerRec);
 
-//	if (pos.Col < 0) return (false); TODO: No longer possible
-//	if (pos.Row < 0) return (false);
+	if (pos.Col < 0) return (false);
+	if (pos.Row < 0) return (false);
 	if (pos.Col >= DimensionVAR.Col) return (false);
 	if (pos.Row >= DimensionVAR.Row) return (false);
 
