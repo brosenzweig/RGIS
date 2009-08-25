@@ -111,7 +111,7 @@ int DBImportASCIINet (DBObjData *netData,const char *fileName)
 		for (pos.Col = 0;pos.Col < colNum;++pos.Col)
 			{
 			if (fscanf (file,"%d", &gridVal) != 1)
-				{ perror ("File Reading Error in: DBImportASCIINet ()"); return (DBFault); }
+				{ perror ("Warning: Incomplete network grid!"); break; }
 			else
 				{
 				if (gridVal == noData)
@@ -148,8 +148,8 @@ int DBImportASCIINet (DBObjData *netData,const char *fileName)
 	coord.Y += rowNum * cellSize;
 	extent.Expand (coord);
 	netData->Extent (extent);
-   netData->Projection (DBMathGuessProjection (extent));
-   netData->Precision  (DBMathGuessPrecision  (extent));
+	netData->Projection (DBMathGuessProjection (extent));
+	netData->Precision  (DBMathGuessPrecision  (extent));
 	netIO = new DBNetworkIO (netData);
 	netIO->Build ();
 	delete netIO;
