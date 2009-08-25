@@ -638,7 +638,7 @@ int DBNetworkIO::Trim ()
 		cellRec = CellTable->Item (i);
 		pos = CellPosition (cellRec);
 		pos.Row = pos.Row - min.Row;
-		pos.Col = pos.Col = min.Col;
+		pos.Col = pos.Col - min.Col;
 		PositionFLD->Position (cellRec,pos);
 		}
 	coord.X = min.Col * CellWidth ();
