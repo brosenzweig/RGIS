@@ -34,13 +34,13 @@ void doHelp(bool extended, const char *progName)
 	if(extended)
 		{
 		CMmsgPrint (CMmsgInfo,"%s [options] [field] ... <input file> ...\n",progName);
-		CMmsgPrint (CMmsgInfo,"  -t,--table   [inTableName] [outTableName] => Set the name of the table to use.\n\t(If either is set to NULL, then default table will be used)\n");
+		CMmsgPrint (CMmsgInfo,"  -b,--table   [inTableName] [outTableName] => Set the name of the table to use.\n\t(If either is set to NULL, then default table will be used)\n");
 		CMmsgPrint (CMmsgInfo,"  -d,--domain  [domain]                     => Specify domain of output table.\n");
 		CMmsgPrint (CMmsgInfo,"  -m,--match   [inFieldName] [outFieldName] => Which fields to match\n");
 		CMmsgPrint (CMmsgInfo,"  -o,--output  [filename]                   => Specify output filename, else use STDOUT\n");
 		CMmsgPrint (CMmsgInfo,"  -a,--dataset [filename]                   => Join dataset\n");
 		CMmsgPrint (CMmsgInfo,"  -s,--subject [subject]                    => Specify subject of output table.\n");
-		CMmsgPrint (CMmsgInfo,"  -i,--title   [title]                      => Specify title of output table.\n");
+		CMmsgPrint (CMmsgInfo,"  -t,--title   [title]                      => Specify title of output table.\n");
 		CMmsgPrint (CMmsgInfo,"  -v,--version [version]                    => Specify version of output table.\n");
 		CMmsgPrint (CMmsgInfo,"  -V,--verbose                              => Output all debuging statements to STDERR (Must be first flag)\n");
 		CMmsgPrint (CMmsgInfo,"  -c,--ascii                                => Output file in ascii format.\n");
@@ -49,7 +49,7 @@ void doHelp(bool extended, const char *progName)
 	else
 		{
 		CMmsgPrint (CMmsgInfo,"%s [options] [field] ... <input file> ...\n",progName);
-		CMmsgPrint (CMmsgInfo,"  -t,--table   [inTableName] [outTableName]\n");
+		CMmsgPrint (CMmsgInfo,"  -b,--table   [inTableName] [outTableName]\n");
 		CMmsgPrint (CMmsgInfo,"  -d,--domain  [domain]\n");
 		CMmsgPrint (CMmsgInfo,"  -m,--match   [inFieldName] [outFieldName]\n");
 		CMmsgPrint (CMmsgInfo,"  -o,--output  [filename]\n");
@@ -98,7 +98,7 @@ int main (int argc,char *argv [])
 				doHelp(false,CMprgName(argv[0]));
 			return(DBSuccess);
 			}
-		if (CMargTest(argv[argPos],"-t","--table"))
+		if (CMargTest(argv[argPos],"-b","--table"))
 			{
 			if ((argNum = CMargShiftLeft(argPos,argv,argNum)) <= argPos)
 				{ CMmsgPrint (CMmsgUsrError,"Missing inTable name!\n");  return (CMfailed); }
@@ -143,7 +143,7 @@ int main (int argc,char *argv [])
 			if ((argNum = CMargShiftLeft(argPos,argv,argNum)) <= argPos) break;
 			continue;
 			}
-		if (CMargTest(argv[argPos],"-i","--title"))
+		if (CMargTest(argv[argPos],"-t","--title"))
 			{
 			if ((argNum = CMargShiftLeft(argPos,argv,argNum)) <= argPos)
 				{ CMmsgPrint (CMmsgUsrError,"Missing title!\n");       return (CMfailed); }
@@ -199,7 +199,7 @@ int main (int argc,char *argv [])
 	if (title	!= (char *) NULL) relateData->Name(title);
 	if (subject != (char *) NULL) relateData->Document(DBDocSubject,subject);
 	if (domain	!= (char *) NULL)	relateData->Document(DBDocGeoDomain,domain);
-	if (version != (char *) NULL) relateData->Document(DBDocVersion,version);	
+	if (version != (char *) NULL) relateData->Document(DBDocVersion,version);
 
 	if((relateTable = relateData->Table(relateTableName)) == (DBObjTable *) NULL)
 		{ CMmsgPrint (CMmsgUsrError,"Invalid Relate table: %s!\n",relateTableName); delete relateData; return (CMfailed); }
@@ -234,6 +234,7 @@ int main (int argc,char *argv [])
 			fields[numFlds] = new Fields();
 			fields[numFlds]->joinFLD = joinField;
 			fields[numFlds]->relateFLD = new DBObjTableField(*joinField);
+			 fields[numFlds]->relateFLD->Required (false);
 			relateTable->AddField(fields[numFlds]->relateFLD);
 			numFlds++;
 			}
@@ -274,9 +275,9 @@ int main (int argc,char *argv [])
 				}
 			}
 		}
-		
+
 	if(ascii) DBExportASCIITable (relateTable,outFile); else relateData->Write(outFile);
-		
+
 /* CLEANUP ***********************************************/
 	if(outFile != stdout) fclose(outFile);
 	delete relateData;
