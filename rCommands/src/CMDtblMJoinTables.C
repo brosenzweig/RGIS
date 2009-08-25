@@ -221,22 +221,25 @@ int main (int argc,char *argv [])
 	for(int joinFieldID = 0; joinFieldID < joinTable->FieldNum();++joinFieldID)
 		{
 		DBObjTableField *joinField = joinTable->Field(joinFieldID);
-		bool exists = false;
-		for(int relateFieldID = 0; relateFieldID < relateTable->FieldNum();++relateFieldID)
+		if (DBTableFieldIsVisible (joinField))
 			{
-			DBObjTableField *relateField = relateTable->Field(relateFieldID);
-			if(strcmp(joinField->Name(),relateField->Name()) == 0) { exists = true; break; }
-			}
-		if(!exists)
-			{
-			if((fields = (Fields **) realloc(fields,(numFlds + 1) * sizeof(Fields *))) == (Fields **) NULL)
-				{ perror ("Memory allocation error!\n"); return(DBFault); }
-			fields[numFlds] = new Fields();
-			fields[numFlds]->joinFLD = joinField;
-			fields[numFlds]->relateFLD = new DBObjTableField(*joinField);
-			 fields[numFlds]->relateFLD->Required (false);
-			relateTable->AddField(fields[numFlds]->relateFLD);
-			numFlds++;
+			bool exists = false;
+			for(int relateFieldID = 0; relateFieldID < relateTable->FieldNum();++relateFieldID)
+				{
+				DBObjTableField *relateField = relateTable->Field(relateFieldID);
+				if(strcmp(joinField->Name(),relateField->Name()) == 0) { exists = true; break; }
+				}
+			if(!exists)
+				{
+				if((fields = (Fields **) realloc(fields,(numFlds + 1) * sizeof(Fields *))) == (Fields **) NULL)
+					{ perror ("Memory allocation error!\n"); return(DBFault); }
+				fields[numFlds] = new Fields();
+				fields[numFlds]->joinFLD = joinField;
+				fields[numFlds]->relateFLD = new DBObjTableField(*joinField);
+				 fields[numFlds]->relateFLD->Required (false);
+				relateTable->AddField(fields[numFlds]->relateFLD);
+				numFlds++;
+				}
 			}
 		}
 
