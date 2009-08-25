@@ -111,7 +111,7 @@ int DBImportASCIINet (DBObjData *netData,const char *fileName)
 		for (pos.Col = 0;pos.Col < colNum;++pos.Col)
 			{
 			if (fscanf (file,"%d", &gridVal) != 1)
-				{ perror ("Warning: Incomplete network grid!"); break; }
+				{ perror ("Warning: Incomplete network grid!"); goto Stop; }
 			else
 				{
 				if (gridVal == noData)
@@ -136,6 +136,7 @@ int DBImportASCIINet (DBObjData *netData,const char *fileName)
 					}
 				}
 			}
+Stop:
 	sprintf (nameSTR,"GHAASBasin%d",(DBInt) 0);
 	basinRec = basinTable->Add (nameSTR);
 	mouthPosFLD->Position	(basinRec,positionFLD->Position (cellTable->Item (0)));
