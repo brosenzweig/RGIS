@@ -236,7 +236,7 @@ int main (int argc,char *argv [])
 			fields[numFlds] = new Fields();
 			fields[numFlds]->joinFLD = joinField;
 			fields[numFlds]->relateFLD = new DBObjTableField (*joinField);
-			 fields[numFlds]->relateFLD->Required (false);
+			fields[numFlds]->relateFLD->Required (false);
 			relateTable->AddField(fields[numFlds]->relateFLD);
 			numFlds++;
 			}
