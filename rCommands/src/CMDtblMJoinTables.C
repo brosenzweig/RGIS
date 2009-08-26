@@ -220,26 +220,25 @@ int main (int argc,char *argv [])
 
 	for(int joinFieldID = 0; joinFieldID < joinTable->FieldNum();++joinFieldID)
 		{
+		int relateFieldID;
 		DBObjTableField *joinField = joinTable->Field(joinFieldID);
-		if (DBTableFieldIsVisible (joinField))
+		if (DBTableFieldIsVisible (joinField) == false) continue; // We don't want to copy hidden fields.
+
+		for(relateFieldID = 0; relateFieldID < relateTable->FieldNum();++relateFieldID)
 			{
-			bool exists = false;
-			for(int relateFieldID = 0; relateFieldID < relateTable->FieldNum();++relateFieldID)
-				{
-				DBObjTableField *relateField = relateTable->Field(relateFieldID);
-				if(strcmp(joinField->Name(),relateField->Name()) == 0) { exists = true; break; }
-				}
-			if(!exists)
-				{
-				if((fields = (Fields **) realloc(fields,(numFlds + 1) * sizeof(Fields *))) == (Fields **) NULL)
-					{ perror ("Memory allocation error!\n"); return(DBFault); }
-				fields[numFlds] = new Fields();
-				fields[numFlds]->joinFLD = joinField;
-				fields[numFlds]->relateFLD = new DBObjTableField(*joinField);
-				 fields[numFlds]->relateFLD->Required (false);
-				relateTable->AddField(fields[numFlds]->relateFLD);
-				numFlds++;
-				}
+			DBObjTableField *relateField = relateTable->Field(relateFieldID);
+			if(strcmp(joinField->Name(),relateField->Name()) == 0) break;
+			}
+		if(relateFieldID == relateTable->FieldNum ())
+			{
+			if((fields = (Fields **) realloc(fields,(numFlds + 1) * sizeof(Fields *))) == (Fields **) NULL)
+				{ perror ("Memory allocation error!\n"); return(DBFault); }
+			fields[numFlds] = new Fields();
+			fields[numFlds]->joinFLD = joinField;
+			fields[numFlds]->relateFLD = new DBObjTableField (*joinField);
+			 fields[numFlds]->relateFLD->Required (false);
+			relateTable->AddField(fields[numFlds]->relateFLD);
+			numFlds++;
 			}
 		}
 
@@ -258,6 +257,7 @@ int main (int argc,char *argv [])
 				i = 0;
 				while(i < numFlds)
 					{
+					if (fields[i]->relateFLD->Required ()) continue; // We don't want to overwrite protected fields.
 					switch(fields[i]->relateFLD->Type())
 						{
 						case DBTableFieldInt:
