@@ -125,7 +125,6 @@ bool   MFVarWriteHeader (MFVarHeader_t *,FILE *);
 
 typedef struct MFObject_s {
 	int   ID;
-	bool  State,    Locked;
 	short DLinkNum, ULinkNum;
 	float XCoord, YCoord, Lon, Lat;
 	float Area, Length;
