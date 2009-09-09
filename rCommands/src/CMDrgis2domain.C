@@ -77,8 +77,6 @@ int main (int argc,char *argv [])
 					objRec = pntIO->Item (objID);
 					coord = pntIO->Coordinate (objRec);
 					domain->Objects [objID].ID = objRec->RowID ();
-					domain->Objects [objID].State    = false;
-					domain->Objects [objID].Locked   = false;
 					domain->Objects [objID].DLinkNum = 0;
 					domain->Objects [objID].ULinkNum = 0;
 					domain->Objects [objID].DLinks = (size_t *) NULL;
@@ -111,8 +109,6 @@ int main (int argc,char *argv [])
 					objRec = netIO->Cell (objID);
 					coord = netIO->Center (objRec);
 					domain->Objects [objID].ID = objRec->RowID ();
-					domain->Objects [objID].State    = false;
-					domain->Objects [objID].Locked   = false;
 					domain->Objects [objID].DLinkNum = 0;
 					domain->Objects [objID].ULinkNum = 0;
 					domain->Objects [objID].XCoord = domain->Objects [objID].Lon = coord.X;
