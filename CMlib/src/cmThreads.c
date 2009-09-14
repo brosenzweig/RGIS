@@ -4,9 +4,9 @@
 CMthreadJob_p CMthreadJobCreate (CMthreadTeam_p team,
 		                         void *commonData,
 		                         size_t taskNum,
-		                         CMthreadUserExecFunc  execFunc,
-		                         CMthreadUserAllocFunc allocFunc) {
-	size_t taskId, threadNum;
+		                         CMthreadUserAllocFunc allocFunc,
+		                         CMthreadUserExecFunc  execFunc) {
+	size_t taskId;
 	int    threadId;
 	CMthreadJob_p job;
 
@@ -30,13 +30,13 @@ CMthreadJob_p CMthreadJobCreate (CMthreadTeam_p team,
 	job->UserFunc = execFunc;
 	job->CommonData = (void *) commonData;
 	if (allocFunc != (CMthreadUserAllocFunc) NULL) {
-		threadNum = team->ThreadNum > 0 ? team->ThreadNum : 1;
-		if ((job->ThreadData = (void **) calloc (threadNum, sizeof (void *))) == (void **) NULL) {
+		job->ThreadNum = team->ThreadNum > 0 ? team->ThreadNum : 1;
+		if ((job->ThreadData = (void **) calloc (job->ThreadNum, sizeof (void *))) == (void **) NULL) {
 			CMmsgPrint (CMmsgSysError, "Memory allocation error in %s:%d\n",__FILE__,__LINE__);
 			free (job);
 			return ((CMthreadJob_p) NULL);
 		}
-		for (threadId = 0;threadId < threadNum;++threadId) {
+		for (threadId = 0;threadId < job->ThreadNum;++threadId) {
 			if ((job->ThreadData [threadId] = allocFunc (commonData)) == (void *) NULL) {
 				CMmsgPrint (CMmsgSysError, "Memory allocation error in %s:%d\n",__FILE__,__LINE__);
 				for (--threadId;threadId >= 0; --threadId) free (job->ThreadData [threadId]);
@@ -63,7 +63,13 @@ CMreturn CMthreadJobTaskDependence (CMthreadJob_p job, size_t taskId, size_t dep
 	return (CMsucceeded);
 }
 
-void CMthreadJobDestroy (CMthreadJob_p job) {
+void CMthreadJobDestroy (CMthreadJob_p job, CMthreadUserFreeFunc freeFunc) {
+	size_t threadId;
+
+	if (freeFunc != (CMthreadUserFreeFunc) NULL) {
+		for (threadId = 0;threadId < job->ThreadNum; ++threadId)
+			freeFunc (job->ThreadData [threadId]);
+	}
 	free (job->Tasks);
 	free (job);
 }
@@ -80,10 +86,10 @@ static void *_CMthreadWork (void *dataPtr) {
 	pthread_mutex_lock   (&(team->MasterMutex));
 	while (true) {
 		pthread_cond_wait    (&(team->MasterSignal), &(team->MasterMutex));
-		printf ("Thread#%d: Starting job\n",(int) data->Id);
+//TODO		printf ("Thread#%d: Starting job\n",(int) data->Id);
 		job = (CMthreadJob_p) team->JobPtr;
 		if (job == (CMthreadJob_p) NULL) {
-			printf ("Thread#%d: Quitting\n",(int) data->Id);
+// TODO			printf ("Thread#%d: Quitting\n",(int) data->Id);
 			break;
 		}
 		while (job->LastId > 0) {
@@ -106,7 +112,7 @@ static void *_CMthreadWork (void *dataPtr) {
 			}
 		}
 		pthread_mutex_lock   (&(team->WorkerMutex));
-		printf ("Thread#%d: Ending job\n",(int) data->Id);
+// TODO		printf ("Thread#%d: Ending job\n",(int) data->Id);
 		pthread_cond_signal  (&(team->WorkerSignal));
 		pthread_mutex_unlock (&(team->WorkerMutex));
 	}
@@ -131,7 +137,7 @@ void CMthreadJobExecute (CMthreadTeam_p team, CMthreadJob_p job) {
 			completed++;
 			pthread_mutex_unlock   (&(team->WorkerMutex));
 		}
-		printf ("Master: Finished job\n");
+// TODO		printf ("Master: Finished job\n");
 		for (taskId = 0;taskId < job->TaskNum; ++taskId) job->Tasks [taskId].Completed = false;
 		team->JobPtr  = (void *) NULL;
 	}
@@ -188,7 +194,7 @@ CMthreadTeam_p CMthreadTeamCreate (size_t threadNum) {
 	return (team);
 }
 
-void CMthreadTeamDestroy (CMthreadTeam_p team) {
+void CMthreadTeamDestroy (CMthreadTeam_p team, bool report) {
 	size_t threadId;
 	size_t completedTasks = 0;
 	void  *status;
@@ -202,11 +208,12 @@ void CMthreadTeamDestroy (CMthreadTeam_p team) {
 			pthread_join(team->Threads [threadId].Thread, &status);
 			completedTasks += team->Threads [threadId].CompletedTasks;
 		}
-		for (threadId = 0;threadId < team->ThreadNum;++threadId) {
-			printf ("Threads#%d completed %d tasks (%6.2f of the total)\n",
-					(int)   team->Threads [threadId].Id,
-					(int)   team->Threads [threadId].CompletedTasks,
-					(float) team->Threads [threadId].CompletedTasks * 100.0 / (float) completedTasks);
+		if (report) {
+			for (threadId = 0;threadId < team->ThreadNum;++threadId)
+				CMmsgPrint (CMmsgInfo,"Threads#%d completed %d tasks (%6.2f of the total)\n",
+						(int)   team->Threads [threadId].Id,
+						(int)   team->Threads [threadId].CompletedTasks,
+						(float) team->Threads [threadId].CompletedTasks * 100.0 / (float) completedTasks);
 		}
 		pthread_mutex_destroy (&(team->MasterMutex));
 		pthread_cond_destroy  (&(team->MasterSignal));
