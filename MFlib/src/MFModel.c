@@ -10,7 +10,6 @@ balazs.fekete@unh.edu
 
 *******************************************************************************/
 
-#include <pthread.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -408,7 +407,7 @@ static bool _MFModelReadInput (char *time)
 	return (MFContinue);
 }
 
-static pthread_mutex_t _MFmutex;
+
 
 int MFModelRun (int argc, char *argv [], int argNum, int (*conf) ()) {
 	int i, iFunc, varID, dlink;
@@ -427,8 +426,6 @@ int MFModelRun (int argc, char *argv [], int argNum, int (*conf) ()) {
 		return (CMfailed);
 	}
 	if (_MFThreadsNum > 0) {
-		pthread_mutex_init (&_MFmutex, NULL);
-		pthread_mutex_lock (&_MFmutex);
 	}
 	do	{
 		CMmsgPrint (CMmsgDebug, "Computing: %s\n", timeCur);
