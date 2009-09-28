@@ -25,6 +25,8 @@ int main(int argc, char* argv[])
 	{
 	int argPos, argNum = argc, ret, verbose = false;
 	int layerID;
+	int shadeSet        = DBDataFlagDispModeContGreyScale;
+	bool changeShadeSet = false;
 	DBObjData *dbData;
 	DBGridIO *gridIO;
 	class RenameCLS
@@ -75,6 +77,24 @@ int main(int argc, char* argv[])
 			if ((argNum = CMargShiftLeft (argPos,argv,argNum)) <= argPos) break;
 			continue;
 			}
+		if (CMargTest (argv [argPos],"-s","--shadeset"))
+			{
+			int shadeCodes [] = {	DBDataFlagDispModeContStandard,
+			                        DBDataFlagDispModeContGreyScale,
+			                        DBDataFlagDispModeContBlueScale,
+			                        DBDataFlagDispModeContBlueRed,
+			                        DBDataFlagDispModeContElevation };
+			const char *shadeSets [] = { "standard","grey","blue","blue-to-red","elevation", (char *) NULL };
+
+			if ((argNum = CMargShiftLeft (argPos,argv,argNum)) <= argPos)
+				{ CMmsgPrint (CMmsgUsrError,"Missing shadeset!\n");     return (CMfailed); }
+			if ((shadeSet = CMoptLookup (shadeSets,argv [argPos],true)) == CMfailed)
+				{ CMmsgPrint (CMmsgUsrError,"Invalid shadeset!\n");     return (CMfailed); }
+			shadeSet = shadeCodes [shadeSet];
+			changeShadeSet = true;
+			if ((argNum = CMargShiftLeft (argPos,argv,argNum)) <= argPos) break;
+			continue;
+			}
 		if (CMargTest (argv [argPos],"-V","--verbose"))
 			{
 			verbose = true;
@@ -85,6 +105,7 @@ int main(int argc, char* argv[])
 			{
 			CMmsgPrint (CMmsgInfo,"%s [options] <input grid> <output grid>\n",CMprgName(argv[0]));
 			CMmsgPrint (CMmsgInfo,"     -r,--rename    [layerID layerName]\n");
+			CMmsgPrint (CMmsgInfo,"     -s,--shadeset  [standard|grey|blue|blue-to-red|elevation]\n");
 			CMmsgPrint (CMmsgInfo,"     -V,--verbose\n");
 			CMmsgPrint (CMmsgInfo,"     -h,--help\n");
 			return (DBSuccess);
@@ -122,6 +143,11 @@ int main(int argc, char* argv[])
 
 	if (renameCLS != (RenameCLS *) NULL) { renameCLS->DeleteLink (); delete renameCLS; }
 
+	if (changeShadeSet && (dbData->Type () == DBTypeGridContinuous))
+		{
+		dbData->Flags (DBDataFlagDispModeContShadeSets,DBClear);
+		dbData->Flags (shadeSet, DBSet);
+		}
 	delete gridIO;
 	delete dbData;
 	if (verbose) RGlibPauseClose ();
