@@ -1324,7 +1324,7 @@ DBInt DBImportNetCDF (DBObjData *data,const char *filename)
 				nc_close (ncid);
 				return (DBFault);
 				}
-			if ((ndims < 3) || (ndims > 4)) continue;
+			if ((ndims < 2) || (ndims > 4)) continue;
 			if (((status = nc_inq_attlen   (ncid,id,"long_name", &attlen)) != NC_NOERR) ||
 			    ((status = nc_get_att_text (ncid,id,"long_name",longName)) != NC_NOERR)) strcpy (longName,"Noname");
 			else longName [attlen] = '\0';
@@ -1392,7 +1392,7 @@ DBInt DBImportNetCDF (DBObjData *data,const char *filename)
 		}
 
 	data->Extent (extent);
-	doTimeUnit = utScan (timeString,&timeUnit) == 0 ? true : false;
+	doTimeUnit = (timedim != -1) && (utScan (timeString,&timeUnit) == 0) ? true : false;
 	for (layerID = 0;layerID < layerNum;layerID++)
 		{
 		if (timedim != -1)

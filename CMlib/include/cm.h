@@ -38,7 +38,7 @@ char *CMbufStripChar    (char *, char);
 #define CMbufStripDQuotes(buffer) (CMbufStripChar (buffer,'\"'))
 #define CMbufStripSQuotes(buffer) (CMbufStripChar (buffer,'\''))
 
-#define CMmathEpsilon 0.000001
+#define CMmathEpsilon 0.01
 bool    CMmathEqualValues (double,double);
 #define CMmathMinimum(a,b) (((a) < (b)) ? (a) : (b))
 #define CMmathMaximum(a,b) (((a) > (b)) ? (a) : (b))
