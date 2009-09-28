@@ -139,15 +139,16 @@ int main(int argc, char* argv[])
 	gridIO = new DBGridIO (dbData);
 
 	if (renameCLS != (RenameCLS *) NULL) renameCLS->RenameLayer (gridIO);
-	ret = (argNum > 2) && (strcmp (argv [2],"-") != 0) ? dbData->Write (argv [2]) : dbData->Write (stdout);
-
-	if (renameCLS != (RenameCLS *) NULL) { renameCLS->DeleteLink (); delete renameCLS; }
 
 	if (changeShadeSet && (dbData->Type () == DBTypeGridContinuous))
 		{
 		dbData->Flags (DBDataFlagDispModeContShadeSets,DBClear);
 		dbData->Flags (shadeSet, DBSet);
 		}
+	ret = (argNum > 2) && (strcmp (argv [2],"-") != 0) ? dbData->Write (argv [2]) : dbData->Write (stdout);
+
+	if (renameCLS != (RenameCLS *) NULL) { renameCLS->DeleteLink (); delete renameCLS; }
+
 	delete gridIO;
 	delete dbData;
 	if (verbose) RGlibPauseClose ();
