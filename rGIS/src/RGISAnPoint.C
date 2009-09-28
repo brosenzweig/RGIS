@@ -39,16 +39,16 @@ void RGISAnalysePointSTNCharCBK (Widget widget, RGISWorkspace *workspace,XmAnyCa
 	UIPauseDialogOpen ((char *) "STN Characteristics");
 	if ((RGlibPointSTNCharacteristics (dbData) == DBSuccess) && (tableCLS != (UITable *) NULL))
 		{
-		if (cellIDFLD 			== (DBObjTableField *) NULL) tableCLS->AddField (pointTable->Field (RGlibCellID));
-		if (basinFLD 			== (DBObjTableField *) NULL) tableCLS->AddField (pointTable->Field (DBrNBasin));
-		if (basinNameFLD		== (DBObjTableField *) NULL) tableCLS->AddField (pointTable->Field (RGlibBasinName));
-		if (orderFLD 			== (DBObjTableField *) NULL) tableCLS->AddField (pointTable->Field (DBrNOrder));
-		if (colorFLD 			== (DBObjTableField *) NULL) tableCLS->AddField (pointTable->Field (RGlibColor));
-		if (basinCellsFLD		== (DBObjTableField *) NULL) tableCLS->AddField (pointTable->Field (RGlibCellNum));
-		if (basinLengthFLD	== (DBObjTableField *) NULL) tableCLS->AddField (pointTable->Field (RGlibLength));
-		if (basinAreaFLD		== (DBObjTableField *) NULL) tableCLS->AddField (pointTable->Field (RGlibArea));
-		if (interAreaFLD		== (DBObjTableField *) NULL) tableCLS->AddField (pointTable->Field (RGlibInterStation));
-		if (nextStationFLD	== (DBObjTableField *) NULL) tableCLS->AddField (pointTable->Field (RGlibNextStation));
+		if (cellIDFLD      == (DBObjTableField *) NULL) tableCLS->AddField (pointTable->Field (RGlibCellID));
+		if (basinFLD       == (DBObjTableField *) NULL) tableCLS->AddField (pointTable->Field (DBrNBasin));
+		if (basinNameFLD   == (DBObjTableField *) NULL) tableCLS->AddField (pointTable->Field (RGlibBasinName));
+		if (orderFLD       == (DBObjTableField *) NULL) tableCLS->AddField (pointTable->Field (DBrNOrder));
+		if (colorFLD       == (DBObjTableField *) NULL) tableCLS->AddField (pointTable->Field (RGlibColor));
+		if (basinCellsFLD  == (DBObjTableField *) NULL) tableCLS->AddField (pointTable->Field (RGlibCellNum));
+		if (basinLengthFLD == (DBObjTableField *) NULL) tableCLS->AddField (pointTable->Field (RGlibLength));
+		if (basinAreaFLD   == (DBObjTableField *) NULL) tableCLS->AddField (pointTable->Field (RGlibArea));
+		if (interAreaFLD   == (DBObjTableField *) NULL) tableCLS->AddField (pointTable->Field (RGlibInterStation));
+		if (nextStationFLD == (DBObjTableField *) NULL) tableCLS->AddField (pointTable->Field (RGlibNextStation));
 		tableCLS->Draw ();
 		}
 	UIPauseDialogClose ();

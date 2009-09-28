@@ -122,7 +122,9 @@ int main (int argc,char *argv [])
 	pntData->Document (DBDocGeoDomain,domain);
 	pntData->Document (DBDocVersion,version);
 
-	if ((ret = RGlibNetworkStations (netData,area,tolerance,pntData)) == DBSuccess)
+	pntData->LinkedData (netData);
+	if (((ret = RGlibNetworkStations (netData,area,tolerance,pntData)) == DBSuccess) &&
+	    ((ret = RGlibPointSTNCharacteristics (pntData)) == DBSuccess))
 		ret = (argNum > 2) && (strcmp (argv [2],"-") != 0) ? pntData->Write (argv [2]) : pntData->Write (stdout);
 
 	delete netData; delete pntData;
