@@ -54,6 +54,7 @@ UTILS = $(BIN)/dsAggregate\
         $(BIN)/netTransfer\
         $(BIN)/netDefragment\
         $(BIN)/netCells2Grid\
+        $(BIN)/netCreatePnts\
         $(BIN)/pntGridSampling\
         $(BIN)/pntSTNChar\
         $(BIN)/pntSubbasins\
