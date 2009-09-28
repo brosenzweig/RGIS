@@ -1010,7 +1010,7 @@ DBInt DBImportNetCDF (DBObjData *data,const char *filename)
 	int year, month, day, hour, minute;
 	float second;
 	utUnit timeUnit;
-	int rowNum = 0, colNum = 0, layerNum = 0, layerID, colID, rowID;
+	int rowNum = 0, colNum = 0, layerNum = 1, layerID, colID, rowID;
 	double *vector, *latitudes, *longitudes;
 	double *timeSteps;
 	double missingValue, fillValue;
@@ -1395,26 +1395,30 @@ DBInt DBImportNetCDF (DBObjData *data,const char *filename)
 	doTimeUnit = utScan (timeString,&timeUnit) == 0 ? true : false;
 	for (layerID = 0;layerID < layerNum;layerID++)
 		{
-		start [timeidx] = layerID;
-		if ((doTimeUnit) && (utCalendar (timeSteps [layerID],&timeUnit,&year,&month,&day,&hour,&minute,&second) == 0))
+		if (timedim != -1)
 			{
-			if (year != 0) sprintf (layerName,"%04d",year);
-			else           sprintf (layerName,"XXXX");
-			if (month != 0)
+			start [timeidx] = layerID;
+			if ((doTimeUnit) && (utCalendar (timeSteps [layerID],&timeUnit,&year,&month,&day,&hour,&minute,&second) == 0))
 				{
-				sprintf (layerName + strlen (layerName),"-%02d",month);
-				if (day != 0)
+				if (year != 0) sprintf (layerName,"%04d",year);
+				else           sprintf (layerName,"XXXX");
+				if (month != 0)
 					{
-					sprintf (layerName + strlen (layerName),"-%02d",day);
-					if (hour != 0)
+					sprintf (layerName + strlen (layerName),"-%02d",month);
+					if (day != 0)
 						{
-						sprintf (layerName + strlen (layerName)," %02d",hour);
-						if (minute != 0) sprintf (layerName + strlen (layerName),":%02d",minute);
+						sprintf (layerName + strlen (layerName),"-%02d",day);
+						if (hour != 0)
+							{
+							sprintf (layerName + strlen (layerName)," %02d",hour);
+							if (minute != 0) sprintf (layerName + strlen (layerName),":%02d",minute);
+							}
 						}
 					}
 				}
+			else	sprintf (layerName,"LayerName:%04d",layerID);
 			}
-		else	sprintf (layerName,"LayerName:%04d",layerID);
+		else sprintf (layerName,"LayerName:%04d",layerID);
 
 		if ((layerRec = layerTable->Add (layerName)) == (DBObjRecord *) NULL)
 			{
