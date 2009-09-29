@@ -148,9 +148,9 @@ int main (int argc,char *argv [])
 	if ((ret == DBFault) || (netData->Type () != DBTypeNetwork))
 		{ delete grdData; delete netData; return (CMfailed); }
 
-	if (title	!= (char *) NULL)	netData->Name (title);
-	if (subject != (char *) NULL)	netData->Document (DBDocSubject,   subject);
-	if (domain	!= (char *) NULL)	netData->Document (DBDocGeoDomain, domain);
+	if (title	!= (char *) NULL) netData->Name (title);
+	if (subject != (char *) NULL) netData->Document (DBDocSubject,   subject);
+	if (domain	!= (char *) NULL) netData->Document (DBDocGeoDomain, domain);
 	if (version != (char *) NULL) netData->Document (DBDocVersion,   version);
 
 	if ((argNum > 2) && (strcmp (argv [2],"-") != 0)) netData->FileName (argv [2]);
