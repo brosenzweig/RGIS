@@ -384,17 +384,20 @@ int main(int argc, char* argv[])
 		if ((inFILE = fopen (fileName,"r")) == (FILE *) NULL)
 			{ perror ("File Openining Error in: RGISToolsImportGridCBK ()"); delete grdData; return 0; }
 		if (fileType == RGISGridBinary)
-			while (skipHeader > 0)
+			{
+			int skip = skipHeader;
+			while (skip > 0)
 				{
-				chunk = skipHeader < (int) sizeof (buffer) ? skipHeader : (int) sizeof (buffer);
+				chunk = skip < (int) sizeof (buffer) ? skip : (int) sizeof (buffer);
 				if (fread (buffer,chunk,1,inFILE) != 1)
 					{
 					perror ("File Reading Error in: RGISToolsImportGridCBK ()");
 					fclose (inFILE);
 					delete grdData;
 					}
-				skipHeader -= chunk;
+				skip -= chunk;
 				}
+			}
       else
 			for (chunk = 0;chunk < skipHeader;++chunk)
 			do fgets (buffer,sizeof (buffer) - 2,inFILE);
