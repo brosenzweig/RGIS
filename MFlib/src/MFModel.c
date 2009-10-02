@@ -407,7 +407,21 @@ static bool _MFModelReadInput (char *time)
 	return (MFContinue);
 }
 
+static void _MFUserFunc (CMthreadTeam_p team, void *commonPtr,void *threadData, size_t taskId) {
+	int iFunc, varID, dlink;
 
+	MFVariable_t *var;
+
+	for (iFunc = 0;iFunc < _MFFunctionNum; ++iFunc) (_MFFunctions [iFunc]) (taskId);
+
+	for (var = MFVarGetByID (varID = 1);var != (MFVariable_t *) NULL;var = MFVarGetByID (++varID))
+		if ((var->Route) && (_MFDomain->Objects [taskId].DLinkNum == 1)) {
+			dlink = _MFDomain->Objects [taskId].DLinks [0];
+			CMthreadTeamLock  (team);
+			MFVarSetFloat (varID, dlink, MFVarGetFloat (varID,taskId,0.0) + MFVarGetFloat (varID,dlink,0.0));
+			CMthreadTeamUnock (team);
+		}
+}
 
 int MFModelRun (int argc, char *argv [], int argNum, int (*conf) ()) {
 	int i, iFunc, varID, dlink;
@@ -426,13 +440,37 @@ int MFModelRun (int argc, char *argv [], int argNum, int (*conf) ()) {
 		return (CMfailed);
 	}
 	if (_MFThreadsNum > 0) {
-	}
-	do	{
-		CMmsgPrint (CMmsgDebug, "Computing: %s\n", timeCur);
-		for (var = MFVarGetByID (varID = 1);var != (MFVariable_t *) NULL;var = MFVarGetByID (++varID))
-			if (var->Route) { for (i = 0;i < _MFDomain->ObjNum; ++i)  MFVarSetFloat (varID, i, 0.0); }
+		CMthreadTeam_p team;
+		CMthreadJob_p  job;
 
-		if (_MFThreadsNum == 0) {
+		if ((team = CMthreadTeamCreate (_MFThreadsNum)) == (CMthreadTeam_p) NULL) {
+			CMmsgPrint (CMmsgAppError, "Team creation error in %s:%d\n",__FILE__,__LINE__);
+			return (CMfailed);
+		}
+		if ((job  = CMthreadJobCreate (team, (void *) NULL, _MFDomain->ObjNum, (CMthreadUserAllocFunc) NULL,_MFUserFunc)) == (CMthreadJob_p) NULL) {
+			CMmsgPrint (CMmsgAppError, "Job creation error in %s:%d\n",__FILE__,__LINE__);
+			CMthreadTeamDestroy (team,false);
+			return (CMfailed);
+		}
+		for (i = 0;i < _MFDomain->ObjNum; ++i) CMthreadJobTaskDependence (job, i, _MFDomain->Objects [i].DLinks [0]);
+		do {
+			CMmsgPrint (CMmsgDebug, "Computing: %s\n", timeCur);
+			for (var = MFVarGetByID (varID = 1);var != (MFVariable_t *) NULL;var = MFVarGetByID (++varID))
+				if (var->Route) { for (i = 0;i < _MFDomain->ObjNum; ++i)  MFVarSetFloat (varID, i, 0.0); }
+
+			CMthreadJobExecute (team, job);
+
+			for (var = MFVarGetByID (varID = 1);var != (MFVariable_t *) NULL;var = MFVarGetByID (++varID)) {
+			if (var->OutStream != (MFDataStream_t *) NULL) MFDataStreamWrite (var, timeCur);
+			}
+		} while ((timeCur = MFDateAdvance ()) != (char *) NULL ? _MFModelReadInput (timeCur) : MFStop);
+	}
+	else
+		do	{
+			CMmsgPrint (CMmsgDebug, "Computing: %s\n", timeCur);
+			for (var = MFVarGetByID (varID = 1);var != (MFVariable_t *) NULL;var = MFVarGetByID (++varID))
+				if (var->Route) { for (i = 0;i < _MFDomain->ObjNum; ++i)  MFVarSetFloat (varID, i, 0.0); }
+
 			for (i = _MFDomain->ObjNum - 1;i >= 0; --i) {
 				for (iFunc = 0;iFunc < _MFFunctionNum; ++iFunc) (_MFFunctions [iFunc]) (i);
 
@@ -442,14 +480,11 @@ int MFModelRun (int argc, char *argv [], int argNum, int (*conf) ()) {
 						MFVarSetFloat (varID, dlink, MFVarGetFloat (varID,i,0.0) + MFVarGetFloat (varID,dlink,0.0));
 					}
 			}
-		}
-		else {
 
-		}
-		for (var = MFVarGetByID (varID = 1);var != (MFVariable_t *) NULL;var = MFVarGetByID (++varID)) {
+			for (var = MFVarGetByID (varID = 1);var != (MFVariable_t *) NULL;var = MFVarGetByID (++varID)) {
 			if (var->OutStream != (MFDataStream_t *) NULL) MFDataStreamWrite (var, timeCur);
-		}
-	} while ((timeCur = MFDateAdvance ()) != (char *) NULL ? _MFModelReadInput (timeCur) : MFStop);
+			}
+		} while ((timeCur = MFDateAdvance ()) != (char *) NULL ? _MFModelReadInput (timeCur) : MFStop);
 
 	for (var = MFVarGetByID (varID = 1);var != (MFVariable_t *) NULL;var = MFVarGetByID (++varID)) {
 		if (var->InStream  != (MFDataStream_t *) NULL) MFDataStreamClose (var->InStream);
