@@ -104,7 +104,7 @@ static void *_CMthreadWork (void *dataPtr) {
 				if (taskId == (job->LastId  - 1)) job->LastId--;
 				job->Tasks [taskId].Locked = true;
 				pthread_mutex_unlock (&(team->MasterMutex));
-				job->UserFunc (job->CommonData, job->ThreadData == (void **) NULL ? (void *) NULL : job->ThreadData [data->Id], taskId);
+				job->UserFunc (team, job->CommonData, job->ThreadData == (void **) NULL ? (void *) NULL : job->ThreadData [data->Id], taskId);
 				data->CompletedTasks++;
 				pthread_mutex_lock   (&(team->MasterMutex));
 				job->Tasks [taskId].Locked    = false;
@@ -143,7 +143,8 @@ void CMthreadJobExecute (CMthreadTeam_p team, CMthreadJob_p job) {
 	}
 	else {
 		for (taskId = job->LastId - 1;taskId >= 0; taskId--)
-			job->UserFunc (job->CommonData,
+			job->UserFunc (team,
+			               job->CommonData,
 			               job->ThreadData == (void **) NULL ? (void *) NULL : job->ThreadData [0],
 			               taskId);
 	}

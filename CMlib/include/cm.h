@@ -67,7 +67,7 @@ void           CMthreadTeamDestroy    (CMthreadTeam_p, bool);
 void           CMthreadTeamLock       (CMthreadTeam_p);
 void           CMthreadTeamUnock      (CMthreadTeam_p);
 
-typedef void  (*CMthreadUserExecFunc)  (void *, void *, size_t);
+typedef void  (*CMthreadUserExecFunc)  (CMthreadTeam_p, void *, void *, size_t);
 typedef void *(*CMthreadUserAllocFunc) (void *);
 typedef void *(*CMthreadUserFreeFunc)  (void *);
 
