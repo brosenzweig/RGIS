@@ -108,8 +108,8 @@ static void *_CMthreadWork (void *dataPtr) {
 }
 
 CMreturn CMthreadJobExecute (CMthreadTeam_p team, CMthreadJob_p job) {
-	int ret;
-	size_t threadId, taskId;
+	int ret, taskId;
+	size_t threadId;
 	void  *status;
 	pthread_attr_t thread_attr;
 
@@ -147,8 +147,9 @@ CMreturn CMthreadJobExecute (CMthreadTeam_p team, CMthreadJob_p job) {
 
 CMthreadTeam_p CMthreadTeamCreate (size_t threadNum) {
 	size_t threadId;
-	CMthreadTeam_p team;
+	CMthreadTeam_p team = (CMthreadTeam_p) NULL;
 
+	if (threadNum < 2) return (team);
 	if ((team = (CMthreadTeam_p) malloc (sizeof (CMthreadTeam_t))) == (CMthreadTeam_p) NULL) {
 		CMmsgPrint (CMmsgSysError,"Memory Allocation error in %s:%d\n",__FILE__,__LINE__);
 		return ((CMthreadTeam_p) NULL);
@@ -167,7 +168,6 @@ CMthreadTeam_p CMthreadTeamCreate (size_t threadNum) {
 		team->Threads [threadId].TeamPtr        = (void *) team;
 		team->Threads [threadId].CompletedTasks = 0;
 	}
-
 	pthread_mutex_init (&(team->Mutex),   NULL);
 	return (team);
 }
