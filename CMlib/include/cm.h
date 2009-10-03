@@ -54,10 +54,8 @@ typedef struct CMthreadData_s {
 typedef struct CMthreadTeam_s {
 	CMthreadData_p  Threads;
 	size_t          ThreadNum;
+	size_t          CompletedTasks;
 	pthread_mutex_t MasterMutex;
-	pthread_cond_t  MasterSignal;
-	pthread_mutex_t WorkerMutex;
-	pthread_cond_t  WorkerSignal;
 	pthread_mutex_t ProcessMutex;
 	void           *JobPtr;
 } CMthreadTeam_t, *CMthreadTeam_p;
@@ -89,7 +87,7 @@ typedef struct CMthreadJob_s {
 
 CMthreadJob_p CMthreadJobCreate         (CMthreadTeam_p, void *, size_t, CMthreadUserAllocFunc, CMthreadUserExecFunc);
 void          CMthreadJobDestroy        (CMthreadJob_p, CMthreadUserFreeFunc);
-void          CMthreadJobExecute        (CMthreadTeam_p, CMthreadJob_p);
+CMreturn      CMthreadJobExecute        (CMthreadTeam_p, CMthreadJob_p);
 CMreturn      CMthreadJobTaskDependence (CMthreadJob_p,  size_t, size_t);
 
 #if defined(__cplusplus)
