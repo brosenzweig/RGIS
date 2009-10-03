@@ -417,9 +417,9 @@ static void _MFUserFunc (CMthreadTeam_p team, void *commonPtr,void *threadData, 
 	for (var = MFVarGetByID (varID = 1);var != (MFVariable_t *) NULL;var = MFVarGetByID (++varID))
 		if ((var->Route) && (_MFDomain->Objects [taskId].DLinkNum == 1)) {
 			dlink = _MFDomain->Objects [taskId].DLinks [0];
-			CMthreadTeamLock  (team);
+//			CMthreadTeamLock  (team);
 			MFVarSetFloat (varID, dlink, MFVarGetFloat (varID,taskId,0.0) + MFVarGetFloat (varID,dlink,0.0));
-			CMthreadTeamUnlock (team);
+//			CMthreadTeamUnlock (team);
 		}
 }
 
@@ -454,7 +454,7 @@ int MFModelRun (int argc, char *argv [], int argNum, int (*conf) ()) {
 		}
 		for (i = 0;i < _MFDomain->ObjNum; ++i) {
 			dlink = _MFDomain->Objects [i].DLinkNum == 1 ? _MFDomain->Objects [i].DLinks [0] : i;
-			CMthreadJobTaskDependence (job, i, dlink);
+			CMthreadJobTaskDependence (job, i, i);
 		}
 		do {
 			CMmsgPrint (CMmsgDebug, "Computing: %s\n", timeCur);
