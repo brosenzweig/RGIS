@@ -163,6 +163,15 @@ function FwArguments()
 			(-O|--optionsprint)
 				_fwOPTIONSPRINT="on"
 			;;
+			(-P|--processors)
+				shift
+				if (( "${1}" < 0 || "${1}" > 16 ))
+				then
+					echo "Invalid --process number [${1}]"
+				else
+					_fwMAXPROC="${1}"
+				fi
+			;;
 			(-T|--testonly)
 				_fwTESTONLY="on"
 			;;
