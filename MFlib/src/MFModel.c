@@ -454,7 +454,7 @@ int MFModelRun (int argc, char *argv [], int argNum, int (*conf) ()) {
 		}
 		for (i = 0;i < _MFDomain->ObjNum; ++i) {
 			dlink = _MFDomain->Objects [i].DLinkNum == 1 ? _MFDomain->Objects [i].DLinks [0] : i;
-			CMthreadJobTaskDependence (job, i, i);
+			CMthreadJobTaskDependence (job, i, dlink);
 		}
 		do {
 			CMmsgPrint (CMmsgDebug, "Computing: %s\n", timeCur);
