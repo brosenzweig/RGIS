@@ -30,7 +30,7 @@ CMthreadJob_p CMthreadJobCreate (CMthreadTeam_p team,
 	job->UserFunc = execFunc;
 	job->CommonData = (void *) commonData;
 	if (allocFunc != (CMthreadUserAllocFunc) NULL) {
-		job->ThreadNum = team->ThreadNum > 0 ? team->ThreadNum : 1;
+		job->ThreadNum = (team != (CMthreadTeam_p) NULL) && (team->ThreadNum > 1) ? team->ThreadNum : 1;
 		if ((job->ThreadData = (void **) calloc (job->ThreadNum, sizeof (void *))) == (void **) NULL) {
 			CMmsgPrint (CMmsgSysError, "Memory allocation error in %s:%d\n",__FILE__,__LINE__);
 			free (job);

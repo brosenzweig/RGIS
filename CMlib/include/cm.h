@@ -65,7 +65,7 @@ typedef struct CMthreadTeam_s {
 CMthreadTeam_p CMthreadTeamCreate     (size_t threadNum);
 void           CMthreadTeamDestroy    (CMthreadTeam_p, bool);
 void           CMthreadTeamLock       (CMthreadTeam_p);
-void           CMthreadTeamUnock      (CMthreadTeam_p);
+void           CMthreadTeamUnlock     (CMthreadTeam_p);
 
 typedef void  (*CMthreadUserExecFunc)  (CMthreadTeam_p, void *, void *, size_t);
 typedef void *(*CMthreadUserAllocFunc) (void *);
