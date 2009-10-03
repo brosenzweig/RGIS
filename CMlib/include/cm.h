@@ -55,8 +55,7 @@ typedef struct CMthreadTeam_s {
 	CMthreadData_p  Threads;
 	size_t          ThreadNum;
 	size_t          CompletedTasks;
-	pthread_mutex_t MasterMutex;
-	pthread_mutex_t ProcessMutex;
+	pthread_mutex_t Mutex;
 	void           *JobPtr;
 } CMthreadTeam_t, *CMthreadTeam_p;
 

@@ -79,7 +79,7 @@ static void *_CMthreadWork (void *dataPtr) {
 	CMthreadTeam_p team = (CMthreadTeam_p) data->TeamPtr;
 	CMthreadJob_p  job;
 
-	pthread_mutex_lock   (&(team->MasterMutex));
+	pthread_mutex_lock   (&(team->Mutex));
 	job = (CMthreadJob_p) team->JobPtr;
 //TODO printf ("Thread#%d: Starting job [task: %d]\n",(int) data->Id,job->LastId);
 	while (job->LastId > 0) {
@@ -94,16 +94,16 @@ static void *_CMthreadWork (void *dataPtr) {
 			job->Tasks [taskId].Locked = true;
 			if (taskId == (job->LastId  - 1)) job->LastId = taskId;
 
-			pthread_mutex_unlock (&(team->MasterMutex));
+			pthread_mutex_unlock (&(team->Mutex));
 			job->UserFunc (team, job->CommonData, job->ThreadData == (void **) NULL ? (void *) NULL : job->ThreadData [data->Id], taskId);
 			data->CompletedTasks++;
-			pthread_mutex_lock   (&(team->MasterMutex));
+			pthread_mutex_lock   (&(team->Mutex));
 			job->Tasks [taskId].Locked    = false;
 			job->Tasks [taskId].Completed = true;
 		}
 	}
 // TODO printf ("Thread#%d: Ending job\n",(int) data->Id);
-	pthread_mutex_unlock (&(team->MasterMutex));
+	pthread_mutex_unlock (&(team->Mutex));
 	pthread_exit((void *) 0);
 }
 
@@ -168,8 +168,7 @@ CMthreadTeam_p CMthreadTeamCreate (size_t threadNum) {
 		team->Threads [threadId].CompletedTasks = 0;
 	}
 
-	pthread_mutex_init (&(team->MasterMutex),   NULL);
-	pthread_mutex_init (&(team->ProcessMutex),  NULL);
+	pthread_mutex_init (&(team->Mutex),   NULL);
 	return (team);
 }
 
@@ -185,14 +184,13 @@ void CMthreadTeamDestroy (CMthreadTeam_p team, bool report) {
 						(int)   team->Threads [threadId].CompletedTasks,
 						(float) team->Threads [threadId].CompletedTasks * 100.0 / (float) team->CompletedTasks);
 		}
-		pthread_mutex_destroy (&(team->MasterMutex));
-		pthread_mutex_destroy (&(team->ProcessMutex));
+		pthread_mutex_destroy (&(team->Mutex));
 		pthread_exit(NULL);
 		free (team->Threads);
 		free (team);
 	}
 }
 
-void CMthreadTeamLock   (CMthreadTeam_p team) { if (team != (CMthreadTeam_p) NULL) pthread_mutex_lock     (&(team->ProcessMutex)); }
+void CMthreadTeamLock   (CMthreadTeam_p team) { if (team != (CMthreadTeam_p) NULL) pthread_mutex_lock     (&(team->Mutex)); }
 
-void CMthreadTeamUnlock (CMthreadTeam_p team) { if (team != (CMthreadTeam_p) NULL) pthread_mutex_unlock   (&(team->ProcessMutex)); }
+void CMthreadTeamUnlock (CMthreadTeam_p team) { if (team != (CMthreadTeam_p) NULL) pthread_mutex_unlock   (&(team->Mutex)); }
