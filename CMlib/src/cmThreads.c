@@ -131,12 +131,12 @@ void CMthreadJobExecute (CMthreadTeam_p team, CMthreadJob_p job) {
 		pthread_cond_broadcast (&(team->MasterSignal));
 		pthread_mutex_unlock   (&(team->MasterMutex));
 
+		pthread_mutex_lock     (&(team->WorkerMutex));
 		while (completed < team->ThreadNum) {
-			pthread_mutex_lock     (&(team->WorkerMutex));
 			pthread_cond_wait      (&(team->WorkerSignal), &(team->WorkerMutex));
 			completed++;
-			pthread_mutex_unlock   (&(team->WorkerMutex));
 		}
+		pthread_mutex_unlock   (&(team->WorkerMutex));
 // TODO		printf ("Master: Finished job\n");
 		for (taskId = 0;taskId < job->TaskNum; ++taskId) job->Tasks [taskId].Completed = false;
 		team->JobPtr  = (void *) NULL;
