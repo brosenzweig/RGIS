@@ -191,7 +191,7 @@ static int _MFModelParse (int argc, char *argv [],int argNum, int (*conf) ()) {
 				return (CMfailed);
 			}
 			if (sscanf (argv [argPos],"%d", &_MFThreadsNum) != 1) {
-				CMmsgPrint (CMmsgUsrError,"Invalide thread number!\n");
+				CMmsgPrint (CMmsgUsrError,"Invalid thread number!\n");
 				return (CMfailed);
 			}
 			if ((argNum = CMargShiftLeft(argPos,argv,argNum)) <= argPos) break;
@@ -419,7 +419,7 @@ static void _MFUserFunc (CMthreadTeam_p team, void *commonPtr,void *threadData, 
 			dlink = _MFDomain->Objects [taskId].DLinks [0];
 			CMthreadTeamLock  (team);
 			MFVarSetFloat (varID, dlink, MFVarGetFloat (varID,taskId,0.0) + MFVarGetFloat (varID,dlink,0.0));
-			CMthreadTeamUnock (team);
+			CMthreadTeamUnlock (team);
 		}
 }
 
@@ -440,7 +440,7 @@ int MFModelRun (int argc, char *argv [], int argNum, int (*conf) ()) {
 		return (CMfailed);
 	}
 	if (_MFThreadsNum > 0) {
-		CMthreadTeam_p team;
+		CMthreadTeam_p team = (CMthreadTeam_p) NULL;
 		CMthreadJob_p  job;
 
 		if ((team = CMthreadTeamCreate (_MFThreadsNum)) == (CMthreadTeam_p) NULL) {
@@ -452,7 +452,10 @@ int MFModelRun (int argc, char *argv [], int argNum, int (*conf) ()) {
 			CMthreadTeamDestroy (team,false);
 			return (CMfailed);
 		}
-		for (i = 0;i < _MFDomain->ObjNum; ++i) CMthreadJobTaskDependence (job, i, _MFDomain->Objects [i].DLinks [0]);
+		for (i = 0;i < _MFDomain->ObjNum; ++i) {
+			dlink = _MFDomain->Objects [i].DLinkNum == 1 ? _MFDomain->Objects [i].DLinks [0] : i;
+			CMthreadJobTaskDependence (job, i, dlink);
+		}
 		do {
 			CMmsgPrint (CMmsgDebug, "Computing: %s\n", timeCur);
 			for (var = MFVarGetByID (varID = 1);var != (MFVariable_t *) NULL;var = MFVarGetByID (++varID))
@@ -464,8 +467,10 @@ int MFModelRun (int argc, char *argv [], int argNum, int (*conf) ()) {
 			if (var->OutStream != (MFDataStream_t *) NULL) MFDataStreamWrite (var, timeCur);
 			}
 		} while ((timeCur = MFDateAdvance ()) != (char *) NULL ? _MFModelReadInput (timeCur) : MFStop);
+		CMthreadJobDestroy  (job,(CMthreadUserFreeFunc) NULL);
+		CMthreadTeamDestroy (team,false);
 	}
-	else
+	else // TODO Single CPU
 		do	{
 			CMmsgPrint (CMmsgDebug, "Computing: %s\n", timeCur);
 			for (var = MFVarGetByID (varID = 1);var != (MFVariable_t *) NULL;var = MFVarGetByID (++varID))

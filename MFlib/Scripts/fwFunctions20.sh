@@ -252,6 +252,10 @@ function FwDataSrc()
 
 function _fwOptionList()
 {
+	if (( _fwMAXPROC > 0))
+	then
+		echo "-t ${_fwMAXPROC}"
+	fi
 	for (( fwI = 0; fwI < ${#_fwOptionARRAY[@]} ; ++fwI ))
 	do
 		echo "-p ${_fwOptionARRAY[${fwI}]}"
