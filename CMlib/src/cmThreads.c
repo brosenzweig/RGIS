@@ -191,7 +191,7 @@ void CMthreadTeamDestroy (CMthreadTeam_p team, bool report) {
 		if (report) {
 			for (threadId = 0;threadId < team->ThreadNum;++threadId) completedTasks += team->Threads [threadId].CompletedTasks;
 			for (threadId = 0;threadId < team->ThreadNum;++threadId)
-				CMmsgPrint (CMmsgInfo,"Threads#%d completed %9d tasks (%6.2f %c of the total) User time %4.1f(%4.1f) %c\n",
+				CMmsgPrint (CMmsgInfo,"Threads#%d completed %9d tasks (%4.1f %c of the total) User time %4.1f(%4.1f) %c\n",
 						(int)   team->Threads [threadId].Id,
 						(int)   team->Threads [threadId].CompletedTasks,
 						(float) team->Threads [threadId].CompletedTasks * 100.0 / (float) completedTasks,'%',
