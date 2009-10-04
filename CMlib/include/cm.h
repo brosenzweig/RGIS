@@ -50,9 +50,6 @@ typedef struct CMthreadData_s {
 	pthread_t       Thread;
 	size_t          CompletedTasks;
 	void           *TeamPtr;
-	clock_t         Start;
-	clock_t         UserTime;
-	clock_t         TotalTime;
 } CMthreadData_t,  *CMthreadData_p;
 
 typedef struct CMthreadTeam_s {
@@ -65,10 +62,8 @@ typedef struct CMthreadTeam_s {
 
 CMthreadTeam_p CMthreadTeamCreate     (size_t threadNum);
 void           CMthreadTeamDestroy    (CMthreadTeam_p, bool);
-void           CMthreadTeamLock       (CMthreadTeam_p);
-void           CMthreadTeamUnlock     (CMthreadTeam_p);
 
-typedef void  (*CMthreadUserExecFunc)  (CMthreadTeam_p, void *, void *, size_t);
+typedef void  (*CMthreadUserExecFunc)  (void *, void *, size_t);
 typedef void *(*CMthreadUserAllocFunc) (void *);
 typedef void *(*CMthreadUserFreeFunc)  (void *);
 

@@ -75,10 +75,9 @@ void CMthreadJobDestroy (CMthreadJob_p job, CMthreadUserFreeFunc freeFunc) {
 
 static void *_CMthreadWork (void *dataPtr) {
 	CMthreadData_p data = (CMthreadData_p) dataPtr;
-	int taskId;
+	int taskId, startTaskId, endTaskId;
 	CMthreadTeam_p team = (CMthreadTeam_p) data->TeamPtr;
 	CMthreadJob_p  job;
-	clock_t start;
 
 	pthread_mutex_lock   (&(team->Mutex));
 	job = (CMthreadJob_p) team->JobPtr;
@@ -89,21 +88,23 @@ static void *_CMthreadWork (void *dataPtr) {
 //				if (taskId == (job->LastId  - 1)) job->LastId = taskId;
 //				continue;
 //			}
-		taskId = job->LastId - 1;
-		if ( job->Tasks [taskId].Locked)    continue;
+//		if ( job->Tasks [taskId].Locked)    continue;
+//		job->Tasks [taskId].Locked = true;
 
-		job->Tasks [taskId].Locked = true;
-		if (taskId == (job->LastId  - 1)) job->LastId = taskId;
+		startTaskId = job->LastId - 1;
+		endTaskId   = startTaskId - 100 > 0 ? startTaskId - 100 : 0;
+
+		job->LastId = endTaskId;
 
 		pthread_mutex_unlock (&(team->Mutex));
-		start = clock ();
-		job->UserFunc (team, job->CommonData, job->ThreadData == (void **) NULL ? (void *) NULL : job->ThreadData [data->Id], taskId);
-		data->UserTime += clock () - start;
-		data->CompletedTasks++;
+		for (taskId = startTaskId;taskId >= endTaskId; taskId--) {
+			job->UserFunc (job->CommonData, job->ThreadData == (void **) NULL ? (void *) NULL : job->ThreadData [data->Id], taskId);
+			data->CompletedTasks++;
+		}
 		pthread_mutex_lock   (&(team->Mutex));
-		job->Tasks [taskId].Locked    = false;
+//		job->Tasks [taskId].Locked    = false;
 //		job->Tasks [job->Tasks [taskId].Depend].Locked = false;
-		job->Tasks [taskId].Completed = true;
+//		job->Tasks [taskId].Completed = true;
 	}
 // TODO printf ("Thread#%d: Ending job\n",(int) data->Id);
 	pthread_mutex_unlock (&(team->Mutex));
@@ -133,21 +134,18 @@ CMreturn CMthreadJobExecute (CMthreadTeam_p team, CMthreadJob_p job) {
 				free (team->Threads);
 				free (team);
 				return (CMfailed);
-			team->Threads [threadId].Start = clock ();
 			}
 		}
 		pthread_attr_destroy(&thread_attr);
 		for (threadId = 0;threadId < team->ThreadNum;++threadId) {
 			pthread_join(team->Threads [threadId].Thread, &status);
-			team->Threads [threadId].TotalTime += clock () - team->Threads [threadId].Start;
 			team->CompletedTasks += team->Threads [threadId].CompletedTasks;
 		}
 // TODO printf ("Master: Finished job\n");
 	}
 	else
 		for (taskId = job->LastId - 1;taskId >= 0; taskId--)
-			job->UserFunc (team,
-			               job->CommonData,
+			job->UserFunc (job->CommonData,
 			               job->ThreadData != (void **) NULL ? job->ThreadData [0] : (void *) NULL,
 			               taskId);
 	return (CMsucceeded);
@@ -175,8 +173,6 @@ CMthreadTeam_p CMthreadTeamCreate (size_t threadNum) {
 		team->Threads [threadId].Id             = threadId;
 		team->Threads [threadId].TeamPtr        = (void *) team;
 		team->Threads [threadId].CompletedTasks = 0;
-		team->Threads [threadId].UserTime       = (clock_t) 0;
-		team->Threads [threadId].TotalTime      = (clock_t) 0;
 	}
 	pthread_mutex_init (&(team->Mutex),   NULL);
 	return (team);
@@ -189,11 +185,10 @@ void CMthreadTeamDestroy (CMthreadTeam_p team, bool report) {
 // TODO printf ("Master: Discharging team\n");
 		if (report) {
 			for (threadId = 0;threadId < team->ThreadNum;++threadId)
-				CMmsgPrint (CMmsgInfo,"Threads#%d completed %d tasks (%6.2f percent of the total) User time: %6.2f percent\n",
+				CMmsgPrint (CMmsgInfo,"Threads#%d completed %d tasks (%6.2f percent of the total)\n",
 						(int)   team->Threads [threadId].Id,
 						(int)   team->Threads [threadId].CompletedTasks,
-						(float) team->Threads [threadId].CompletedTasks * 100.0 / (float) team->CompletedTasks,
-						(float) team->Threads [threadId].UserTime * 100.0 / (float) team->Threads [threadId].TotalTime);
+						(float) team->Threads [threadId].CompletedTasks * 100.0 / (float) team->CompletedTasks);
 		}
 		pthread_mutex_destroy (&(team->Mutex));
 		pthread_exit(NULL);
@@ -201,7 +196,3 @@ void CMthreadTeamDestroy (CMthreadTeam_p team, bool report) {
 		free (team);
 	}
 }
-
-void CMthreadTeamLock   (CMthreadTeam_p team) { if (team != (CMthreadTeam_p) NULL) pthread_mutex_lock     (&(team->Mutex)); }
-
-void CMthreadTeamUnlock (CMthreadTeam_p team) { if (team != (CMthreadTeam_p) NULL) pthread_mutex_unlock   (&(team->Mutex)); }
