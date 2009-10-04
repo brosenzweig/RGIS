@@ -24,7 +24,7 @@ CMthreadJob_p CMthreadJobCreate (CMthreadTeam_p team,
 		job->Tasks [taskId].Id         = taskId;
 		job->Tasks [taskId].Completed  = false;
 		job->Tasks [taskId].Locked     = false;
-		job->Tasks [taskId].Dependence = job->TaskNum;
+		job->Tasks [taskId].Depend     = taskId;
 	}
 	job->LastId   = job->TaskNum;
 	job->UserFunc = execFunc;
@@ -50,16 +50,15 @@ CMthreadJob_p CMthreadJobCreate (CMthreadTeam_p team,
 	return (job);
 }
 
-CMreturn CMthreadJobTaskDependence (CMthreadJob_p job, size_t taskId, size_t dependence) {
+CMreturn CMthreadJobTaskDependence (CMthreadJob_p job, size_t taskId, size_t depend) {
 	if (taskId > job->TaskNum) {
 		CMmsgPrint (CMmsgAppError,"Invalid task in %s%d\n",__FILE__,__LINE__);
 		return (CMfailed);
 	}
-	if (dependence > job->TaskNum) {
-		CMmsgPrint (CMmsgAppError,"Invalid task dependence in %s%d\n",__FILE__,__LINE__);
-		return (CMfailed);
-	}
-	if (job->Tasks [taskId].Dependence < dependence) job->Tasks [taskId].Dependence = dependence;
+	if (job->Tasks [taskId].Depend == taskId) job->Tasks [taskId].Depend = depend;
+	else
+		job->Tasks [taskId].Depend = job->Tasks [taskId].Depend < depend ?
+		                             job->Tasks [taskId].Depend : depend;
 	return (CMsucceeded);
 }
 
@@ -89,9 +88,8 @@ static void *_CMthreadWork (void *dataPtr) {
 				if (taskId == (job->LastId  - 1)) job->LastId = taskId;
 				continue;
 			}
-			if (job->Tasks [taskId].Locked)    continue;
-			if ((job->Tasks [taskId].Dependence < job->TaskNum) &&
-			    (job->Tasks [job->Tasks [taskId].Dependence].Completed == false)) continue;
+			if ( job->Tasks [taskId].Locked)    continue;
+
 			job->Tasks [taskId].Locked = true;
 			if (taskId == (job->LastId  - 1)) job->LastId = taskId;
 
@@ -102,6 +100,7 @@ static void *_CMthreadWork (void *dataPtr) {
 			data->CompletedTasks++;
 			pthread_mutex_lock   (&(team->Mutex));
 			job->Tasks [taskId].Locked    = false;
+			job->Tasks [job->Tasks [taskId].Depend].Locked = false;
 			job->Tasks [taskId].Completed = true;
 		}
 	}
@@ -122,7 +121,10 @@ CMreturn CMthreadJobExecute (CMthreadTeam_p team, CMthreadJob_p job) {
 		pthread_attr_setdetachstate(&thread_attr, PTHREAD_CREATE_JOINABLE);
 		team->JobPtr = (void *) job;
 		job->LastId  = job->TaskNum;
-		for (taskId = 0; taskId < job->LastId; ++taskId) job->Tasks [taskId].Completed = false;
+		for (taskId = 0; taskId < job->LastId; ++taskId) {
+			job->Tasks [taskId].Completed = false;
+			job->Tasks [job->Tasks [taskId].Depend].Locked = true;
+		}
 
 		for (threadId = 0; threadId < team->ThreadNum; ++threadId) {
 			if ((ret = pthread_create (&(team->Threads [threadId].Thread), &thread_attr,_CMthreadWork,(void *) (team->Threads + threadId))) != 0) {
