@@ -407,7 +407,7 @@ static bool _MFModelReadInput (char *time)
 	return (MFContinue);
 }
 
-static void _MFUserFunc (CMthreadTeam_p team, void *commonPtr,void *threadData, size_t taskId) {
+static void _MFUserFunc (void *commonPtr,void *threadData, size_t taskId) {
 	int iFunc, varID, dlink;
 
 	MFVariable_t *var;
@@ -417,9 +417,7 @@ static void _MFUserFunc (CMthreadTeam_p team, void *commonPtr,void *threadData, 
 	for (var = MFVarGetByID (varID = 1);var != (MFVariable_t *) NULL;var = MFVarGetByID (++varID))
 		if ((var->Route) && (_MFDomain->Objects [taskId].DLinkNum == 1)) {
 			dlink = _MFDomain->Objects [taskId].DLinks [0];
-			CMthreadTeamLock   (team);
 			MFVarSetFloat (varID, dlink, MFVarGetFloat (varID,taskId,0.0) + MFVarGetFloat (varID,dlink,0.0));
-			CMthreadTeamUnlock (team);
 		}
 }
 
