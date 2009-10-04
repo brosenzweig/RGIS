@@ -143,7 +143,7 @@ CMreturn CMthreadJobExecute (CMthreadTeam_p team, CMthreadJob_p job) {
 		}
 		status = _CMthreadWork (team->Threads);
 		pthread_attr_destroy(&thread_attr);
-		for (threadId = 0;threadId < team->ThreadNum;++threadId) pthread_join(team->Threads [threadId].Thread, &status);
+		for (threadId = 1;threadId < team->ThreadNum;++threadId) pthread_join(team->Threads [threadId].Thread, &status);
 
 // TODO printf ("Master: Finished job\n");
 	}
