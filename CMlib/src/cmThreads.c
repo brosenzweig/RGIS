@@ -112,7 +112,8 @@ static void *_CMthreadWork (void *dataPtr) {
 // TODO printf ("Thread#%d: Ending job\n",(int) data->Id);
 	data->ThreadTime += clock () - start;
 	pthread_mutex_unlock (&(team->Mutex));
-	if (data->Id > 0) pthread_exit((void *) 0);
+	if (data->Id > 0) pthread_exit((void *) NULL);
+	return ((void *) NULL);
 }
 
 CMreturn CMthreadJobExecute (CMthreadTeam_p team, CMthreadJob_p job) {
@@ -140,7 +141,7 @@ CMreturn CMthreadJobExecute (CMthreadTeam_p team, CMthreadJob_p job) {
 				return (CMfailed);
 			}
 		}
-		_CMthreadWork (team->Threads);
+		status = _CMthreadWork (team->Threads);
 		pthread_attr_destroy(&thread_attr);
 		for (threadId = 0;threadId < team->ThreadNum;++threadId) pthread_join(team->Threads [threadId].Thread, &status);
 
