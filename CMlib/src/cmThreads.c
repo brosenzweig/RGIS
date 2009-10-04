@@ -112,7 +112,7 @@ static void *_CMthreadWork (void *dataPtr) {
 // TODO printf ("Thread#%d: Ending job\n",(int) data->Id);
 	data->ThreadTime += clock () - start;
 	pthread_mutex_unlock (&(team->Mutex));
-	pthread_exit((void *) 0);
+	if (data->Id > 0) pthread_exit((void *) 0);
 }
 
 CMreturn CMthreadJobExecute (CMthreadTeam_p team, CMthreadJob_p job) {
@@ -132,7 +132,7 @@ CMreturn CMthreadJobExecute (CMthreadTeam_p team, CMthreadJob_p job) {
 //			job->Tasks [job->Tasks [taskId].Depend].Locked = true;
 		}
 
-		for (threadId = 0; threadId < team->ThreadNum; ++threadId) {
+		for (threadId = 1; threadId < team->ThreadNum; ++threadId) {
 			if ((ret = pthread_create (&(team->Threads [threadId].Thread), &thread_attr,_CMthreadWork,(void *) (team->Threads + threadId))) != 0) {
 				CMmsgPrint (CMmsgAppError,"Thread creation returned with error [%d] in %s:%d\n",ret,__FILE__,__LINE__);
 				free (team->Threads);
@@ -140,6 +140,7 @@ CMreturn CMthreadJobExecute (CMthreadTeam_p team, CMthreadJob_p job) {
 				return (CMfailed);
 			}
 		}
+		_CMthreadWork (team->Threads);
 		pthread_attr_destroy(&thread_attr);
 		for (threadId = 0;threadId < team->ThreadNum;++threadId) pthread_join(team->Threads [threadId].Thread, &status);
 
