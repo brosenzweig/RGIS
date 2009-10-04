@@ -72,6 +72,7 @@ void CMthreadJobDestroy (CMthreadJob_p job, CMthreadUserFreeFunc freeFunc) {
 	free (job->Tasks);
 	free (job);
 }
+
 static void *_CMthreadWork (void *dataPtr) {
 	CMthreadData_p data = (CMthreadData_p) dataPtr;
 	int taskId;
@@ -83,26 +84,26 @@ static void *_CMthreadWork (void *dataPtr) {
 	job = (CMthreadJob_p) team->JobPtr;
 //TODO printf ("Thread#%d: Starting job [task: %d]\n",(int) data->Id,job->LastId);
 	while (job->LastId > 0) {
-		for (taskId = job->LastId - 1;taskId >= 0; taskId--) {
-			if (job->Tasks [taskId].Completed) {
-				if (taskId == (job->LastId  - 1)) job->LastId = taskId;
-				continue;
-			}
-			if ( job->Tasks [taskId].Locked)    continue;
+//		for (taskId = job->LastId - 1;taskId >= 0; taskId--) {
+//			if (job->Tasks [taskId].Completed) {
+//				if (taskId == (job->LastId  - 1)) job->LastId = taskId;
+//				continue;
+//			}
+		taskId = job->LastId - 1;
+		if ( job->Tasks [taskId].Locked)    continue;
 
-			job->Tasks [taskId].Locked = true;
-			if (taskId == (job->LastId  - 1)) job->LastId = taskId;
+		job->Tasks [taskId].Locked = true;
+		if (taskId == (job->LastId  - 1)) job->LastId = taskId;
 
-			pthread_mutex_unlock (&(team->Mutex));
-			start = clock ();
-			job->UserFunc (team, job->CommonData, job->ThreadData == (void **) NULL ? (void *) NULL : job->ThreadData [data->Id], taskId);
-			data->UserTime += clock () - start;
-			data->CompletedTasks++;
-			pthread_mutex_lock   (&(team->Mutex));
-			job->Tasks [taskId].Locked    = false;
-//			job->Tasks [job->Tasks [taskId].Depend].Locked = false;
-			job->Tasks [taskId].Completed = true;
-		}
+		pthread_mutex_unlock (&(team->Mutex));
+		start = clock ();
+		job->UserFunc (team, job->CommonData, job->ThreadData == (void **) NULL ? (void *) NULL : job->ThreadData [data->Id], taskId);
+		data->UserTime += clock () - start;
+		data->CompletedTasks++;
+		pthread_mutex_lock   (&(team->Mutex));
+		job->Tasks [taskId].Locked    = false;
+//		job->Tasks [job->Tasks [taskId].Depend].Locked = false;
+		job->Tasks [taskId].Completed = true;
 	}
 // TODO printf ("Thread#%d: Ending job\n",(int) data->Id);
 	pthread_mutex_unlock (&(team->Mutex));
