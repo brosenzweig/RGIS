@@ -78,6 +78,7 @@ static void *_CMthreadWork (void *dataPtr) {
 	int taskId, startTaskId, endTaskId;
 	CMthreadTeam_p team = (CMthreadTeam_p) data->TeamPtr;
 	CMthreadJob_p  job;
+	clock_t start = clock (), time;
 
 	pthread_mutex_lock   (&(team->Mutex));
 	job = (CMthreadJob_p) team->JobPtr;
@@ -98,7 +99,9 @@ static void *_CMthreadWork (void *dataPtr) {
 
 		pthread_mutex_unlock (&(team->Mutex));
 		for (taskId = startTaskId;taskId >= endTaskId; taskId--) {
+			time = clock ();
 			job->UserFunc (job->CommonData, job->ThreadData == (void **) NULL ? (void *) NULL : job->ThreadData [data->Id], taskId);
+			data->UserTime += clock () - time;
 			data->CompletedTasks++;
 		}
 		pthread_mutex_lock   (&(team->Mutex));
@@ -107,6 +110,7 @@ static void *_CMthreadWork (void *dataPtr) {
 //		job->Tasks [taskId].Completed = true;
 	}
 // TODO printf ("Thread#%d: Ending job\n",(int) data->Id);
+	data->ThreadTime += clock () - start;
 	pthread_mutex_unlock (&(team->Mutex));
 	pthread_exit((void *) 0);
 }
@@ -137,10 +141,8 @@ CMreturn CMthreadJobExecute (CMthreadTeam_p team, CMthreadJob_p job) {
 			}
 		}
 		pthread_attr_destroy(&thread_attr);
-		for (threadId = 0;threadId < team->ThreadNum;++threadId) {
-			pthread_join(team->Threads [threadId].Thread, &status);
-			team->CompletedTasks += team->Threads [threadId].CompletedTasks;
-		}
+		for (threadId = 0;threadId < team->ThreadNum;++threadId) pthread_join(team->Threads [threadId].Thread, &status);
+
 // TODO printf ("Master: Finished job\n");
 	}
 	else
@@ -166,29 +168,35 @@ CMthreadTeam_p CMthreadTeamCreate (size_t threadNum) {
 		return ((CMthreadTeam_p) NULL);
 	}
 	team->ThreadNum      = threadNum;
-	team->CompletedTasks = 0;
 	team->JobPtr         = (void *) NULL;
+	team->Time           = clock ();
 
 	for (threadId = 0; threadId < team->ThreadNum; ++threadId) {
 		team->Threads [threadId].Id             = threadId;
 		team->Threads [threadId].TeamPtr        = (void *) team;
 		team->Threads [threadId].CompletedTasks = 0;
+		team->Threads [threadId].ThreadTime     = (clock_t) 0;
+		team->Threads [threadId].UserTime       = (clock_t) 0;
 	}
 	pthread_mutex_init (&(team->Mutex),   NULL);
 	return (team);
 }
 
 void CMthreadTeamDestroy (CMthreadTeam_p team, bool report) {
-	size_t threadId;
+	size_t threadId, completedTasks = 0;
 
 	if (team != (CMthreadTeam_p) NULL) {
 // TODO printf ("Master: Discharging team\n");
+		team->Time = clock () - team->Time;
 		if (report) {
+			for (threadId = 0;threadId < team->ThreadNum;++threadId) completedTasks += team->Threads [threadId].CompletedTasks;
 			for (threadId = 0;threadId < team->ThreadNum;++threadId)
-				CMmsgPrint (CMmsgInfo,"Threads#%d completed %d tasks (%6.2f percent of the total)\n",
+				CMmsgPrint (CMmsgInfo,"Threads#%d completed %9d tasks (%6.2f %c of the total) User time %4.1f(%4.1f) %c\n",
 						(int)   team->Threads [threadId].Id,
 						(int)   team->Threads [threadId].CompletedTasks,
-						(float) team->Threads [threadId].CompletedTasks * 100.0 / (float) team->CompletedTasks);
+						(float) team->Threads [threadId].CompletedTasks * 100.0 / (float) completedTasks,'%',
+						(float) team->Threads [threadId].UserTime       * 100.0 / (float) team->Threads [threadId].ThreadTime,
+						(float) team->Threads [threadId].UserTime       * 100.0 / (float) team->Time, '%');
 		}
 		pthread_mutex_destroy (&(team->Mutex));
 		pthread_exit(NULL);
