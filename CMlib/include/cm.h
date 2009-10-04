@@ -3,6 +3,7 @@
 
 #include <stdio.h>
 #include <pthread.h>
+#include <time.h>
 
 #if defined(__cplusplus)
 extern "C" {
@@ -49,6 +50,9 @@ typedef struct CMthreadData_s {
 	pthread_t       Thread;
 	size_t          CompletedTasks;
 	void           *TeamPtr;
+	clock_t         Start;
+	clock_t         UserTime;
+	clock_t         TotalTime;
 } CMthreadData_t,  *CMthreadData_p;
 
 typedef struct CMthreadTeam_s {
