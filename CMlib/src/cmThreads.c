@@ -100,7 +100,7 @@ static void *_CMthreadWork (void *dataPtr) {
 			data->CompletedTasks++;
 			pthread_mutex_lock   (&(team->Mutex));
 			job->Tasks [taskId].Locked    = false;
-			job->Tasks [job->Tasks [taskId].Depend].Locked = false;
+//			job->Tasks [job->Tasks [taskId].Depend].Locked = false;
 			job->Tasks [taskId].Completed = true;
 		}
 	}
@@ -123,7 +123,7 @@ CMreturn CMthreadJobExecute (CMthreadTeam_p team, CMthreadJob_p job) {
 		job->LastId  = job->TaskNum;
 		for (taskId = 0; taskId < job->LastId; ++taskId) {
 			job->Tasks [taskId].Completed = false;
-			job->Tasks [job->Tasks [taskId].Depend].Locked = true;
+//			job->Tasks [job->Tasks [taskId].Depend].Locked = true;
 		}
 
 		for (threadId = 0; threadId < team->ThreadNum; ++threadId) {
