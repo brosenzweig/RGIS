@@ -441,10 +441,7 @@ int MFModelRun (int argc, char *argv [], int argNum, int (*conf) ()) {
 		CMthreadTeam_p team = (CMthreadTeam_p) NULL;
 		CMthreadJob_p  job;
 
-		if ((team = CMthreadTeamCreate (_MFThreadsNum)) == (CMthreadTeam_p) NULL) {
-			CMmsgPrint (CMmsgAppError, "Team creation error in %s:%d\n",__FILE__,__LINE__);
-			return (CMfailed);
-		}
+		team = CMthreadTeamCreate (_MFThreadsNum);
 		if ((job  = CMthreadJobCreate (team, (void *) NULL, _MFDomain->ObjNum, (CMthreadUserAllocFunc) NULL,_MFUserFunc)) == (CMthreadJob_p) NULL) {
 			CMmsgPrint (CMmsgAppError, "Job creation error in %s:%d\n",__FILE__,__LINE__);
 			CMthreadTeamDestroy (team,false);
