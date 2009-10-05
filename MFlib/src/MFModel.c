@@ -437,7 +437,7 @@ int MFModelRun (int argc, char *argv [], int argNum, int (*conf) ()) {
 		CMmsgPrint (CMmsgInfo, "MFModelReadInput(%s) returned MFStop in: %s:%d",timeCur,__FILE__,__LINE__);
 		return (CMfailed);
 	}
-	if (_MFThreadsNum > 1) {
+	if (_MFThreadsNum > 0) {
 		CMthreadTeam_p team = (CMthreadTeam_p) NULL;
 		CMthreadJob_p  job;
 
