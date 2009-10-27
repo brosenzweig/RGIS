@@ -199,6 +199,7 @@ function FwArguments()
 				echo "           -n, --passnum     [num]"
 				echo "           -r, --preprocess  auto|forced"
 				echo "           -p, --postprocess on|off"
+				echo "           -P, --processors  [# of processors]"
 				echo "           -u, --purgefiles  on|off"
 				echo "           -W, --warnings    on|off"
 				echo "           -T, --testonly"
