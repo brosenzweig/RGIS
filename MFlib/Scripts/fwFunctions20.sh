@@ -262,7 +262,7 @@ function FwDataSrc()
 
 function _fwOptionList()
 {
-	if (( _fwMAXPROC > 0))
+	if (( _fwMAXPROC > 1))
 	then
 		echo "-t ${_fwMAXPROC}"
 	fi
