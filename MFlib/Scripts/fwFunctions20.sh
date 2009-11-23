@@ -400,9 +400,9 @@ function FwGDSFilename()
 	local     fwSTEP="${5}"
 	if [ "${fwYEAR}" == "" ]
 	then
-		local fwFILENAME="${_fwGDSDomainDIR}/${fwVERSION}/${_fwDomainNAME}_${fwMODE}_${fwVERSION}_${fwVARIABLE}_${fwSTEP}LT_${FwDomainRES}.gds"
+		local fwFILENAME="${_fwGDSDomainDIR}/${fwVERSION}/${_fwDomainNAME}_${fwMODE}_${fwVARIABLE}_${fwVERSION}_${FwDomainRES}_${fwSTEP}LT.gds"
 	else
-		local fwFILENAME="${_fwGDSDomainDIR}/${fwVERSION}/${_fwDomainNAME}_${fwMODE}_${fwVERSION}_${fwVARIABLE}_${fwSTEP}TS${fwYEAR}_${FwDomainRES}.gds"
+		local fwFILENAME="${_fwGDSDomainDIR}/${fwVERSION}/${_fwDomainNAME}_${fwMODE}_${fwVARIABLE}_${fwVERSION}_${FwDomainRES}_${fwSTEP}TS${fwYEAR}.gds"
 	fi
 	echo ${fwFILENAME}
 }
@@ -415,9 +415,9 @@ function FwRGISFilename()
 	local     fwYEAR="${4}"
 	if [ "${fwYEAR}" == "" ]
 	then
-		local fwFILENAME="${_fwRGISResultsDIR}/${fwVARIABLE}/${_fwDomainNAME}_${fwVERSION}_${fwVARIABLE}_${fwSTEP}LT_${FwDomainRES}.gdbc"
+		local fwFILENAME="${_fwRGISResultsDIR}/${_fwDomainNAME}/${fwVARIABLE}/${_fwDomainNAME}_${fwVARIABLE}_${fwVERSION}_${FwDomainRES}_${fwSTEP}LT.gdbc"
 	else
-		local fwFILENAME="${_fwRGISResultsDIR}/${fwVARIABLE}/${_fwDomainNAME}_${fwVERSION}_${fwVARIABLE}_${fwSTEP}TS${fwYEAR}_${FwDomainRES}.gdbc"
+		local fwFILENAME="${_fwRGISResultsDIR}/${_fwDomainNAME}/${fwVARIABLE}/${_fwDomainNAME}_${fwVARIABLE}_${fwVERSION}_${FwDomainRES}_${fwSTEP}TS${fwYEAR}.gdbc"
 	fi
 	echo "${fwFILENAME}"
 }
@@ -527,7 +527,7 @@ function _fwPostprocess()
 		local fwGDSFileNAME="$(FwGDSFilename "${fwVARIABLE}" "Output" "${fwVERSION}" "${fwYEAR}" "d")"
 		[ -e "${fwGDSFileNAME}" ] || local fwGDSFileNAME="$(FwGDSFilename "${fwVARIABLE}" "State" "${fwVERSION}" "${fwYEAR}" "d")"
 		[ -e "${fwGDSFileNAME}" ] || { echo "Skipping missing variable [${fwVARIABLE}]"; echo ${fwGDSFileNAME}; continue; }
-		[ -e "${_fwRGISResultsDIR}/${fwVARIABLE}" ] || mkdir -p "${_fwRGISResultsDIR}/${fwVARIABLE}"
+		[ -e "${_fwRGISResultsDIR}/${_fwDomainNAME}/${fwVARIABLE}" ] || mkdir -p "${_fwRGISResultsDIR}/${_fwDomainNAME}/${fwVARIABLE}"
 		if [ "${_fwDAILYOUTPUT}" == "on" ]
 		then
 			local fwRGISFileNAME="$(FwRGISFilename "${fwVARIABLE}" "${fwVERSION}" "d" "${fwYEAR}")"
