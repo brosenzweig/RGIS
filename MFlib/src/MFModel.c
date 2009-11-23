@@ -185,7 +185,7 @@ static int _MFModelParse (int argc, char *argv [],int argNum, int (*conf) ()) {
 			if ((argNum = CMargShiftLeft(argPos,argv,argNum)) <= argPos) break;
 			continue;
 		}
-		if (CMargTest (argv [argPos],"-t","--threads")) {
+		if (CMargTest (argv [argPos],"-P","--processors")) {
 			if ((argNum = CMargShiftLeft (argPos,argv,argNum)) < 1) {
 				CMmsgPrint (CMmsgUsrError,"Missing thread number!\n");
 				return (CMfailed);
@@ -231,16 +231,16 @@ static int _MFModelParse (int argc, char *argv [],int argNum, int (*conf) ()) {
 		if (CMargTest (argv [argPos],"-h","--help")) {
 			help = true;
 			CMmsgPrint (CMmsgInfo,"%s [options] <domain>\n",CMprgName (argv [0]));
-			CMmsgPrint (CMmsgInfo,"     -s,  --start    [start date in the form of \"yyyy-mm-dd\"]\n");
-			CMmsgPrint (CMmsgInfo,"     -n,  --end      [end date in the form of \"yyyy-mm-dd\"]\n");
-			CMmsgPrint (CMmsgInfo,"     -i,  --input    [variable=source]\n");
-			CMmsgPrint (CMmsgInfo,"     -o,  --output   [variable=destination]\n");
+			CMmsgPrint (CMmsgInfo,"     -s,  --start      [start date in the form of \"yyyy-mm-dd\"]\n");
+			CMmsgPrint (CMmsgInfo,"     -n,  --end        [end date in the form of \"yyyy-mm-dd\"]\n");
+			CMmsgPrint (CMmsgInfo,"     -i,  --input      [variable=source]\n");
+			CMmsgPrint (CMmsgInfo,"     -o,  --output     [variable=destination]\n");
 			CMmsgPrint (CMmsgInfo,"     -ol, --output-listfile [output listfile]\n");
-			CMmsgPrint (CMmsgInfo,"     -p,  --option   [option=content]\n");
-			CMmsgPrint (CMmsgInfo,"     -r,  --route    [variable]\n");
-			CMmsgPrint (CMmsgInfo,"     -t,  --threads  [number of thread]\n");
+			CMmsgPrint (CMmsgInfo,"     -p,  --option     [option=content]\n");
+			CMmsgPrint (CMmsgInfo,"     -r,  --route      [variable]\n");
+			CMmsgPrint (CMmsgInfo,"     -P,  --processors [number of processor threads]\n");
 			CMmsgPrint (CMmsgInfo,"     -T,  --testonly\n");
-			CMmsgPrint (CMmsgInfo,"     -m,  --message [sys_error|app_error|usr_error|debug|warning|info]=[on|off|file=<filename>]\n");
+			CMmsgPrint (CMmsgInfo,"     -m,  --message    [sys_error|app_error|usr_error|debug|warning|info]=[on|off|file=<filename>]\n");
 			CMmsgPrint (CMmsgInfo,"     -h,  --help\n");
 			break;
 		}

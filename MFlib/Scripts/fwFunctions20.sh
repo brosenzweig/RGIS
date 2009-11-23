@@ -264,7 +264,7 @@ function _fwOptionList()
 {
 	if (( _fwMAXPROC > 1))
 	then
-		echo "-t ${_fwMAXPROC}"
+		echo "-P ${_fwMAXPROC}"
 	fi
 	for (( fwI = 0; fwI < ${#_fwOptionARRAY[@]} ; ++fwI ))
 	do
