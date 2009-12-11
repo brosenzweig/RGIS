@@ -84,13 +84,14 @@ static void *_CMthreadWork (void *dataPtr) {
 	job = (CMthreadJob_p) team->JobPtr;
 //TODO printf ("Thread#%d: Starting job [task: %d]\n",(int) data->Id,job->LastId);
 	while (job->LastId > 0) {
-//		for (taskId = job->LastId - 1;taskId >= 0; taskId--) {
-//			if (job->Tasks [taskId].Completed) {
-//				if (taskId == (job->LastId  - 1)) job->LastId = taskId;
-//				continue;
-//			}
-//		if ( job->Tasks [taskId].Locked)    continue;
-//		job->Tasks [taskId].Locked = true;
+		for (taskId = job->LastId - 1;taskId >= 0; taskId--) {
+			if (job->Tasks [taskId].Completed) {
+				if (taskId == (job->LastId  - 1)) job->LastId = taskId;
+				continue;
+			}
+			if ( job->Tasks [taskId].Locked)    continue;
+		}
+		job->Tasks [taskId].Locked = true;
 
 		startTaskId = job->LastId - 1;
 		endTaskId   = startTaskId - 100 > 0 ? startTaskId - 100 : 0;
