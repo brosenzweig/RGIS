@@ -463,7 +463,7 @@ int MFModelRun (int argc, char *argv [], int argNum, int (*conf) ()) {
 			}
 		} while ((timeCur = MFDateAdvance ()) != (char *) NULL ? _MFModelReadInput (timeCur) : MFStop);
 		CMthreadJobDestroy  (job,(CMthreadUserFreeFunc) NULL);
-		CMthreadTeamDestroy (team,false);
+		CMthreadTeamDestroy (team,true);
 	}
 	else // TODO Single CPU
 		do	{
