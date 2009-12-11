@@ -75,10 +75,10 @@ void CMthreadJobDestroy (CMthreadJob_p job, CMthreadUserFreeFunc freeFunc) {
 
 static void *_CMthreadWork (void *dataPtr) {
 	CMthreadData_p data = (CMthreadData_p) dataPtr;
-	int taskId, startTaskId, endTaskId;
+	int taskId;
 	CMthreadTeam_p team = (CMthreadTeam_p) data->TeamPtr;
 	CMthreadJob_p  job;
-	clock_t start = clock (), time;
+	clock_t start = clock ();
 
 	pthread_mutex_lock   (&(team->Mutex));
 	job = (CMthreadJob_p) team->JobPtr;
@@ -89,26 +89,21 @@ static void *_CMthreadWork (void *dataPtr) {
 				if (taskId == (job->LastId  - 1)) job->LastId = taskId;
 				continue;
 			}
-			if ( job->Tasks [taskId].Locked)    continue;
+			if (job->Tasks [taskId].Locked)    continue;
+			if ((job->Tasks [taskId].Depend == taskId) || (job->Tasks [job->Tasks [taskId].Depend].Completed)) {
+				job->Tasks [taskId].Locked = true;
+				if (taskId == (job->LastId  - 1)) job->LastId = taskId;
+
+				pthread_mutex_unlock (&(team->Mutex));
+				start = clock ();
+				job->UserFunc (job->CommonData, job->ThreadData == (void **) NULL ? (void *) NULL : job->ThreadData [data->Id], taskId);
+				data->UserTime += clock () - start;
+				data->CompletedTasks++;
+				pthread_mutex_lock   (&(team->Mutex));
+				job->Tasks [taskId].Locked    = false;
+				job->Tasks [taskId].Completed = true;
+			}
 		}
-		job->Tasks [taskId].Locked = true;
-
-		startTaskId = job->LastId - 1;
-		endTaskId   = startTaskId - 100 > 0 ? startTaskId - 100 : 0;
-
-		job->LastId = endTaskId;
-
-		pthread_mutex_unlock (&(team->Mutex));
-		for (taskId = startTaskId;taskId >= endTaskId; taskId--) {
-			time = clock ();
-			job->UserFunc (job->CommonData, job->ThreadData == (void **) NULL ? (void *) NULL : job->ThreadData [data->Id], taskId);
-			data->UserTime += clock () - time;
-			data->CompletedTasks++;
-		}
-		pthread_mutex_lock   (&(team->Mutex));
-//		job->Tasks [taskId].Locked    = false;
-//		job->Tasks [job->Tasks [taskId].Depend].Locked = false;
-//		job->Tasks [taskId].Completed = true;
 	}
 // TODO printf ("Thread#%d: Ending job\n",(int) data->Id);
 	data->ThreadTime += clock () - start;
