@@ -5,138 +5,6 @@ function RGISlookupSubject ()
 	local variable=$(echo "${1}" | tr "[A-Z]" "[a-z]")
 	
 	case "${variable}" in
-		(air_temperature|min_air_temperature|max_air_temperature) # 0 1 2 
-			echo "AirTemperature"
-		;;
-		(diurnal_air_temperature_range)             #  3
-			echo "AirTemperatureRange"
-		;;
-		(cloud_cover)                               #  4
-			echo "CloudCover"
-		;;
-		(cropping_intensity)                        #  5
-			echo "CropsIntensity"
-		;;
-		(daily_precipitation_fraction)              #  6
-			echo "DailyPrecipitationFraction"
-		;;
-		(din_areal_loading)                         #  7
-			echo "DIN-ArealLoading"
-		;;
-		(din_point_loading)                         #  8
-			echo "DIN-PointLoading"
-		;;
-		(discharge)                                 #  9
-			echo "Discharge"
-		;;
-		(doc_areal_loading)                         # 10
-			echo "DOC-ArealLoading"
-		;;
-		(doc_point_loading)                         # 11
-			echo "DOC-PointLoading"
-		;;
-		(don_areal_loading)                         # 12
-			echo "DON-ArealLoading"
-		;;
-		(don_point_loading)                         # 13
-			echo "DON-PointLoading"
-		;;
-		(elevation|min_elevation|max_elevation)     # 14 15 16
-			echo "Elevation"
-		;;
-		(field_capacity)                            # 17
-			echo "SoilFieldCapacity"
-		;;
-		(growing_season1)                           # 18
-			echo "GrowingSeason1"
-		;;
-		(growing_season2)                           # 19
-			echo "GrowingSeason2"
-		;;
-		(irrigated_area_fraction)                   # 20
-			echo "IrrigationAreaFraction"
-		;;
-		(irrigation_efficiency)                     # 21
-			echo "IrrigationEfficiency"
-		;;
-		(irrigation_gross_demand)                   # 22
-			echo "IrrigationGrossDemand"
-		;;
-		(network)                                   # 23
-			echo "Network"
-		;;
-		(nh4_areal_loading)                         # 24
-			echo "NH4-ArealLoading"
-		;;
-		(nh4_point_loading)                         # 25
-			echo "Nh4-PointLoading"
-		;;
-		(no3_areal_loading)                         # 26
-			echo "NO3-ArealLoading"
-		;;
-		(no3_point_loading)                         # 27
-			echo "NO3-PointLoading"
-		;;
-		(other_crop_fraction)                       # 28
-			echo "CropFraction-Other"
-		;;
-		(perennial_crop_fraction)                   # 29
-			echo "CropFraction-Perennial"
-		;;
-		(precipitation)                             # 30
-			echo "Precipitation"
-		;;
-		(rain_pet)                                  # 31
-			echo "RainPET"
-		;;
-		(reservoir_capacity)                        # 32
-			echo "ReservoirCapacity"
-		;;
-		(rice_crop_fraction)                        # 33
-			echo "CropFraction-Rice"
-		;;
-		(rice_percolation_rate)                     # 34
-			echo "CropsRicePercolationRate"
-		;;
-		(rooting_depth)                             # 35
-			echo "SoilRootingDepth"
-		;;
-		(runoff)                                    # 36
-			echo "Runoff"
-		;;
-		(small_reservoir_coefficient)               # 37
-			echo "SmallReservoirCoefficient"
-		;;
-		(soil_moisture)                             # 38
-			echo "SoilMoisture"
-		;;
-		(soil_moisture_change)                      # 39
-			echo "SoilMoistureChange"
-		;;
-		(vapor_pressure)                            # 40
-			echo "VaporPressure"
-		;;
-		(vegetables_crop_fraction)                  # 41
-			echo "CropFractionVegetables"
-		;;
-		(wilting_point)                             # 42
-			echo "SoilWiltingPoint"
-		;;
-		(wind_speed)                                # 43
-			echo "WindSpeed"
-		;;
-		(*)
-			echo "${variable}"
-			echo "Defaulting subject: ${variable}" > /dev/stderr
-		;;
-	esac
-}
-
-function _RGISlookupDirectory ()
-{
-	local variable=$(echo "${1}" | tr "[A-Z]" "[a-z]")
-	
-	case "${variable}" in
 		(air_temperature)                           #  0
 			echo "AirTemperature"
 		;;
@@ -276,149 +144,6 @@ function _RGISlookupDirectory ()
 	esac
 }
 
-function _RGISlookupVariable ()
-{
-	local variable=$(echo "${1}" | tr "[A-Z]" "[a-z]")
-	
-	case "${variable}" in
-		(air_temperature)                           #  0
-			echo "AirTemperature"
-		;;
-		(max_air_temperature)                       #  1
-			echo "MaxAirTemperature"
-		;;
-		(min_air_temperature)                       #  2
-			echo "MinAirTemperature"
-		;;
-		(diurnal_air_temperature_range)             #  3
-			echo "AirTemperatureRange"
-		;;
-		(cloud_cover)                               #  4
-			echo "CloudCover"
-		;;
-		(cropping_intensity)                        #  5
-			echo "CropsIntensity"
-		;;
-		(daily_precipitation_fraction)              #  6
-			echo "DailyPrecipitationFraction"
-		;;
-		(din_areal_loading)                         #  7
-			echo "DINArealLoading"
-		;;
-		(din_point_loading)                         #  8
-			echo "DINPointLoading"
-		;;
-		(discharge)                                 #  9
-			echo "Discharge"
-		;;
-		(doc_areal_loading)                         # 10
-			echo "DOCArealLoading"
-		;;
-		(doc_point_loading)                         # 11
-			echo "DOCPointLoading"
-		;;
-		(don_areal_loading)                         # 12
-			echo "DONArealLoading"
-		;;
-		(don_point_loading)                         # 13
-			echo "DONPointLoading"
-		;;
-		(elevation)                                 # 14
-			echo "Elevation"
-		;;
-		(min_elevation)                             # 15
-			echo "MinElevation"
-		;;
-		(max_elevation)                             # 16
-			echo "MaxElevation"
-		;;
-		(field_capacity)                            # 17 
-			echo "FieldCapacity"
-		;;
-		(growing_season1)                           # 18
-			echo "GrowingSeason1"
-		;;
-		(growing_season2)                           # 19
-			echo "GrowingSeason2"
-		;;
-		(irrigated_area_fraction)                   # 20
-			echo "IrrigatedAreaFraction"
-		;;
-		(irrigation_efficiency)                     # 21
-			echo "IrrigationEfficiency"
-		;;
-		(irrigation_gross_demand)                   # 22
-			echo "IrrGrossDemand"
-		;;
-		(network)                                   # 23
-			echo "Network"
-		;;
-		(nh4_areal_loading)                         # 24
-			echo "NH4AreaLoading"
-		;;
-		(nh4_point_loading)                         # 25
-			echo "Nh4PointLoading"
-		;;
-		(no3_areal_loading)                         # 26
-			echo "NO3AreaLoading"
-		;;
-		(no3_point_loading)                         # 27
-			echo "NO3PointLoading"
-		;;
-		(other_crop_fraction)                       # 28
-			echo "OtherCropFraction"
-		;;
-		(perennial_crop_fraction)                   # 29
-			echo "PerennialCropFraction"
-		;;
-		(precipitation)                             # 30
-			echo "Precipitation"
-		;;
-		(rain_pet)                                  # 31
-			echo "RainPET"
-		;;
-		(reservoir_capacity)                        # 32
-			echo "ReservoirCapacity"
-		;;
-		(rice_crop_fraction)                        # 33
-			echo "RiceCropFraction"
-		;;
-		(rice_percolation_rate)                     # 34
-			echo "RicePercolationRate"
-		;;
-		(rooting_depth)                             # 35
-			echo "RootingDepth"
-		;;
-		(runoff)                                    # 36
-			echo "Runoff"
-		;;
-		(small_reservoir_coefficient)               # 37
-			echo "SmallReservoirCoefficient"
-		;;
-		(soil_moisture)                             # 38
-			echo "SoilMoisture"
-		;;
-		(soil_moisture_change)                      # 39
-			echo "SoilMoistureChange"
-		;;
-		(vapor_pressure)                            # 40
-			echo "VaporPressure"
-		;;
-		(vegetables_crop_fraction)                  # 41
-			echo "VegetablesCropFraction"
-		;;
-		(wilting_point)                             # 42
-			echo "WiltingPoint"
-		;;
-		(wind_speed)                                # 43
-			echo "WindSpeed"
-		;;
-		(*)
-			echo "${variable}"
-			echo "Defaulting variable name: ${variable}" > /dev/stderr
-		;;
-	esac
-}
 
 function _RGISlookupFullName ()
 {
@@ -884,11 +609,11 @@ function _RGISvariableDir ()
 	local       domain="${2}"
 	local     variable="${3}"
 
-	local       varDir="${variable}"
+	local       varDir=$(RGISlookupSubject "${variable}")
 
 	if [ -e "${archive}/${domain%+}/${varDir}" ]
 	then
-		echo "${archive}/${domain%+}/${varDir}"
+		echo "${domain%+}/${varDir}"
 		return 0
 	else
 		if [ "${domain%+}" == "${domain}" ] # Exact domain
@@ -924,13 +649,13 @@ function _RGISresolutionDir ()
 	then
 		return
 	else
-		if [ -e "${varDir}/${product}/${resolution%+}" ]
+		if [ -e "${archive}/${varDir}/${product}/${resolution%+}" ]
 		then
 			echo "${varDir}/${product}/${resolution%+}"
 		else
 			if [ "${resolution%+}" == "${resolution}" ] # Exact resolution
 			then
-				echo "Missing ${varDir}/${product}/${resolution}" > /dev/stderr
+				echo "Missing ${archive}/${varDir}/${product}/${resolution}" > /dev/stderr
 				echo ""
 				return -1
 			else # Dynamic resolution
@@ -958,7 +683,7 @@ function _RGISresolutionDir ()
 					then
 						_RGISresolutionDir "${archive}" "${domain}" "${variable}"  "${product}" "${geogRes[((${num} + 1))]}+" || return -1
 					else
-						echo "No coarser resolution" > /dev/stderr
+						echo "No coarser resolution ${domain%+} ${variable} ${product} ${resolution%+}" > /dev/stderr
 					fi
 				else # Cartesian
 					local cartNum=0
@@ -977,13 +702,13 @@ function _RGISresolutionDir ()
 					then
 						_RGISresolutionDir "${archive}" "${domain}" "${variable}"  "${product}" "${cartRes[((${num} + 1))]}+" || return -1
 					else
-						echo "No coarser resolution" > /dev/stderr
+						echo "No coarser resolution ${domain%+} ${variable} ${product} ${resolution%+}" > /dev/stderr
 					fi
 				fi
 			fi
 		fi
 	fi
-	
+	return 0
 }
 
 function RGISdirectory ()
@@ -1022,10 +747,7 @@ function RGISdirectory ()
 				;;
 			esac
 		;;
-		(LT|LTmin|LTmax|LTslope|LTrange|LTstdDev|Stats)
-			dir="Stats"
-		;;
-		(static)
+		(LT|LTmin|LTmax|LTslope|LTrange|LTstdDev|Stats|static)
 			dir="Static"
 		;;
 	esac
@@ -1034,7 +756,7 @@ function RGISdirectory ()
 	then
 		return -1
 	else
-		echo "${resDir}/${dir}"
+		echo "${archive}/${resDir}/${dir}"
 	fi
 	return 0
 }
@@ -1078,15 +800,30 @@ function RGISfile ()
 		;;
 	esac
 
+	case "${variable}" in
+		(network)
+			local extension="gdbn"
+		;;
+		(*)
+			local extension="gdbc"
+		;;
+	esac
+
 	local rgisDirectory=$(RGISdirectory "${archive}" "${domain}" "${variable}" "${product}" "${resolution}" "${tstepType}" "${tstep}")
+	local      fileName=$(_RGISresolutionDir "${archive}" "${domain}" "${variable}" "${product}" "${resolution}" | sed "s:/:_:g" )
+	if [ "${rgisDirectory}" == "" ]
+	then
+		echo ""
+		return -1
+	fi
 	if [[ "${tstepType}" == "static" ]]
 	then
 		local tstepType="Static"
 		local tstepStr=""
 	fi
 
-	local  variableName=$(_RGISlookupVariable "${variable}")
-	echo "${rgisDirectory}/${domain}_${variableName}_${product}_${resolution}_${tstepStr}${tstepType}${timeRange}"
+	local  variableName=$(RGISlookupSubject "${variable}")
+	echo "${rgisDirectory}/${fileName}_${tstepStr}${tstepType}${timeRange}.${extension}"
 }
 
 function RGIStitle ()
@@ -1159,12 +896,12 @@ function RGISAppend ()
 
 	for (( year = ${startyear}; year <= ${endyear}; ++year ))
 	do
-		local  filename=$(RGISfile "${archive}" "${domain}" "${variable}" "${product}" "${resolution}" "TS" "${tstep}" "${year}").gdbc
+		local  filename=$(RGISfile "${archive}" "${domain}" "${variable}" "${product}" "${resolution}" "TS" "${tstep}" "${year}")
 		local     files="${files}${separator}${filename}"
 		local separator=" -a "
 	done
 
-	local filename=$(RGISfile  "${archive}" "${domain}" "${variable}" "${product}" "${resolution}" "TS" "${tstep}" "${startyear}-${endyear}").gdbc
+	local filename=$(RGISfile  "${archive}" "${domain}" "${variable}" "${product}" "${resolution}" "TS" "${tstep}" "${startyear}-${endyear}")
 	local    title=$(RGIStitle              "${domain}" "${variable}" "${product}" "${resolution}" "TS" "${tstep}" "${startyear}-${endyear}" "${version}")
 	local  subject=$(RGISlookupSubject  "${variable}")
    local shadeset=$(RGISlookupShadeset "${variable}")
@@ -1190,8 +927,8 @@ function RGISAggregateTS ()
 
    for ((year = ${startyear}; year <= ${endyear} ; ++year))
    do
-      local fromFile=$(RGISfile "${archive}" "${domain}" "${variable}" "${product}" "${resolution}" "TS" "${fromTStep}" "${year}").gdbc
-      local   toFile=$(RGISfile "${archive}" "${domain}" "${variable}" "${product}" "${resolution}" "TS" "${toTStep}"   "${year}").gdbc
+      local fromFile=$(RGISfile "${archive}" "${domain}" "${variable}" "${product}" "${resolution}" "TS" "${fromTStep}" "${year}")
+      local   toFile=$(RGISfile "${archive}" "${domain}" "${variable}" "${product}" "${resolution}" "TS" "${toTStep}"   "${year}")
       local    title=$(RGIStitle "${domain}" "${variable}" "${product}" "${resolution}" "TS" "${toTStep}" "${year}" "${version}")
       local  subject=$(RGISlookupSubject    "${variable}")
       local shadeset=$(RGISlookupShadeset   "${variable}")
@@ -1213,8 +950,8 @@ function RGISClimatology ()
 	local    endyear="${8}"
 
 	local     ltDir=$(RGISdirectory "${archive}" "${domain}" "${variable}" "${product}" "${resolution}" "LT" "monthly")
-	local    tsFile=$(RGISfile      "${archive}" "${domain}" "${variable}" "${product}" "${resolution}" "TS" "monthly" "${startyear}-${endyear}").gdbc
-	local    ltFile=$(RGISfile      "${archive}" "${domain}" "${variable}" "${product}" "${resolution}" "LT" "monthly" "${startyear}-${endyear}").gdbc
+	local    tsFile=$(RGISfile      "${archive}" "${domain}" "${variable}" "${product}" "${resolution}" "TS" "monthly" "${startyear}-${endyear}")
+	local    ltFile=$(RGISfile      "${archive}" "${domain}" "${variable}" "${product}" "${resolution}" "LT" "monthly" "${startyear}-${endyear}")
 	local     title=$(RGIStitle                  "${domain}" "${variable}" "${product}" "${resolution}" "LT" "monthly" "${startyear}-${endyear}")
 	local   subject=$(RGISlookupSubject  "${variable}")
 	local  shadeset=$(RGISlookupShadeset "${variable}")
@@ -1237,41 +974,41 @@ function RGISCellStats ()
 	local    endyear="${8}"
 
 	local  statsDir=$(RGISdirectory  "${archive}" "${domain}" "${variable}" "${product}" "${resolution}" "Stats" "annual")
-	local    tsFile=$(RGISfile       "${archive}" "${domain}" "${variable}" "${product}" "${resolution}" "TS"    "annual" "${startyear}-${endyear}").gdbc
-	local statsFile=$(RGISfile       "${archive}" "${domain}" "${variable}" "${product}" "${resolution}" "Stats" "annual" "${startyear}-${endyear}").gdbc
+	local    tsFile=$(RGISfile       "${archive}" "${domain}" "${variable}" "${product}" "${resolution}" "TS"    "annual" "${startyear}-${endyear}")
+	local statsFile=$(RGISfile       "${archive}" "${domain}" "${variable}" "${product}" "${resolution}" "Stats" "annual" "${startyear}-${endyear}")
 	local     title=$(RGIStitle                   "${domain}" "${variable}" "${product}" "${resolution}" "Stats" "annual" "${startyear}-${endyear}" "${version}")
 	local   subject=$(RGISlookupSubject "${variable}")
 
 	[ -e "${statsDir}" ] || mkdir -p "${statsDir}" || return -1
 	grdCellStats    -t "${title}" -u "${variable}" -d "${domain}" -v "${version}" "${tsFile}" "${statsFile}" || return -1
 
-	local  annualLTfile=$(RGISfile "${archive}" "${domain}" "${variable}" "${product}" "${resolution}" "LT"      "annual"  "${startyear}-${endyear}").gdbc
-	local         title=$(RGIStitle             "${domain}" "${variable}" "${product}" "${resolution}" "LT"      "annual"  "${startyear}-${endyear}" "${version}").gdbc
+	local  annualLTfile=$(RGISfile "${archive}" "${domain}" "${variable}" "${product}" "${resolution}" "LT"      "annual"  "${startyear}-${endyear}")
+	local         title=$(RGIStitle             "${domain}" "${variable}" "${product}" "${resolution}" "LT"      "annual"  "${startyear}-${endyear}" "${version}")
 	grdExtractLayers -t "${title}" -f "Average" -l "Average" -d "${domain}" -u "$(RGISlookupSubject ${variable})" "${statsFile}" |\
 	grdDateLayers -e "year" - "${annualLTfile}" || return -1
 
-	local     maxLTfile=$(RGISfile "${archive}" "${domain}" "${variable}" "${product}" "${resolution}" "LTmax"    "annual"  "${startyear}-${endyear}").gdbc
-	local         title=$(RGIStitle             "${domain}" "${variable}" "${product}" "${resolution}" "LTmax"    "annual"  "${startyear}-${endyear}" "${version}").gdbc
+	local     maxLTfile=$(RGISfile "${archive}" "${domain}" "${variable}" "${product}" "${resolution}" "LTmax"    "annual"  "${startyear}-${endyear}")
+	local         title=$(RGIStitle             "${domain}" "${variable}" "${product}" "${resolution}" "LTmax"    "annual"  "${startyear}-${endyear}" "${version}")
 	grdExtractLayers -t "${title}" -f "Maximum" -l "Maximum" -d "${domain}" -u "$(RGISlookupSubject ${variable})" "${statsFile}" |\
 	grdDateLayers -e "year" - "${maxLTfile}" || return -1
 
-	local     minLTfile=$(RGISfile "${archive}" "${domain}" "${variable}" "${product}" "${resolution}" "LTmin"    "annual"  "${startyear}-${endyear}").gdbc
-	local         title=$(RGIStitle             "${domain}" "${variable}" "${product}" "${resolution}" "LTmin"    "annual"  "${startyear}-${endyear}" "${version}").gdbc
+	local     minLTfile=$(RGISfile "${archive}" "${domain}" "${variable}" "${product}" "${resolution}" "LTmin"    "annual"  "${startyear}-${endyear}")
+	local         title=$(RGIStitle             "${domain}" "${variable}" "${product}" "${resolution}" "LTmin"    "annual"  "${startyear}-${endyear}" "${version}")
 	grdExtractLayers -t "${title}" -f "Maximum" -l "Maximum" -d "${domain}" -u "$(RGISlookupSubject ${variable})" "${statsFile}" |\
 	grdDateLayers -e "year" - "${minLTfile}" || return -1
 
-	local   rangeLTfile=$(RGISfile "${archive}" "${domain}" "${variable}" "${product}" "${resolution}" "LTrange"  "annual" "${startyear}-${endyear}").gdbc
-	local         title=$(RGIStitle             "${domain}" "${variable}" "${product}" "${resolution}" "LTrange"  "annual" "${startyear}-${endyear}" "${version}").gdbc
+	local   rangeLTfile=$(RGISfile "${archive}" "${domain}" "${variable}" "${product}" "${resolution}" "LTrange"  "annual" "${startyear}-${endyear}")
+	local         title=$(RGIStitle             "${domain}" "${variable}" "${product}" "${resolution}" "LTrange"  "annual" "${startyear}-${endyear}" "${version}")
 	grdExtractLayers -t "${title}" -f "Range"   -l "Range"   -d "${domain}" -u "$(RGISlookupSubject ${variable})" "${statsFile}" |\
 	grdDateLayers -e "year" - "${rangeLTfile}" || return -1
 
-	local   slopeLTfile=$(RGISfile "${archive}" "${domain}" "${variable}" "${product}" "${resolution}" "LTslope"  "annual" "${startyear}-${endyear}").gdbc
-	local         title=$(RGIStitle             "${domain}" "${variable}" "${product}" "${resolution}" "LTslope"  "annual" "${startyear}-${endyear}" "${version}").gdbc
+	local   slopeLTfile=$(RGISfile "${archive}" "${domain}" "${variable}" "${product}" "${resolution}" "LTslope"  "annual" "${startyear}-${endyear}")
+	local         title=$(RGIStitle             "${domain}" "${variable}" "${product}" "${resolution}" "LTslope"  "annual" "${startyear}-${endyear}" "${version}")
 	grdExtractLayers -t "${title}" -f "SigSlopeB1" -l "SigSlopeB1" -d "${domain}" -u "$(RGISlookupSubject ${variable})" "${statsFile}" |\
 	grdDateLayers -e "year" - "${slopeLTfile}" || return -1
 
-	local  stdDevLTfile=$(RGISfile "${archive}" "${domain}" "${variable}" "${product}" "${resolution}" "LTstdDev" "annual" "${startyear}-${endyear}").gdbc
-	local         title=$(RGIStitle             "${domain}" "${variable}" "${product}" "${resolution}" "LTstdDev" "annual" "${startyear}-${endyear}" "${version}").gdbc
+	local  stdDevLTfile=$(RGISfile "${archive}" "${domain}" "${variable}" "${product}" "${resolution}" "LTstdDev" "annual" "${startyear}-${endyear}")
+	local         title=$(RGIStitle             "${domain}" "${variable}" "${product}" "${resolution}" "LTstdDev" "annual" "${startyear}-${endyear}" "${version}")
 	grdExtractLayers -t "${title}" -f "StdDev" -l "StdDev" -d "${domain}" -u "$(RGISlookupSubject ${variable})" "${statsFile}" |\
 	grdDateLayers -e "year" - "${stdDevLTfile}" || return -1
 
@@ -1295,8 +1032,8 @@ function RGISStatistics ()
 
 	RGISClimatology "${archive}" "${domain}" "${variable}" "${product}" "${resolution}" "${version}" "${startyear}" "${endyear}"      || return -1
 	RGISCellStats   "${archive}" "${domain}" "${variable}" "${product}" "${resolution}" "${version}" "${startyear}" "${endyear}"      || return -1
-	local  annualTSfile=$(RGISfile "${archive}" "${domain}" "${variable}" "${product}" "${resolution}" "TS"    "annual"  "${startyear}-${endyear}").gdbc
-	local monthlyTSfile=$(RGISfile "${archive}" "${domain}" "${variable}" "${product}" "${resolution}" "TS"    "monthly" "${startyear}-${endyear}").gdbc
+	local  annualTSfile=$(RGISfile "${archive}" "${domain}" "${variable}" "${product}" "${resolution}" "TS"    "annual"  "${startyear}-${endyear}")
+	local monthlyTSfile=$(RGISfile "${archive}" "${domain}" "${variable}" "${product}" "${resolution}" "TS"    "monthly" "${startyear}-${endyear}")
 	[ -e  "${annualTSfile}" ] && rm  "${annualTSfile}"
 	[ -e "${monthlyTSfile}" ] && rm "${monthlyTSfile}"
 	return 0
