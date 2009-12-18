@@ -369,9 +369,12 @@ int main (int argc,char *argv [])
 	if ((record = table->Add ("TEMPRecord")) == (DBObjRecord *) NULL) return (CMfailed);
 //	for (i = 0;i < expNum;++i) expressions [i]->Evaluate (record);
 
-	fprintf (stderr,"%f %f %f %f\n",extent.LowerLeft.X, extent.LowerLeft.Y, extent.UpperRight.X, extent.UpperRight.Y);
-	if (shrink) for (i = 0;i < varNum;++i) extent.Shrink (grdVar [i]->Extent ());
-	fprintf (stderr,"%f %f %f %f\n",extent.LowerLeft.X, extent.LowerLeft.Y, extent.UpperRight.X, extent.UpperRight.Y);
+//	TODO fprintf (stderr,"%f %f %f %f\n",extent.LowerLeft.X, extent.LowerLeft.Y, extent.UpperRight.X, extent.UpperRight.Y);
+	if (shrink) for (i = 0;i < varNum;++i)	{
+//	TODO	fprintf (stderr,"%f %f %f %f\n",grdVar [i]->Extent ().LowerLeft.X, grdVar [i]->Extent ().LowerLeft.Y, grdVar [i]->Extent ().UpperRight.X, grdVar [i]->Extent ().UpperRight.Y);
+		extent.Shrink (grdVar [i]->Extent ());
+	}
+// TODO	fprintf (stderr,"%f %f %f %f\n",extent.LowerLeft.X, extent.LowerLeft.Y, extent.UpperRight.X, extent.UpperRight.Y);
 
 	if (title	== (char *) NULL)	title = (char *) "Grid Calculate Result";
 	if (subject == (char *) NULL) subject = (char *) "GridCalc";
