@@ -2,7 +2,7 @@
 
 GHAAS Model Library V1.0
 Global Hydrologic Archive and Analysis System
-Copyright 1994-2003, University of New Hampshire
+Copyright 1994-2010, UNH - CCNY/CUNY
 
 MF.h
 
