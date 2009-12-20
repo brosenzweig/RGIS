@@ -81,7 +81,6 @@ Widget UIInitialize (char *title,char *icon,char *helpFile, UIMenuItem mainMenu 
 	{
 	int i, foreground, background;
 	Dimension lWidth;
-	char hostName [256];
 	char applicationTitle [256];
 	Widget mainForm, menuBar, helpButton, unhLogo, ghaasLogo, globeWidget, subForm;
 	Pixmap pixmap;
@@ -89,10 +88,7 @@ Widget UIInitialize (char *title,char *icon,char *helpFile, UIMenuItem mainMenu 
 	void _UIColorInitialize (Widget);
 	void _UIGlobeInitialize (Widget,int,Pixel,DBInt);
 
-	if (gethostname (hostName,sizeof (hostName) - 1) == DBFault) sprintf (hostName,"UNKNOWN");
-	else for (i = 0;i < (int) strlen (hostName); ++i) if (hostName [i] == '.') { hostName [i] = 0; break; }
-
-	sprintf (applicationTitle,"%s (%s) %s", title, hostName, UICopyRightText);
+	sprintf (applicationTitle,"%s %s", title, UICopyRightText);
 	_UITopLevel = XtVaAppInitialize (&_UIApplicationContext,"ghaas",(XrmOptionDescRec *) NULL,0,argc,argv,NULL,
 												XmNminWidth,					reqWidth,
 												XmNmaxWidth,					reqWidth,
