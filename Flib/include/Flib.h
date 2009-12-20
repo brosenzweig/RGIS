@@ -1,3 +1,15 @@
+/******************************************************************************
+
+GHAAS F Function Library V1.0
+Global Hydrologic Archive and Analysis System
+Copyright 1994-2010, UNH - CCNY/CUNY
+
+Flib.h
+
+balazs.fekete@unh.edu
+
+*******************************************************************************/
+
 #ifndef _FLIB_H
 #define _FLIB_H
 

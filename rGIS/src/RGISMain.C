@@ -2,7 +2,7 @@
 
 GHAAS RiverGIS V2.1
 Global Hydrologic Archive and Analysis System
-Copyright 1994-2008, University of New Hampshire
+Copyright 1994-2010, UNH - CCNY/CUNY
 
 RGISMain.C
 
@@ -21,12 +21,12 @@ extern UIMenuItem RGISMetaDBMenu [];
 extern UIMenuItem RGISDisplayMenu [];
 
 UIMenuItem RGISMainMenu [] = {
-	UIMenuItem ((char *) "File",		UIMENU_NORULE,			UIMENU_NORULE,		RGISFileMenu),
-	UIMenuItem ((char *) "Edit",		UIMENU_NORULE,			RGISDataGroup,		RGISEditMenu),
-	UIMenuItem ((char *) "Analyse",	RGISDataGroup,			UIMENU_NORULE,		RGISAnalyseMenu),
-	UIMenuItem ((char *) "Tools",		UIMENU_NORULE,			UIMENU_NORULE,		RGISToolsMenu),
-	UIMenuItem ((char *) "MetaDB",	UIMENU_NORULE,			UIMENU_NORULE,		RGISMetaDBMenu),
-	UIMenuItem ((char *) "Display",	UIMENU_NORULE,			RGISDataGroup,		RGISDisplayMenu),
+	UIMenuItem ((char *) "File",    UIMENU_NORULE, UIMENU_NORULE, RGISFileMenu),
+	UIMenuItem ((char *) "Edit",    UIMENU_NORULE, RGISDataGroup, RGISEditMenu),
+	UIMenuItem ((char *) "Analyze", RGISDataGroup, UIMENU_NORULE, RGISAnalyseMenu),
+	UIMenuItem ((char *) "Tools",   UIMENU_NORULE, UIMENU_NORULE, RGISToolsMenu),
+	UIMenuItem ((char *) "MetaDB",  UIMENU_NORULE, UIMENU_NORULE, RGISMetaDBMenu),
+	UIMenuItem ((char *) "Display", UIMENU_NORULE, RGISDataGroup, RGISDisplayMenu),
 	UIMenuItem ()};
 
 int main (int argc,char **argv)
@@ -90,7 +90,7 @@ int main (int argc,char **argv)
 			}
 		if (CMargTest (argv [argPos],"-h","--help"))
 			{
-			fprintf (stderr,"grdOperation [options] <rgis data> <rgis data> ... <rgis data>\n");
+			fprintf (stderr,"rgis [options]\n");
 			fprintf (stderr,"     -m, --metadb   [meta database]\n");
 			fprintf (stderr,"     -p, --progress [yes|no]\n");
 			fprintf (stderr,"     -s, --spin     [yes|no]\n");

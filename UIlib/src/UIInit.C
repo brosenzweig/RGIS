@@ -2,7 +2,7 @@
 
 GHAAS User Interface library V2.1
 Global Hydrologic Archive and Analysis System
-Copyright 1994-2008, University of New Hampshire
+Copyright 1994-2010, UNH - CCNY/CUNY
 
 UIInit.C
 
@@ -18,7 +18,7 @@ balazs.fekete@unh.edu
 #include <Xm/DrawingA.h>
 #include <UI.H>
 
-#define UICopyRightText "[Copyright (1994-2008) University of New Hampshire]"
+#define UICopyRightText "[Copyright (1994-2010) UNH - CCNY/CUNY]"
 
 static Widget _UITopLevel;
 static UIMenuItem	*_UIMainMenu;

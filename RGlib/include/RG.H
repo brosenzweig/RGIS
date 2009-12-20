@@ -1,3 +1,15 @@
+/******************************************************************************
+
+GHAAS RiverGIS Library V2.1
+Global Hydrologic Archive and Analysis System
+Copyright 1994-2010, UNH - CCNY/CUNY
+
+RG.H
+
+balazs.fekete@unh.edu
+
+*******************************************************************************/
+
 #define RGlibCycleMonthly 12
 #define RGlibCycleWeekly  52
 #define RGlibCycleDaily  365

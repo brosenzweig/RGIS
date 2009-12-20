@@ -1,3 +1,15 @@
+/******************************************************************************
+
+GHAAS User Interface library V2.1
+Global Hydrologic Archive and Analysis System
+Copyright 1994-2010, UNH - CCNY/CUNY
+
+UI.H
+
+balazs.fekete@unh.edu
+
+*******************************************************************************/
+
 #include <DB.H>
 #include <DBio.H>
 #include <Xm/Xm.h>

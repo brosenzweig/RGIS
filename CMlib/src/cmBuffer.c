@@ -2,9 +2,9 @@
 
 GHAAS Command Line Library V1.0
 Global Hydrologic Archive and Analysis System
-Copyright 1994-2008, University of New Hampshire
+Copyright 1994-2010, UNH - CCNY/CUNY
 
-cmBufGetLine.c
+cmBuffer.c
 
 balazs.fekete@unh.edu
 

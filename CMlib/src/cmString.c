@@ -1,3 +1,15 @@
+/******************************************************************************
+
+GHAAS Command Line Library V1.0
+Global Hydrologic Archive and Analysis System
+Copyright 1994-2010, UNH - CCNY/CUNY
+
+cmString.c
+
+balazs.fekete@unh.edu
+
+*******************************************************************************/
+
 #include <string.h>
 #include <stdlib.h>
 #include <cm.h>
