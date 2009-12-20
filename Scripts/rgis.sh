@@ -27,10 +27,6 @@ fi
 export XAPPLRESDIR="$GHAAS_DIR/XResources"
 
 GHAAS_EXEC=${GHAAS_DIR}/bin/rgis21
-if `which what > /dev/null 2> /dev/null`; then
-	what $0 | grep GHAAS
-	what $GHAAS_EXEC | grep GHAAS
-fi
 
 if [ -f ${GHAAS_DIR}/Messages/RGIS.msg ]; then
 	cat ${GHAAS_DIR}/Messages/RGIS.msg

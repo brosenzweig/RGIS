@@ -1,4 +1,4 @@
 
-New -p, --progress [yes|no] switch was added to turn on and off the
-progress bar. The default is on that crashes the X Server on the Sony
-Vaio.
+RGIS loads at start up any number of datasets specified on
+the command line.
+

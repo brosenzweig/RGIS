@@ -112,6 +112,29 @@ int main (int argc,char **argv)
 	XtVaSetValues (mainForm,XmNkeyboardFocusPolicy,		XmPOINTER, NULL);
 
 	workspace->Initialize (mainForm);
+
+	if (argNum > 1)
+		{
+		DBDataset *dataset;
+		DBObjData *data;
+		DBObjectLIST<DBObjMetaEntry> *metaList;
+		DBObjMetaEntry *metaEntry;
+
+		dataset  = UIDataset ();
+		metaList = dataset->MetaList ();
+
+		for (argPos = 1;argPos < argNum; ++argPos)
+			{
+			data = new DBObjData ();
+			if (data->Read (argv [argPos]) == DBSuccess)
+				{
+				workspace->CurrentData (data);
+				metaEntry = metaList->Item (data->Name ());
+				metaEntry->FileName (data->FileName ());
+				}
+			else delete data;
+			}
+		}
 	while (UILoop ());
 	delete UIDataset ();
 	return (DBSuccess);
