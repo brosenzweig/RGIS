@@ -11,6 +11,7 @@ balazs.fekete@unh.edu
 *******************************************************************************/
 
 #include <cm.h>
+#include <math.h>
 #include <DB.H>
 #include <DBio.H>
 #include <RG.H>
@@ -181,7 +182,18 @@ int main (int argc,char *argv [])
 			for (pos.Col = 0;pos.Col < outGridIO->ColNum ();++pos.Col)
 				{
 				count [pos.Row * outGridIO->ColNum () + pos.Col] = 0;
-				array [pos.Row * outGridIO->ColNum () + pos.Col] = 0.0;
+				switch (method) {
+					case CMDboxSum:
+					case CMDboxAverage:
+						array [pos.Row * outGridIO->ColNum () + pos.Col] = 0.0;
+						break;
+					case CMDboxMinimum:
+						array [pos.Row * outGridIO->ColNum () + pos.Col] =  HUGE_VAL;
+						break;
+					case CMDboxMaximum:
+						array [pos.Row * outGridIO->ColNum () + pos.Col] = -HUGE_VAL;
+						break;
+					}
 				}
 		for (row = 0;row < inGridIO->RowNum ();++row)
 			for (col = 0;col < inGridIO->ColNum ();++col)
