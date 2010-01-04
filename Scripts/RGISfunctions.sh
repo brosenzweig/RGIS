@@ -679,11 +679,12 @@ function _RGISresolutionDir ()
 					do
 						if [ "${geogRes[${num}]}" == "${resolution%+}" ]; then break; fi
 					done
-					if (( num < geogNum - 2))
+					if (( num < geogNum))
 					then
 						_RGISresolutionDir "${archive}" "${domain}" "${variable}"  "${product}" "${geogRes[((${num} + 1))]}+" || return -1
 					else
 						echo "No coarser resolution ${domain%+} ${variable} ${product} ${resolution%+}" > /dev/stderr
+						return -1
 					fi
 				else # Cartesian
 					local cartNum=0
@@ -698,11 +699,12 @@ function _RGISresolutionDir ()
 					do
 						if [ "${cartRes[${num}]}" == "${resolution%+}" ]; then break; fi
 					done
-					if (( num < cartNum - 2))
+					if (( num < cartNum))
 					then
 						_RGISresolutionDir "${archive}" "${domain}" "${variable}"  "${product}" "${cartRes[((${num} + 1))]}+" || return -1
 					else
 						echo "No coarser resolution ${domain%+} ${variable} ${product} ${resolution%+}" > /dev/stderr
+						return -1
 					fi
 				fi
 			fi
