@@ -712,47 +712,72 @@ function _RGISresolutionDir ()
 	fi
 	return 0
 }
-
-function RGISdirectory ()
+function _RGIStStepDir ()
 {
-	local      archive="${1}"
-	local       domain="${2}"
-	local     variable="${3}"
-	local      product="${4}"
-	local   resolution="${5}"
-	local    tstepType="${6}"
-	local        tstep=$(echo "${7}" | tr "[A-Z]" "[a-z]")
+	local tStepType="${1}"
+	local     tStep="${2}"
 
 	case "${tstepType}" in
 		(TS)
 			case "${tstep}" in
 				(hourly)
-					local dir="Hourly"
+					echo "Hourly"
 				;;
 				(3hourly)
-					local dir="3Hourly"
+					echo "3Hourly"
 				;;
 				(6hourly)
-					local dir="6Hourly"
+					echo "6Hourly"
 				;;
 				(daily)
-					local dir="Daily"
+					echo "Daily"
 				;;
 				(monthly)
-					local dir="Monthly"
+					echo "Monthly"
 				;;
 				(annual)
-					local dir="Annual"
+					echo "Annual"
 				;;
 				(*)
-					local dir="${tstep}"
+					echo "${tstep}"
 				;;
 			esac
 		;;
 		(LT|LTmin|LTmax|LTslope|LTrange|LTstdDev|Stats|static)
-			dir="Static"
+			echo "Static"
 		;;
 	esac
+	return 0
+}
+
+function RGISdirectoryPath ()
+{
+	local    archive="${1}"
+	local     domain="${2}"
+	local   variable="${3}"
+	local    product="${4}"
+	local resolution="${5}"
+	local  tstepType="${6}"
+	local      tstep=$(echo "${7}" | tr "[A-Z]" "[a-z]")
+
+	local        dir=$(_RGIStStepDir ${tstepType} ${tstep})
+	local     varDir=$(_RGISvariableDir "${archive}" "${domain}" "${variable}")
+
+	echo "${archive}/${varDir}/${product}/${resolution}/${dir}"
+}
+
+function RGISdirectory ()
+{
+	local    archive="${1}"
+	local     domain="${2}"
+	local   variable="${3}"
+	local    product="${4}"
+	local resolution="${5}"
+	local  tstepType="${6}"
+	local      tstep=$(echo "${7}" | tr "[A-Z]" "[a-z]")
+
+	local dir=$(_RGIStStepDir ${tstepType} ${tstep})
+
 	local resDir=$(_RGISresolutionDir "${archive}" "${domain}" "${variable}" "${product}" "${resolution}")
 	if [ "${resDir}" == "" ]
 	then
