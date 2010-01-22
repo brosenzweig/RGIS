@@ -478,15 +478,16 @@ static DBInt _DBExportNetCDFTimeDefine (DBObjData *dbData,int ncid,int dimids []
 		if (strncmp (timeStr,"XXXX",4) == 0) for (i = 0;i < 4;i++) timeStr [i] = '0';
 		switch (strlen (timeStr))
 			{
-			case  4: sscanf (timeStr,"%4d",                &year);                               break;
-			case  7: sscanf (timeStr,"%4d-%2d",            &year,&month);                       break;
-			case 10: sscanf (timeStr,"%4d-%2d-%2d",        &year,&month,&day);                 break;
-			case 13: sscanf (timeStr,"%4d-%2d-%2d %2d",    &year,&month,&day,&hour);          break;
+			case  4: sscanf (timeStr,"%4d",                &year);                           break;
+			case  7: sscanf (timeStr,"%4d-%2d",            &year,&month);                    break;
+			case 10: sscanf (timeStr,"%4d-%2d-%2d",        &year,&month,&day);               break;
+			case 13: sscanf (timeStr,"%4d-%2d-%2d %2d",    &year,&month,&day,&hour);         break;
 			case 16: sscanf (timeStr,"%4d-%2d-%2d %2d:%2d",&year,&month,&day,&hour,&minute); break;
 			}
 		if (utInvCalendar (year,month,day,hour,minute,(double) 0.0,&unit, &val) != 0)
 			{
-			fprintf (stderr,"Invalid time [%s] in: DBImportNetCDF ()",timeStr);
+			fprintf (stderr,"Invalid time [%s] in: DBImportNetCDF ()\n",timeStr);
+			fprintf (stderr,"Year: %d, Month: %d, Day: %d, Hours: %d, Minutes: %d\n",year, month, day, hour, minute);
 			delete gridIO;
 			free (record);
 			return (DBFault);
@@ -730,7 +731,7 @@ DBInt DBExportNetCDF (DBObjData *dbData,const char *fileName)
 	switch (utInit (""))
 		{
 		case 0: break;
-		case UT_ENOFILE: fprintf (stderr,"Invalide UDUNITS_PATH in: DBImportNetCDF ()\n"); return (DBFault);
+		case UT_ENOFILE: fprintf (stderr,"Invalid UDUNITS_PATH in: DBImportNetCDF ()\n"); return (DBFault);
 		case UT_ESYNTAX: fprintf (stderr,"Corrupt udunit file in: DBImportNetCDF ()\n");   return (DBFault);
 		default: fprintf (stderr,"UDUNIT Initialization error in: DBImportNetCDF ()\n");   return (DBFault);
 		}
@@ -1033,7 +1034,7 @@ DBInt DBImportNetCDF (DBObjData *data,const char *filename)
 	switch (utInit (""))
 		{
 		case 0: break;
-		case UT_ENOFILE: fprintf (stderr,"Invalide UDUNITS_PATH in: DBImportNetCDF ()\n"); return (DBFault);
+		case UT_ENOFILE: fprintf (stderr,"Invalid UDUNITS_PATH in: DBImportNetCDF ()\n"); return (DBFault);
 		case UT_ESYNTAX: fprintf (stderr,"Corrupt udunit file in: DBImportNetCDF ()\n");   return (DBFault);
 		default: fprintf (stderr,"UDUNIT Initialization error in: DBImportNetCDF ()\n");   return (DBFault);
 		}
