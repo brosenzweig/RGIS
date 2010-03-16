@@ -74,7 +74,7 @@ void RGISAnNetworkToGridCBK (Widget widget,RGISWorkspace *workspace,XmAnyCallbac
 			grdData->Document (DBDocComment,tmpData->Document (DBDocComment));
 			delete tmpData;
 			}
-		else { delete grdData; return; }
+		else { return; }
 		}
 	else
 		{
