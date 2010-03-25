@@ -201,12 +201,20 @@ void CMthreadTeamDestroy (CMthreadTeam_p team, bool report) {
 		if (report) {
 			for (threadId = 0;threadId < team->ThreadNum;++threadId) completedTasks += team->Threads [threadId].CompletedTasks;
 			for (threadId = 0;threadId < team->ThreadNum;++threadId)
-				CMmsgPrint (CMmsgInfo,"Threads#%d completed %9d tasks (%4.1f %c of the total) User time %4.1f(%4.1f) %c\n",
+				if (team->Threads [threadId].CompletedTasks > 0)
+					CMmsgPrint (CMmsgInfo,"Threads#%d completed %9d tasks (%4.1f %c of the total) User time %4.1f(%4.1f) %c\n",
 						(int)   team->Threads [threadId].Id,
 						(int)   team->Threads [threadId].CompletedTasks,
 						(float) team->Threads [threadId].CompletedTasks * 100.0 / (float) completedTasks,'%',
 						(float) team->Threads [threadId].UserTime       * 100.0 / (float) team->Threads [threadId].ThreadTime,
 						(float) team->Threads [threadId].UserTime       * 100.0 / (float) team->Time, '%');
+				else
+					CMmsgPrint (CMmsgInfo,"Threads#%d completed %9d tasks (%4.1f %c of the total) User time %4.1f(%4.1f) %c\n",
+						(int)   team->Threads [threadId].Id,
+						(int)   team->Threads [threadId].CompletedTasks,
+						(float) 0.0, '%',
+						(float) 0,
+						(float) 0.0, '%');
 		}
 		pthread_mutex_destroy (&(team->Mutex));
 		pthread_exit(NULL);
