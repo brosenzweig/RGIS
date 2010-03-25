@@ -87,7 +87,7 @@ void CMthreadJobDestroy (CMthreadJob_p job, CMthreadUserFreeFunc freeFunc) {
 
 static void *_CMthreadWork (void *dataPtr) {
 	CMthreadData_p data = (CMthreadData_p) dataPtr;
-	int taskId;
+	int ret, taskId;
 	CMthreadTeam_p team = (CMthreadTeam_p) data->TeamPtr;
 	CMthreadJob_p  job;
 	clock_t start = clock ();
@@ -98,8 +98,7 @@ static void *_CMthreadWork (void *dataPtr) {
 	while (job->LastId > 0) {
 		for (taskId = job->LastId - 1;taskId >= 0; taskId--) {
 			if (job->Tasks [taskId].Completed) {
-				if (taskId == (job->LastId  - 1)) job->LastId = taskId;
-				continue;
+				if (taskId == (job->LastId  - 1)) job->LastId = taskId; continue;
 			}
 			if (job->Tasks [taskId].Locked)    continue;
 			if ((job->Tasks [taskId].Depend == taskId) || (job->Tasks [job->Tasks [taskId].Depend].Completed)) {
@@ -111,15 +110,20 @@ static void *_CMthreadWork (void *dataPtr) {
 				job->UserFunc (job->CommonData, job->ThreadData == (void **) NULL ? (void *) NULL : job->ThreadData [data->Id], taskId);
 				data->UserTime += clock () - start;
 				data->CompletedTasks++;
-				pthread_mutex_lock   (&(team->Mutex));
+				ret = pthread_mutex_trylock   (&(team->Mutex));
 				job->Tasks [taskId].Locked    = false;
 				job->Tasks [taskId].Completed = true;
+				if (ret != 0) {
+					CMmsgPrint (CMmsgAppError,"Busy mutex\n");
+					goto Stop;
+				}
 			}
 		}
 	}
 // TODO printf ("Thread#%d: Ending job\n",(int) data->Id);
 	data->ThreadTime += clock () - start;
 	pthread_mutex_unlock (&(team->Mutex));
+Stop:
 	if (data->Id > 0) pthread_exit((void *) NULL);
 	return ((void *) NULL);
 }
