@@ -408,21 +408,21 @@ static bool _MFModelReadInput (char *time)
 }
 
 static void _MFUserFunc (void *commonPtr,void *threadData, size_t taskId) {
-	int iFunc, varID, dlink;
-
+	int iFunc, varID, dlink, objectId;
 	MFVariable_t *var;
 
-	for (iFunc = 0;iFunc < _MFFunctionNum; ++iFunc) (_MFFunctions [iFunc]) (taskId);
+	objectId = _MFDomain->ObjNum - taskId - 1;
+	for (iFunc = 0;iFunc < _MFFunctionNum; ++iFunc) (_MFFunctions [iFunc]) (objectId);
 
 	for (var = MFVarGetByID (varID = 1);var != (MFVariable_t *) NULL;var = MFVarGetByID (++varID))
-		if ((var->Route) && (_MFDomain->Objects [taskId].DLinkNum == 1)) {
-			dlink = _MFDomain->Objects [taskId].DLinks [0];
-			MFVarSetFloat (varID, dlink, MFVarGetFloat (varID,taskId,0.0) + MFVarGetFloat (varID,dlink,0.0));
+		if ((var->Route) && (_MFDomain->Objects [objectId].DLinkNum == 1)) {
+			dlink = _MFDomain->Objects [objectId].DLinks [0];
+			MFVarSetFloat (varID, dlink, MFVarGetFloat (varID,objectId,0.0) + MFVarGetFloat (varID,dlink,0.0));
 		}
 }
 
 int MFModelRun (int argc, char *argv [], int argNum, int (*conf) ()) {
-	int i, iFunc, varID, dlink;
+	int i, iFunc, varID, dlink, taskId;
 	char *timeCur;
 	MFVariable_t *var;
 	time_t sec;
@@ -448,8 +448,10 @@ int MFModelRun (int argc, char *argv [], int argNum, int (*conf) ()) {
 			return (CMfailed);
 		}
 		for (i = 0;i < _MFDomain->ObjNum; ++i) {
-			dlink = _MFDomain->Objects [i].DLinkNum == 1 ? _MFDomain->Objects [i].DLinks [0] : i;
-			CMthreadJobTaskDependence (job, dlink, i);
+			dlink  = _MFDomain->Objects [i].DLinkNum == 1 ? _MFDomain->Objects [i].DLinks [0] : i;
+			dlink  = _MFDomain->ObjNum - dlink - 1;
+			taskId = _MFDomain->ObjNum - i - 1;
+			CMthreadJobTaskDependence (job, dlink, taskId);
 		}
 		do {
 			CMmsgPrint (CMmsgDebug, "Computing: %s\n", timeCur);
