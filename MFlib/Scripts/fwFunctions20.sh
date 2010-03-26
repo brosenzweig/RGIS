@@ -18,7 +18,7 @@ function _fwDataSource()
 		[ "${fwTEMP[0]}${fwTEMP[1]}" == "${1}${2}" ] && { echo "${_fwDSourceARRAY[${fwI}]}"; return 0; }
 	done
 	echo ""
-	return -1
+	return 1
 }
 
 function _fwVariable()
@@ -206,7 +206,7 @@ function FwArguments()
 				echo "           -O, --optionsprint"
 				echo "           -D, --dailyoutput  on|off"
 				echo "           -V, --verbose"
-				return -1
+				return 1
 		esac
 		shift
 	done
@@ -299,7 +299,7 @@ function FwOptions()
 		echo "-m warning=on"
 		echo "-T"
 		echo "$(_fwOptionList)"
-		return -1
+		return 1
 	fi
 	local fwLINES=($(${_fwModelBIN} ${_fwGDSDomain} $(_fwOptionList) -T ${fwMessageOPTIONS} | grep "XXXX"  | cut -c15-45,58-64,77-80,81-85,86-94))
 	for (( fwVARnum = 0; fwVARnum < ${#fwLINES[@]} / 5 ; ++fwVARnum ))
@@ -441,10 +441,10 @@ function _fwPreprocess()
 			local fwStateITEM=${_fwStateARRAY[${fwI}]}
 			local    fwSOURCE=($(_fwDataSource "${fwInputITEM}" "static"))
 			[ "${fwSOURCE[0]}" == "" ] && continue
-			[ "${fwSOURCE[1]}" == "" ] && { echo "  ${fwStateITEM} data type is missing!";                 return -1; }
-			[ "${fwSOURCE[2]}" == "" ] && { echo "  ${fwStateITEM} version is missing!";                   return -1; }
-			[ "${fwSOURCE[3]}" == "" ] && { echo "  ${fwStateITEM} data source type is missing!";          return -1; }
-			[ "${fwSOURCE[4]}" == "" ] && { echo "  ${fwStateITEM} data source specification is missing!"; return -1; }
+			[ "${fwSOURCE[1]}" == "" ] && { echo "  ${fwStateITEM} data type is missing!";                 return 1; }
+			[ "${fwSOURCE[2]}" == "" ] && { echo "  ${fwStateITEM} version is missing!";                   return 1; }
+			[ "${fwSOURCE[3]}" == "" ] && { echo "  ${fwStateITEM} data source type is missing!";          return 1; }
+			[ "${fwSOURCE[4]}" == "" ] && { echo "  ${fwStateITEM} data source specification is missing!"; return 1; }
 			if [[ "${fwSOURCE[3]}" == "const" ]]
 			then
 				[ "${FwVERBOSE}" == "on" ] && echo "         ${fwInputITEM} State Constant"
@@ -457,7 +457,7 @@ function _fwPreprocess()
 					[ "${_fwPREPROCESS}" == "forced" ] && rm -f "${fwFILENAME}"
 					if [ ! -e "${fwFILENAME}" ]
 					then
-						[ -e "${_fwRGISDomainFILE}" ] || { echo "Missing domain file: ${_fwRGISDomainFILE}"; return -1; }
+						[ -e "${_fwRGISDomainFILE}" ] || { echo "Missing domain file: ${_fwRGISDomainFILE}"; return 1; }
 						[ "${fwPROC}" -ge "${_fwMAXPROC}" ] && { wait ; (( fwPROC = 0 )) ; }
 						${_fwRGISBIN}rgis2ds -m "${_fwRGISDomainFILE}" "${fwSOURCE[4]}" "${fwFILENAME}" &
 						(( ++fwPROC ))
@@ -485,23 +485,23 @@ function _fwPreprocess()
 				fwInYEAR=${fwYEAR}
 			fi
 		fi
-		[ "${fwSOURCE[0]}" == "" ] && { echo "  ${fwInputITEM} is missing from data sources!";         return -1; }
-		[ "${fwSOURCE[1]}" == "" ] && { echo "  ${fwInputITEM} data type is missing!";                 return -1; }
-		[ "${fwSOURCE[2]}" == "" ] && { echo "  ${fwInputITEM} version is missing!";                   return -1; }
-		[ "${fwSOURCE[3]}" == "" ] && { echo "  ${fwInputITEM} data source type is missing!";          return -1; }
-		[ "${fwSOURCE[4]}" == "" ] && { echo "  ${fwInputITEM} data source specification is missing!"; return -1; }
+		[ "${fwSOURCE[0]}" == "" ] && { echo "  ${fwInputITEM} is missing from data sources!";         return 1; }
+		[ "${fwSOURCE[1]}" == "" ] && { echo "  ${fwInputITEM} data type is missing!";                 return 1; }
+		[ "${fwSOURCE[2]}" == "" ] && { echo "  ${fwInputITEM} version is missing!";                   return 1; }
+		[ "${fwSOURCE[3]}" == "" ] && { echo "  ${fwInputITEM} data source type is missing!";          return 1; }
+		[ "${fwSOURCE[4]}" == "" ] && { echo "  ${fwInputITEM} data source specification is missing!"; return 1; }
 		if [ "${fwSOURCE[3]}" == "const" ]
 		then
 			[ "${FwVERBOSE}" == "on" ] && echo "         ${fwInputITEM} Constant input"
 		elif [ "${fwSOURCE[3]}" == "file" ]
 		then
 			[ "${FwVERBOSE}" == "on" ] && echo "         ${fwInputITEM} File input"
-			[ -e "${fwSOURCE[4]}" ] || { echo "  ${fwInputITEM} datafile [${fwSOURCE[4]}] is missing!"; return -1; }
+			[ -e "${fwSOURCE[4]}" ] || { echo "  ${fwInputITEM} datafile [${fwSOURCE[4]}] is missing!"; return 1; }
 			[ -e "${_fwGDSDomainDIR}/${fwSOURCE[2]}" ] || mkdir -p "${_fwGDSDomainDIR}/${fwSOURCE[2]}"
 			local fwFILENAME="$(FwGDSFilename "${fwInputITEM}" "Input" "${fwSOURCE[2]}" "${fwInYEAR}" "d")"
 			[ "${_fwPREPROCESS}" == "forced" ] && rm -f "${fwFILENAME}"
 			[ -e "${fwFILENAME}" ] && continue
-			[ -e "${_fwRGISDomainFILE}" ] || { echo "Missing domain file: ${_fwRGISDomainFILE}"; return -1; }
+			[ -e "${_fwRGISDomainFILE}" ] || { echo "Missing domain file: ${_fwRGISDomainFILE}"; return 1; }
 			[ "${fwPROC}" -ge "${_fwMAXPROC}" ] && { wait; (( fwPROC = 0 )) ; }
 			${_fwRGISBIN}rgis2ds -m "${_fwRGISDomainFILE}" "${fwSOURCE[4]}" "${fwFILENAME}" &
 			(( ++fwPROC ))
@@ -569,7 +569,7 @@ function _fwSpinup()
 	local     fwInfoLOG="file:${_fwGDSLogDIR}/Spinup0_Info.log"
 
 	[ "${FwVERBOSE}" == "on" ] && echo "Initialization started:  $(date '+%Y-%m-%d %H:%M:%S')"
-	_fwPreprocess "dostate" "" || return -1
+	_fwPreprocess "dostate" "" || return 1
 	for ((fwPASS = 1; fwPASS <= _fwPASSNUM; ++fwPASS))
 	do
 		fwOptions=$(echo ${_fwGDSDomainFILE}
@@ -583,7 +583,7 @@ function _fwSpinup()
 		for (( fwI = 0; fwI < ${#_fwInputARRAY[@]} ; ++fwI ))
 		do
 			local     fwSOURCE=($(_fwDataSource "${_fwInputARRAY[${fwI}]}" "static"))
-			if [[ "${fwSOURCE[@]}" == ""      ]]; then echo "Missing data source" > /dev/stderr; return -1; fi
+			if [[ "${fwSOURCE[@]}" == ""      ]]; then echo "Missing data source" > /dev/stderr; return 1; fi
 			if  [ "${fwSOURCE[3]}" == "const" ]
 			then
 				echo "-i ${fwSOURCE[0]}=const:${fwSOURCE[4]}"
@@ -639,10 +639,10 @@ function _fwSpinup()
 			local     fwInfoLOG="file:${_fwGDSLogDIR}/SpinupN_Info.log"
 		else
 			[ "${FwVERBOSE}" == "on" ] && echo "   Passnum [${fwPASS}] failed:   $(date '+%Y-%m-%d %H:%M:%S')"
-			return -1
+			return 1
 		fi
 	done
-	[ "${_fwPOSTPROCESS}" == "on" ] && { _fwPostprocess "${fwVERSION}" "" || return -1; }
+	[ "${_fwPOSTPROCESS}" == "on" ] && { _fwPostprocess "${fwVERSION}" "" || return 1; }
 	[ "${FwVERBOSE}"      == "on" ] && echo "Initialization finished: $(date '+%Y-%m-%d %H:%M:%S')"
 	return 0
 }
@@ -661,7 +661,7 @@ function _fwRun()
 			if [ "$_fwRESTART}" == "off" ]; then fwDOSTATE="dostate"; else fsDOSTATE="nostate"; fi
 		else fsDOSTATE="nostate";
 		fi
-		_fwPreprocess "${fwDOSTATE}" "${fwYEAR}" || return -1
+		_fwPreprocess "${fwDOSTATE}" "${fwYEAR}" || return 1
 
 		local fwOptionsFILE="${_fwGDSLogDIR}/Run${fwYEAR}_Options.log"
 		local     fwUserLOG="file:${_fwGDSLogDIR}/Run${fwYEAR}_UserError.log"
@@ -701,7 +701,7 @@ function _fwRun()
 				if [ "${fwSOURCE[0]}" == ""      ]
 				then
 					echo "Missing time series input: ${_fwInputARRAY[${fwI}]}" > /dev/stderr
-					return -1
+					return 1
 				fi
 				if [ "${fwSOURCE[3]}" == "const" ]
 				then
@@ -735,11 +735,11 @@ function _fwRun()
 		[ "${FwVERBOSE}" == "on" ] && echo "   Running year [${fwYEAR}] started:  $(date '+%Y-%m-%d %H:%M:%S')"
 		if echo ${fwOptions} | xargs ${_fwModelBIN}
 		then
-			[ "${_fwPOSTPROCESS}" == "on" ] && { _fwPostprocess "${fwVERSION}" "${fwYEAR}" || return -1; }
+			[ "${_fwPOSTPROCESS}" == "on" ] && { _fwPostprocess "${fwVERSION}" "${fwYEAR}" || return 1; }
 			[ "${FwVERBOSE}"      == "on" ] && echo "   Running year [${fwYEAR}] finished: $(date '+%Y-%m-%d %H:%M:%S')"
 		else
 			[ "${FwVERBOSE}"      == "on" ] && echo "   Running year [${fwYEAR}] failed:   $(date '+%Y-%m-%d %H:%M:%S')"
-			return -1
+			return 1
 		fi
 		if [ "${_fwPURGEFILES}" == "on" ] && (( fwYEAR != fwStartYEAR ))
 		then
@@ -770,9 +770,9 @@ function FwRun()
 	local   fwEndYEAR="${3}"
 	     _fwGDSLogDIR="${_fwGDSDomainDIR}/${fwVERSION}/logs"
 
-	[ "${_fwTESTONLY}" == "on" ] && { { _fwPrintTest || return -1; } && return 0; }
+	[ "${_fwTESTONLY}" == "on" ] && { { _fwPrintTest || return 1; } && return 0; }
 	[ -e "${_fwGDSLogDIR}" ] || mkdir -p ${_fwGDSLogDIR}
-	[ "${_fwSPINUP}"   == "on" ] && { _fwSpinup "${fwVERSION}"                                 || { echo "Spinup failed";    return -1; } }
-	[ "${_fwFINALRUN}" == "on" ] && { _fwRun    "${fwVERSION}" "${fwStartYEAR}" "${fwEndYEAR}" || { echo "Final run failed"; return -1; } }
+	[ "${_fwSPINUP}"   == "on" ] && { _fwSpinup "${fwVERSION}"                                 || { echo "Spinup failed";    return 1; } }
+	[ "${_fwFINALRUN}" == "on" ] && { _fwRun    "${fwVERSION}" "${fwStartYEAR}" "${fwEndYEAR}" || { echo "Final run failed"; return 1; } }
 	return 0
 }
