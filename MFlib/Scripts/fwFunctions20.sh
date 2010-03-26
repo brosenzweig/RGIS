@@ -327,6 +327,7 @@ function FwOptions()
 			(( ++fwSTATEnum ))
 		fi
 	done
+	return 0
 }
 
 function FwOutputs()
