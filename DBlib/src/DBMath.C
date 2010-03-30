@@ -291,8 +291,8 @@ static void *_DBMathFunction (char *funcName,int *nameLen)
 
 	{
 	int i;
-	const char *funcNames [] = { "abs", "sin", "cos", "tan", "ln", "log", "log2", "floor", "ceil", (char *) NULL };
-	double (*functions [])(double) = { fabs, sin, cos, tan, log, log10, log2, floor, ceil };
+	const char *funcNames [] = { "abs", "sin", "cos", "tan", "log2", "log", "ln", "floor", "ceil", (char *) NULL };
+	double (*functions [])(double) = { fabs, sin, cos, tan, log2, log10, log, floor, ceil };
 
 	if ((i = CMoptLookup (funcNames, funcName, false)) == DBFault) return ((void *) NULL);
 	*nameLen = strlen (funcNames [i]);
