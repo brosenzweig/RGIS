@@ -680,16 +680,16 @@ function _RGISvariableDir ()
 		then
 			echo "Missing ${archive}/${domain}/${varDir}" > /dev/stderr
 			echo ""
-			return -1
+			return 1
 		else # Dynamic domain
 			local parent="${archive}/${domain%+}/parent"
 			if [ -e "${parent}" ]
 			then
-				_RGISvariableDir "${archive}" "$(cat ${archive}/${domain%+}/parent)+" "${variable}" || return -1
+				_RGISvariableDir "${archive}" "$(cat ${archive}/${domain%+}/parent)+" "${variable}" || return 1
 			else
 				echo "Missing ${parent}" > /dev/stderr
 				echo ""
-				return -1
+				return 1
 			fi
 		fi
 	fi
@@ -717,7 +717,7 @@ function _RGISresolutionDir ()
 			then
 				echo "Missing ${archive}/${varDir}/${product}/${resolution}" > /dev/stderr
 				echo ""
-				return -1
+				return 1
 			else # Dynamic resolution
 				if [ "${resolution%km+}" == "${resolution}" ] # Geographic
 				then
@@ -741,10 +741,10 @@ function _RGISresolutionDir ()
 					done
 					if (( num < geogNum))
 					then
-						_RGISresolutionDir "${archive}" "${domain}" "${variable}"  "${product}" "${geogRes[((${num} + 1))]}+" || return -1
+						_RGISresolutionDir "${archive}" "${domain}" "${variable}"  "${product}" "${geogRes[((${num} + 1))]}+" || return 1
 					else
 						echo "No coarser resolution ${domain%+} ${variable} ${product} ${resolution%+}" > /dev/stderr
-						return -1
+						return 1
 					fi
 				else # Cartesian
 					local cartNum=0
@@ -761,10 +761,10 @@ function _RGISresolutionDir ()
 					done
 					if (( num < cartNum))
 					then
-						_RGISresolutionDir "${archive}" "${domain}" "${variable}"  "${product}" "${cartRes[((${num} + 1))]}+" || return -1
+						_RGISresolutionDir "${archive}" "${domain}" "${variable}"  "${product}" "${cartRes[((${num} + 1))]}+" || return 1
 					else
 						echo "No coarser resolution ${domain%+} ${variable} ${product} ${resolution%+}" > /dev/stderr
-						return -1
+						return 1
 					fi
 				fi
 			fi
@@ -841,7 +841,7 @@ function RGISdirectory ()
 	local resDir=$(_RGISresolutionDir "${archive}" "${domain}" "${variable}" "${product}" "${resolution}")
 	if [ "${resDir}" == "" ]
 	then
-		return -1
+		return 1
 	else
 		echo "${archive}/${resDir}/${dir}"
 	fi
@@ -883,7 +883,7 @@ function RGISfile ()
 		;;
 		(*)
 			echo "Unknown time step ${tstep}" > /dev/stderr
-			return -1
+			return 1
 		;;
 	esac
 
@@ -901,7 +901,7 @@ function RGISfile ()
 	if [ "${rgisDirectory}" == "" ]
 	then
 		echo ""
-		return -1
+		return 1
 	fi
 	if [[ "${tstepType}" == "static" ]]
 	then
@@ -952,7 +952,7 @@ function RGIStitle ()
 			;;
 			(*)
 				echo "Unknown time step ${tstep}"  > /dev/stderr
-				return -1
+				return 1
 			;;
 		esac
 		if [[ "${timeRange}" == "" ]]
@@ -1021,7 +1021,7 @@ function RGISAggregateTS ()
       local shadeset=$(RGISlookupShadeset   "${variable}")
 		local   method=$(RGISlookupAggrMethod "${variable}")
 
-      grdTSAggr -a "${method}" -e "$(RGISlookupTimeStep ${toTStep})" -t "${title}" -d "${domain}" -u "${subject}" -s "${shadeset}" "${fromFile}" "${toFile}" || return -1
+      grdTSAggr -a "${method}" -e "$(RGISlookupTimeStep ${toTStep})" -t "${title}" -d "${domain}" -u "${subject}" -s "${shadeset}" "${fromFile}" "${toFile}" || return 1
    done
 }
 
@@ -1043,9 +1043,9 @@ function RGISClimatology ()
 	local   subject=$(RGISlookupSubject  "${variable}")
 	local  shadeset=$(RGISlookupShadeset "${variable}")
 	
-	[ -e "${ltDir}" ] || mkdir -p "${ltDir}" || return -1
+	[ -e "${ltDir}" ] || mkdir -p "${ltDir}" || return 1
 	grdCycleMean	-t "${title}" -d "${domain}" -u "${subject}" -v "${version}" -s "${shadeset}" -n 12 "${tsFile}" - |\
-	grdDateLayers   -e "month" - "${ltFile}" || return -1
+	grdDateLayers   -e "month" - "${ltFile}" || return 1
 	return 0
 }
 
@@ -1066,38 +1066,38 @@ function RGISCellStats ()
 	local     title=$(RGIStitle                   "${domain}" "${variable}" "${product}" "${resolution}" "Stats" "annual" "${startyear}-${endyear}" "${version}")
 	local   subject=$(RGISlookupSubject "${variable}")
 
-	[ -e "${statsDir}" ] || mkdir -p "${statsDir}" || return -1
-	grdCellStats    -t "${title}" -u "${variable}" -d "${domain}" -v "${version}" "${tsFile}" "${statsFile}" || return -1
+	[ -e "${statsDir}" ] || mkdir -p "${statsDir}" || return 1
+	grdCellStats    -t "${title}" -u "${variable}" -d "${domain}" -v "${version}" "${tsFile}" "${statsFile}" || return 1
 
 	local  annualLTfile=$(RGISfile "${archive}" "${domain}" "${variable}" "${product}" "${resolution}" "LT"      "annual"  "${startyear}-${endyear}")
 	local         title=$(RGIStitle             "${domain}" "${variable}" "${product}" "${resolution}" "LT"      "annual"  "${startyear}-${endyear}" "${version}")
 	grdExtractLayers -t "${title}" -f "Average" -l "Average" -d "${domain}" -u "$(RGISlookupSubject ${variable})" "${statsFile}" |\
-	grdDateLayers -e "year" - "${annualLTfile}" || return -1
+	grdDateLayers -e "year" - "${annualLTfile}" || return 1
 
 	local     maxLTfile=$(RGISfile "${archive}" "${domain}" "${variable}" "${product}" "${resolution}" "LTmax"    "annual"  "${startyear}-${endyear}")
 	local         title=$(RGIStitle             "${domain}" "${variable}" "${product}" "${resolution}" "LTmax"    "annual"  "${startyear}-${endyear}" "${version}")
 	grdExtractLayers -t "${title}" -f "Maximum" -l "Maximum" -d "${domain}" -u "$(RGISlookupSubject ${variable})" "${statsFile}" |\
-	grdDateLayers -e "year" - "${maxLTfile}" || return -1
+	grdDateLayers -e "year" - "${maxLTfile}" || return 1
 
 	local     minLTfile=$(RGISfile "${archive}" "${domain}" "${variable}" "${product}" "${resolution}" "LTmin"    "annual"  "${startyear}-${endyear}")
 	local         title=$(RGIStitle             "${domain}" "${variable}" "${product}" "${resolution}" "LTmin"    "annual"  "${startyear}-${endyear}" "${version}")
 	grdExtractLayers -t "${title}" -f "Minimum" -l "Minimum" -d "${domain}" -u "$(RGISlookupSubject ${variable})" "${statsFile}" |\
-	grdDateLayers -e "year" - "${minLTfile}" || return -1
+	grdDateLayers -e "year" - "${minLTfile}" || return 1
 
 	local   rangeLTfile=$(RGISfile "${archive}" "${domain}" "${variable}" "${product}" "${resolution}" "LTrange"  "annual" "${startyear}-${endyear}")
 	local         title=$(RGIStitle             "${domain}" "${variable}" "${product}" "${resolution}" "LTrange"  "annual" "${startyear}-${endyear}" "${version}")
 	grdExtractLayers -t "${title}" -f "Range"   -l "Range"   -d "${domain}" -u "$(RGISlookupSubject ${variable})" "${statsFile}" |\
-	grdDateLayers -e "year" - "${rangeLTfile}" || return -1
+	grdDateLayers -e "year" - "${rangeLTfile}" || return 1
 
 	local   slopeLTfile=$(RGISfile "${archive}" "${domain}" "${variable}" "${product}" "${resolution}" "LTslope"  "annual" "${startyear}-${endyear}")
 	local         title=$(RGIStitle             "${domain}" "${variable}" "${product}" "${resolution}" "LTslope"  "annual" "${startyear}-${endyear}" "${version}")
 	grdExtractLayers -t "${title}" -f "SigSlopeB1" -l "SigSlopeB1" -d "${domain}" -u "$(RGISlookupSubject ${variable})" "${statsFile}" |\
-	grdDateLayers -e "year" - "${slopeLTfile}" || return -1
+	grdDateLayers -e "year" - "${slopeLTfile}" || return 1
 
 	local  stdDevLTfile=$(RGISfile "${archive}" "${domain}" "${variable}" "${product}" "${resolution}" "LTstdDev" "annual" "${startyear}-${endyear}")
 	local         title=$(RGIStitle             "${domain}" "${variable}" "${product}" "${resolution}" "LTstdDev" "annual" "${startyear}-${endyear}" "${version}")
 	grdExtractLayers -t "${title}" -f "StdDev" -l "StdDev" -d "${domain}" -u "$(RGISlookupSubject ${variable})" "${statsFile}" |\
-	grdDateLayers -e "year" - "${stdDevLTfile}" || return -1
+	grdDateLayers -e "year" - "${stdDevLTfile}" || return 1
 
 #	rm "${statsFile}"
 	return 0
@@ -1114,11 +1114,11 @@ function RGISStatistics ()
 	local  startyear="${7}"
 	local    endyear="${8}"
 
-	RGISAppend "${archive}" "${domain}" "${variable}" "${product}" "${resolution}" "${version}" "${startyear}" "${endyear}" "monthly" || return -1
-	RGISAppend "${archive}" "${domain}" "${variable}" "${product}" "${resolution}" "${version}" "${startyear}" "${endyear}" "annual"  || return -1
+	RGISAppend "${archive}" "${domain}" "${variable}" "${product}" "${resolution}" "${version}" "${startyear}" "${endyear}" "monthly" || return 1
+	RGISAppend "${archive}" "${domain}" "${variable}" "${product}" "${resolution}" "${version}" "${startyear}" "${endyear}" "annual"  || return 1
 
-	RGISClimatology "${archive}" "${domain}" "${variable}" "${product}" "${resolution}" "${version}" "${startyear}" "${endyear}"      || return -1
-	RGISCellStats   "${archive}" "${domain}" "${variable}" "${product}" "${resolution}" "${version}" "${startyear}" "${endyear}"      || return -1
+	RGISClimatology "${archive}" "${domain}" "${variable}" "${product}" "${resolution}" "${version}" "${startyear}" "${endyear}"      || return 1
+	RGISCellStats   "${archive}" "${domain}" "${variable}" "${product}" "${resolution}" "${version}" "${startyear}" "${endyear}"      || return 1
 	local  annualTSfile=$(RGISfile "${archive}" "${domain}" "${variable}" "${product}" "${resolution}" "TS"    "annual"  "${startyear}-${endyear}")
 	local monthlyTSfile=$(RGISfile "${archive}" "${domain}" "${variable}" "${product}" "${resolution}" "TS"    "monthly" "${startyear}-${endyear}")
 	[ -e  "${annualTSfile}" ] && rm  "${annualTSfile}"
