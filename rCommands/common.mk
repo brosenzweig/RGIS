@@ -3,7 +3,7 @@ UNIX=$(shell uname)
 ifeq ($(UNIX),Linux)
 export UNIXCPP=g++
 export UNIXCPPOPS=-g -Wall -fsigned-char -D_GNU_SOURCE
-export UNIXLIBS=-ludunits -lnetcdf -lm
+export UNIXLIBS=-L/usr/local/lib -ludunits -lnetcdf -lm
 export UNIXMAKE=make
 endif
 ifeq ($(UNIX),Darwin)
