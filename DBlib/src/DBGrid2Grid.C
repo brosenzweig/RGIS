@@ -257,9 +257,12 @@ DBInt DBGridAppend (DBObjData *grdData, DBObjData *appData)
 				DBInt tblRecID;
 				DBObjTable *grdTable = grdData->Table (DBrNItems);
 				DBObjTable *appTable = appData->Table (DBrNItems);
-				DBObjTableField *grdValueFLD = grdTable->Field (DBrNGridValue);
+				DBObjTableField *grdValueFLD  = grdTable->Field (DBrNGridValue);
+				DBObjTableField *grdSymbolFLD = grdTable->Field (DBrNSymbol);
 				DBObjTableField *appValueFLD = appTable->Field (DBrNGridValue);
+				DBObjRecord *symRec = (grdData->Table (DBrNSymbols))->Item ();
 				DBObjRecord *appRec, *grdRec;
+
 				for (pos.Row = 0;pos.Row < grdIO->RowNum ();++pos.Row)
 					for (pos.Col = 0;pos.Col < grdIO->ColNum ();++pos.Col)
 						{
@@ -275,6 +278,7 @@ DBInt DBGridAppend (DBObjData *grdData, DBObjData *appData)
 								{
 								grdRec = grdTable->Add (appRec->Name ());
 								grdValueFLD->Int (grdRec,appValueFLD->Int (appRec));
+								grdSymbolFLD->Record (grdRec,symRec);
 								}
 							grdIO->Value (grdLayerRec,pos,grdRec->RowID ());
 							}
