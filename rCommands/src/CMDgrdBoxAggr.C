@@ -22,13 +22,13 @@ int main (int argc,char *argv [])
 	{
 	int argPos, argNum = argc, ret, verbose = false;
 	CMDboxMethod method = CMDboxAverage;
-	DBInt kernelSize = 2, layerID, *count = (DBInt *) NULL, row, col;
+	DBInt kernelSize = 2, layerID, *count = (DBInt *) NULL;
 	char *title  = (char *) NULL, *subject = (char *) NULL;
 	char *domain = (char *) NULL, *version = (char *) NULL;
 	int shadeSet = DBDataFlagDispModeContGreyScale;
 	DBFloat var, *array = (DBFloat *) NULL;
 	DBRegion   extent;
-	DBPosition pos;
+	DBPosition inPos, outPos;
 	DBCoordinate coord, cellSize;
 	DBObjData *inData, *outData;
 	DBObjRecord *inLayerRec, *outLayerRec;
@@ -178,63 +178,61 @@ int main (int argc,char *argv [])
 			}
 		else
 			outLayerRec = outGridIO->AddLayer (inLayerRec->Name ());
-		for (pos.Row = 0;pos.Row < outGridIO->RowNum (); ++pos.Row)
-			for (pos.Col = 0;pos.Col < outGridIO->ColNum ();++pos.Col)
+		for (outPos.Row = 0;outPos.Row < outGridIO->RowNum (); ++outPos.Row)
+			for (outPos.Col = 0;outPos.Col < outGridIO->ColNum ();++outPos.Col)
 				{
-				count [pos.Row * outGridIO->ColNum () + pos.Col] = 0;
+				count [outPos.Row * outGridIO->ColNum () + outPos.Col] = 0;
 				switch (method) {
 					case CMDboxSum:
 					case CMDboxAverage:
-						array [pos.Row * outGridIO->ColNum () + pos.Col] = 0.0;
+						array [outPos.Row * outGridIO->ColNum () + outPos.Col] = 0.0;
 						break;
 					case CMDboxMinimum:
-						array [pos.Row * outGridIO->ColNum () + pos.Col] =  HUGE_VAL;
+						array [outPos.Row * outGridIO->ColNum () + outPos.Col] =  HUGE_VAL;
 						break;
 					case CMDboxMaximum:
-						array [pos.Row * outGridIO->ColNum () + pos.Col] = -HUGE_VAL;
+						array [outPos.Row * outGridIO->ColNum () + outPos.Col] = -HUGE_VAL;
 						break;
 					}
 				}
-		for (row = 0;row < inGridIO->RowNum ();++row)
-			for (col = 0;col < inGridIO->ColNum ();++col)
+		for (inPos.Row = 0;inPos.Row < inGridIO->RowNum ();++inPos.Row)
+			for (inPos.Col = 0;inPos.Col < inGridIO->ColNum ();++inPos.Col)
 				{
-				pos.Row = row;
-				pos.Col = col;
 
-				if (inGridIO->Value (inLayerRec,pos,&var))
+				if (inGridIO->Value (inLayerRec,inPos,&var))
 					{
-				 	inGridIO->Pos2Coord  (pos,coord);
-				 	outGridIO->Coord2Pos (coord,pos);
-					count [pos.Row * outGridIO->ColNum () + pos.Col] += 1;
+				 	inGridIO->Pos2Coord  (inPos,coord);
+				 	outGridIO->Coord2Pos (coord,outPos);
+					count [outPos.Row * outGridIO->ColNum () + outPos.Col] += 1;
 					switch (method)
 						{
 						case CMDboxSum:
 						case CMDboxAverage:
-							array [pos.Row * outGridIO->ColNum () + pos.Col] += var;
+							array [outPos.Row * outGridIO->ColNum () + outPos.Col] += var;
 							break;
 						case CMDboxMinimum:
-							array [pos.Row * outGridIO->ColNum () + pos.Col] = var < array [pos.Row * outGridIO->ColNum () + pos.Col] ?
-						                                                       var : array [pos.Row * outGridIO->ColNum () + pos.Col];
+							array [outPos.Row * outGridIO->ColNum () + outPos.Col] = var < array [outPos.Row * outGridIO->ColNum () + outPos.Col] ?
+						                                                             var : array [outPos.Row * outGridIO->ColNum () + outPos.Col];
 							break;
 						case CMDboxMaximum:
-							array [pos.Row * outGridIO->ColNum () + pos.Col] = var > array [pos.Row * outGridIO->ColNum () + pos.Col] ?
-						                                                       var : array [pos.Row * outGridIO->ColNum () + pos.Col];
+							array [outPos.Row * outGridIO->ColNum () + outPos.Col] = var > array [outPos.Row * outGridIO->ColNum () + outPos.Col] ?
+						                                                             var : array [outPos.Row * outGridIO->ColNum () + outPos.Col];
 							break;
 						}
 					}
 				}
-		for (pos.Row = 0;pos.Row < outGridIO->RowNum (); ++pos.Row)
-			for (pos.Col = 0;pos.Col < outGridIO->ColNum ();++pos.Col)
+		for (outPos.Row = 0;outPos.Row < outGridIO->RowNum (); ++outPos.Row)
+			for (outPos.Col = 0;outPos.Col < outGridIO->ColNum ();++outPos.Col)
 				{
-				if (count [pos.Row * outGridIO->ColNum () + pos.Col] > 0)
+				if (count [outPos.Row * outGridIO->ColNum () + outPos.Col] > 0)
 					{
-					var = array [pos.Row * outGridIO->ColNum () + pos.Col];
+					var = array [outPos.Row * outGridIO->ColNum () + outPos.Col];
 					if (method == CMDboxAverage)
-						var = var / (DBFloat) count [pos.Row * outGridIO->ColNum () + pos.Col];
-					outGridIO->Value (outLayerRec,pos,var);
+						var = var / (DBFloat) count [outPos.Row * outGridIO->ColNum () + outPos.Col];
+					outGridIO->Value (outLayerRec,outPos,var);
 					}
 				else
-					outGridIO->Value (outLayerRec,pos,outGridIO->MissingValue ());
+					outGridIO->Value (outLayerRec,outPos,outGridIO->MissingValue ());
 				}
 		outGridIO->RecalcStats (outLayerRec);
 		}
