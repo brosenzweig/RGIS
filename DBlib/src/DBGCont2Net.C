@@ -103,9 +103,9 @@ DBInt DBGridCont2Network (DBObjData *gridData,DBObjData *netData)
 		for (pos.Col = 0;pos.Col < gridIO->ColNum ();pos.Col++)
 			{
 			gridIO->Pos2Coord (pos,coord0);
-			zLayerNum = 0;
+			zLayerID = 0;
 			if (zGridIO != (DBGridIO *) NULL)
-				for (zLayerID = 0; zLayerID < zGridIO->LayerNum (); zLayerID++)
+				for ( ; zLayerID < zGridIO->LayerNum (); zLayerID++)
 					{
 					layerRec = zGridIO->Layer (zLayerID);
 					if ((layerRec->Flags () & DBObjectFlagIdle) == DBObjectFlagIdle) continue;
@@ -121,23 +121,24 @@ DBInt DBGridCont2Network (DBObjData *gridData,DBObjData *netData)
 						if (col < 0) continue;
 						if (row >= gridIO->RowNum ()) continue;
 						if (col >= gridIO->ColNum ()) continue;
+						auxPos.Row = row;
+						auxPos.Col = col;
 						gridIO->Pos2Coord (auxPos,coord1);
 						switch (zGridData->Type ())
 							{
 							case DBTypeGridDiscrete:	basinID = zGridIO->GridValue (layerRec,coord1);	break;
 							case DBTypeGridContinuous:	zGridIO->Value (layerRec,coord1,&basinID);		break;
 							}
-						zones [zLayerNum * 9 + dir] = basinID;
+						zones [zLayerID * 9 + dir] = basinID;
 						}
 					switch (zGridData->Type ())
 						{
 						case DBTypeGridDiscrete:	basinID = zGridIO->GridValue (layerRec,coord0);	break;
 						case DBTypeGridContinuous: zGridIO->Value (layerRec,coord0,&basinID);		break;
 						}
-					zones [zLayerNum * 9 + 8] = basinID;
-					zLayerNum++;
+					zones [zLayerID * 9 + 8] = basinID;
 					}
-			else { for (dir = 0;dir < 9;++dir) zones [zLayerNum * 9 + dir] = DBFault; zLayerNum++; }
+			for (dir = 0;dir < 9;++dir) zones [zLayerID * 9 + dir] = 0;
 
 			maxDir = DBFault;
 			for (layerID = 0;layerID < gridIO->LayerNum ();++layerID)
@@ -146,8 +147,8 @@ DBInt DBGridCont2Network (DBObjData *gridData,DBObjData *netData)
 				if ((layerRec->Flags () & DBObjectFlagIdle) == DBObjectFlagIdle) continue;
 				if (gridIO->Value (layerRec,pos,&elev0))
 					{
-					delta = maxDelta = (DBFloat) 0.0;
-					maxDir = 0;
+					maxDelta = (DBFloat) 0.0;
+					maxDir   = 0;
 
 					for (zLayerID = 0;zLayerID < zLayerNum;++zLayerID)
 						{

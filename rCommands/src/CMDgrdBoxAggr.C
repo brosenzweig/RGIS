@@ -182,7 +182,8 @@ int main (int argc,char *argv [])
 			for (outPos.Col = 0;outPos.Col < outGridIO->ColNum ();++outPos.Col)
 				{
 				count [outPos.Row * outGridIO->ColNum () + outPos.Col] = 0;
-				switch (method) {
+				switch (method)
+					{
 					case CMDboxSum:
 					case CMDboxAverage:
 						array [outPos.Row * outGridIO->ColNum () + outPos.Col] = 0.0;
