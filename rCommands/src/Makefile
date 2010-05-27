@@ -31,7 +31,7 @@ UTILS = $(BIN)/dsAggregate\
         $(BIN)/grdCalculate\
         $(BIN)/grdCycleMean\
         $(BIN)/grdCellStats\
-        $(BIN)/grdCreatNetwork\
+        $(BIN)/grdCreateNetwork\
         $(BIN)/grdDifference\
         $(BIN)/grdReclassDisc\
         $(BIN)/grdRunningMean\

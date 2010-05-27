@@ -23,6 +23,7 @@ int main (int argc,char *argv [])
 	char *title  = (char *) NULL;
 	char *domain = (char *) NULL, *version = (char *) NULL;
 	DBObjData *outData, *inData, *basinData = (DBObjData *) NULL;
+	DBInt DBGridCont2Network (DBObjData *,DBObjData *);
 
 	for (argPos = 1;argPos < argNum; )
 		{
@@ -31,7 +32,7 @@ int main (int argc,char *argv [])
 				{ CMmsgPrint (CMmsgUsrError, "Missing basin pack filename!\n"); return (CMfailed); }
 			else {
 				if (basinData != (DBObjData *) NULL)
-					CMmsgPrint (CMmsgWanrining,"Ignoring redefined basin pack\n");
+					CMmsgPrint (CMmsgWarning,"Ignoring redefined basin pack\n");
 				else {
 					basinData = new DBObjData ();
 					if (basinData->Read (argv [argPos]) == DBFault) {
@@ -104,7 +105,7 @@ int main (int argc,char *argv [])
 	if (version == (char *) NULL) version = (char *) "0.01pre";
 
 	outData = new DBObjData (title,DBTypeNetwork);
-	outData->Document (DBDocSubject,STNetwork);
+	outData->Document (DBDocSubject,"STNetwork");
 	outData->Document (DBDocGeoDomain,domain);
 	outData->Document (DBDocVersion,version);
 	outData->Projection (inData->Projection());
