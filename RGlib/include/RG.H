@@ -87,7 +87,7 @@ DBInt RGlibNetworkUpStreamAvg (DBObjData *,DBObjData *,DBObjData *);
 DBInt RGlibNetworkHeadStats (DBObjData *,DBObjData *,DBObjData *,DBInt);
 DBInt RGlibNetworkHistogram (DBObjData *,DBObjData *,DBObjData *);
 DBInt RGlibNetworkPsmRouting (DBObjData *,DBObjData *, DBObjData *, DBInt, DBFloat, DBObjData *);
-DBInt RGlibNetworkDefragment (DBObjData *, DBObjData *,DBFloat,bool);
+DBInt RGlibNetworkDefragment (DBObjData *, DBObjData *,DBFloat, DBFloat, bool);
 void RGlibGridSampling (DBObjData *,DBObjData *);
 
 DBInt RGLibTableJoin (DBObjTable *,DBObjTableField *,DBObjTable *,DBObjTableField *);

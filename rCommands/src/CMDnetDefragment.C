@@ -11,6 +11,7 @@ balazs.fekete@unh.edu
 *******************************************************************************/
 
 #include <cm.h>
+#include <math.h>
 #include <DB.H>
 #include <DBio.H>
 #include <RG.H>
@@ -19,7 +20,7 @@ int main (int argc,char *argv [])
 
 	{
 	int argPos, argNum = argc, ret, verbose = false;
-	float climb = 0.0;
+	float climb = 0.0, maxBasin = HUGE_VAL;
 	char *title  = (char *) NULL,		*subject = (char *) NULL;
 	char *domain = (char *) NULL,		*version = (char *) NULL;
 	char *elevName = (char *) NULL;
@@ -42,6 +43,15 @@ int main (int argc,char *argv [])
 				{ CMmsgPrint (CMmsgUsrError,"Missing climb coefficient!\n"); return (CMfailed); }
 			if (sscanf (argv [argPos],"%f",&climb) != 1)
 				{ CMmsgPrint (CMmsgUsrError,"Invalid climb coefficient\n");  return (CMfailed); }
+			if ((argNum = CMargShiftLeft (argPos,argv,argNum)) <= argPos) break;
+			continue;
+			}
+		if (CMargTest (argv [argPos],"-a","--maximum_basin"))
+			{
+			if ((argNum = CMargShiftLeft (argPos,argv,argNum)) <= argPos)
+				{ CMmsgPrint (CMmsgUsrError,"Missing maximum basin size!\n"); return (CMfailed); }
+			if (sscanf (argv [argPos],"%f",&maxBasin) != 1)
+				{ CMmsgPrint (CMmsgUsrError,"Invalid maximum basin size\n");  return (CMfailed); }
 			if ((argNum = CMargShiftLeft (argPos,argv,argNum)) <= argPos) break;
 			continue;
 			}
@@ -156,7 +166,7 @@ int main (int argc,char *argv [])
 	if ((argNum > 2) && (strcmp (argv [2],"-") != 0)) netData->FileName (argv [2]);
 	else save = false;
 
-	if ((ret = RGlibNetworkDefragment (netData, grdData,climb, save)) == DBSuccess)
+	if ((ret = RGlibNetworkDefragment (netData, grdData,climb, maxBasin, save)) == DBSuccess)
 		ret = (argNum > 2) && (strcmp (argv [2],"-") != 0) ? netData->Write (argv [2]) : netData->Write (stdout);
 
 	delete netData; delete grdData;
@@ -175,7 +185,7 @@ static DBInt _RGlibNetworkDefragCompare (const void *leftID,const void *rightID)
 	return (leftVal < rightVal ? -1 : 1);
 	}
 
-DBInt RGlibNetworkDefragment (DBObjData *netData, DBObjData *elevData,DBFloat maxClimb, bool save)
+DBInt RGlibNetworkDefragment (DBObjData *netData, DBObjData *elevData,DBFloat maxClimb, DBFloat maxBasin, bool save)
 	{
 	DBInt basin, basinID, *basinIDs, cBasinID, nBasinID, cellID, dir, prevDir, pourDir, cellNum, count;
 	DBFloat elev, elev2, pourElev;
@@ -236,7 +246,8 @@ DBInt RGlibNetworkDefragment (DBObjData *netData, DBObjData *elevData,DBFloat ma
 			pourElev = _RGlibNetworkBasinElev [cBasinID] + maxClimb;
 			if (CMmathEqualValues (_RGlibNetworkBasinElev [cBasinID],grdIO->Minimum ())) continue;
 			toCell = pourCell = mouthCell = netIO->MouthCell (netIO->Basin (cBasinID));
-			if (netIO->CellDirection (mouthCell) != 0x0)         continue;
+			if (netIO->CellDirection (mouthCell) != 0x0)                continue;
+			if (netIO->BasinArea (netIO->Basin (cBasinID)) >= maxBasin) continue;
 
 			pourDir = 0x0;
 			cellNum  = mouthCell->RowID () + netIO->CellBasinCells (mouthCell);
