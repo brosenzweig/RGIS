@@ -129,7 +129,8 @@ int main (int argc,char *argv [])
 			CMmsgPrint (CMmsgInfo,"%s [options] <input network> <output network>\n",CMprgName(argv[0]));
 			CMmsgPrint (CMmsgInfo,"     -e,--elevation   [elevation coverage]\n");
 			CMmsgPrint (CMmsgInfo,"     -c,--climb       [climb coefficient]\n");
-			CMmsgPrint (CMmsgUsrError,"     -P, --planet     [Earth|Mars|Venus|radius]\n");
+			CMmsgPrint (CMmsgInfo,"     -a,--maximum_basin [maximum basin size]\n");
+			CMmsgPrint (CMmsgInfo,"     -P, --planet     [Earth|Mars|Venus|radius]\n");
 			CMmsgPrint (CMmsgInfo,"     -t,--title       [dataset title]\n");
 			CMmsgPrint (CMmsgInfo,"     -u,--subject     [subject]\n");
 			CMmsgPrint (CMmsgInfo,"     -d,--domain      [domain]\n");
