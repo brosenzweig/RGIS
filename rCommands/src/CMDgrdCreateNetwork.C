@@ -39,6 +39,7 @@ int main (int argc,char *argv [])
 						CMmsgPrint (CMmsgUsrError, "Basin data reading error\n");
 						delete basinData;
 						basinData = (DBObjData *) NULL;
+						return (CMfailed);
 					}
 				}
 			}
