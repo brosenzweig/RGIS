@@ -49,14 +49,14 @@ int main (int argc,char *argv [])
 		}
 		if (CMargTest(argv[argPos],"-w","--weighting")) {
 			if ((argNum = CMargShiftLeft(argPos,argv,argNum)) <= argPos)
-				{ CMmsgPrint (CMmsgUsrError, "Missing aggregate method!\n"); return (CMfailed); }
+				{ CMmsgPrint (CMmsgUsrError, "Missing weighting method!\n"); return (CMfailed); }
 			else {
 				const char *options [] = { "on", "off", (char *) NULL };
 				bool methods [] = { true, false };
 				DBInt code;
 
 				if ((code = CMoptLookup (options,argv [argPos],false)) == CMfailed) {
-					CMmsgPrint (CMmsgWarning,"Ignoring illformed aggregate method [%s]!\n",argv [argPos]);
+					CMmsgPrint (CMmsgWarning,"Ignoring illformed weighting method [%s]!\n",argv [argPos]);
 				}
 				else weighting = methods [code];
 			}
