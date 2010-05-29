@@ -109,7 +109,6 @@ int main (int argc,char *argv [])
 	outData->Document (DBDocSubject,"STNetwork");
 	outData->Document (DBDocGeoDomain,domain);
 	outData->Document (DBDocVersion,version);
-	outData->Projection (inData->Projection());
 
 	if (DBGridCont2Network (inData,outData) == DBFault) {
 		CMmsgPrint (CMmsgUsrError,"Grid create network failed!\n");

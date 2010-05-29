@@ -86,6 +86,7 @@ class CMDgrdVariable
 		free (dataName);
 		return (DBSuccess);
 		}
+	DBInt    Projection () const { return (GridIO->Data ()->Projection ()); };
 	DBRegion Extent () const { DBObjData *data = GridIO->Data (); return (data->Extent ()); }
 	DBFloat CellWidth  () const { return (GridIO->CellWidth ()); }
 	DBFloat CellHeight () const { return (GridIO->CellWidth ()); }
@@ -388,6 +389,7 @@ int main (int argc,char *argv [])
 	data->Document (DBDocVersion,version);
 	data->Flags (DBDataFlagDispModeContShadeSets,DBClear);
 	data->Flags (shadeSet, DBSet);
+	data->Projection(grdVar [0]->Projection ()); // Taking projection from first grid variable
 
 	gridIO = new DBGridIO (data);
 	for (layerID = 0;layerID < layerNum;++layerID)
