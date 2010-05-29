@@ -464,7 +464,7 @@ void RGISAnGContCreateNetworkCBK (Widget widget,RGISWorkspace *workspace,XmAnyCa
 	DBDataset *dataset = UIDataset ();
 	DBObjData *gridData = dataset->Data ();
 	DBObjData *netData = new DBObjData ("",DBTypeNetwork);
-	DBInt DBGridCont2Network (DBObjData *,DBObjData *);
+	DBInt DBGridCont2Network (DBObjData *,DBObjData *, bool);
 
 	widget = widget; callData = callData;
 
@@ -473,7 +473,7 @@ void RGISAnGContCreateNetworkCBK (Widget widget,RGISWorkspace *workspace,XmAnyCa
 	if (UIDataHeaderForm (netData))
 		{
 		UIPauseDialogOpen ((char *) "Creating Networks");
-		if (DBGridCont2Network (gridData,netData) == DBFault)	delete netData;
+		if (DBGridCont2Network (gridData,netData, true) == DBFault)	delete netData;
 		else workspace->CurrentData (netData);
 		UIPauseDialogClose ();
 		}

@@ -13,7 +13,7 @@ balazs.fekete@unh.edu
 #include <DB.H>
 #include <DBio.H>
 
-DBInt DBGridCont2Network (DBObjData *gridData,DBObjData *netData)
+DBInt DBGridCont2Network (DBObjData *gridData,DBObjData *netData, bool weighting)
 
 	{
 	DBInt basinID, layerID, zLayerID, zLayerNum, dir, maxDir, projection = gridData->Projection (), *zones;
@@ -169,7 +169,7 @@ DBInt DBGridCont2Network (DBObjData *gridData,DBObjData *netData)
 							gridIO->Pos2Coord (auxPos,coord1);
 							if ((zones [zLayerID * 9 + dir] == zones [zLayerID * 9 + 8]) && (gridIO->Value (layerRec,auxPos,&elev1)))
 								{
-								distance = DBMathCoordinateDistance (projection,coord0,coord1);
+								distance = weighting ? DBMathCoordinateDistance (projection,coord0,coord1) : 1.0;
 								delta = (elev1 - elev0) / distance;
 								if (maxDelta > delta) { maxDelta = delta; maxDir = (0x01 << dir); }
 								}

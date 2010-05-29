@@ -20,10 +20,11 @@ int main (int argc,char *argv [])
 
 	{
 	int argPos, argNum = argc, ret, verbose = false;
+	bool weighting = true;
 	char *title  = (char *) NULL;
 	char *domain = (char *) NULL, *version = (char *) NULL;
 	DBObjData *outData, *inData, *basinData = (DBObjData *) NULL;
-	DBInt DBGridCont2Network (DBObjData *,DBObjData *);
+	DBInt DBGridCont2Network (DBObjData *,DBObjData *, bool);
 
 	for (argPos = 1;argPos < argNum; )
 		{
@@ -42,6 +43,22 @@ int main (int argc,char *argv [])
 						return (CMfailed);
 					}
 				}
+			}
+			if ((argNum = CMargShiftLeft(argPos,argv,argNum)) <= argPos) break;
+			continue;
+		}
+		if (CMargTest(argv[argPos],"-w","--weighting")) {
+			if ((argNum = CMargShiftLeft(argPos,argv,argNum)) <= argPos)
+				{ CMmsgPrint (CMmsgUsrError, "Missing aggregate method!\n"); return (CMfailed); }
+			else {
+				const char *options [] = { "on", "off", (char *) NULL };
+				bool methods [] = { true, false };
+				DBInt code;
+
+				if ((code = CMoptLookup (options,argv [argPos],false)) == CMfailed) {
+					CMmsgPrint (CMmsgWarning,"Ignoring illformed aggregate method [%s]!\n",argv [argPos]);
+				}
+				else weighting = methods [code];
 			}
 			if ((argNum = CMargShiftLeft(argPos,argv,argNum)) <= argPos) break;
 			continue;
@@ -110,7 +127,7 @@ int main (int argc,char *argv [])
 	outData->Document (DBDocGeoDomain,domain);
 	outData->Document (DBDocVersion,version);
 
-	if (DBGridCont2Network (inData,outData) == DBFault) {
+	if (DBGridCont2Network (inData,outData, weighting) == DBFault) {
 		CMmsgPrint (CMmsgUsrError,"Grid create network failed!\n");
 		ret = DBFault;
 		goto Stop;
