@@ -20,7 +20,7 @@ int main (int argc,char *argv [])
 
 	{
 	int argPos, argNum = argc, ret, verbose = false;
-	bool weighting = true;
+	bool downhill = true;
 	char *title  = (char *) NULL;
 	char *domain = (char *) NULL, *version = (char *) NULL;
 	DBObjData *outData, *inData, *basinData = (DBObjData *) NULL;
@@ -47,18 +47,18 @@ int main (int argc,char *argv [])
 			if ((argNum = CMargShiftLeft(argPos,argv,argNum)) <= argPos) break;
 			continue;
 		}
-		if (CMargTest(argv[argPos],"-w","--weighting")) {
+		if (CMargTest(argv[argPos],"-g","--gradient")) {
 			if ((argNum = CMargShiftLeft(argPos,argv,argNum)) <= argPos)
 				{ CMmsgPrint (CMmsgUsrError, "Missing weighting method!\n"); return (CMfailed); }
 			else {
-				const char *options [] = { "on", "off", (char *) NULL };
+				const char *options [] = { "down", "up", (char *) NULL };
 				bool methods [] = { true, false };
 				DBInt code;
 
 				if ((code = CMoptLookup (options,argv [argPos],false)) == CMfailed) {
-					CMmsgPrint (CMmsgWarning,"Ignoring illformed weighting method [%s]!\n",argv [argPos]);
+					CMmsgPrint (CMmsgWarning,"Ignoring illformed gradient method [%s]!\n",argv [argPos]);
 				}
-				else weighting = methods [code];
+				else downhill = methods [code];
 			}
 			if ((argNum = CMargShiftLeft(argPos,argv,argNum)) <= argPos) break;
 			continue;
@@ -97,6 +97,7 @@ int main (int argc,char *argv [])
 			{
 			CMmsgPrint (CMmsgInfo,"%s [options] <input file> <output file>\n",CMprgName(argv[0]));
 			CMmsgPrint (CMmsgInfo,"     -b,--basin_pack [basin pack file]\n");
+			CMmsgPrint (CMmsgInfo,"     -g,--gradient   [down|up]\n");
 			CMmsgPrint (CMmsgInfo,"     -t,--title      [dataset title]\n");
 			CMmsgPrint (CMmsgInfo,"     -d,--domain     [domain]\n");
 			CMmsgPrint (CMmsgInfo,"     -v,--version    [version]\n");
@@ -127,7 +128,7 @@ int main (int argc,char *argv [])
 	outData->Document (DBDocGeoDomain,domain);
 	outData->Document (DBDocVersion,version);
 
-	if (DBGridCont2Network (inData,outData, weighting) == DBFault) {
+	if (DBGridCont2Network (inData,outData, downhill) == DBFault) {
 		CMmsgPrint (CMmsgUsrError,"Grid create network failed!\n");
 		ret = DBFault;
 		goto Stop;
