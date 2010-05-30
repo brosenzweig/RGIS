@@ -49,7 +49,7 @@ int main (int argc,char *argv [])
 		}
 		if (CMargTest(argv[argPos],"-g","--gradient")) {
 			if ((argNum = CMargShiftLeft(argPos,argv,argNum)) <= argPos)
-				{ CMmsgPrint (CMmsgUsrError, "Missing weighting method!\n"); return (CMfailed); }
+				{ CMmsgPrint (CMmsgUsrError, "Missing gradient method!\n"); return (CMfailed); }
 			else {
 				const char *options [] = { "down", "up", (char *) NULL };
 				bool methods [] = { true, false };
