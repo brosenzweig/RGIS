@@ -167,18 +167,10 @@ DBInt DBGridCont2Network (DBObjData *gridData,DBObjData *netData, bool downhill)
 							auxPos.Row = row;
 							auxPos.Col = col;
 							gridIO->Pos2Coord (auxPos,coord1);
+							distance = DBMathCoordinateDistance (projection,coord0,coord1);
 							if ((zones [zLayerID * 9 + dir] == zones [zLayerID * 9 + 8]) && (gridIO->Value (layerRec,auxPos,&elev1)))
 								{
-								if (downhill)
-									{
-									distance = DBMathCoordinateDistance (projection,coord0,coord1);
-									delta = (elev1 - elev0) / distance;
-									}
-								else
-									{
-									distance = 1.0;
-									delta = (elev0 - elev1);
-									}
+								delta = (downhill ? (elev1 - elev0) : (elev0 - elev1)) / distance;
 								if (maxDelta > delta) { maxDelta = delta; maxDir = (0x01 << dir); }
 								}
 							}
