@@ -821,9 +821,9 @@ function RGISdirectoryPath ()
 	local      tstep=$(echo "${7}" | tr "[A-Z]" "[a-z]")
 
 	local        dir=$(_RGIStStepDir ${tstepType} ${tstep})
-	local     varDir=$(_RGISvariableDir "${archive}" "${domain}" "${variable}")
+	local     varDir=$(RGISlookupSubject "${variable}")
 
-	echo "${archive}/${varDir}/${product}/${resolution}/${dir}"
+	echo "${archive}/${domain}/${varDir}/${product}/${resolution}/${dir}"
 }
 
 function RGISdirectory ()
@@ -846,6 +846,71 @@ function RGISdirectory ()
 		echo "${archive}/${resDir}/${dir}"
 	fi
 	return 0
+}
+
+function RGISfilePath ()
+{
+	local      archive="${1}"
+	local       domain="${2}"
+	local     variable="${3}"
+	local      product="${4}"
+	local   resolution="${5}"
+	local    tstepType="${6}"
+	local        tstep=$(echo "${7}" | tr "[A-Z]" "[a-z]")
+	local    timeRange="${8}"
+
+	case "${tstep}" in
+		(hourly)
+			local tstepStr="h"
+		;;
+		(3hourly)
+			local tstepStr="3h"
+		;;
+		(6hourly)
+			local tstepStr="6h"
+		;;
+		(daily)
+			local tstepStr="d"
+		;;
+		(monthly)
+			local tstepStr="m"
+		;;
+		(annual)
+			local tstepStr="a"
+		;;
+		("")
+			local tstepStr=""
+		;;
+		(*)
+			echo "Unknown time step ${tstep}" > /dev/stderr
+			return 1
+		;;
+	esac
+
+	case "${variable}" in
+		(network)
+			local extension="gdbn"
+		;;
+		(*)
+			local extension="gdbc"
+		;;
+	esac
+
+	local rgisDirectory=$(RGISdirectoryPath "${archive}" "${domain}" "${variable}" "${product}" "${resolution}" "${tstepType}" "${tstep}")
+	local      fileName=$(_RGISresolutionDir "${archive}" "${domain}" "${variable}" "${product}" "${resolution}" | sed "s:/:_:g" )
+	if [ "${rgisDirectory}" == "" ]
+	then
+		echo ""
+		return 1
+	fi
+	if [[ "${tstepType}" == "static" ]]
+	then
+		local tstepType="Static"
+		local tstepStr=""
+	fi
+
+	local  variableName=$(RGISlookupSubject "${variable}")
+	echo "${rgisDirectory}/${fileName}_${tstepStr}${tstepType}${timeRange}.${extension}"
 }
 
 function RGISfile ()
