@@ -11,6 +11,7 @@ balazs.fekete@unh.edu
 *******************************************************************************/
 
 #include <stdlib.h>
+#include <unistd.h>
 #include <cm.h>
 
 CMthreadJob_p CMthreadJobCreate (CMthreadTeam_p team,
@@ -33,10 +34,12 @@ CMthreadJob_p CMthreadJobCreate (CMthreadTeam_p team,
 	}
 	job->TaskNum = taskNum;
 	for (taskId = 0;taskId < job->TaskNum; ++taskId) {
-		job->Tasks [taskId].Id         = taskId;
-		job->Tasks [taskId].Completed  = false;
-		job->Tasks [taskId].Locked     = false;
-		job->Tasks [taskId].Depend     = 0;
+		job->Tasks [taskId].Id          = taskId;
+		job->Tasks [taskId].Completed   = false;
+		job->Tasks [taskId].Locked      = false;
+		job->Tasks [taskId].Dependent   = taskId;
+		job->Tasks [taskId].DependNum   = 0;
+		job->Tasks [taskId].DependCount = 0;
 	}
 	job->LastId   = job->TaskNum;
 	job->UserFunc = execFunc;
@@ -62,14 +65,19 @@ CMthreadJob_p CMthreadJobCreate (CMthreadTeam_p team,
 	return (job);
 }
 
-CMreturn CMthreadJobTaskDependence (CMthreadJob_p job, size_t taskId, size_t depend) {
+CMreturn CMthreadJobTaskDependent (CMthreadJob_p job, size_t taskId, size_t dependent) {
 	if (taskId > job->TaskNum) {
 		CMmsgPrint (CMmsgAppError,"Invalid task in %s%d\n",__FILE__,__LINE__);
 		return (CMfailed);
 	}
-	if (depend >= job->TaskNum) depend = job->TaskNum - 1;
-	job->Tasks [taskId].Depend = job->Tasks [taskId].Depend > depend ?
-		                         job->Tasks [taskId].Depend : depend;
+	if (taskId == dependent) return (CMsucceeded);
+
+	if (taskId < dependent) {
+		job->Tasks [taskId].Dependent = dependent;
+		job->Tasks [job->Tasks [taskId].Dependent].DependNum += 1;
+	}
+	else
+		CMmsgPrint (CMmsgWarning,"Invalid dependence [%d:%d] ignored!\n", dependent, taskId);
 	return (CMsucceeded);
 }
 
@@ -88,40 +96,36 @@ static void *_CMthreadWork (void *dataPtr) {
 	CMthreadData_p data = (CMthreadData_p) dataPtr;
 	int taskId;
 	CMthreadTeam_p team = (CMthreadTeam_p) data->TeamPtr;
-	CMthreadJob_p  job;
+	CMthreadJob_p  job  = team->JobPtr;
 	clock_t start = clock ();
 
-	pthread_mutex_lock   (&(team->Mutex));
-	job = (CMthreadJob_p) team->JobPtr;
-
 	while (job->LastId < job->TaskNum) {
+		pthread_mutex_lock   (&(team->Mutex));
 		for (taskId = job->LastId;taskId < job->TaskNum; ++taskId) {
 			if (job->Tasks [taskId].Completed) {
 				if (taskId == job->LastId) job->LastId = taskId + 1;
 				continue;
 			}
 			if (job->Tasks [taskId].Locked)    continue;
-			if ((taskId >= job->Tasks [taskId].Depend) || (job->Tasks [job->Tasks [taskId].Depend].Completed)) {
+			if (job->Tasks [taskId].DependCount == job->Tasks [taskId].DependNum) {
 				job->Tasks [taskId].Locked = true;
-				if (taskId == (job->LastId  - 1)) job->LastId = taskId;
 
 				pthread_mutex_unlock (&(team->Mutex));
 				start = clock ();
-				job->UserFunc (job->CommonData, job->ThreadData == (void **) NULL ? (void *) NULL : job->ThreadData [data->Id], taskId);
+				job->UserFunc ((void *) team, job->CommonData, job->ThreadData == (void **) NULL ? (void *) NULL : job->ThreadData [data->Id], taskId);
 				data->UserTime += clock () - start + 1;
 				data->CompletedTasks++;
 				pthread_mutex_lock   (&(team->Mutex));
-				job->Tasks [taskId].Locked    = false;
-				job->Tasks [taskId].Completed = true;
+				job->Tasks [taskId].Locked      = false;
+				job->Tasks [taskId].Completed   = true;
+				job->Tasks [job->Tasks [taskId].Dependent].DependCount += 1;
+				job->Tasks [taskId].DependCount = 0;
 			}
 		}
 		pthread_mutex_unlock (&(team->Mutex));
-
-		pthread_mutex_lock   (&(team->Mutex));
 	}
 
 	data->ThreadTime += clock () - start;
-	pthread_mutex_unlock (&(team->Mutex));
 	if (data->Id > 0) pthread_exit((void *) NULL); // Only slave threads need to exit.
 	return ((void *) NULL);
 }
@@ -139,7 +143,7 @@ CMreturn CMthreadJobExecute (CMthreadTeam_p team, CMthreadJob_p job) {
 		job->LastId  = 0;
 		for (taskId = 0; taskId < job->TaskNum; ++taskId) {
 			job->Tasks [taskId].Completed = false;
-			job->Tasks [job->Tasks [taskId].Depend].Locked = false;
+			job->Tasks [taskId].Locked    = false;
 // TODO		printf ("Task: %4d Depend: %4d\n", (int) taskId, (int) job->Tasks [taskId].Depend);
 		}
 
@@ -157,7 +161,8 @@ CMreturn CMthreadJobExecute (CMthreadTeam_p team, CMthreadJob_p job) {
 	}
 	else
 		for (taskId = 0;taskId < job->TaskNum; ++taskId)
-			job->UserFunc (job->CommonData,
+			job->UserFunc ((void *) team,
+						   job->CommonData,
 			               job->ThreadData != (void **) NULL ? job->ThreadData [0] : (void *) NULL,
 			               taskId);
 	return (CMsucceeded);
@@ -221,3 +226,14 @@ void CMthreadTeamDestroy (CMthreadTeam_p team, bool report) {
 		free (team);
 	}
 }
+
+void CMthreadLock (void *teamPtr) {
+	CMthreadTeam_t *team = (CMthreadTeam_t *) teamPtr;
+	pthread_mutex_lock (&(team->Mutex));
+}
+
+void CMthreadUnlock (void *teamPtr) {
+	CMthreadTeam_t *team = (CMthreadTeam_t *) teamPtr;
+	pthread_mutex_unlock (&(team->Mutex));
+}
+

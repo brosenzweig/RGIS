@@ -77,14 +77,14 @@ typedef struct CMthreadTeam_s {
 CMthreadTeam_p CMthreadTeamCreate     (size_t threadNum);
 void           CMthreadTeamDestroy    (CMthreadTeam_p, bool);
 
-typedef void  (*CMthreadUserExecFunc)  (void *, void *, size_t);
+typedef void  (*CMthreadUserExecFunc)  (void *, void *, void *, size_t);
 typedef void *(*CMthreadUserAllocFunc) (void *);
 typedef void *(*CMthreadUserFreeFunc)  (void *);
 
 typedef struct CMthreadTask_s {
 	size_t Id;
 	bool   Completed, Locked;
-	size_t Depend;
+	size_t Dependent, DependNum, DependCount;
 } CMthreadTask_t, *CMthreadTask_p;
 
 typedef struct CMthreadJob_s {
@@ -97,10 +97,13 @@ typedef struct CMthreadJob_s {
 	void               **ThreadData;
 } CMthreadJob_t, *CMthreadJob_p;
 
-CMthreadJob_p CMthreadJobCreate         (CMthreadTeam_p, void *, size_t, CMthreadUserAllocFunc, CMthreadUserExecFunc);
-void          CMthreadJobDestroy        (CMthreadJob_p, CMthreadUserFreeFunc);
-CMreturn      CMthreadJobExecute        (CMthreadTeam_p, CMthreadJob_p);
-CMreturn      CMthreadJobTaskDependence (CMthreadJob_p,  size_t, size_t);
+CMthreadJob_p CMthreadJobCreate        (CMthreadTeam_p, void *, size_t, CMthreadUserAllocFunc, CMthreadUserExecFunc);
+void          CMthreadJobDestroy       (CMthreadJob_p, CMthreadUserFreeFunc);
+CMreturn      CMthreadJobExecute       (CMthreadTeam_p, CMthreadJob_p);
+CMreturn      CMthreadJobTaskDependent (CMthreadJob_p,  size_t, size_t);
+
+void          CMthreadLock             (void *);
+void          CMthreadUnlock           (void *);
 
 #if defined(__cplusplus)
 }
