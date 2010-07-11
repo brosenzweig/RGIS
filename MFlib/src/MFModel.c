@@ -407,7 +407,7 @@ static bool _MFModelReadInput (char *time)
 	return (MFContinue);
 }
 
-static void _MFUserFunc (void *commonPtr,void *threadData, size_t taskId) {
+static void _MFUserFunc (void *team, void *commonPtr,void *threadData, size_t taskId) {
 	int iFunc, varID, dlink, objectId;
 	MFVariable_t *var;
 
@@ -451,7 +451,7 @@ int MFModelRun (int argc, char *argv [], int argNum, int (*conf) ()) {
 			dlink  = _MFDomain->Objects [i].DLinkNum == 1 ? _MFDomain->Objects [i].DLinks [0] : i;
 			dlink  = _MFDomain->ObjNum - dlink - 1;
 			taskId = _MFDomain->ObjNum - i - 1;
-			CMthreadJobTaskDependence (job, dlink, taskId);
+			CMthreadJobTaskDependent (job, taskId, dlink);
 		}
 		do {
 			CMmsgPrint (CMmsgDebug, "Computing: %s\n", timeCur);
