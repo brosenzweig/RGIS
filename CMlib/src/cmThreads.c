@@ -142,7 +142,7 @@ static void *_CMthreadWork (void *dataPtr) {
 
 				pthread_mutex_unlock (&(team->Mutex));
 				start = clock ();
-				job->UserFunc ((void *) team, job->CommonData, job->ThreadData == (void **) NULL ? (void *) NULL : job->ThreadData [data->Id], job->SortedTasks [taskId]->Id);
+				job->UserFunc (job->CommonData, job->ThreadData == (void **) NULL ? (void *) NULL : job->ThreadData [data->Id], job->SortedTasks [taskId]->Id);
 				data->UserTime += clock () - start + 1;
 				data->CompletedTasks++;
 				pthread_mutex_lock   (&(team->Mutex));
@@ -192,8 +192,7 @@ CMreturn CMthreadJobExecute (CMthreadTeam_p team, CMthreadJob_p job) {
 	}
 	else
 		for (taskId = 0;taskId < job->TaskNum; ++taskId)
-			job->UserFunc ((void *) team,
-						   job->CommonData,
+			job->UserFunc (job->CommonData,
 			               job->ThreadData != (void **) NULL ? job->ThreadData [0] : (void *) NULL,
 			               taskId);
 	return (CMsucceeded);

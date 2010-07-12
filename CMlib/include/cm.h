@@ -77,7 +77,7 @@ typedef struct CMthreadTeam_s {
 CMthreadTeam_p CMthreadTeamCreate     (size_t threadNum);
 void           CMthreadTeamDestroy    (CMthreadTeam_p, bool);
 
-typedef void  (*CMthreadUserExecFunc)  (void *, void *, void *, size_t);
+typedef void  (*CMthreadUserExecFunc)  (void *, void *, size_t);
 typedef void *(*CMthreadUserAllocFunc) (void *);
 typedef void *(*CMthreadUserFreeFunc)  (void *);
 
@@ -103,9 +103,6 @@ void          CMthreadJobDestroy       (CMthreadJob_p, CMthreadUserFreeFunc);
 CMreturn      CMthreadJobExecute       (CMthreadTeam_p, CMthreadJob_p);
 CMreturn      CMthreadJobTaskDependent (CMthreadJob_p,  size_t, size_t);
 void          CMthreadJobTaskSort      (CMthreadJob_p);
-
-void          CMthreadLock             (void *);
-void          CMthreadUnlock           (void *);
 
 #if defined(__cplusplus)
 }
