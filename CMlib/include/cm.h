@@ -89,6 +89,7 @@ typedef struct CMthreadTask_s {
 
 typedef struct CMthreadJob_s {
 	size_t               ThreadNum;
+	bool                 Sorted;
 	CMthreadTask_p       Tasks;
 	CMthreadTask_p      *SortedTasks;
 	size_t               TaskNum;
@@ -102,7 +103,6 @@ CMthreadJob_p CMthreadJobCreate        (CMthreadTeam_p, void *, size_t, CMthread
 void          CMthreadJobDestroy       (CMthreadJob_p, CMthreadUserFreeFunc);
 CMreturn      CMthreadJobExecute       (CMthreadTeam_p, CMthreadJob_p);
 CMreturn      CMthreadJobTaskDependent (CMthreadJob_p,  size_t, size_t);
-void          CMthreadJobTaskSort      (CMthreadJob_p);
 
 #if defined(__cplusplus)
 }

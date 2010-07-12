@@ -38,6 +38,7 @@ CMthreadJob_p CMthreadJobCreate (CMthreadTeam_p team,
 		free (job);
 		return ((CMthreadJob_p) NULL);
 	}
+	job->Sorted  = false;
 	job->TaskNum = taskNum;
 	for (taskId = 0;taskId < job->TaskNum; ++taskId) {
 		job->SortedTasks [taskId]       = job->Tasks + taskId;
@@ -89,13 +90,13 @@ CMreturn CMthreadJobTaskDependent (CMthreadJob_p job, size_t taskId, size_t depe
 	return (CMsucceeded);
 }
 
-int _CMthreadJobTaskCompare (const void *leftPtr,const void *rightPtr) {
+static int _CMthreadJobTaskCompare (const void *leftPtr,const void *rightPtr) {
 	CMthreadTask_p *leftTask  = (CMthreadTask_p *) leftPtr;
 	CMthreadTask_p *rightTask = (CMthreadTask_p *) rightPtr;
 	return ((*leftTask)->DependLevel - (*rightTask)->DependLevel);
 }
 
-void CMthreadJobTaskSort (CMthreadJob_p job) {
+static void _CMthreadJobTaskSort (CMthreadJob_p job) {
 	size_t taskId, dependId;
 	size_t level;
 
@@ -172,13 +173,15 @@ CMreturn CMthreadJobExecute (CMthreadTeam_p team, CMthreadJob_p job) {
 		pthread_attr_setdetachstate(&thread_attr, PTHREAD_CREATE_JOINABLE);
 		team->JobPtr = (void *) job;
 		job->LastId  = 0;
+		if (job->Sorted == false) { _CMthreadJobTaskSort (job); job->Sorted = true; }
+
 		for (taskId = 0; taskId < job->TaskNum; ++taskId) {
 			job->Tasks [taskId].Completed = false;
 			job->Tasks [taskId].Locked    = false;
 // TODO		printf ("Task: %4d Depend: %4d\n", (int) taskId, (int) job->Tasks [taskId].Depend);
 		}
 
-		for (threadId = 1; threadId < team->ThreadNum; ++threadId) {
+		for (threadId = 0; threadId < team->ThreadNum; ++threadId) {
 			if ((ret = pthread_create (&(team->Threads [threadId].Thread), &thread_attr,_CMthreadWork,(void *) (team->Threads + threadId))) != 0) {
 				CMmsgPrint (CMmsgAppError,"Thread creation returned with error [%d] in %s:%d\n",ret,__FILE__,__LINE__);
 				free (team->Threads);
@@ -186,9 +189,8 @@ CMreturn CMthreadJobExecute (CMthreadTeam_p team, CMthreadJob_p job) {
 				return (CMfailed);
 			}
 		}
-		status = _CMthreadWork (team->Threads);
 		pthread_attr_destroy(&thread_attr);
-		for (threadId = 1;threadId < team->ThreadNum;++threadId) pthread_join(team->Threads [threadId].Thread, &status);
+		for (threadId = 0;threadId < team->ThreadNum;++threadId) pthread_join(team->Threads [threadId].Thread, &status);
 	}
 	else
 		for (taskId = 0;taskId < job->TaskNum; ++taskId)
@@ -251,7 +253,6 @@ void CMthreadTeamDestroy (CMthreadTeam_p team, bool report) {
 						(float) 0.0, '%');
 		}
 		pthread_mutex_destroy (&(team->Mutex));
-		pthread_exit(NULL);
 		free (team->Threads);
 		free (team);
 	}
