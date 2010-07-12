@@ -32,14 +32,22 @@ CMthreadJob_p CMthreadJobCreate (CMthreadTeam_p team,
 		free (job);
 		return ((CMthreadJob_p) NULL);
 	}
+	if ((job->SortedTasks = (CMthreadTask_p *) calloc (taskNum,sizeof (CMthreadTask_p))) == (CMthreadTask_p *) NULL) {
+		CMmsgPrint (CMmsgSysError, "Memory allocation error in %s:%d\n",__FILE__,__LINE__);
+		free (job->Tasks);
+		free (job);
+		return ((CMthreadJob_p) NULL);
+	}
 	job->TaskNum = taskNum;
 	for (taskId = 0;taskId < job->TaskNum; ++taskId) {
+		job->SortedTasks [taskId]       = job->Tasks + taskId;
 		job->Tasks [taskId].Id          = taskId;
 		job->Tasks [taskId].Completed   = false;
 		job->Tasks [taskId].Locked      = false;
 		job->Tasks [taskId].Dependent   = taskId;
 		job->Tasks [taskId].DependNum   = 0;
 		job->Tasks [taskId].DependCount = 0;
+		job->Tasks [taskId].DependLevel = 0;
 	}
 	job->LastId   = job->TaskNum;
 	job->UserFunc = execFunc;
@@ -81,6 +89,27 @@ CMreturn CMthreadJobTaskDependent (CMthreadJob_p job, size_t taskId, size_t depe
 	return (CMsucceeded);
 }
 
+int _CMthreadJobTaskCompare (const void *leftPtr,const void *rightPtr) {
+	CMthreadTask_p *leftTask  = (CMthreadTask_p *) leftPtr;
+	CMthreadTask_p *rightTask = (CMthreadTask_p *) rightPtr;
+	return ((*leftTask)->DependLevel - (*rightTask)->DependLevel);
+}
+
+void CMthreadJobTaskSort (CMthreadJob_p job) {
+	size_t taskId, dependId;
+	size_t level;
+
+	for (taskId = 0;taskId < job->TaskNum; ++taskId) {
+		level = 1;
+		for (dependId = taskId; dependId != job->Tasks [dependId].Dependent; dependId = job->Tasks [dependId].Dependent) {
+			if (job->Tasks [job->Tasks [dependId].Dependent].DependLevel < level)
+				job->Tasks [job->Tasks [dependId].Dependent].DependLevel = level;
+			level++;
+		}
+	}
+	qsort (job->SortedTasks,job->TaskNum,sizeof (CMthreadTask_p),_CMthreadJobTaskCompare);
+}
+
 void CMthreadJobDestroy (CMthreadJob_p job, CMthreadUserFreeFunc freeFunc) {
 	size_t threadId;
 
@@ -102,24 +131,26 @@ static void *_CMthreadWork (void *dataPtr) {
 	while (job->LastId < job->TaskNum) {
 		pthread_mutex_lock   (&(team->Mutex));
 		for (taskId = job->LastId;taskId < job->TaskNum; ++taskId) {
-			if (job->Tasks [taskId].Completed) {
+			if (job->SortedTasks [taskId]->Completed) {
 				if (taskId == job->LastId) job->LastId = taskId + 1;
 				continue;
 			}
-			if (job->Tasks [taskId].Locked)    continue;
-			if (job->Tasks [taskId].DependCount == job->Tasks [taskId].DependNum) {
-				job->Tasks [taskId].Locked = true;
+			if (job->SortedTasks [taskId]->Locked)    continue;
+			if (job->SortedTasks [taskId]->DependCount == job->SortedTasks [taskId]->DependNum) {
+				job->SortedTasks [taskId]->Locked = true;
+				job->Tasks [job->SortedTasks [taskId]->Dependent].Locked = true;
 
 				pthread_mutex_unlock (&(team->Mutex));
 				start = clock ();
-				job->UserFunc ((void *) team, job->CommonData, job->ThreadData == (void **) NULL ? (void *) NULL : job->ThreadData [data->Id], taskId);
+				job->UserFunc ((void *) team, job->CommonData, job->ThreadData == (void **) NULL ? (void *) NULL : job->ThreadData [data->Id], job->SortedTasks [taskId]->Id);
 				data->UserTime += clock () - start + 1;
 				data->CompletedTasks++;
 				pthread_mutex_lock   (&(team->Mutex));
-				job->Tasks [taskId].Locked      = false;
-				job->Tasks [taskId].Completed   = true;
-				job->Tasks [job->Tasks [taskId].Dependent].DependCount += 1;
-				job->Tasks [taskId].DependCount = 0;
+				job->SortedTasks [taskId]->Locked      = false;
+				job->Tasks [job->SortedTasks [taskId]->Dependent].Locked = false;
+				job->SortedTasks [taskId]->Completed   = true;
+				job->Tasks [job->SortedTasks [taskId]->Dependent].DependCount += 1;
+				job->SortedTasks [taskId]->DependCount = 0;
 			}
 		}
 		pthread_mutex_unlock (&(team->Mutex));

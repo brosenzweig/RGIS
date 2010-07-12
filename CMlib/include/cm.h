@@ -84,12 +84,13 @@ typedef void *(*CMthreadUserFreeFunc)  (void *);
 typedef struct CMthreadTask_s {
 	size_t Id;
 	bool   Completed, Locked;
-	size_t Dependent, DependNum, DependCount;
+	size_t Dependent, DependNum, DependCount, DependLevel;
 } CMthreadTask_t, *CMthreadTask_p;
 
 typedef struct CMthreadJob_s {
 	size_t               ThreadNum;
 	CMthreadTask_p       Tasks;
+	CMthreadTask_p      *SortedTasks;
 	size_t               TaskNum;
 	int                  LastId;
 	CMthreadUserExecFunc UserFunc;
@@ -101,6 +102,7 @@ CMthreadJob_p CMthreadJobCreate        (CMthreadTeam_p, void *, size_t, CMthread
 void          CMthreadJobDestroy       (CMthreadJob_p, CMthreadUserFreeFunc);
 CMreturn      CMthreadJobExecute       (CMthreadTeam_p, CMthreadJob_p);
 CMreturn      CMthreadJobTaskDependent (CMthreadJob_p,  size_t, size_t);
+void          CMthreadJobTaskSort      (CMthreadJob_p);
 
 void          CMthreadLock             (void *);
 void          CMthreadUnlock           (void *);
