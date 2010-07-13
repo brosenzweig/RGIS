@@ -38,8 +38,12 @@ CMthreadJob_p CMthreadJobCreate (CMthreadTeam_p team,
 		free (job);
 		return ((CMthreadJob_p) NULL);
 	}
-	job->Sorted  = false;
-	job->TaskNum = taskNum;
+	job->Groups    = (CMthreadTaskGroup_p) NULL;
+	job->GroupNum  = 0;
+	job->Group     = 0;
+	job->Completed = 0;
+	job->Sorted    = false;
+	job->TaskNum   = taskNum;
 	for (taskId = 0;taskId < job->TaskNum; ++taskId) {
 		job->SortedTasks [taskId]       = job->Tasks + taskId;
 		job->Tasks [taskId].Id          = taskId;
@@ -50,7 +54,6 @@ CMthreadJob_p CMthreadJobCreate (CMthreadTeam_p team,
 		job->Tasks [taskId].DependCount = 0;
 		job->Tasks [taskId].DependLevel = 0;
 	}
-	job->LastId   = job->TaskNum;
 	job->UserFunc = execFunc;
 	job->CommonData = (void *) commonData;
 	if (allocFunc != (CMthreadUserAllocFunc) NULL) {
@@ -107,20 +110,38 @@ static int _CMthreadJobTaskCompare (const void *lPtr,const void *rPtr) {
 	return (-1);
 }
 
-static void _CMthreadJobTaskSort (CMthreadJob_p job) {
+CMreturn _CMthreadJobTaskSort (CMthreadJob_p job) {
 	size_t taskId;
-	size_t level;
+	size_t group;
 	CMthreadTask_p dependent;
 
 	for (taskId = 0;taskId < job->TaskNum; ++taskId) {
-		level = 1;
+		group = 1;
 		for (dependent = job->Tasks + taskId; dependent->Dependent != (CMthreadTask_p) NULL; dependent = dependent->Dependent) {
-			if (dependent->Dependent->DependLevel < level)
-				dependent->Dependent->DependLevel = level;
-			level++;
+			if (dependent->Dependent->DependLevel < group)
+				dependent->Dependent->DependLevel = group;
+			group++;
 		}
 	}
 	qsort (job->SortedTasks,job->TaskNum,sizeof (CMthreadTask_p),_CMthreadJobTaskCompare);
+	job->GroupNum = job->SortedTasks [job->TaskNum - 1]->DependLevel + 1;
+	if ((job->Groups = (CMthreadTaskGroup_p) calloc (job->GroupNum, sizeof (CMthreadTaskGroup_t))) == (CMthreadTaskGroup_p) NULL) {
+		CMmsgPrint (CMmsgAppError,"Memory allocation error in: %s:%d\n",__FILE__,__LINE__);
+		return (CMfailed);
+	}
+	group = 0;
+	job->Groups [group].Id = group;
+	job->Groups [group].Start = 0;
+	for (taskId = 0;taskId < job->TaskNum; ++taskId) {
+		if (group != job->SortedTasks [taskId]->DependLevel) {
+			job->Groups [group].Num = taskId - job->Groups [group].Start;
+			group = job->SortedTasks [taskId]->DependLevel;
+			job->Groups [group].Id = group;
+			job->Groups [group].Start = taskId;
+		}
+	}
+	job->Groups [group].Num = taskId - job->Groups [group].Start;
+	return (CMsucceeded);
 }
 
 void CMthreadJobDestroy (CMthreadJob_p job, CMthreadUserFreeFunc freeFunc) {
@@ -130,6 +151,7 @@ void CMthreadJobDestroy (CMthreadJob_p job, CMthreadUserFreeFunc freeFunc) {
 		for (threadId = 0;threadId < job->ThreadNum; ++threadId)
 			freeFunc (job->ThreadData [threadId]);
 	}
+	if (job->Groups != (CMthreadTaskGroup_p) NULL) free (job->Groups);
 	free (job->Tasks);
 	free (job);
 }
@@ -141,39 +163,27 @@ static void *_CMthreadWork (void *dataPtr) {
 	CMthreadJob_p  job  = team->JobPtr;
 	clock_t start = clock ();
 
-	while (job->LastId < job->TaskNum) {
-		pthread_mutex_lock   (&(team->Mutex));
-		for (taskId = job->LastId;taskId < job->TaskNum; ++taskId) {
-			if (job->SortedTasks [taskId]->Completed) {
-				if (taskId == job->LastId) job->LastId = taskId + 1;
-				continue;
-			}
-			if (job->SortedTasks [taskId]->Locked)    continue;
-			if ((job->SortedTasks [taskId]->Dependent != (CMthreadTask_p) NULL) &&
-				(job->SortedTasks [taskId]->Dependent->Locked == true)) continue;
-
-			if (job->SortedTasks [taskId]->DependCount == job->SortedTasks [taskId]->DependNum) {
-				job->SortedTasks [taskId]->Locked = true;
-				if (job->SortedTasks [taskId]->Dependent != (CMthreadTask_p) NULL)
-					job->SortedTasks [taskId]->Dependent->Locked = true;
-
-				pthread_mutex_unlock (&(team->Mutex));
+	pthread_mutex_lock   (&(team->Mutex));
+	while (job->Group < job->GroupNum) {
+		pthread_mutex_unlock (&(team->Mutex));
+		for (taskId = job->Groups [job->Group].Start + data->Id;
+			 taskId < job->Groups [job->Group].Start + job->Groups [job->Group].Num;
+			 taskId += team->ThreadNum) {
 				start = clock ();
 				job->UserFunc (job->CommonData, job->ThreadData == (void **) NULL ? (void *) NULL : job->ThreadData [data->Id], job->SortedTasks [taskId]->Id);
 				data->UserTime += clock () - start + 1;
 				data->CompletedTasks++;
-				pthread_mutex_lock   (&(team->Mutex));
-				job->SortedTasks [taskId]->Locked      = false;
-				if (job->SortedTasks [taskId]->Dependent != (CMthreadTask_p) NULL) {
-					job->SortedTasks [taskId]->Dependent->Locked = false;
-					job->SortedTasks [taskId]->Dependent->DependCount += 1;
-				}
-				job->SortedTasks [taskId]->Completed   = true;
-				job->SortedTasks [taskId]->DependCount = 0;
-			}
 		}
-		pthread_mutex_unlock (&(team->Mutex));
+		pthread_mutex_lock (&(team->Mutex));
+		job->Completed++;
+		if (job->Completed == team->ThreadNum) {
+			job->Group++;
+			job->Completed = 0;
+			pthread_cond_broadcast (&(team->Cond));
+		}
+		else pthread_cond_wait (&(team->Cond), &(team->Mutex));
 	}
+	pthread_mutex_unlock (&(team->Mutex));
 
 	data->ThreadTime += clock () - start;
 	if (data->Id > 0) pthread_exit((void *) NULL); // Only slave threads need to exit.
@@ -190,7 +200,7 @@ CMreturn CMthreadJobExecute (CMthreadTeam_p team, CMthreadJob_p job) {
 		pthread_attr_init (&thread_attr);
 		pthread_attr_setdetachstate(&thread_attr, PTHREAD_CREATE_JOINABLE);
 		team->JobPtr = (void *) job;
-		job->LastId  = 0;
+		job->Group  = 0;
 		if (job->Sorted == false) { _CMthreadJobTaskSort (job); job->Sorted = true; }
 
 		for (taskId = 0; taskId < job->TaskNum; ++taskId) {
@@ -243,7 +253,9 @@ CMthreadTeam_p CMthreadTeamCreate (size_t threadNum) {
 		team->Threads [threadId].ThreadTime     = (clock_t) 0;
 		team->Threads [threadId].UserTime       = (clock_t) 0;
 	}
-	pthread_mutex_init (&(team->Mutex),   NULL);
+	pthread_mutex_init (&(team->Mutex), NULL);
+	pthread_cond_init  (&(team->Cond),  NULL);
+
 	return (team);
 }
 
@@ -271,6 +283,7 @@ void CMthreadTeamDestroy (CMthreadTeam_p team, bool report) {
 						(float) 0.0, '%');
 		}
 		pthread_mutex_destroy (&(team->Mutex));
+		pthread_cond_destroy  (&(team->Cond));
 		free (team->Threads);
 		free (team);
 	}

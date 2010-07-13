@@ -70,6 +70,7 @@ typedef struct CMthreadTeam_s {
 	CMthreadData_p  Threads;
 	size_t          ThreadNum;
 	pthread_mutex_t Mutex;
+	pthread_cond_t  Cond;
 	void           *JobPtr;
 	clock_t         Time;
 } CMthreadTeam_t, *CMthreadTeam_p;
@@ -88,13 +89,22 @@ typedef struct CMthreadTask_s {
 	struct CMthreadTask_s *Dependent;
 } CMthreadTask_t, *CMthreadTask_p;
 
+typedef struct CMthreadTaskGroup_s {
+	size_t               Id;
+	size_t               Start;
+	size_t               Num;
+} CMthreadTaskGroup_t, *CMthreadTaskGroup_p;
+
 typedef struct CMthreadJob_s {
 	size_t               ThreadNum;
 	bool                 Sorted;
 	CMthreadTask_p       Tasks;
 	CMthreadTask_p      *SortedTasks;
+	CMthreadTaskGroup_p  Groups;
 	size_t               TaskNum;
-	int                  LastId;
+	size_t               GroupNum;
+	size_t               Group;
+	size_t               Completed;
 	CMthreadUserExecFunc UserFunc;
 	void                *CommonData;
 	void               **ThreadData;
