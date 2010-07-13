@@ -38,20 +38,25 @@ CMthreadJob_p CMthreadJobCreate (CMthreadTeam_p team,
 		free (job);
 		return ((CMthreadJob_p) NULL);
 	}
-	job->Groups    = (CMthreadTaskGroup_p) NULL;
-	job->GroupNum  = 0;
+	if ((job->Groups      = (CMthreadTaskGroup_p) calloc (1,sizeof (CMthreadTaskGroup_t))) == (CMthreadTaskGroup_p)  NULL) {
+		CMmsgPrint (CMmsgSysError, "Memory allocation error in %s:%d\n",__FILE__,__LINE__);
+		free (job->Tasks);
+		free (job->SortedTasks);
+		free (job);
+		return ((CMthreadJob_p) NULL);
+	}
+	job->Groups [0].Id    = 0;
+	job->Groups [0].Start = 0;
+	job->Groups [0].Num   = taskNum;
+	job->GroupNum  = 1;
 	job->Group     = 0;
 	job->Completed = 0;
-	job->Sorted    = false;
+	job->Sorted    = true;
 	job->TaskNum   = taskNum;
 	for (taskId = 0;taskId < job->TaskNum; ++taskId) {
 		job->SortedTasks [taskId]       = job->Tasks + taskId;
 		job->Tasks [taskId].Id          = taskId;
-		job->Tasks [taskId].Completed   = false;
-		job->Tasks [taskId].Locked      = false;
 		job->Tasks [taskId].Dependent   = (CMthreadTask_p) NULL;
-		job->Tasks [taskId].DependNum   = 0;
-		job->Tasks [taskId].DependCount = 0;
 		job->Tasks [taskId].DependLevel = 0;
 	}
 	job->UserFunc = execFunc;
@@ -78,6 +83,7 @@ CMthreadJob_p CMthreadJobCreate (CMthreadTeam_p team,
 }
 
 CMreturn CMthreadJobTaskDependent (CMthreadJob_p job, size_t taskId, size_t dependent) {
+	job->Sorted = false;
 	if (taskId > job->TaskNum) {
 		CMmsgPrint (CMmsgAppError,"Invalid task in %s%d\n",__FILE__,__LINE__);
 		return (CMfailed);
@@ -86,7 +92,6 @@ CMreturn CMthreadJobTaskDependent (CMthreadJob_p job, size_t taskId, size_t depe
 
 	if (taskId < dependent) {
 		job->Tasks [taskId].Dependent = job->Tasks + dependent;
-		job->Tasks [taskId].Dependent->DependNum += 1;
 	}
 	else
 		CMmsgPrint (CMmsgWarning,"Invalid dependence [%d:%d] ignored!\n", dependent, taskId);
@@ -125,7 +130,7 @@ CMreturn _CMthreadJobTaskSort (CMthreadJob_p job) {
 	}
 	qsort (job->SortedTasks,job->TaskNum,sizeof (CMthreadTask_p),_CMthreadJobTaskCompare);
 	job->GroupNum = job->SortedTasks [job->TaskNum - 1]->DependLevel + 1;
-	if ((job->Groups = (CMthreadTaskGroup_p) calloc (job->GroupNum, sizeof (CMthreadTaskGroup_t))) == (CMthreadTaskGroup_p) NULL) {
+	if ((job->Groups = (CMthreadTaskGroup_p) realloc (job->Groups, job->GroupNum * sizeof (CMthreadTaskGroup_t))) == (CMthreadTaskGroup_p) NULL) {
 		CMmsgPrint (CMmsgAppError,"Memory allocation error in: %s:%d\n",__FILE__,__LINE__);
 		return (CMfailed);
 	}
@@ -164,7 +169,8 @@ static void *_CMthreadWork (void *dataPtr) {
 	clock_t start = clock ();
 
 	pthread_mutex_lock   (&(team->Mutex));
-	while (job->Group < job->GroupNum) {
+//	while (job->Group < job->GroupNum) {
+	while (job->Groups [job->Group].Num > team->ThreadNum) {
 		pthread_mutex_unlock (&(team->Mutex));
 		for (taskId = job->Groups [job->Group].Start + data->Id;
 			 taskId < job->Groups [job->Group].Start + job->Groups [job->Group].Num;
@@ -184,10 +190,15 @@ static void *_CMthreadWork (void *dataPtr) {
 		else pthread_cond_wait (&(team->Cond), &(team->Mutex));
 	}
 	pthread_mutex_unlock (&(team->Mutex));
-
+	if ((data->Id == 0) && (job->Group < job->GroupNum))
+		for (taskId = job->Groups [job->Group].Start; taskId < job->TaskNum; taskId++) {
+				start = clock ();
+				job->UserFunc (job->CommonData, job->ThreadData == (void **) NULL ? (void *) NULL : job->ThreadData [data->Id], job->SortedTasks [taskId]->Id);
+				data->UserTime += clock () - start + 1;
+				data->CompletedTasks++;
+		}
 	data->ThreadTime += clock () - start;
-	if (data->Id > 0) pthread_exit((void *) NULL); // Only slave threads need to exit.
-	return ((void *) NULL);
+	pthread_exit ((void *) NULL);
 }
 
 CMreturn CMthreadJobExecute (CMthreadTeam_p team, CMthreadJob_p job) {
@@ -202,12 +213,6 @@ CMreturn CMthreadJobExecute (CMthreadTeam_p team, CMthreadJob_p job) {
 		team->JobPtr = (void *) job;
 		job->Group  = 0;
 		if (job->Sorted == false) { _CMthreadJobTaskSort (job); job->Sorted = true; }
-
-		for (taskId = 0; taskId < job->TaskNum; ++taskId) {
-			job->Tasks [taskId].Completed = false;
-			job->Tasks [taskId].Locked    = false;
-// TODO		printf ("Task: %4d Depend: %4d\n", (int) taskId, (int) job->Tasks [taskId].Depend);
-		}
 
 		for (threadId = 0; threadId < team->ThreadNum; ++threadId) {
 			if ((ret = pthread_create (&(team->Threads [threadId].Thread), &thread_attr,_CMthreadWork,(void *) (team->Threads + threadId))) != 0) {
