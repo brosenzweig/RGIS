@@ -84,7 +84,8 @@ typedef void *(*CMthreadUserFreeFunc)  (void *);
 typedef struct CMthreadTask_s {
 	size_t Id;
 	bool   Completed, Locked;
-	size_t Dependent, DependNum, DependCount, DependLevel;
+	size_t DependNum, DependCount, DependLevel;
+	struct CMthreadTask_s *Dependent;
 } CMthreadTask_t, *CMthreadTask_p;
 
 typedef struct CMthreadJob_s {

@@ -45,7 +45,7 @@ CMthreadJob_p CMthreadJobCreate (CMthreadTeam_p team,
 		job->Tasks [taskId].Id          = taskId;
 		job->Tasks [taskId].Completed   = false;
 		job->Tasks [taskId].Locked      = false;
-		job->Tasks [taskId].Dependent   = taskId;
+		job->Tasks [taskId].Dependent   = (CMthreadTask_p) NULL;
 		job->Tasks [taskId].DependNum   = 0;
 		job->Tasks [taskId].DependCount = 0;
 		job->Tasks [taskId].DependLevel = 0;
@@ -82,29 +82,41 @@ CMreturn CMthreadJobTaskDependent (CMthreadJob_p job, size_t taskId, size_t depe
 	if (taskId == dependent) return (CMsucceeded);
 
 	if (taskId < dependent) {
-		job->Tasks [taskId].Dependent = dependent;
-		job->Tasks [job->Tasks [taskId].Dependent].DependNum += 1;
+		job->Tasks [taskId].Dependent = job->Tasks + dependent;
+		job->Tasks [taskId].Dependent->DependNum += 1;
 	}
 	else
 		CMmsgPrint (CMmsgWarning,"Invalid dependence [%d:%d] ignored!\n", dependent, taskId);
 	return (CMsucceeded);
 }
 
-static int _CMthreadJobTaskCompare (const void *leftPtr,const void *rightPtr) {
-	CMthreadTask_p *leftTask  = (CMthreadTask_p *) leftPtr;
-	CMthreadTask_p *rightTask = (CMthreadTask_p *) rightPtr;
-	return ((*leftTask)->DependLevel - (*rightTask)->DependLevel);
+static int _CMthreadJobTaskCompare (const void *lPtr,const void *rPtr) {
+	int ret;
+	CMthreadTask_p lTaskInit = *((CMthreadTask_p *) lPtr);
+	CMthreadTask_p rTaskInit = *((CMthreadTask_p *) rPtr);
+	CMthreadTask_p lTask = lTaskInit;
+	CMthreadTask_p rTask = rTaskInit;
+
+	if ((ret = lTask->DependLevel - rTask->DependLevel) != 0) return (ret);
+
+	while (((lTask = lTask->Dependent) != (CMthreadTask_p) NULL) && ((rTask = rTask->Dependent) != (CMthreadTask_p) NULL)) {
+		if ((ret = lTask->DependLevel - rTask->DependLevel) != 0) return (ret);
+	}
+	if (lTask == rTask) return (0);
+	if (lTask != (CMthreadTask_p) NULL) return (1);
+	return (-1);
 }
 
 static void _CMthreadJobTaskSort (CMthreadJob_p job) {
-	size_t taskId, dependId;
+	size_t taskId;
 	size_t level;
+	CMthreadTask_p dependent;
 
 	for (taskId = 0;taskId < job->TaskNum; ++taskId) {
 		level = 1;
-		for (dependId = taskId; dependId != job->Tasks [dependId].Dependent; dependId = job->Tasks [dependId].Dependent) {
-			if (job->Tasks [job->Tasks [dependId].Dependent].DependLevel < level)
-				job->Tasks [job->Tasks [dependId].Dependent].DependLevel = level;
+		for (dependent = job->Tasks + taskId; dependent->Dependent != (CMthreadTask_p) NULL; dependent = dependent->Dependent) {
+			if (dependent->Dependent->DependLevel < level)
+				dependent->Dependent->DependLevel = level;
 			level++;
 		}
 	}
@@ -139,7 +151,8 @@ static void *_CMthreadWork (void *dataPtr) {
 			if (job->SortedTasks [taskId]->Locked)    continue;
 			if (job->SortedTasks [taskId]->DependCount == job->SortedTasks [taskId]->DependNum) {
 				job->SortedTasks [taskId]->Locked = true;
-				job->Tasks [job->SortedTasks [taskId]->Dependent].Locked = true;
+				if (job->SortedTasks [taskId]->Dependent != (CMthreadTask_p) NULL)
+					job->SortedTasks [taskId]->Dependent->Locked = true;
 
 				pthread_mutex_unlock (&(team->Mutex));
 				start = clock ();
@@ -148,9 +161,11 @@ static void *_CMthreadWork (void *dataPtr) {
 				data->CompletedTasks++;
 				pthread_mutex_lock   (&(team->Mutex));
 				job->SortedTasks [taskId]->Locked      = false;
-				job->Tasks [job->SortedTasks [taskId]->Dependent].Locked = false;
+				if (job->SortedTasks [taskId]->Dependent != (CMthreadTask_p) NULL) {
+					job->SortedTasks [taskId]->Dependent->Locked = false;
+					job->SortedTasks [taskId]->Dependent->DependCount += 1;
+				}
 				job->SortedTasks [taskId]->Completed   = true;
-				job->Tasks [job->SortedTasks [taskId]->Dependent].DependCount += 1;
 				job->SortedTasks [taskId]->DependCount = 0;
 			}
 		}
