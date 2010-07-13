@@ -166,7 +166,6 @@ static void *_CMthreadWork (void *dataPtr) {
 	size_t taskId, end, incr;
 	CMthreadTeam_p team = (CMthreadTeam_p) data->TeamPtr;
 	CMthreadJob_p  job  = team->JobPtr;
-	clock_t start = clock ();
 
 	pthread_mutex_lock   (&(team->Mutex));
 	while (job->Groups [job->Group].Num > team->ThreadNum) {
