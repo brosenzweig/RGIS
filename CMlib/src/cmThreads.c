@@ -149,6 +149,9 @@ static void *_CMthreadWork (void *dataPtr) {
 				continue;
 			}
 			if (job->SortedTasks [taskId]->Locked)    continue;
+			if ((job->SortedTasks [taskId]->Dependent != (CMthreadTask_p) NULL) &&
+				(job->SortedTasks [taskId]->Dependent->Locked == true)) continue;
+
 			if (job->SortedTasks [taskId]->DependCount == job->SortedTasks [taskId]->DependNum) {
 				job->SortedTasks [taskId]->Locked = true;
 				if (job->SortedTasks [taskId]->Dependent != (CMthreadTask_p) NULL)
