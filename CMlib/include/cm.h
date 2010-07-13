@@ -62,8 +62,6 @@ typedef struct CMthreadData_s {
 	pthread_t       Thread;
 	size_t          CompletedTasks;
 	void           *TeamPtr;
-	clock_t         ThreadTime;
-	clock_t         UserTime;
 } CMthreadData_t,  *CMthreadData_p;
 
 typedef struct CMthreadTeam_s {
