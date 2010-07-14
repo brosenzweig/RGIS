@@ -15,6 +15,7 @@ balazs.fekete@unh.edu
 
 #include <stdio.h>
 #include <pthread.h>
+#include <time.h>
 
 #if defined(__cplusplus)
 extern "C" {
@@ -65,9 +66,10 @@ typedef struct CMthreadData_s {
 typedef struct CMthreadTeam_s {
 	CMthreadData_p  Threads;
 	size_t          ThreadNum;
-	pthread_mutex_t StartMutex, FinishMutex, SlaveMutex;
-	pthread_cond_t  StartCond,  FinishCond,  SlaveCond;
+	pthread_mutex_t Mutex;
+	pthread_cond_t  Cond;
 	void           *JobPtr;
+	clock_t         Time;
 } CMthreadTeam_t, *CMthreadTeam_p;
 
 CMthreadTeam_p CMthreadTeamCreate     (size_t threadNum);
