@@ -139,9 +139,9 @@ CMreturn _CMthreadJobTaskSort (CMthreadJob_p job) {
 	job->Groups [group].Start = 0;
 	for (taskId = 0;taskId < job->TaskNum; ++taskId) {
 		if (group != job->SortedTasks [taskId]->DependLevel) {
-			job->Groups [group].Num = taskId - job->Groups [group].Start;
+			job->Groups [group].Num   = taskId - job->Groups [group].Start;
 			group = job->SortedTasks [taskId]->DependLevel;
-			job->Groups [group].Id = group;
+			job->Groups [group].Id    = group;
 			job->Groups [group].Start = taskId;
 		}
 	}
