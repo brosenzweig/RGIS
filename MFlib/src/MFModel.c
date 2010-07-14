@@ -444,7 +444,7 @@ int MFModelRun (int argc, char *argv [], int argNum, int (*conf) ()) {
 		team = CMthreadTeamCreate (_MFThreadsNum);
 		if ((job  = CMthreadJobCreate (team, (void *) NULL, _MFDomain->ObjNum, (CMthreadUserAllocFunc) NULL,_MFUserFunc)) == (CMthreadJob_p) NULL) {
 			CMmsgPrint (CMmsgAppError, "Job creation error in %s:%d\n",__FILE__,__LINE__);
-			CMthreadTeamDestroy (team,false);
+			CMthreadTeamDestroy (team);
 			return (CMfailed);
 		}
 		for (i = 0;i < _MFDomain->ObjNum; ++i) {
@@ -465,7 +465,7 @@ int MFModelRun (int argc, char *argv [], int argNum, int (*conf) ()) {
 			}
 		} while ((timeCur = MFDateAdvance ()) != (char *) NULL ? _MFModelReadInput (timeCur) : MFStop);
 		CMthreadJobDestroy  (job,(CMthreadUserFreeFunc) NULL);
-		CMthreadTeamDestroy (team,true);
+		CMthreadTeamDestroy (team);
 	}
 	else // TODO Single CPU
 		do	{
