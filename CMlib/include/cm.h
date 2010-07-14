@@ -60,7 +60,6 @@ bool    CMmathEqualValues (double,double);
 typedef struct CMthreadData_s {
 	size_t          Id;
 	pthread_t       Thread;
-	size_t          CompletedTasks;
 	void           *TeamPtr;
 } CMthreadData_t,  *CMthreadData_p;
 
@@ -74,7 +73,7 @@ typedef struct CMthreadTeam_s {
 } CMthreadTeam_t, *CMthreadTeam_p;
 
 CMthreadTeam_p CMthreadTeamCreate     (size_t threadNum);
-void           CMthreadTeamDestroy    (CMthreadTeam_p, bool);
+void           CMthreadTeamDestroy    (CMthreadTeam_p);
 
 typedef void  (*CMthreadUserExecFunc)  (void *, void *, size_t);
 typedef void *(*CMthreadUserAllocFunc) (void *);
