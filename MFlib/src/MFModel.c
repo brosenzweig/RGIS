@@ -407,7 +407,7 @@ static bool _MFModelReadInput (char *time)
 	return (MFContinue);
 }
 
-static void _MFUserFunc (void *team, void *commonPtr,void *threadData, size_t taskId) {
+static void _MFUserFunc (void *commonPtr,void *threadData, size_t taskId) {
 	int iFunc, varID, dlink, objectId;
 	MFVariable_t *var;
 
