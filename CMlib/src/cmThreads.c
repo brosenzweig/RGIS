@@ -168,25 +168,25 @@ static void *_CMthreadWork (void *dataPtr) {
 	CMthreadJob_p  job  = team->JobPtr;
 
 	pthread_mutex_lock   (&(team->Mutex));
-	while (job->Groups [job->Group].Num > team->ThreadNum) {
+	while (job->Groups [job->Group].Num >= team->ThreadNum) {
 		pthread_mutex_unlock (&(team->Mutex));
 		end  = job->Groups [job->Group].Start + job->Groups [job->Group].Num;
 		incr = team->ThreadNum;
 		for (taskId = job->Groups [job->Group].Start + data->Id; taskId < end; taskId += incr)
-				job->UserFunc (job->CommonData, job->ThreadData == (void **) NULL ? (void *) NULL : job->ThreadData [data->Id], job->SortedTasks [taskId]->Id);
+			job->UserFunc (job->CommonData, job->ThreadData == (void **) NULL ? (void *) NULL : job->ThreadData [data->Id], job->SortedTasks [taskId]->Id);
 		pthread_mutex_lock (&(team->Mutex));
 		job->Completed++;
 		if (job->Completed == team->ThreadNum) {
 			job->Group++;
 			job->Completed = 0;
-			pthread_cond_broadcast (&(team->Cond));
+			if ((job->Group < job->GroupNum) && (job->Groups [job->Group].Num < team->ThreadNum))
+				for (taskId = job->Groups [job->Group].Start; taskId < job->TaskNum; taskId++)
+					job->UserFunc (job->CommonData, job->ThreadData == (void **) NULL ? (void *) NULL : job->ThreadData [data->Id], job->SortedTasks [taskId]->Id);
+		pthread_cond_broadcast (&(team->Cond));
 		}
 		else pthread_cond_wait (&(team->Cond), &(team->Mutex));
 	}
 	pthread_mutex_unlock (&(team->Mutex));
-	if ((data->Id == 0) && (job->Group < job->GroupNum))
-		for (taskId = job->Groups [job->Group].Start; taskId < job->TaskNum; taskId++)
-			job->UserFunc (job->CommonData, job->ThreadData == (void **) NULL ? (void *) NULL : job->ThreadData [data->Id], job->SortedTasks [taskId]->Id);
 	pthread_exit ((void *) NULL);
 }
 
