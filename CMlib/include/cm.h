@@ -82,12 +82,12 @@ typedef void *(*CMthreadUserFreeFunc)  (void *);
 typedef struct CMthreadTask_s {
 	size_t Id;
 	size_t DependLevel;
+	size_t DependNum;
 	struct CMthreadTask_s *Dependent;
 } CMthreadTask_t, *CMthreadTask_p;
 
 typedef struct CMthreadTaskGroup_s {
 	size_t               Id;
-	size_t               Num;
 	size_t              *Start;
 	size_t              *End;
 } CMthreadTaskGroup_t, *CMthreadTaskGroup_p;
