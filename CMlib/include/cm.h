@@ -87,8 +87,9 @@ typedef struct CMthreadTask_s {
 
 typedef struct CMthreadTaskGroup_s {
 	size_t               Id;
-	size_t               Start;
 	size_t               Num;
+	size_t              *Start;
+	size_t              *End;
 } CMthreadTaskGroup_t, *CMthreadTaskGroup_p;
 
 typedef struct CMthreadJob_s {
