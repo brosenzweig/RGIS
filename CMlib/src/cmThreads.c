@@ -40,12 +40,9 @@ static CMreturn _CMthreadTaskGroupInitialize (CMthreadTaskGroup_p group, size_t 
 		}
 	}
 	else {
-		group->Start [0] = start;
-		group->End   [0] = start + taskNum;
-		for (threadId = 1;threadId < threadNum; threadId++) {
-			res   = taskNum % threadNum;
-			group->Start [threadId] = start + taskNum;
-			group->End   [threadId] = start + taskNum;
+		for (threadId = 0;threadId < threadNum; threadId++) {
+			group->Start [threadId] = start;
+			group->End   [threadId] = start;
 		}
 	}
 	return (CMsucceeded);
@@ -230,11 +227,10 @@ static void *_CMthreadWork (void *dataPtr) {
 			job->Completed = 0;
 			if ((job->Group < job->GroupNum) && (job->Groups [job->Group].Start [data->Id] == job->Groups [job->Group].End [data->Id])) {
 				start = job->Groups [job->Group].Start [0];
-				end   = job->Groups [job->Group].End   [0];
+				end   = job->TaskNum;
 				for (taskId = start; taskId < end; taskId++) job->UserFunc (commonPtr, threadData, job->SortedTasks [taskId]->Id);
 			}
-		pthread_cond_broadcast (&(team->Cond));
-		break;
+			pthread_cond_broadcast (&(team->Cond));
 		}
 		else pthread_cond_wait (&(team->Cond), &(team->Mutex));
 	}
