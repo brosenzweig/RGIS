@@ -125,8 +125,13 @@ CMthreadJob_p CMthreadJobCreate (CMthreadTeam_p team,
 
 CMreturn CMthreadJobTaskDependent (CMthreadJob_p job, size_t taskId, size_t dependent) {
 	job->Sorted = false;
-	if (taskId > job->TaskNum) {
+
+	if (taskId    > job->TaskNum) {
 		CMmsgPrint (CMmsgAppError,"Invalid task in %s%d\n",__FILE__,__LINE__);
+		return (CMfailed);
+	}
+	if (dependent > job->TaskNum) {
+		CMmsgPrint (CMmsgAppError,"Invalid dependence in %s%d\n",__FILE__,__LINE__);
 		return (CMfailed);
 	}
 	if (taskId == dependent) return (CMsucceeded);
@@ -148,7 +153,8 @@ static int _CMthreadJobTaskCompare (const void *lPtr,const void *rPtr) {
 
 	if ((ret = lTask->DependLevel - rTask->DependLevel) != 0) return (ret);
 
-	while (((lTask = lTask->Dependent) != (CMthreadTask_p) NULL) && ((rTask = rTask->Dependent) != (CMthreadTask_p) NULL)) {
+	while (((lTask = lTask->Dependent) != (CMthreadTask_p) NULL) &&
+	       ((rTask = rTask->Dependent) != (CMthreadTask_p) NULL)) {
 		if ((ret = lTask->DependLevel - rTask->DependLevel) != 0) return (ret);
 	}
 	if (lTask == rTask) return (0);
