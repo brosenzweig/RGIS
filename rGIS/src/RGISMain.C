@@ -10,8 +10,8 @@ balazs.fekete@unh.edu
 
 *******************************************************************************/
 
-#include <rgis.H>
-#include <cm.h>
+#include<rgis.H>
+#include<cm.h>
 
 extern UIMenuItem RGISFileMenu [];
 extern UIMenuItem RGISEditMenu [];
