@@ -461,7 +461,7 @@ int MFModelRun (int argc, char *argv [], int argNum, int (*conf) ()) {
 			CMthreadJobExecute (team, job);
 
 			for (var = MFVarGetByID (varID = 1);var != (MFVariable_t *) NULL;var = MFVarGetByID (++varID)) {
-			if (var->OutStream != (MFDataStream_t *) NULL) MFDataStreamWrite (var, timeCur);
+				if (var->OutStream != (MFDataStream_t *) NULL) MFDataStreamWrite (var, timeCur);
 			}
 		} while ((timeCur = MFDateAdvance ()) != (char *) NULL ? _MFModelReadInput (timeCur) : MFStop);
 		CMthreadJobDestroy  (job,(CMthreadUserFreeFunc) NULL);
@@ -484,7 +484,7 @@ int MFModelRun (int argc, char *argv [], int argNum, int (*conf) ()) {
 			}
 
 			for (var = MFVarGetByID (varID = 1);var != (MFVariable_t *) NULL;var = MFVarGetByID (++varID)) {
-			if (var->OutStream != (MFDataStream_t *) NULL) MFDataStreamWrite (var, timeCur);
+				if (var->OutStream != (MFDataStream_t *) NULL) MFDataStreamWrite (var, timeCur);
 			}
 		} while ((timeCur = MFDateAdvance ()) != (char *) NULL ? _MFModelReadInput (timeCur) : MFStop);
 
