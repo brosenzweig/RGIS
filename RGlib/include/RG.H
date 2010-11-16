@@ -83,6 +83,7 @@ DBInt RGlibNetworkBasinDistrib (DBObjData *,DBObjData *,DBObjData *);
 DBInt RGlibNetworkBasinProf (DBObjData *,DBObjData *,DBObjData *);
 DBInt RGlibNetworkBasinStats (DBObjData *,DBObjData *,DBObjData *);
 DBInt RGlibNetworkCellSlopes (DBObjData *,DBObjData *,DBObjData *);
+DBInt RGlibNetworkConfluences (DBObjData *,DBObjData *);
 DBInt RGlibNetworkUpStreamAvg (DBObjData *,DBObjData *,DBObjData *);
 DBInt RGlibNetworkHeadStats (DBObjData *,DBObjData *,DBObjData *,DBInt);
 DBInt RGlibNetworkHistogram (DBObjData *,DBObjData *,DBObjData *);

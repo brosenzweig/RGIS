@@ -1071,8 +1071,8 @@ class DBObjTable : public DBObjectLIST<DBObjRecord>
 			for (field = FieldPTR->First ();field != (DBObjTableField *) NULL;field = FieldPTR->Next ())
 				switch (field->Type ())
 					{
-					case DBTableFieldInt: 	field->Int   (newRec,field->IntNoData ());	break;
-					case DBTableFieldFloat:	field->Float (newRec,field->FloatNoData ());	break;
+					case DBTableFieldInt: 	field->Int   (newRec,field->IntNoData ());   break;
+					case DBTableFieldFloat:	field->Float (newRec,field->FloatNoData ()); break;
 					}
 
 			return (newRec);

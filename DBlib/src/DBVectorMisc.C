@@ -16,16 +16,16 @@ balazs.fekete@unh.edu
 DBVectorIO::DBVectorIO (DBObjData *data)
 
 	{
-	DataPTR = data;
-	ItemTable 	= DataPTR->Table (DBrNItems);
-	SymbolTable	= DataPTR->Table (DBrNSymbols);
+	DataPTR       = data;
+	ItemTable     = DataPTR->Table (DBrNItems);
+	SymbolTable   = DataPTR->Table (DBrNSymbols);
 
-	SymbolFLD	= ItemTable->Field (DBrNSymbol);
+	SymbolFLD     = ItemTable->Field (DBrNSymbol);
 
-	SymbolIDFLD = SymbolTable->Field (DBrNSymbolID);
+	SymbolIDFLD   = SymbolTable->Field (DBrNSymbolID);
 	ForegroundFLD = SymbolTable->Field (DBrNForeground);
 	BackgroundFLD = SymbolTable->Field (DBrNBackground);
-	StyleFLD		= SymbolTable->Field (DBrNStyle);
+	StyleFLD      = SymbolTable->Field (DBrNStyle);
 	}
 
 DBObjRecord *DBVectorIO::Item (DBCoordinate coord) const

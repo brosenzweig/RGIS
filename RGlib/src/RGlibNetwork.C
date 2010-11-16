@@ -921,6 +921,46 @@ Stop:
 	return (progress == maxProgress ? DBSuccess : DBFault);
 	}
 
+DBInt RGlibNetworkConfluences (DBObjData *netData,DBObjData *outPntData)
+
+	{
+	char recordName [DBStringLength];
+	DBInt cellId, pntId = 0, cellOrder, maxOrder = 0;
+	DBCoordinate coord;
+	DBNetworkIO *netIO = new DBNetworkIO (netData);
+	DBVPointIO  *pntIO = new DBVPointIO  (outPntData);
+	DBObjRecord *cellRec, *toCellRec, *pntRec;
+	DBObjTable *itemTable = outPntData->Table(DBrNItems);
+	DBObjTableField *orderFLD    = new DBObjTableField ("Order",    DBTableFieldInt, "%2d", sizeof (DBByte));
+
+	itemTable->AddField (orderFLD);
+
+	for (cellId = 0; cellId < netIO->CellNum(); ++cellId)
+		{
+		cellOrder = netIO->CellOrder (cellId);
+		maxOrder = maxOrder > cellOrder ? maxOrder : cellOrder;
+		}
+	for (cellOrder = 0; cellOrder < maxOrder; ++cellOrder)
+		{
+		sprintf (recordName,"Order: %2d", cellOrder + 1);
+		pntIO->NewSymbol(recordName);
+		}
+	for (cellId = 0; cellId < netIO->CellNum (); ++cellId)
+		{
+		cellRec    = netIO->Cell       (cellId);
+		cellOrder  = netIO->CellOrder  (cellRec);
+		if (((toCellRec = netIO->ToCell(cellRec)) != (DBObjRecord *) NULL) && (netIO->CellOrder (toCellRec) == cellOrder)) continue;
+
+		sprintf (recordName,"Confluence%010d", pntId++);
+		pntRec = pntIO->NewItem (recordName);
+		pntIO->Coordinate (pntRec, netIO->Center (cellRec));
+		pntIO->ItemSymbol (pntRec, pntIO->Symbol (cellOrder - 1));
+		orderFLD->Int     (pntRec, cellOrder);
+		}
+
+	return (DBSuccess);
+	}
+
 DBInt RGlibNetworkBasinProf (DBObjData *netData,DBObjData *gridData,DBObjData *tblData)
 
 	{

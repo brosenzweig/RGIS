@@ -38,7 +38,7 @@ class DBVectorIO
 		DBObjRecord *NextItem  (DBInt *index)	const { return (ItemTable->Next (index)); }
 		DBObjRecord *NextItem  (DBInt dir)	const { return (ItemTable->Next (dir)); }
 		DBObjRecord *NextItem  (DBInt *index,DBInt dir)	const { return (ItemTable->Next (index,dir)); }
-		DBObjRecord *NewItem (const char *symName) { return (ItemTable->Add (symName)); }
+		DBObjRecord *NewItem (const char *itemName) { return (ItemTable->Add (itemName)); }
 
 		DBObjRecord *Symbol (DBInt id) const { return (SymbolTable->Item (id)); }
 		DBObjRecord *FirstSymbol () const { return (SymbolTable->First ()); }
@@ -48,7 +48,9 @@ class DBVectorIO
 		DBObjRecord *NewSymbol (const char *symName)
 			{
 			DBObjRecord *symRec = SymbolTable->Add (symName);
-			StyleFLD->Int (symRec,0);
+			DBInt symId = SymbolTable->ItemNum ();
+			SymbolIDFLD->Int   (symRec,symId);
+			StyleFLD->Int      (symRec,0);
 			ForegroundFLD->Int (symRec,1);
 			BackgroundFLD->Int (symRec,0);
 			return (symRec);
@@ -459,6 +461,8 @@ class DBNetworkIO
 		DBObjRecord *MouthCell(const DBObjRecord *basinRec) const { return (Cell(MouthPosFLD->Position (basinRec))); }
 		DBInt Color 	(const DBObjRecord *basinRec) const { return (ColorFLD->Int (basinRec)); }
 		DBInt BasinOrder 	(const DBObjRecord *basinRec) const { return (BasinOrderFLD->Int (basinRec)); }
+		DBInt BasinOrder 	(DBInt basinID)
+			const { DBObjRecord *basinRec; if ((basinRec = BasinTable->Item (basinID)) == (DBObjRecord *) NULL) return (DBFault); else return (BasinOrderFLD->Int (basinRec)); }
 		DBFloat BasinLength	(const DBObjRecord *basinRec) const { return (BasinLengthFLD->Float	(basinRec)); }
 		DBFloat BasinArea		(const DBObjRecord *basinRec) const { return (BasinAreaFLD->Float		(basinRec)); }
 		DBObjRecord *BasinHeadCell (const DBObjRecord *cellRec) const { return (HeadCell (MouthCell (cellRec))); }
@@ -467,6 +471,8 @@ class DBNetworkIO
 		DBPosition	CellPosition(const DBObjRecord *cellRec)	const { return (PositionFLD->Position (cellRec)); }
 		DBInt			CellOrder	(const DBObjRecord *cellRec)
 			const { if (cellRec == (DBObjRecord *) NULL) return (DBFault); else  return (OrderFLD->Int (cellRec)); }
+		DBInt			CellOrder	(DBInt cellID)
+			const { DBObjRecord *cellRec; if  ((cellRec = Cell (cellID)) == (DBObjRecord *) NULL) return (DBFault); else return (CellOrder (cellRec)); }
 		DBInt			CellBasinID	(const DBObjRecord *cellRec)	const
 			{ if (cellRec == (DBObjRecord *) NULL) return (DBFault); else  return (BasinFLD->Int (cellRec)); }
 		DBInt			CellBasinID	(DBObjRecord *cellRec, DBInt id)
