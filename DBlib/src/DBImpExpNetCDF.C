@@ -13,10 +13,8 @@ balazs.fekete@unh.edu
 #include <DB.H>
 #include <DBio.H>
 #include <netcdf.h>
+#include <udunits2.h>
 
-extern "C" {
-#include <udunits.h>
-}
 
 static const char *_DBExportNetCDFRename (const char *name)
 	{
@@ -385,29 +383,79 @@ static DBInt _DBExportNetCDFTimeDefine (DBObjData *dbData,int ncid,int dimids []
 	char *str, timeStr [DBStringLength], unitStr [NC_MAX_NAME];
 	int status, timeid, i;
 	int year, month, day, hour, minute;
-	utUnit unit;
+	ut_system    *utSystem     = (ut_system *) NULL;
+	ut_unit      *utUnit       = (ut_unit *)   NULL;
+	ut_unit      *baseTimeUnit = (ut_unit *)   NULL;
+	cv_converter *cvConverter  = (cv_converter *) NULL;
 	double val;
 	size_t start, count;
 	int *record, extent [2];
 	DBInt layerID;
 	DBGridIO	*gridIO = new DBGridIO (dbData);
 
+	if ((utSystem = ut_read_xml ((char *) NULL)) == (ut_system *) NULL)
+		{
+		fprintf (stderr,"Total metal gebasz in %s:%d!\n",__FILE__,__LINE__);
+		return (DBFault);
+		}
+	if ((baseTimeUnit = ut_parse (utSystem, "seconds since 2001-01-01 00:00:00", UT_ASCII)) == (ut_unit *) NULL)
+		{
+		fprintf (stderr,"Total metal gebasz in %s:%d!\n",__FILE__,__LINE__);
+		switch (ut_get_status ()) {
+			case UT_BAD_ARG: fprintf (stderr, "System or string is NULL!\n");               break;
+			case UT_SYNTAX:  fprintf (stderr, "String contained a syntax error!n");         break;
+			case UT_UNKNOWN: fprintf (stderr, "String contained an unknown identifier!\n"); break;
+			default:         fprintf (stderr, "System error in %s:%d!n",__FILE__,__LINE__);
+			}
+		ut_free_system (utSystem);
+		return (DBFault);
+		}
 	/* Begin Defining Dimensions */
 	if ((status = nc_redef (ncid)) != NC_NOERR)
-		{ fprintf(stderr, "NC Error: %s\n", nc_strerror(status)); delete gridIO; return (DBFault); }
+		{
+		fprintf(stderr, "NC Error: %s\n", nc_strerror(status));
+		ut_free (baseTimeUnit);
+		ut_free_system (utSystem);
+		delete gridIO;
+		return (DBFault);
+		}
 	if ((status = nc_def_dim (ncid,"time",NC_UNLIMITED,    dimids + DIMTime)) != NC_NOERR)
-		{ fprintf(stderr, "NC Error: %s\n", nc_strerror(status)); delete gridIO; return (DBFault); }
+		{
+		fprintf(stderr, "NC Error: %s\n", nc_strerror(status));
+		ut_free (baseTimeUnit);
+		ut_free_system (utSystem);
+		delete gridIO;
+		return (DBFault);
+		}
 	/* End Defining Dimensions */
 
 	/* Begin Defining Time Variable */
 	if ((status = nc_def_var (ncid,"time", NC_INT,(int) 1,dimids + DIMTime,&timeid)) != NC_NOERR)
-		{ fprintf(stderr, "NC Error: %s\n", nc_strerror(status)); delete gridIO; return (DBFault); }
+		{
+		fprintf(stderr, "NC Error: %s\n", nc_strerror(status));
+		ut_free (baseTimeUnit);
+		ut_free_system (utSystem);
+		delete gridIO;
+		return (DBFault);
+		}
 	str = (char *) "Time";
 	if ((status = nc_put_att_text (ncid,timeid,"long_name",strlen (str),str)) != NC_NOERR)
-		{ fprintf(stderr, "NC Error: %s\n", nc_strerror(status)); delete gridIO; return (DBFault); }
+		{
+		fprintf(stderr, "NC Error: %s\n", nc_strerror(status));
+		ut_free (baseTimeUnit);
+		ut_free_system (utSystem);
+		delete gridIO;
+		return (DBFault);
+		}
 	str = (char *) "time";
 	if ((status = nc_put_att_text (ncid,timeid,"standard_name",strlen (str),str)) != NC_NOERR)
-		{ fprintf(stderr, "NC Error: %s\n", nc_strerror(status)); delete gridIO; return (DBFault); }
+		{
+		fprintf(stderr, "NC Error: %s\n", nc_strerror(status));
+		ut_free (baseTimeUnit);
+		ut_free_system (utSystem);
+		delete gridIO;
+		return (DBFault);
+		}
 	strcpy (timeStr,(gridIO->Layer (gridIO->LayerNum () - 1))->Name ());
 	if (strncmp (timeStr,"XXXX",4) == 0) for (i = 0;i < 4;i++) timeStr [i] = '0';
 	month  = 6;
@@ -447,22 +495,69 @@ static DBInt _DBExportNetCDFTimeDefine (DBObjData *dbData,int ncid,int dimids []
 			sprintf (unitStr,"minutes since %s",timeStr);
 			break;
 		}
-	if (utScan (unitStr,&unit) != 0)
-		{ fprintf (stderr,"Invalid time Unit [%s] in: DBImportNetCDF ()",unitStr); delete gridIO; return (DBFault); }
-
+	if ((utUnit = ut_parse (utSystem, unitStr, UT_ASCII)) == (ut_unit *) NULL)
+		{
+		fprintf (stderr,"Invalid time Unit [%s] in: DBImportNetCDF ()",unitStr);
+		ut_free (baseTimeUnit);
+		ut_free_system (utSystem);
+		delete gridIO;
+		return (DBFault);
+		}
+	if ((cvConverter = ut_get_converter (baseTimeUnit, utUnit)) == (cv_converter *) NULL)
+		{
+		fprintf (stderr,"Time converter error!n");
+		switch (ut_get_status ()) {
+			case UT_BAD_ARG:         fprintf (stderr, "unit1 or unit2 is NULL.\n");                         break;
+			case UT_NOT_SAME_SYSTEM: fprintf (stderr, "unit1 and unit2 belong to different unit-systems."); break;
+			default:                 fprintf (stderr, "Conversion between the units is not possible.");     break;
+			}
+		ut_free (utUnit);
+		ut_free (baseTimeUnit);
+		ut_free_system (utSystem);
+		delete gridIO;
+		return (DBFault);
+		}
 	if ((status = nc_put_att_text (ncid,timeid,"units",strlen (unitStr),unitStr)) != NC_NOERR)
-		{ fprintf(stderr, "NC Error: %s\n", nc_strerror(status)); delete gridIO; return (DBFault); }
+		{
+		fprintf(stderr, "NC Error: %s\n", nc_strerror(status));
+		ut_free_system (utSystem);
+		ut_free (utUnit);
+		ut_free (baseTimeUnit);
+		cv_free (cvConverter);
+		delete gridIO;
+		return (DBFault);
+		}
 	str = (char *) "t";
 	if ((status = nc_put_att_text (ncid,timeid,"axis",strlen (str),str)) != NC_NOERR)
-		{ fprintf(stderr, "NC Error: %s\n", nc_strerror(status)); delete gridIO; return (DBFault); }
+		{
+		fprintf(stderr, "NC Error: %s\n", nc_strerror(status));
+		ut_free_system (utSystem);
+		ut_free (utUnit);
+		ut_free (baseTimeUnit);
+		cv_free (cvConverter);
+		delete gridIO;
+		return (DBFault);
+		}
 	/* End Defining Time Variable */
 
 	if ((status = nc_enddef (ncid)) != NC_NOERR)
-		{ fprintf(stderr, "%s\n", nc_strerror(status)); delete gridIO; return (DBFault); }
+		{
+		fprintf(stderr, "%s\n", nc_strerror(status));
+		ut_free_system (utSystem); ut_free (utUnit);
+		ut_free (utUnit);
+		ut_free (baseTimeUnit);
+		cv_free (cvConverter);
+		delete gridIO;
+		return (DBFault);
+		}
 
 	if ((record = (int *) calloc (gridIO->LayerNum () * 2,sizeof (int))) == (int *) NULL)
 		{
 		fprintf (stderr,"Memory allocation error in: DBExportNetCDF ()\n");
+		ut_free_system (utSystem);
+		ut_free (utUnit);
+		ut_free (baseTimeUnit);
+		cv_free (cvConverter);
 		delete gridIO;
 		return (DBFault);
 		}
@@ -484,35 +579,61 @@ static DBInt _DBExportNetCDFTimeDefine (DBObjData *dbData,int ncid,int dimids []
 			case 13: sscanf (timeStr,"%4d-%2d-%2d %2d",    &year,&month,&day,&hour);         break;
 			case 16: sscanf (timeStr,"%4d-%2d-%2d %2d:%2d",&year,&month,&day,&hour,&minute); break;
 			}
-		if (utInvCalendar (year,month,day,hour,minute,(double) 0.0,&unit, &val) != 0)
-			{
-			fprintf (stderr,"Invalid time [%s] in: DBImportNetCDF ()\n",timeStr);
-			fprintf (stderr,"Year: %d, Month: %d, Day: %d, Hours: %d, Minutes: %d\n",year, month, day, hour, minute);
-			delete gridIO;
-			free (record);
-			return (DBFault);
-			}
-		else record [layerID] = (int) val;
+		val = ut_encode_time (year,month,day,hour,minute,(double) 0.0);
+		val = cv_convert_double (cvConverter, val);
+		record [layerID] = (int) val;
 		}
 	if ((status = nc_put_vara_int (ncid,timeid,&start,&count,record)) != NC_NOERR)
 		{
 		fprintf(stderr, "%s\n", nc_strerror(status));
+		ut_free_system (utSystem);
+		ut_free (utUnit);
+		ut_free (baseTimeUnit);
+		cv_free (cvConverter);
 		delete gridIO;
 		free (record);
 		return (DBFault);
 		}
 
 	if ((status = nc_redef (ncid)) != NC_NOERR)
-		{ fprintf(stderr, "NC Error: %s\n", nc_strerror(status)); delete gridIO; return (DBFault); }
+		{
+		fprintf(stderr, "NC Error: %s\n", nc_strerror(status));
+		ut_free_system (utSystem);
+		ut_free (utUnit);
+		ut_free (baseTimeUnit);
+		cv_free (cvConverter);
+		delete gridIO;
+		return (DBFault);
+		}
 	extent[0] = record[0];
 	extent[1] = record[layerID - 1];
 	if ((status = nc_put_att_int (ncid,timeid,"actual_range",NC_INT,2,extent)) != NC_NOERR)
-		{ fprintf(stderr, "NC Error: %s\n", nc_strerror(status)); delete gridIO; return (DBFault); }
+		{
+		fprintf(stderr, "NC Error: %s\n", nc_strerror(status));
+		ut_free_system (utSystem);
+		ut_free (utUnit);
+		ut_free (baseTimeUnit);
+		cv_free (cvConverter);
+		delete gridIO;
+		return (DBFault);
+		}
 	if ((status = nc_enddef (ncid)) != NC_NOERR)
-		{ fprintf(stderr, "%s\n", nc_strerror(status)); delete gridIO; return (DBFault); }
+		{
+		fprintf(stderr, "%s\n", nc_strerror(status));
+		ut_free_system (utSystem);
+		ut_free (utUnit);
+		ut_free (baseTimeUnit);
+		cv_free (cvConverter);
+		delete gridIO;
+		return (DBFault);
+		}
 
 	delete gridIO;
 	free (record);
+	ut_free (utUnit);
+	ut_free (baseTimeUnit);
+	cv_free (cvConverter);
+	ut_free_system (utSystem);
 	return (DBSuccess);
 	}
 
@@ -727,14 +848,6 @@ DBInt DBExportNetCDF (DBObjData *dbData,const char *fileName)
 	const char *str;
 	int ncid, status, dimids [3], varid;
 	size_t start [3], count [3];
-
-	switch (utInit (""))
-		{
-		case 0: break;
-		case UT_ENOFILE: fprintf (stderr,"Invalid UDUNITS_PATH in: DBImportNetCDF ()\n"); return (DBFault);
-		case UT_ESYNTAX: fprintf (stderr,"Corrupt udunit file in: DBImportNetCDF ()\n");   return (DBFault);
-		default: fprintf (stderr,"UDUNIT Initialization error in: DBImportNetCDF ()\n");   return (DBFault);
-		}
 
 	if ((status = nc_create (fileName,NC_CLOBBER,&ncid)) != NC_NOERR)
 		{ fprintf(stderr, "NC Error: %s\n", nc_strerror(status)); return (DBFault); }
@@ -998,7 +1111,7 @@ DBInt DBExportNetCDF (DBObjData *dbData,const char *fileName)
 DBInt DBImportNetCDF (DBObjData *data,const char *filename)
 
 	{
-	char name [NC_MAX_NAME], varname [NC_MAX_NAME], timeString [NC_MAX_NAME], varUnit [NC_MAX_NAME], longName [NC_MAX_NAME], layerName [DBStringLength];
+	char name [NC_MAX_NAME], varname [NC_MAX_NAME], timeString [NC_MAX_NAME], /* varUnit [NC_MAX_NAME], */ longName [NC_MAX_NAME], layerName [DBStringLength];
 	size_t attlen;
 	int ncid, status, id, i;
 	int ndims, nvars, natts, unlimdim;
@@ -1009,8 +1122,11 @@ DBInt DBImportNetCDF (DBObjData *data,const char *filename)
 	size_t len, start [4] = { 0, 0, 0, 0}, count [4] = { 1, 1, 1, 1} ;
 	int doTimeUnit = false;
 	int year, month, day, hour, minute;
-	float second;
-	utUnit timeUnit;
+	double second, resolution;
+	ut_system  *utSystem      = (ut_system *) NULL;
+	ut_unit    *baseTimeUnit  = (ut_unit *)   NULL;
+	ut_unit    *timeUnit      = (ut_unit *)   NULL;
+	cv_converter *cvConverter = (cv_converter *) NULL;
 	int rowNum = 0, colNum = 0, layerNum = 1, layerID, colID, rowID;
 	double *vector, *latitudes, *longitudes;
 	double *timeSteps;
@@ -1031,19 +1147,39 @@ DBInt DBImportNetCDF (DBObjData *data,const char *filename)
 	DBObjTableField *missingValueFLD		= itemTable->Field (DBrNMissingValue);
 	DBGridIO *gridIO;
 
-	switch (utInit (""))
+	if ((utSystem = ut_read_xml ((char *) NULL)) == (ut_system *) NULL)
 		{
-		case 0: break;
-		case UT_ENOFILE: fprintf (stderr,"Invalid UDUNITS_PATH in: DBImportNetCDF ()\n"); return (DBFault);
-		case UT_ESYNTAX: fprintf (stderr,"Corrupt udunit file in: DBImportNetCDF ()\n");   return (DBFault);
-		default: fprintf (stderr,"UDUNIT Initialization error in: DBImportNetCDF ()\n");   return (DBFault);
+		fprintf (stderr,"Total metal gebasz in %s:%d!\n",__FILE__,__LINE__);
+		return (DBFault);
+		}
+	if ((baseTimeUnit = ut_parse (utSystem, "seconds since 2001-01-01 00:00:00", UT_ASCII)) == (ut_unit *) NULL)
+		{
+		fprintf (stderr,"Total metal gebasz in %s:%d!\n",__FILE__,__LINE__);
+		switch (ut_get_status ()) {
+			case UT_BAD_ARG: fprintf (stderr, "System or string is NULL!\n");               break;
+			case UT_SYNTAX:  fprintf (stderr, "String contained a syntax error!n");         break;
+			case UT_UNKNOWN: fprintf (stderr, "String contained an unknown identifier!\n"); break;
+			default:         fprintf (stderr, "System error in %s:%d!n",__FILE__,__LINE__);
+			}
+		ut_free_system (utSystem);
+		return (DBFault);
+		}
+	if ((status = nc_open(filename, NC_NOWRITE, &ncid)) != NC_NOERR)
+		{
+		fprintf(stderr, "NC Error: %s\n", nc_strerror(status));
+		ut_free (baseTimeUnit);
+		ut_free_system (utSystem);
+		return (DBFault);
 		}
 
-	if ((status = nc_open(filename, NC_NOWRITE, &ncid)) != NC_NOERR)
-		{ fprintf(stderr, "NC Error: %s\n", nc_strerror(status)); return (DBFault); }
-
 	if ((status = nc_inq (ncid, &ndims, &nvars, &natts, &unlimdim)) != NC_NOERR)
-		{ fprintf(stderr, "NC Error: %s\n", nc_strerror(status)); nc_close (ncid); return (DBFault); }
+		{
+		fprintf(stderr, "NC Error: %s\n", nc_strerror(status));
+		nc_close (ncid);
+		ut_free (baseTimeUnit);
+		ut_free_system (utSystem);
+		return (DBFault);
+		}
 
 	for (id = 0;id < ndims;id++)
 		{
@@ -1060,6 +1196,8 @@ DBInt DBImportNetCDF (DBObjData *data,const char *filename)
 		{
 		perror ("Memory Allocation Error in: DBImportNetCDF ()");
 		nc_close (ncid);
+		ut_free (baseTimeUnit);
+		ut_free_system (utSystem);
 		return (DBFault);
 		}
 	if ((longitudes = (double *) calloc (colNum,sizeof (double))) == (double *) NULL)
@@ -1067,6 +1205,8 @@ DBInt DBImportNetCDF (DBObjData *data,const char *filename)
 		perror ("Memory Allocation Error in: DBImportNetCDF ()");
 		free (vector);
 		nc_close (ncid);
+		ut_free (baseTimeUnit);
+		ut_free_system (utSystem);
 		return (DBFault);
 		}
 	if ((latitudes  = (double *) calloc (rowNum,sizeof (double))) == (double *) NULL)
@@ -1075,6 +1215,8 @@ DBInt DBImportNetCDF (DBObjData *data,const char *filename)
 		free (vector);
 		free (longitudes);
 		nc_close (ncid);
+		ut_free (baseTimeUnit);
+		ut_free_system (utSystem);
 		return (DBFault);
 		}
 	if ((timeSteps = (double *) calloc (layerNum,sizeof (double))) == (double *) NULL)
@@ -1084,6 +1226,8 @@ DBInt DBImportNetCDF (DBObjData *data,const char *filename)
 		free (longitudes);
 		free (latitudes);
 		nc_close (ncid);
+		ut_free (baseTimeUnit);
+		ut_free_system (utSystem);
 		return (DBFault);
 		}
 
@@ -1097,6 +1241,8 @@ DBInt DBImportNetCDF (DBObjData *data,const char *filename)
 			free (latitudes);
 			free (timeSteps);
 			nc_close (ncid);
+			ut_free (baseTimeUnit);
+			ut_free_system (utSystem);
 			return (DBFault);
 			}
 		if       (strcmp (name,"level")          == 0)  continue;
@@ -1116,6 +1262,8 @@ DBInt DBImportNetCDF (DBObjData *data,const char *filename)
 				free (latitudes);
 				free (timeSteps);
 				nc_close (ncid);
+				ut_free (baseTimeUnit);
+				ut_free_system (utSystem);
 				return (DBFault);
 				}
 			if (ndims != 1)
@@ -1126,6 +1274,8 @@ DBInt DBImportNetCDF (DBObjData *data,const char *filename)
 				free (latitudes);
 				free (timeSteps);
 				nc_close (ncid);
+				ut_free (baseTimeUnit);
+				ut_free_system (utSystem);
 				return (DBFault);
 				}
 			if ((status = nc_inq_vardimid (ncid,id,dimids)) != NC_NOERR)
@@ -1136,6 +1286,8 @@ DBInt DBImportNetCDF (DBObjData *data,const char *filename)
 				free (latitudes);
 				free (timeSteps);
 				nc_close (ncid);
+				ut_free (baseTimeUnit);
+				ut_free_system (utSystem);
 				return (DBFault);
 				}
 			if (dimids [0] != londim)
@@ -1146,6 +1298,8 @@ DBInt DBImportNetCDF (DBObjData *data,const char *filename)
 				free (latitudes);
 				free (timeSteps);
 				nc_close (ncid);
+				ut_free (baseTimeUnit);
+				ut_free_system (utSystem);
 				return (DBFault);
 				}
 			start [0] = 0; count [0] = colNum;
@@ -1157,6 +1311,8 @@ DBInt DBImportNetCDF (DBObjData *data,const char *filename)
 				free (latitudes);
 				free (timeSteps);
 				nc_close (ncid);
+				ut_free (baseTimeUnit);
+				ut_free_system (utSystem);
 				return (DBFault);
 				}
 			cellSize.X = fabs (longitudes  [0] - longitudes [1]);
@@ -1174,6 +1330,8 @@ DBInt DBImportNetCDF (DBObjData *data,const char *filename)
 					free (latitudes);
 					free (timeSteps);
 					nc_close (ncid);
+					ut_free (baseTimeUnit);
+					ut_free_system (utSystem);
 					return (DBFault);
 					}
 				}
@@ -1191,6 +1349,8 @@ DBInt DBImportNetCDF (DBObjData *data,const char *filename)
 				free (latitudes);
 				free (timeSteps);
 				nc_close (ncid);
+				ut_free (baseTimeUnit);
+				ut_free_system (utSystem);
 				return (DBFault);
 				}
 			if (ndims != 1) { fprintf (stderr,"Latitude has more than one dimension in: DBImportNetCDF ()\n"); return (DBFault); }
@@ -1202,6 +1362,8 @@ DBInt DBImportNetCDF (DBObjData *data,const char *filename)
 				free (latitudes);
 				free (timeSteps);
 				nc_close (ncid);
+				ut_free (baseTimeUnit);
+				ut_free_system (utSystem);
 				return (DBFault);
 				}
 			if (dimids [0] != latdim)
@@ -1212,6 +1374,8 @@ DBInt DBImportNetCDF (DBObjData *data,const char *filename)
 				free (latitudes);
 				free (timeSteps);
 				nc_close (ncid);
+				ut_free (baseTimeUnit);
+				ut_free_system (utSystem);
 				return (DBFault);
 				}
 			start [0] = 0; count [0] = rowNum;
@@ -1223,6 +1387,8 @@ DBInt DBImportNetCDF (DBObjData *data,const char *filename)
 				free (latitudes);
 				free (timeSteps);
 				nc_close (ncid);
+				ut_free (baseTimeUnit);
+				ut_free_system (utSystem);
 				return (DBFault);
 				}
 			cellSize.Y = fabs (latitudes [0] - latitudes [1]);
@@ -1240,6 +1406,8 @@ DBInt DBImportNetCDF (DBObjData *data,const char *filename)
 					free (latitudes);
 					free (timeSteps);
 					nc_close (ncid);
+					ut_free (baseTimeUnit);
+					ut_free_system (utSystem);
 					return (DBFault);
 					}
 				}
@@ -1257,6 +1425,8 @@ DBInt DBImportNetCDF (DBObjData *data,const char *filename)
 				free (latitudes);
 				free (timeSteps);
 				nc_close (ncid);
+				ut_free (baseTimeUnit);
+				ut_free_system (utSystem);
 				return (DBFault);
 				}
 			else timeString [attlen] = '\0';
@@ -1268,6 +1438,8 @@ DBInt DBImportNetCDF (DBObjData *data,const char *filename)
 				free (latitudes);
 				free (timeSteps);
 				nc_close (ncid);
+				ut_free (baseTimeUnit);
+				ut_free_system (utSystem);
 				return (DBFault);
 				}
 			if (ndims != 1)
@@ -1278,6 +1450,8 @@ DBInt DBImportNetCDF (DBObjData *data,const char *filename)
 				free (latitudes);
 				free (timeSteps);
 				nc_close (ncid);
+				ut_free (baseTimeUnit);
+				ut_free_system (utSystem);
 				return (DBFault);
 				}
 			if ((status = nc_inq_vardimid (ncid,id,dimids)) != NC_NOERR)
@@ -1288,6 +1462,8 @@ DBInt DBImportNetCDF (DBObjData *data,const char *filename)
 				free (latitudes);
 				free (timeSteps);
 				nc_close (ncid);
+				ut_free (baseTimeUnit);
+				ut_free_system (utSystem);
 				return (DBFault);
 				}
 			if (dimids [0] != timedim)
@@ -1298,6 +1474,8 @@ DBInt DBImportNetCDF (DBObjData *data,const char *filename)
 				free (latitudes);
 				free (timeSteps);
 				nc_close (ncid);
+				ut_free (baseTimeUnit);
+				ut_free_system (utSystem);
 				return (DBFault);
 				}
 			start [0] = 0; count [0] = layerNum;
@@ -1309,6 +1487,8 @@ DBInt DBImportNetCDF (DBObjData *data,const char *filename)
 				free (latitudes);
 				free (timeSteps);
 				nc_close (ncid);
+				ut_free (baseTimeUnit);
+				ut_free_system (utSystem);
 				return (DBFault);
 				}
 			}
@@ -1323,13 +1503,15 @@ DBInt DBImportNetCDF (DBObjData *data,const char *filename)
 				free (latitudes);
 				free (timeSteps);
 				nc_close (ncid);
+				ut_free (baseTimeUnit);
+				ut_free_system (utSystem);
 				return (DBFault);
 				}
 			if ((ndims < 2) || (ndims > 4)) continue;
 			if (((status = nc_inq_attlen   (ncid,id,"long_name", &attlen)) != NC_NOERR) ||
 			    ((status = nc_get_att_text (ncid,id,"long_name",longName)) != NC_NOERR)) strcpy (longName,"Noname");
 			else longName [attlen] = '\0';
-			if (((status = nc_inq_attlen   (ncid,id,"units", &attlen)) != NC_NOERR) ||
+/*			if (((status = nc_inq_attlen   (ncid,id,"units", &attlen)) != NC_NOERR) ||
 			    ((status = nc_get_att_text (ncid,id,"units", varUnit)) != NC_NOERR))
 				{
 				fprintf(stderr, "NC Error [%s,units]: %s\n", nc_strerror(status),varname);
@@ -1338,10 +1520,13 @@ DBInt DBImportNetCDF (DBObjData *data,const char *filename)
 				free (latitudes);
 				free (timeSteps);
 				nc_close (ncid);
+				ut_free (baseTimeUnit);
+				ut_free_system (utSystem);
 				return (DBFault);
 				}
 			else varUnit [attlen] = '\0';
-			if ((status = nc_get_att_double (ncid, id, "_FillValue",    &fillValue))    != NC_NOERR) fillValue    = -9999.0;
+			TODO: Handle variable unit!
+*/			if ((status = nc_get_att_double (ncid, id, "_FillValue",    &fillValue))    != NC_NOERR) fillValue    = -9999.0;
 			if (((status = nc_get_att_double (ncid,id, "missing_value", &missingValue)) != NC_NOERR) ||
 			    CMmathEqualValues (fillValue, missingValue)) missingValue = -9999.0; // TODO I am not sure if it is a good idea.
 			if ((status = nc_get_att_double (ncid,id, "scale_factor",  &scaleFactor))  != NC_NOERR) scaleFactor  = 1.0;
@@ -1358,6 +1543,8 @@ DBInt DBImportNetCDF (DBObjData *data,const char *filename)
 		free (latitudes);
 		free (timeSteps);
 		nc_close (ncid);
+		ut_free (baseTimeUnit);
+		ut_free_system (utSystem);
 		return (DBFault);
 		}
 	data->Name (longName);
@@ -1370,6 +1557,8 @@ DBInt DBImportNetCDF (DBObjData *data,const char *filename)
 		free (latitudes);
 		free (timeSteps);
 		nc_close (ncid);
+		ut_free (baseTimeUnit);
+		ut_free_system (utSystem);
 		return (DBFault);
 		}
 	if ((status = nc_inq_vardimid (ncid,varid,dimids)) != NC_NOERR)
@@ -1380,6 +1569,8 @@ DBInt DBImportNetCDF (DBObjData *data,const char *filename)
 		free (latitudes);
 		free (timeSteps);
 		nc_close (ncid);
+		ut_free (baseTimeUnit);
+		ut_free_system (utSystem);
 		return (DBFault);
 		}
 
@@ -1393,14 +1584,46 @@ DBInt DBImportNetCDF (DBObjData *data,const char *filename)
 		}
 
 	data->Extent (extent);
-	doTimeUnit = (timedim != -1) && (utScan (timeString,&timeUnit) == 0) ? true : false;
+	if (timedim != -1)
+		{
+		if ((timeUnit = ut_parse (utSystem, timeString, UT_ASCII)) == (ut_unit *) NULL)
+			{
+			fprintf (stderr,"Time string [%s] parsing error in %s:%d!\n",timeString,__FILE__,__LINE__);
+			switch (ut_get_status ()) {
+				case UT_BAD_ARG: fprintf (stderr, "System or string is NULL!\n");               break;
+				case UT_SYNTAX:  fprintf (stderr, "String contained a syntax error!n");         break;
+				case UT_UNKNOWN: fprintf (stderr, "String contained an unknown identifier!\n"); break;
+				default:         fprintf (stderr, "System error in %s:%d!n",__FILE__,__LINE__);
+				}
+			ut_free (baseTimeUnit);
+			ut_free_system (utSystem);
+			return (DBFault);
+			}
+		if ((cvConverter = ut_get_converter (timeUnit, baseTimeUnit)) == (cv_converter *) NULL)
+			{
+			fprintf (stderr,"Time converter error!n");
+			switch (ut_get_status ()) {
+				case UT_BAD_ARG:         fprintf (stderr, "unit1 or unit2 is NULL.\n");                         break;
+				case UT_NOT_SAME_SYSTEM: fprintf (stderr, "unit1 and unit2 belong to different unit-systems."); break;
+				default:                 fprintf (stderr, "Conversion between the units is not possible.");     break;
+				}
+			ut_free (timeUnit);
+			ut_free (baseTimeUnit);
+			ut_free_system (utSystem);
+			delete gridIO;
+			return (DBFault);
+			}
+		doTimeUnit = true;
+		}
+	else doTimeUnit = false;
 	for (layerID = 0;layerID < layerNum;layerID++)
 		{
 		if (timedim != -1)
 			{
 			start [timeidx] = layerID;
-			if ((doTimeUnit) && (utCalendar (timeSteps [layerID],&timeUnit,&year,&month,&day,&hour,&minute,&second) == 0))
+			if (doTimeUnit)
 				{
+				ut_decode_time (cv_convert_double (cvConverter, timeSteps [layerID]), &year, &month, &day, &hour, &minute, &second, &resolution);
 				if (year != 0) sprintf (layerName,"%04d",year);
 				else           sprintf (layerName,"XXXX");
 				if (month != 0)
@@ -1428,6 +1651,10 @@ DBInt DBImportNetCDF (DBObjData *data,const char *filename)
 			free (latitudes);
 			free (timeSteps);
 			nc_close (ncid);
+			cv_free (cvConverter);
+			ut_free (timeUnit);
+			ut_free (baseTimeUnit);
+			ut_free_system (utSystem);
 			return (DBFault);
 			}
 		missingValueFLD->Float (itemTable->Add (layerRec->Name ()),(DBFloat) missingValue);
@@ -1451,6 +1678,10 @@ DBInt DBImportNetCDF (DBObjData *data,const char *filename)
 				free (latitudes);
 				free (timeSteps);
 				nc_close (ncid);
+				cv_free (cvConverter);
+				ut_free (timeUnit);
+				ut_free (baseTimeUnit);
+				ut_free_system (utSystem);
 				return (DBFault);
 				}
 			for (colID = 0;colID < colNum;colID++)
@@ -1469,5 +1700,9 @@ DBInt DBImportNetCDF (DBObjData *data,const char *filename)
 	free (latitudes);
 	free (timeSteps);
 	nc_close (ncid);
+	cv_free (cvConverter);
+	ut_free (timeUnit);
+	ut_free (baseTimeUnit);
+	ut_free_system (utSystem);
 	return (DBSuccess);
 	}
