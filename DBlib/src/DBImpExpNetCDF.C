@@ -12,6 +12,7 @@ balazs.fekete@unh.edu
 
 #include <DB.H>
 #include <DBio.H>
+#include <ctype.h>
 #include <netcdf.h>
 #include <udunits2.h>
 
@@ -1586,6 +1587,7 @@ DBInt DBImportNetCDF (DBObjData *data,const char *filename)
 	data->Extent (extent);
 	if (timedim != -1)
 		{
+		for (i = 0; i < (int) strlen (timeString); ++i) timeString [i] = (int) tolower ((int) timeString[i]);
 		if ((timeUnit = ut_parse (utSystem, timeString, UT_ASCII)) == (ut_unit *) NULL)
 			{
 			fprintf (stderr,"Time string [%s] parsing error in %s:%d!\n",timeString,__FILE__,__LINE__);
@@ -1624,26 +1626,20 @@ DBInt DBImportNetCDF (DBObjData *data,const char *filename)
 			if (doTimeUnit)
 				{
 				ut_decode_time (cv_convert_double (cvConverter, timeSteps [layerID]), &year, &month, &day, &hour, &minute, &second, &resolution);
-				if (year != 0) sprintf (layerName,"%04d",year);
-				else           sprintf (layerName,"XXXX");
-				if (month != 0)
-					{
-					sprintf (layerName + strlen (layerName),"-%02d",month);
-					if (day != 0)
-						{
-						sprintf (layerName + strlen (layerName),"-%02d",day);
-						if (hour != 0)
-							{
-							sprintf (layerName + strlen (layerName)," %02d",hour);
-							if (minute != 0) sprintf (layerName + strlen (layerName),":%02d",minute);
-							}
-						}
-					}
+				if (year != 0) sprintf (layerName,"%04d",year); else sprintf (layerName,"XXXX");
+				if (strncmp (timeString,"month",strlen ("month")) == 0)
+					sprintf (layerName + strlen (layerName),"-%02d",month + (day > 15 ? 1 : 0));
+				else if (strncmp (timeString,"day",strlen ("day")) == 0)
+					sprintf (layerName + strlen (layerName),"-%02d-%02d",month, day + (hour > 12 ? 1 : 0));
+				else if (strncmp (timeString,"hour",strlen ("hour")) == 0)
+					sprintf (layerName + strlen (layerName),"-%02d-%02d %02d",month, day, hour + (minute > 30 ? 1 : 0));
+				else if (strncmp (timeString,"minute",strlen ("minute")) == 0)
+					sprintf (layerName + strlen (layerName),"-%02d-%02d %02d:%02d",month, day, hour, minute + (second > 30 ? 1 : 0));
+				else
+					sprintf (layerName,"LayerName:%04d",layerID);
 				}
-			else	sprintf (layerName,"LayerName:%04d",layerID);
+			else sprintf (layerName,"LayerName:%04d",layerID);
 			}
-		else sprintf (layerName,"LayerName:%04d",layerID);
-
 		if ((layerRec = layerTable->Add (layerName)) == (DBObjRecord *) NULL)
 			{
 			free (vector);
