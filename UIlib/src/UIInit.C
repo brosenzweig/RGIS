@@ -138,7 +138,7 @@ Widget UIInitialize (char *title,char *icon,char *helpFile, UIMenuItem mainMenu 
 	XtRealizeWidget (_UITopLevel);
 	_UIColorInitialize (_UITopLevel);
 
-	pixmap	= XmGetPixmap(XtScreen(UITopLevel()),(char *) "CCNYLogo.xpm",foreground,background);
+	pixmap	= XmGetPixmap(XtScreen(UITopLevel()),(char *) "UNHLogo",foreground,background);
 	unhLogo = XtVaCreateManagedWidget ("GHAASMainUNHLogo",xmLabelWidgetClass,mainForm,
 													XmNlabelType,				XmPIXMAP,
 													XmNlabelPixmap,			pixmap,
