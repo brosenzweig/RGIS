@@ -1612,7 +1612,6 @@ DBInt DBImportNetCDF (DBObjData *data,const char *filename)
 			ut_free (timeUnit);
 			ut_free (baseTimeUnit);
 			ut_free_system (utSystem);
-			delete gridIO;
 			return (DBFault);
 			}
 		doTimeUnit = true;
