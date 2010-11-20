@@ -1,26 +1,26 @@
 #include<NC.h>
 #include<NCnames.h>
 
-NCGdataType NCGdataGetType (int ncid)
+NCdataType NCdataGetType (int ncid)
 {
 	int status;
 	char dTypeStr [NC_MAX_NAME];
 
-	if ((status = nc_get_att_text (ncid,NC_GLOBAL,NCGnameGADataType,dTypeStr)) == NC_NOERR)
+	if ((status = nc_get_att_text (ncid,NC_GLOBAL,NCnameGADataType,dTypeStr)) == NC_NOERR)
 	{
-		if      (strncmp (dTypeStr,NCGnameTypeGCont,  strlen (NCGnameTypeGCont))   == 0)  return (NCGtypeGCont);
-		else if (strncmp (dTypeStr,NCGnameTypeGDisc,  strlen (NCGnameTypeGDisc))   == 0)  return (NCGtypeGDisc);
-		else if (strncmp (dTypeStr,NCGnameTypePoint,  strlen (NCGnameTypePoint))   == 0)  return (NCGtypePoint);
-		else if (strncmp (dTypeStr,NCGnameTypeLine,   strlen (NCGnameTypeLine))    == 0)  return (NCGtypeLine);
-		else if (strncmp (dTypeStr,NCGnameTypePolygon,strlen (NCGnameTypePolygon)) == 0)  return (NCGtypePolygon);
-		else if (strncmp (dTypeStr,NCGnameTypeNetwork,strlen (NCGnameTypeNetwork)) == 0)  return (NCGtypeNetwork);
-		fprintf (stderr,"Invalid data type in: NCGdataGetType ()\n");
-		return (NCGundefined);
+		if      (strncmp (dTypeStr,NCnameTypeGCont,  strlen (NCnameTypeGCont))   == 0)  return (NCtypeGCont);
+		else if (strncmp (dTypeStr,NCnameTypeGDisc,  strlen (NCnameTypeGDisc))   == 0)  return (NCtypeGDisc);
+		else if (strncmp (dTypeStr,NCnameTypePoint,  strlen (NCnameTypePoint))   == 0)  return (NCtypePoint);
+		else if (strncmp (dTypeStr,NCnameTypeLine,   strlen (NCnameTypeLine))    == 0)  return (NCtypeLine);
+		else if (strncmp (dTypeStr,NCnameTypePolygon,strlen (NCnameTypePolygon)) == 0)  return (NCtypePolygon);
+		else if (strncmp (dTypeStr,NCnameTypeNetwork,strlen (NCnameTypeNetwork)) == 0)  return (NCtypeNetwork);
+		fprintf (stderr,"Invalid data type in: NCdataGetType ()\n");
+		return (NCundefined);
 	}
-	return (NCGtypeGCont);
+	return (NCtypeGCont);
 }
 
-char *NCGdataGetTextAttribute (int ncid, int varid, const char *attName)
+char *NCdataGetTextAttribute (int ncid, int varid, const char *attName)
 {
 	int status;
 	char *att;
@@ -30,12 +30,12 @@ char *NCGdataGetTextAttribute (int ncid, int varid, const char *attName)
 
 	if ((att = (char *) malloc (attlen + 1)) == (char *) NULL)
 	{
-		fprintf (stderr,"Memory allocation error in: NCGdataGetTextAttribute ()\n");
+		fprintf (stderr,"Memory allocation error in: NCdataGetTextAttribute ()\n");
 		return ((char *) NULL);
 	}
 	if ((status = nc_get_att_text (ncid, varid, attName, att)) != NC_NOERR)
 	{
-		NCGprintNCError (status,"NCGdataGetTextAttribute");
+		NCprintNCError (status,"NCdataGetTextAttribute");
 		free (att);
 		return ((char *) NULL);
 	}
@@ -43,7 +43,7 @@ char *NCGdataGetTextAttribute (int ncid, int varid, const char *attName)
 	return (att);
 }
 
-NCGstate NCGdataSetTextAttribute (int ncid, int varid, const char *attName, const char *text)
+NCstate NCdataSetTextAttribute (int ncid, int varid, const char *attName, const char *text)
 {
 	int status;
 	bool redef;
@@ -54,13 +54,13 @@ NCGstate NCGdataSetTextAttribute (int ncid, int varid, const char *attName, cons
 	if (redef) nc_enddef (ncid);
 	if (status != NC_NOERR)
 	{
-		NCGprintNCError (status,"NCGdataSetTextAttribute");
-		return (NCGfailed);
+		NCprintNCError (status,"NCdataSetTextAttribute");
+		return (NCfailed);
 	}
-	return (NCGsucceeded);
+	return (NCsucceeded);
 }
 
-NCGstate NCGdataCopyAttributes (int inNCid, int inVarid, int outNCid, int outVarid, bool overwrite)
+NCstate NCdataCopyAttributes (int inNCid, int inVarid, int outNCid, int outVarid, bool overwrite)
 {
 	bool redef;
 	int status, att = 0, attId;
@@ -73,188 +73,188 @@ NCGstate NCGdataCopyAttributes (int inNCid, int inVarid, int outNCid, int outVar
 		{
 			if ((status = nc_copy_att (inNCid,  inVarid, attName, outNCid, outVarid)) != NC_NOERR)
 			{
-				NCGprintNCError (status,"_NCGdataCopyAttributes");
-				return (NCGfailed);
+				NCprintNCError (status,"_NCdataCopyAttributes");
+				return (NCfailed);
 			}
 		}
 	}
 	if (redef) nc_enddef (outNCid);
-	return (NCGsucceeded);
+	return (NCsucceeded);
 }
 
-NCGstate NCGdataCopyAllAttibutes (int inNCid, int outNCid, bool overwrite)
+NCstate NCdataCopyAllAttibutes (int inNCid, int outNCid, bool overwrite)
 {
 	int status, inVarid, outVarid, varnum;
 	char varName [NC_MAX_NAME];
-	if (NCGdataCopyAttributes (inNCid, NC_GLOBAL, outNCid, NC_GLOBAL, overwrite) == NCGfailed) return (NCGfailed);
+	if (NCdataCopyAttributes (inNCid, NC_GLOBAL, outNCid, NC_GLOBAL, overwrite) == NCfailed) return (NCfailed);
 
 	if ((status = nc_inq_nvars (inNCid,&varnum)) != NC_NOERR)	
 	{
-		NCGprintNCError (status,"NCGdataCopyAttibutes");
-		return (NCGfailed);
+		NCprintNCError (status,"NCdataCopyAttibutes");
+		return (NCfailed);
 	}
 	for (inVarid = 0; inVarid < varnum;++inVarid)
 	{
 		if ((status = nc_inq_varname (inNCid,inVarid,varName)) != NC_NOERR)
 		{
-			NCGprintNCError (status,"NCGdataCopyAttibutes");
-			return (NCGfailed);
+			NCprintNCError (status,"NCdataCopyAttibutes");
+			return (NCfailed);
 		}
 		if ((status = nc_inq_varid (outNCid,varName,&outVarid)) != NC_NOERR) continue;
-		if (NCGdataCopyAttributes (inNCid, inVarid, outNCid, outVarid, overwrite) == NCGfailed) return (NCGfailed);
+		if (NCdataCopyAttributes (inNCid, inVarid, outNCid, outVarid, overwrite) == NCfailed) return (NCfailed);
 	}
-	return (NCGsucceeded);
+	return (NCsucceeded);
 }
 
-NCGprojection NCGdataGetProjection (int ncid)
+NCprojection NCdataGetProjection (int ncid)
 {
 	int dimid;
 	char projName [NC_MAX_NAME];
 
-	if (nc_get_att_text (ncid,NC_GLOBAL,NCGnameGAProjection,projName) == NC_NOERR)
+	if (nc_get_att_text (ncid,NC_GLOBAL,NCnameGAProjection,projName) == NC_NOERR)
 	{
-		if      (strcmp (projName, NCGnameGAProjCartesian)) return (NCGprojCartesian);
-		else if (strcmp (projName, NCGnameGAProjSpherical)) return (NCGprojSpherical);
-		fprintf (stderr,"Invalid data type in: NCGdataGetProjection ()\n");
+		if      (strcmp (projName, NCnameGAProjCartesian)) return (NCprojCartesian);
+		else if (strcmp (projName, NCnameGAProjSpherical)) return (NCprojSpherical);
+		fprintf (stderr,"Invalid data type in: NCdataGetProjection ()\n");
 	}
 	else
 	{
-		if      (nc_inq_dimid (ncid, NCGnameDNXCoord,    &dimid) == NC_NOERR) return (NCGprojCartesian);
-		else if (nc_inq_dimid (ncid, NCGnameDNLon,       &dimid) == NC_NOERR) return (NCGprojSpherical);
-		else if (nc_inq_dimid (ncid, NCGnameDNLongitude, &dimid) == NC_NOERR) return (NCGprojSpherical);
-		fprintf (stderr,"Nongeographical data in: NCGdataGetProjection ()\n");
+		if      (nc_inq_dimid (ncid, NCnameDNXCoord,    &dimid) == NC_NOERR) return (NCprojCartesian);
+		else if (nc_inq_dimid (ncid, NCnameDNLon,       &dimid) == NC_NOERR) return (NCprojSpherical);
+		else if (nc_inq_dimid (ncid, NCnameDNLongitude, &dimid) == NC_NOERR) return (NCprojSpherical);
+		fprintf (stderr,"Nongeographical data in: NCdataGetProjection ()\n");
 	}
-	return (NCGundefined);
+	return (NCundefined);
 }
 
-int NCGdataGetXDimId (int ncid)
+int NCdataGetXDimId (int ncid)
 {
 	int dimid;
 
-	if ((nc_inq_dimid  (ncid, NCGnameDNCoord,     &dimid) == NC_NOERR) ||
-	    (nc_inq_dimid  (ncid, NCGnameDNXCoord,    &dimid) == NC_NOERR) ||
-		 (nc_inq_dimid  (ncid, NCGnameDNLon,       &dimid) == NC_NOERR) ||
-		 (nc_inq_dimid  (ncid, NCGnameDNLongitude, &dimid) == NC_NOERR)) return (dimid);
-	return (NCGfailed);
+	if ((nc_inq_dimid  (ncid, NCnameDNCoord,     &dimid) == NC_NOERR) ||
+	    (nc_inq_dimid  (ncid, NCnameDNXCoord,    &dimid) == NC_NOERR) ||
+		 (nc_inq_dimid  (ncid, NCnameDNLon,       &dimid) == NC_NOERR) ||
+		 (nc_inq_dimid  (ncid, NCnameDNLongitude, &dimid) == NC_NOERR)) return (dimid);
+	return (NCfailed);
 }
 
-int NCGdataGetXVarId (int ncid)
+int NCdataGetXVarId (int ncid)
 {
 	int varid;
 
-	if ((nc_inq_varid  (ncid, NCGnameDNXCoord,    &varid) == NC_NOERR) ||
-		 (nc_inq_varid  (ncid, NCGnameDNLon,       &varid) == NC_NOERR) ||
-		 (nc_inq_varid  (ncid, NCGnameDNLongitude, &varid) == NC_NOERR)) return (varid);
-	return (NCGfailed);
+	if ((nc_inq_varid  (ncid, NCnameDNXCoord,    &varid) == NC_NOERR) ||
+		 (nc_inq_varid  (ncid, NCnameDNLon,       &varid) == NC_NOERR) ||
+		 (nc_inq_varid  (ncid, NCnameDNLongitude, &varid) == NC_NOERR)) return (varid);
+	return (NCfailed);
 }
 
-int NCGdataGetYDimId (int ncid)
+int NCdataGetYDimId (int ncid)
 {
 	int dimid;
 
-	if ((nc_inq_dimid  (ncid, NCGnameDNCoord,     &dimid) == NC_NOERR) ||
-	    (nc_inq_dimid  (ncid, NCGnameDNYCoord,    &dimid) == NC_NOERR) ||
-		 (nc_inq_dimid  (ncid, NCGnameDNLat,       &dimid) == NC_NOERR) ||
-		 (nc_inq_dimid  (ncid, NCGnameDNLatitude,  &dimid) == NC_NOERR)) return (dimid);
-	return (NCGfailed);
+	if ((nc_inq_dimid  (ncid, NCnameDNCoord,     &dimid) == NC_NOERR) ||
+	    (nc_inq_dimid  (ncid, NCnameDNYCoord,    &dimid) == NC_NOERR) ||
+		 (nc_inq_dimid  (ncid, NCnameDNLat,       &dimid) == NC_NOERR) ||
+		 (nc_inq_dimid  (ncid, NCnameDNLatitude,  &dimid) == NC_NOERR)) return (dimid);
+	return (NCfailed);
 }
 
-int NCGdataGetYVarId (int ncid)
+int NCdataGetYVarId (int ncid)
 {
 	int varid;
 
-	if ((nc_inq_varid  (ncid, NCGnameDNYCoord,    &varid) == NC_NOERR) ||
-		 (nc_inq_varid  (ncid, NCGnameDNLat,       &varid) == NC_NOERR) ||
-		 (nc_inq_varid  (ncid, NCGnameDNLatitude,  &varid) == NC_NOERR)) return (varid);
-	return (NCGfailed);
+	if ((nc_inq_varid  (ncid, NCnameDNYCoord,    &varid) == NC_NOERR) ||
+		 (nc_inq_varid  (ncid, NCnameDNLat,       &varid) == NC_NOERR) ||
+		 (nc_inq_varid  (ncid, NCnameDNLatitude,  &varid) == NC_NOERR)) return (varid);
+	return (NCfailed);
 }
 
-int NCGdataGetLVarId (int ncid)
+int NCdataGetLVarId (int ncid)
 {
 	int varid;
 
-	if (nc_inq_varid  (ncid, NCGnameDNLevel,  &varid) == NC_NOERR) return (varid);
-	return (NCGfailed);
+	if (nc_inq_varid  (ncid, NCnameDNLevel,  &varid) == NC_NOERR) return (varid);
+	return (NCfailed);
 }
 
-int NCGdataGetTVarId (int ncid)
+int NCdataGetTVarId (int ncid)
 {
 	int varid;
 
-	if (nc_inq_varid  (ncid, NCGnameDNTime,  &varid) == NC_NOERR) return (varid);
-	return (NCGfailed);
+	if (nc_inq_varid  (ncid, NCnameDNTime,  &varid) == NC_NOERR) return (varid);
+	return (NCfailed);
 }
 
-int NCGdataGetCDimId (int ncid)
+int NCdataGetCDimId (int ncid)
 {
 	int dimid;
 
-	if (nc_inq_dimid  (ncid, NCGnameDNCoord, &dimid) == NC_NOERR) return (dimid);
-	return (NCGfailed);
+	if (nc_inq_dimid  (ncid, NCnameDNCoord, &dimid) == NC_NOERR) return (dimid);
+	return (NCfailed);
 }
 
-double *NCGdataGetVector (int ncid, int dimid, int varid, size_t *len)
+double *NCdataGetVector (int ncid, int dimid, int varid, size_t *len)
 {
 	int status;
 	size_t start;
 	double *coords;
 
-	if ((dimid == NCGfailed) || (varid == NCGfailed)) return ((double *) NULL);
+	if ((dimid == NCfailed) || (varid == NCfailed)) return ((double *) NULL);
 	if ((status = nc_inq_dimlen (ncid, dimid, len)) != NC_NOERR)
 	{
-		NCGprintNCError (status,"NCGdataGetVector");
+		NCprintNCError (status,"NCdataGetVector");
 		return ((double *) NULL);
 	}
 	if ((coords = (double  *) calloc (*len, sizeof (double))) == (double *) NULL)
 	{
-		fprintf (stderr,"Memory allocation error in: NCGdataGetVector ()\n");
+		fprintf (stderr,"Memory allocation error in: NCdataGetVector ()\n");
 		return ((double *) NULL);
 	}
 	start = 0;
 	if ((status = nc_get_vara_double (ncid, varid, &start, len, coords)) != NC_NOERR)
 	{
-		NCGprintNCError (status,"NCGdataGetVector");
+		NCprintNCError (status,"NCdataGetVector");
 		free (coords);
 		return ((double *) NULL);
 	}
 	return (coords);
 }
 
-int NCGdataGetCoreVarId (int ncid)
+int NCdataGetCoreVarId (int ncid)
 {
 	int status;
 	int varid;
-	int dimid [4], xdim = NCGundefined, ydim = NCGundefined, i, j;
+	int dimid [4], xdim = NCundefined, ydim = NCundefined, i, j;
 	size_t nvars, ndims;
 
 	if ((status = nc_inq_nvars (ncid, &nvars)) != NC_NOERR)
 	{
-		NCGprintNCError (status,"NCGdataGetGridVarId");
-		return (NCGfailed);
+		NCprintNCError (status,"NCdataGetGridVarId");
+		return (NCfailed);
 	}
 
-	if (((xdim = NCGdataGetCDimId (ncid)) == NCGfailed) &&
-	    (((xdim = NCGdataGetXDimId (ncid)) == NCGfailed) || ((ydim = NCGdataGetYDimId (ncid)) == NCGfailed))) return (NCGfailed);
+	if (((xdim = NCdataGetCDimId (ncid)) == NCfailed) &&
+	    (((xdim = NCdataGetXDimId (ncid)) == NCfailed) || ((ydim = NCdataGetYDimId (ncid)) == NCfailed))) return (NCfailed);
 
 	for (varid = 0;varid < nvars; ++varid)
 	{
 		if ((status = nc_inq_varndims (ncid, varid, &ndims)) != NC_NOERR)
 		{
-			NCGprintNCError (status,"NCGdataGetGridVarId");
-			return (NCGfailed);
+			NCprintNCError (status,"NCdataGetGridVarId");
+			return (NCfailed);
 		}
 		if ((ndims < 1) || (ndims > 4)) continue;
 		if ((status = nc_inq_vardimid (ncid, varid, dimid)) != NC_NOERR)
 		{
-			NCGprintNCError (status,"NCGdataGetGridVarId");
-			return (NCGfailed);
+			NCprintNCError (status,"NCdataGetGridVarId");
+			return (NCfailed);
 		}
 		for (i = 0;i < ndims; ++i)
 			if (xdim == dimid [i])
 			{
-				if (ydim == NCGundefined) return (varid);
+				if (ydim == NCundefined) return (varid);
 				for (j = 0;j < ndims; ++j) if (ydim == dimid [j]) return (varid);
 			}
 	}
-	return (NCGfailed);
+	return (NCfailed);
 }

@@ -5,15 +5,15 @@
 #include<string.h>
 #include<stdlib.h>
 
-static regex_t _NCGfileListRegex;
+static regex_t _NCfileListRegex;
 
-static int _NCGfileFilter (const struct dirent *dirent)
+static int _NCfileFilter (const struct dirent *dirent)
 {
 	regmatch_t pmatch;
-	return (regexec (&_NCGfileListRegex,dirent->d_name,1, &pmatch, REG_NOTBOL | REG_NOTEOL) == REG_NOMATCH ? false : true);
+	return (regexec (&_NCfileListRegex,dirent->d_name,1, &pmatch, REG_NOTBOL | REG_NOTEOL) == REG_NOMATCH ? false : true);
 }
 
-char **NCGfileList (const char *template, size_t *n)
+char **NCfileList (const char *template, size_t *n)
 {
 	bool regexIsSet = false;
 	int i, j;
@@ -24,7 +24,7 @@ char **NCGfileList (const char *template, size_t *n)
 	strLength = strlen (template);
 	for (i = 0;i < strLength;++i)  if (template [i] == '.') ndots++;
 	if ((allocPath = (char *) malloc (strLength + ndots + 1)) == (char *) NULL)
-	{ perror ("Memory allocation error in: NCGfileList ()"); goto ABORT; }
+	{ perror ("Memory allocation error in: NCfileList ()"); goto ABORT; }
 	strcpy (allocPath,template);
 	for (i = 0;i < strLength + ndots;++i)
 		if (allocPath [i] == '.')
@@ -41,29 +41,29 @@ char **NCGfileList (const char *template, size_t *n)
 	{ path = allocPath; pattern = allocPath + i + 1; allocPath [i] = '\0'; }
 	else { path = "./";      pattern = allocPath; }
 
-	if (regcomp (&_NCGfileListRegex,pattern,REG_EXTENDED | REG_NOSUB) != 0)
-	{ fprintf (stderr,"Regular expression error in: _NCGfileFilter ()\n"); goto ABORT; } 
+	if (regcomp (&_NCfileListRegex,pattern,REG_EXTENDED | REG_NOSUB) != 0)
+	{ fprintf (stderr,"Regular expression error in: _NCfileFilter ()\n"); goto ABORT; } 
 	regexIsSet = true;	
 
-	if ((ndirents = scandir (path,&dirents,_NCGfileFilter,alphasort)) < 0)
-	{ perror ("Directory scanning error in: NCGfileList ()"); goto ABORT; }
+	if ((ndirents = scandir (path,&dirents,_NCfileFilter,alphasort)) < 0)
+	{ perror ("Directory scanning error in: NCfileList ()"); goto ABORT; }
 	if (ndirents < 1)
 	{ fprintf (stderr,"No file is matching pattern [%s]\n",template); goto ABORT; }
 	if ((fileList = (char **) calloc (ndirents,sizeof (char *))) == (char **) NULL)
-	{ perror ("Memory allocation error in: NCGfileList ()"); goto ABORT; }
+	{ perror ("Memory allocation error in: NCfileList ()"); goto ABORT; }
 	for (i = 0;i < ndirents;++i) fileList [i] = (char *) NULL;
 	strLength = strlen (path) + 1;
 	for (i = 0;i < ndirents;++i)
 	{
 		if ((fileList [i] = (char *) malloc (strLength + strlen (dirents [i]->d_name) + 1)) == (char *) NULL)
-		{ perror ("Memory allocation error in: NCGfileList ()"); goto ABORT; }
+		{ perror ("Memory allocation error in: NCfileList ()"); goto ABORT; }
 		sprintf (fileList [i],"%s/%s",path,dirents [i]->d_name);
 	}
 
 	free (allocPath);
 	for (i = 0;i < ndirents;++i) free (dirents [i]);
 	if (dirents != (struct dirent **) NULL) free (dirents);
-	if (regexIsSet) regfree (&_NCGfileListRegex);
+	if (regexIsSet) regfree (&_NCfileListRegex);
 	*n = ndirents;
 	return (fileList);
 
@@ -72,12 +72,12 @@ ABORT:
 	if (fileList  != (char **) NULL) { for ( ;i >= 0;--i) free (fileList [i]); free (fileList); }
 	if (dirents   != (struct dirent **) NULL)
 	{ for (i = 0 ;i < ndirents;++i) free (fileList [i]); free (fileList); }
-	if (regexIsSet) regfree (&_NCGfileListRegex);
+	if (regexIsSet) regfree (&_NCfileListRegex);
 	*n = 0;
 	return ((char **) NULL);
 }
 
-void NCGfileListFree (char **fileList, size_t n)
+void NCfileListFree (char **fileList, size_t n)
 {
 	int i;
 

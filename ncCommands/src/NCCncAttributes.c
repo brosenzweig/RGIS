@@ -15,202 +15,202 @@ int main (int argc,char *argv [])
 	char *title = NULL, *type = NULL, *domain = NULL, *subject = NULL, *ref = NULL, *inst = NULL, *source = NULL, *comments = NULL;
 	VarNode_t *head, *last;
 	if((last = head = malloc(sizeof(VarNode_t))) == (VarNode_t *) NULL)
-		{ perror("Memory allocation error in: ncgAttributes()\n"); return(NCGfailed); }
+		{ perror("Memory allocation error in: ncgAttributes()\n"); return(NCfailed); }
 	for (argPos = 1;argPos < argNum;)
 	{
-		if (NCGcmArgTest(argv[argPos],"-h","--help"))
+		if (NCcmArgTest(argv[argPos],"-h","--help"))
 		{
-			NCGcmArgShiftLeft(argPos,argv,argc); argNum--;
-			if (NCGcmArgCheck(argv,argPos,argNum))
-				{ if((strcmp(argv[argPos],"extend") == 0) || (strcmp(argv[argPos],"e") == 0)) doHelp(1,NCGcmProgName(argv[0])); }
-			doHelp(0,NCGcmProgName(argv[0]));
+			NCcmArgShiftLeft(argPos,argv,argc); argNum--;
+			if (NCcmArgCheck(argv,argPos,argNum))
+				{ if((strcmp(argv[argPos],"extend") == 0) || (strcmp(argv[argPos],"e") == 0)) doHelp(1,NCcmProgName(argv[0])); }
+			doHelp(0,NCcmProgName(argv[0]));
 			continue;
 		}
-		if (NCGcmArgTest(argv[argPos],"-l","--longname"))
+		if (NCcmArgTest(argv[argPos],"-l","--longname"))
 		{
-			NCGcmArgShiftLeft(argPos,argv,argc); argNum--;
-			if ((NCGcmArgCheck(argv,argPos,argNum)) || (NCGcmArgCheck(argv,argPos + 1,argNum)))
-				{ fprintf (stderr,"Missing Long Name!\n"); return (NCGfailed); }
+			NCcmArgShiftLeft(argPos,argv,argc); argNum--;
+			if ((NCcmArgCheck(argv,argPos,argNum)) || (NCcmArgCheck(argv,argPos + 1,argNum)))
+				{ fprintf (stderr,"Missing Long Name!\n"); return (NCfailed); }
 			last->text = true;
 			last->var = argv[argPos];
 			last->dat = argv[argPos + 1];
-			last->attrib = NCGnameVALongName;
+			last->attrib = NCnameVALongName;
 			if((last = last->next = malloc(sizeof(VarNode_t))) == NULL)
-				{ perror("Memory allocation error in: ncgAttributes()\n"); return(NCGfailed); }
+				{ perror("Memory allocation error in: ncgAttributes()\n"); return(NCfailed); }
 			last->dat = last->dat2 = (char *) NULL;
-			NCGcmArgShiftLeft(argPos,argv,argc); argNum--;
-			NCGcmArgShiftLeft(argPos,argv,argc); argNum--;
+			NCcmArgShiftLeft(argPos,argv,argc); argNum--;
+			NCcmArgShiftLeft(argPos,argv,argc); argNum--;
 			continue;
 		}
-		if (NCGcmArgTest(argv[argPos],"-n","--standardname"))
+		if (NCcmArgTest(argv[argPos],"-n","--standardname"))
 		{
-			NCGcmArgShiftLeft(argPos,argv,argc); argNum--;
-			if ((NCGcmArgCheck(argv,argPos,argNum)) || (NCGcmArgCheck(argv,argPos + 1,argNum)))
-				{ fprintf (stderr,"Missing Standard Name!\n"); return (NCGfailed); }
+			NCcmArgShiftLeft(argPos,argv,argc); argNum--;
+			if ((NCcmArgCheck(argv,argPos,argNum)) || (NCcmArgCheck(argv,argPos + 1,argNum)))
+				{ fprintf (stderr,"Missing Standard Name!\n"); return (NCfailed); }
 			last->text = true;
 			last->var = argv[argPos];
 			last->dat = argv[argPos + 1];
-			last->attrib = NCGnameVAStandardName;
+			last->attrib = NCnameVAStandardName;
 			if((last = last->next = malloc(sizeof(VarNode_t))) == NULL)
-				{ perror("Memory allocation error in: ncgAttributes()\n"); return(NCGfailed); }
+				{ perror("Memory allocation error in: ncgAttributes()\n"); return(NCfailed); }
 			last->dat = last->dat2 = (char *) NULL;
-			NCGcmArgShiftLeft(argPos,argv,argc); argNum--;
-			NCGcmArgShiftLeft(argPos,argv,argc); argNum--;
+			NCcmArgShiftLeft(argPos,argv,argc); argNum--;
+			NCcmArgShiftLeft(argPos,argv,argc); argNum--;
 			continue;
 		}
-		if (NCGcmArgTest(argv[argPos],"-U","--units"))
+		if (NCcmArgTest(argv[argPos],"-U","--units"))
 		{
-			NCGcmArgShiftLeft(argPos,argv,argc); argNum--;
-			if ((NCGcmArgCheck(argv,argPos,argNum)) || (NCGcmArgCheck(argv,argPos + 1,argNum)))
-				{ fprintf (stderr,"Missing Units!\n"); return (NCGfailed); }
+			NCcmArgShiftLeft(argPos,argv,argc); argNum--;
+			if ((NCcmArgCheck(argv,argPos,argNum)) || (NCcmArgCheck(argv,argPos + 1,argNum)))
+				{ fprintf (stderr,"Missing Units!\n"); return (NCfailed); }
 			last->text = true;
 			last->var = argv[argPos];
 			last->dat = argv[argPos + 1];
-			last->attrib = NCGnameVAUnits;
+			last->attrib = NCnameVAUnits;
 			if((last = last->next = malloc(sizeof(VarNode_t))) == NULL)
-				{ perror("Memory allocation error in: ncgAttributes()"); return(NCGfailed); }
+				{ perror("Memory allocation error in: ncgAttributes()"); return(NCfailed); }
 			last->dat = last->dat2 = (char *) NULL;
-			NCGcmArgShiftLeft(argPos,argv,argc); argNum--;
-			NCGcmArgShiftLeft(argPos,argv,argc); argNum--;
+			NCcmArgShiftLeft(argPos,argv,argc); argNum--;
+			NCcmArgShiftLeft(argPos,argv,argc); argNum--;
 			continue;
 		}
-		if (NCGcmArgTest(argv[argPos],"-v","--validrange"))
+		if (NCcmArgTest(argv[argPos],"-v","--validrange"))
 		{
-			NCGcmArgShiftLeft(argPos,argv,argc); argNum--;
-			if ((NCGcmArgCheck(argv,argPos,argNum)) ||
-				 (NCGcmArgCheck(argv,argPos + 1,argNum)) ||
-				 (NCGcmArgCheck(argv,argPos + 2, argNum)))
-				{ fprintf (stderr,"Missing Ranges!\n"); return (NCGfailed); }
+			NCcmArgShiftLeft(argPos,argv,argc); argNum--;
+			if ((NCcmArgCheck(argv,argPos,argNum)) ||
+				 (NCcmArgCheck(argv,argPos + 1,argNum)) ||
+				 (NCcmArgCheck(argv,argPos + 2, argNum)))
+				{ fprintf (stderr,"Missing Ranges!\n"); return (NCfailed); }
 // ********************        CHECK HERE!!! ************************
 			last->text = false;
 			last->var = argv[argPos];
 			last->dat = argv[argPos + 1];
 			last->dat2 = argv[argPos + 2];
-			last->attrib = NCGnameVAValidRange;
+			last->attrib = NCnameVAValidRange;
 			if((last = last->next = malloc(sizeof(VarNode_t))) == NULL)
-				{ perror("Memory allocation error in: ncgAttributes()"); return(NCGfailed); }
+				{ perror("Memory allocation error in: ncgAttributes()"); return(NCfailed); }
 			last->dat = last->dat2 = (char *) NULL;
-			NCGcmArgShiftLeft(argPos,argv,argc); argNum--;
-			NCGcmArgShiftLeft(argPos,argv,argc); argNum--;
-			NCGcmArgShiftLeft(argPos,argv,argc); argNum--;
+			NCcmArgShiftLeft(argPos,argv,argc); argNum--;
+			NCcmArgShiftLeft(argPos,argv,argc); argNum--;
+			NCcmArgShiftLeft(argPos,argv,argc); argNum--;
 			continue;
 		}
-		if (NCGcmArgTest(argv[argPos],"-o","--offset"))
+		if (NCcmArgTest(argv[argPos],"-o","--offset"))
 		{
-			NCGcmArgShiftLeft(argPos,argv,argc); argNum--;
-			if ((NCGcmArgCheck(argv,argPos,argNum)) ||
-				 (NCGcmArgCheck(argv,argPos + 1,argNum)))
-				{ fprintf (stderr,"Missing offset!\n"); return (NCGfailed); }
+			NCcmArgShiftLeft(argPos,argv,argc); argNum--;
+			if ((NCcmArgCheck(argv,argPos,argNum)) ||
+				 (NCcmArgCheck(argv,argPos + 1,argNum)))
+				{ fprintf (stderr,"Missing offset!\n"); return (NCfailed); }
 			last->text = false;
 			last->var = argv[argPos];
 			last->dat = argv[argPos + 1];
-			last->attrib = NCGnameVAAddOffset;
+			last->attrib = NCnameVAAddOffset;
 			if((last = last->next = malloc(sizeof(VarNode_t))) == NULL)
-				{ perror("Memory allocation error in: ncgAttributes()"); return(NCGfailed); }
+				{ perror("Memory allocation error in: ncgAttributes()"); return(NCfailed); }
 			last->dat = last->dat2 = (char *) NULL;
-			NCGcmArgShiftLeft(argPos,argv,argc); argNum--;
-			NCGcmArgShiftLeft(argPos,argv,argc); argNum--;
+			NCcmArgShiftLeft(argPos,argv,argc); argNum--;
+			NCcmArgShiftLeft(argPos,argv,argc); argNum--;
 			continue;
 		}
-		if (NCGcmArgTest(argv[argPos],"-s","--scalefactor"))
+		if (NCcmArgTest(argv[argPos],"-s","--scalefactor"))
 		{
-			NCGcmArgShiftLeft(argPos,argv,argc); argNum--;
-			if ((NCGcmArgCheck(argv,argPos,argNum)) ||
-				 (NCGcmArgCheck(argv,argPos + 1,argNum)))
-				{ fprintf (stderr,"Missing scale factor\n"); return (NCGfailed); }
+			NCcmArgShiftLeft(argPos,argv,argc); argNum--;
+			if ((NCcmArgCheck(argv,argPos,argNum)) ||
+				 (NCcmArgCheck(argv,argPos + 1,argNum)))
+				{ fprintf (stderr,"Missing scale factor\n"); return (NCfailed); }
 			last->text = false;
 			last->var = argv[argPos];
 			last->dat = argv[argPos + 1];
-			last->attrib = NCGnameVAScaleFactor;
+			last->attrib = NCnameVAScaleFactor;
 			if((last = last->next = malloc(sizeof(VarNode_t))) == NULL)
-				{ perror("Memory allocation error in: ncgAttributes()"); return(NCGfailed); }
+				{ perror("Memory allocation error in: ncgAttributes()"); return(NCfailed); }
 			last->dat = last->dat2 = (char *) NULL;
-			NCGcmArgShiftLeft(argPos,argv,argc); argNum--;
-			NCGcmArgShiftLeft(argPos,argv,argc); argNum--;
+			NCcmArgShiftLeft(argPos,argv,argc); argNum--;
+			NCcmArgShiftLeft(argPos,argv,argc); argNum--;
 			continue;
 		}
-		if (NCGcmArgTest(argv[argPos],"-t","--title"))
+		if (NCcmArgTest(argv[argPos],"-t","--title"))
 		{
-			NCGcmArgShiftLeft(argPos,argv,argc); argNum--;
-			if (NCGcmArgCheck(argv,argPos,argNum)) { fprintf (stderr,"Missing Title!\n"); return (NCGfailed); }
+			NCcmArgShiftLeft(argPos,argv,argc); argNum--;
+			if (NCcmArgCheck(argv,argPos,argNum)) { fprintf (stderr,"Missing Title!\n"); return (NCfailed); }
 			title = argv[argPos];
-			NCGcmArgShiftLeft(argPos,argv,argc); argNum--;
+			NCcmArgShiftLeft(argPos,argv,argc); argNum--;
 			continue;
 		}
-		if (NCGcmArgTest(argv[argPos],"-y","--type"))
+		if (NCcmArgTest(argv[argPos],"-y","--type"))
 		{
-			NCGcmArgShiftLeft(argPos,argv,argc); argNum--;
-			if (NCGcmArgCheck(argv,argPos,argNum)) { fprintf (stderr,"Missing Type!\n"); return (NCGfailed); }
+			NCcmArgShiftLeft(argPos,argv,argc); argNum--;
+			if (NCcmArgCheck(argv,argPos,argNum)) { fprintf (stderr,"Missing Type!\n"); return (NCfailed); }
 			type = argv[argPos];
-			NCGcmArgShiftLeft(argPos,argv,argc); argNum--;
+			NCcmArgShiftLeft(argPos,argv,argc); argNum--;
 			continue;
 		}
-		if (NCGcmArgTest(argv[argPos],"-d","--domain"))
+		if (NCcmArgTest(argv[argPos],"-d","--domain"))
 		{
-			NCGcmArgShiftLeft(argPos,argv,argc); argNum--;
-			if (NCGcmArgCheck(argv,argPos,argNum)) { fprintf (stderr,"Missing Domain!\n"); return (NCGfailed); }
+			NCcmArgShiftLeft(argPos,argv,argc); argNum--;
+			if (NCcmArgCheck(argv,argPos,argNum)) { fprintf (stderr,"Missing Domain!\n"); return (NCfailed); }
 			domain = argv[argPos];
-			NCGcmArgShiftLeft(argPos,argv,argc); argNum--;
+			NCcmArgShiftLeft(argPos,argv,argc); argNum--;
 			continue;
 		}
-		if (NCGcmArgTest(argv[argPos],"-s","--subject"))
+		if (NCcmArgTest(argv[argPos],"-s","--subject"))
 		{
-			NCGcmArgShiftLeft(argPos,argv,argc); argNum--;
-			if (NCGcmArgCheck(argv,argPos,argNum)) { fprintf (stderr,"Missing Subject!\n"); return (NCGfailed); }
+			NCcmArgShiftLeft(argPos,argv,argc); argNum--;
+			if (NCcmArgCheck(argv,argPos,argNum)) { fprintf (stderr,"Missing Subject!\n"); return (NCfailed); }
 			subject = argv[argPos];
-			NCGcmArgShiftLeft(argPos,argv,argc); argNum--;
+			NCcmArgShiftLeft(argPos,argv,argc); argNum--;
 			continue;
 		}
-		if (NCGcmArgTest(argv[argPos],"-r","--references"))
+		if (NCcmArgTest(argv[argPos],"-r","--references"))
 		{
-			NCGcmArgShiftLeft(argPos,argv,argc); argNum--;
-			if (NCGcmArgCheck(argv,argPos,argNum)) { fprintf (stderr,"Missing References!\n"); return (NCGfailed); }
+			NCcmArgShiftLeft(argPos,argv,argc); argNum--;
+			if (NCcmArgCheck(argv,argPos,argNum)) { fprintf (stderr,"Missing References!\n"); return (NCfailed); }
 			ref = argv[argPos];
-			NCGcmArgShiftLeft(argPos,argv,argc); argNum--;
+			NCcmArgShiftLeft(argPos,argv,argc); argNum--;
 			continue;
 		}
-		if (NCGcmArgTest(argv[argPos],"-i","--institution"))
+		if (NCcmArgTest(argv[argPos],"-i","--institution"))
 		{
-			NCGcmArgShiftLeft(argPos,argv,argc); argNum--;
-			if (NCGcmArgCheck(argv,argPos,argNum)) { fprintf (stderr,"Missing Institution!\n"); return (NCGfailed); }
+			NCcmArgShiftLeft(argPos,argv,argc); argNum--;
+			if (NCcmArgCheck(argv,argPos,argNum)) { fprintf (stderr,"Missing Institution!\n"); return (NCfailed); }
 			inst = argv[argPos];
-			NCGcmArgShiftLeft(argPos,argv,argc); argNum--;
+			NCcmArgShiftLeft(argPos,argv,argc); argNum--;
 			continue;
 		}
-		if (NCGcmArgTest(argv[argPos],"-s","--source"))
+		if (NCcmArgTest(argv[argPos],"-s","--source"))
 		{
-			NCGcmArgShiftLeft(argPos,argv,argc); argNum--;
-			if (NCGcmArgCheck(argv,argPos,argNum)) { fprintf (stderr,"Missing Source!\n"); return (NCGfailed); }
+			NCcmArgShiftLeft(argPos,argv,argc); argNum--;
+			if (NCcmArgCheck(argv,argPos,argNum)) { fprintf (stderr,"Missing Source!\n"); return (NCfailed); }
 			source = argv[argPos];
-			NCGcmArgShiftLeft(argPos,argv,argc); argNum--;
+			NCcmArgShiftLeft(argPos,argv,argc); argNum--;
 			continue;
 		}
-		if (NCGcmArgTest(argv[argPos],"-c","--comments"))
+		if (NCcmArgTest(argv[argPos],"-c","--comments"))
 		{
-			NCGcmArgShiftLeft(argPos,argv,argc); argNum--;
-			if (NCGcmArgCheck(argv,argPos,argNum)) { fprintf (stderr,"Missing Comment!\n"); return (NCGfailed); }
+			NCcmArgShiftLeft(argPos,argv,argc); argNum--;
+			if (NCcmArgCheck(argv,argPos,argNum)) { fprintf (stderr,"Missing Comment!\n"); return (NCfailed); }
 			comments = argv[argPos];
-			NCGcmArgShiftLeft(argPos,argv,argc); argNum--;
+			NCcmArgShiftLeft(argPos,argv,argc); argNum--;
 			continue;
 		}
 		if ((argv[argPos][0] == '-') && (strlen (argv[argPos]) > 1))
-			{ fprintf(stderr,"Unknown option: %s!\n",argv[argPos]); return (NCGfailed); }
+			{ fprintf(stderr,"Unknown option: %s!\n",argv[argPos]); return (NCfailed); }
 	argPos++;
 	}
 	last->next = (VarNode_t *) NULL;
 	if ((argNum > 1) && (strcmp(argv[1],"-") != 0)) {
-		if(nc_open(argv[1],NC_WRITE,&ncid) != NC_NOERR) { fprintf(stderr,"Error opening file: %s!\n",argv[1]); return (NCGfailed); }
-	} else doHelp(0,NCGcmProgName(argv[0]));
-	if(nc_redef(ncid) != NC_NOERR) { fprintf(stderr,"Cannot place into redef mode!\n"); return (NCGfailed); }
+		if(nc_open(argv[1],NC_WRITE,&ncid) != NC_NOERR) { fprintf(stderr,"Error opening file: %s!\n",argv[1]); return (NCfailed); }
+	} else doHelp(0,NCcmProgName(argv[0]));
+	if(nc_redef(ncid) != NC_NOERR) { fprintf(stderr,"Cannot place into redef mode!\n"); return (NCfailed); }
 
 	last = head;
 	while(last->next != (VarNode_t *) NULL)
 	{
-		if(nc_inq_varid(ncid,last->var,&varid) != NC_NOERR) { fprintf(stderr,"Error finding %s variable",last->var); return (NCGfailed); }
+		if(nc_inq_varid(ncid,last->var,&varid) != NC_NOERR) { fprintf(stderr,"Error finding %s variable",last->var); return (NCfailed); }
 		if(last->text)
 		{
 			if(nc_put_att_text(ncid, varid, last->attrib,strlen(last->dat), last->dat) != NC_NOERR)
-				{ fprintf(stderr,"Error changing attribute: %s!\n", last->attrib); return (NCGfailed); }
+				{ fprintf(stderr,"Error changing attribute: %s!\n", last->attrib); return (NCfailed); }
 		}
 	  	else
 		{
@@ -219,36 +219,36 @@ int main (int argc,char *argv [])
 				range[0] = atof(last->dat);
 				range[1] = atof(last->dat2);
 				if(nc_put_att_double(ncid, varid, last->attrib,NC_DOUBLE, 2, range) != NC_NOERR)
-					{ fprintf(stderr,"Error changing attribute: %s!\n", last->attrib); return (NCGfailed); }
+					{ fprintf(stderr,"Error changing attribute: %s!\n", last->attrib); return (NCfailed); }
 				}
 			else
 				{
 				range[0] = atof(last->dat);
 				if(nc_put_att_double(ncid, varid, last->attrib,NC_DOUBLE, 1, range) != NC_NOERR)
-					{ fprintf(stderr,"Error changing attribute: %s!\n", last->attrib); return (NCGfailed); }
+					{ fprintf(stderr,"Error changing attribute: %s!\n", last->attrib); return (NCfailed); }
 				}
 		}
 		last = last->next;
 	}
 	
-	if((title != NULL) && (nc_put_att_text(ncid, NC_GLOBAL, NCGnameGATitle,strlen(title), title) != NC_NOERR))
-		{ fprintf(stderr,"Error changing attribute: title!\n"); return (NCGfailed); }
-	if(type != NULL) if(nc_put_att_text(ncid, NC_GLOBAL, NCGnameGADataType,strlen(type), type) != NC_NOERR)
-		{ fprintf(stderr,"Error changing attribute; type!\n"); return (NCGfailed); }
-	if((domain != NULL) && (nc_put_att_text(ncid, NC_GLOBAL, NCGnameGADomain, strlen(domain), domain) != NC_NOERR))
-		{ fprintf(stderr,"Error changing attribute: domain!\n"); return (NCGfailed); }
-	if((subject != NULL) && (nc_put_att_text(ncid, NC_GLOBAL, NCGnameGASubject, strlen(subject), subject) != NC_NOERR))
-		{ fprintf(stderr,"Error changing attribute: subject!\n"); return (NCGfailed); }
-	if((ref != NULL) && (nc_put_att_text(ncid, NC_GLOBAL, NCGnameGAReferences, strlen(ref), ref) != NC_NOERR))
-		{ fprintf(stderr,"Error changing attribute: references!\n"); return (NCGfailed); }
-	if((inst != NULL) && (nc_put_att_text(ncid, NC_GLOBAL, NCGnameGAInstitution, strlen(inst), inst) != NC_NOERR))
-		{ fprintf(stderr,"Error changing attribute: institution!\n"); return (NCGfailed); }
-	if((source != NULL) && (nc_put_att_text(ncid, NC_GLOBAL, NCGnameGASource, strlen(source), source) != NC_NOERR))
-		{ fprintf(stderr,"Error changing attribute: source!\n"); return (NCGfailed); }
-	if((comments != NULL) && (nc_put_att_text(ncid, NC_GLOBAL, NCGnameGAComments, strlen(comments), comments) != NC_NOERR))
-		{ fprintf(stderr,"Error changing attribute: comments!\n"); return (NCGfailed); }
+	if((title != NULL) && (nc_put_att_text(ncid, NC_GLOBAL, NCnameGATitle,strlen(title), title) != NC_NOERR))
+		{ fprintf(stderr,"Error changing attribute: title!\n"); return (NCfailed); }
+	if(type != NULL) if(nc_put_att_text(ncid, NC_GLOBAL, NCnameGADataType,strlen(type), type) != NC_NOERR)
+		{ fprintf(stderr,"Error changing attribute; type!\n"); return (NCfailed); }
+	if((domain != NULL) && (nc_put_att_text(ncid, NC_GLOBAL, NCnameGADomain, strlen(domain), domain) != NC_NOERR))
+		{ fprintf(stderr,"Error changing attribute: domain!\n"); return (NCfailed); }
+	if((subject != NULL) && (nc_put_att_text(ncid, NC_GLOBAL, NCnameGASubject, strlen(subject), subject) != NC_NOERR))
+		{ fprintf(stderr,"Error changing attribute: subject!\n"); return (NCfailed); }
+	if((ref != NULL) && (nc_put_att_text(ncid, NC_GLOBAL, NCnameGAReferences, strlen(ref), ref) != NC_NOERR))
+		{ fprintf(stderr,"Error changing attribute: references!\n"); return (NCfailed); }
+	if((inst != NULL) && (nc_put_att_text(ncid, NC_GLOBAL, NCnameGAInstitution, strlen(inst), inst) != NC_NOERR))
+		{ fprintf(stderr,"Error changing attribute: institution!\n"); return (NCfailed); }
+	if((source != NULL) && (nc_put_att_text(ncid, NC_GLOBAL, NCnameGASource, strlen(source), source) != NC_NOERR))
+		{ fprintf(stderr,"Error changing attribute: source!\n"); return (NCfailed); }
+	if((comments != NULL) && (nc_put_att_text(ncid, NC_GLOBAL, NCnameGAComments, strlen(comments), comments) != NC_NOERR))
+		{ fprintf(stderr,"Error changing attribute: comments!\n"); return (NCfailed); }
 
-	if(nc_close(ncid) != NC_NOERR) { fprintf(stderr,"Error commiting changes to file!\n"); return (NCGfailed); }
+	if(nc_close(ncid) != NC_NOERR) { fprintf(stderr,"Error commiting changes to file!\n"); return (NCfailed); }
 	return 0;
 }
 

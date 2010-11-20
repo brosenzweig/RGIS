@@ -1,24 +1,24 @@
 #include<NCdsHandle.h>
 
-NCGstate NCGdsHandleGeoDefine (NCGdsHandleGeo_t *dsHandleGeo, int *ncids, size_t n)
+NCstate NCdsHandleGeoDefine (NCdsHandleGeo_t *dsHandleGeo, int *ncids, size_t n)
 {
-	NCGprojection proj;
+	NCprojection proj;
 
-	if (n < 1) return (NCGfailed);
-	if (NCGdsHandleDefine ((NCGdsHandle_t *) dsHandleGeo, ncids, n) == NCGfailed) return (NCGfailed);
-	if ((proj = NCGdataGetProjection (ncids [0])) == NCGundefined)
-	{ NCGdsHandleClear ((NCGdsHandle_t *) dsHandleGeo); return (NCGfailed); }
+	if (n < 1) return (NCfailed);
+	if (NCdsHandleDefine ((NCdsHandle_t *) dsHandleGeo, ncids, n) == NCfailed) return (NCfailed);
+	if ((proj = NCdataGetProjection (ncids [0])) == NCundefined)
+	{ NCdsHandleClear ((NCdsHandle_t *) dsHandleGeo); return (NCfailed); }
 
 	dsHandleGeo->Projection = proj;
 	dsHandleGeo->Extent.LowerLeft.X  = dsHandleGeo->Extent.LowerLeft.Y  =  HUGE_VAL;
 	dsHandleGeo->Extent.UpperRight.X = dsHandleGeo->Extent.UpperRight.Y = -HUGE_VAL;
-	return (NCGsucceeded);
+	return (NCsucceeded);
 }
 
-void NCGdsHandleGeoClear (NCGdsHandleGeo_t *dsHandleGeo)
+void NCdsHandleGeoClear (NCdsHandleGeo_t *dsHandleGeo)
 {
-	NCGdsHandleClear ((NCGdsHandle_t *) dsHandleGeo);
-	dsHandleGeo->Projection = NCGundefined;
+	NCdsHandleClear ((NCdsHandle_t *) dsHandleGeo);
+	dsHandleGeo->Projection = NCundefined;
 	dsHandleGeo->Extent.LowerLeft.X  = dsHandleGeo->Extent.LowerLeft.Y  =  HUGE_VAL;
 	dsHandleGeo->Extent.UpperRight.X = dsHandleGeo->Extent.UpperRight.Y = -HUGE_VAL;
 }

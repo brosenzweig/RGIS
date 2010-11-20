@@ -1,5 +1,5 @@
-#ifndef _NCGmath_H
-#define _NCGmath_H
+#ifndef _NCmath_H
+#define _NCmath_H
 
 #include<NC.h>
 #include<math.h>
@@ -12,22 +12,22 @@ extern "C" {
 #define FLOAT_NOVALUE NAN
 #define INT_NOVALUE 0x7fffffffL
 
-bool   NCGmathIsNumber(char *expr);
+bool   NCmathIsNumber(char *expr);
 // takes given string and verifies if it's a double.
-bool   NCGmathEqualValues (double, double);
+bool   NCmathEqualValues (double, double);
 // Compares two floats for equality.
 
-void   NCGmathSetSphereRadius (double);
-void   NCGmathSetEpsilon (double);
-double NCGmathCoordinateDistance (NCGprojection,     const NCGcoordinate_t *, const NCGcoordinate_t *);
-double NCGmathRectangleArea      (NCGprojection,     const NCGcoordinate_t *, const NCGcoordinate_t *);
-double NCGmathVectorByVector     (const NCGcoordinate_t *, const NCGcoordinate_t *, const NCGcoordinate_t *);
-double NCGmathVectorXVector      (const NCGcoordinate_t *, const NCGcoordinate_t *, const NCGcoordinate_t *);
-void   NCGmathGauss (double [],int,int);
-double NCGmathStudentsT (double);
+void   NCmathSetSphereRadius (double);
+void   NCmathSetEpsilon (double);
+double NCmathCoordinateDistance (NCprojection,     const NCcoordinate_t *, const NCcoordinate_t *);
+double NCmathRectangleArea      (NCprojection,     const NCcoordinate_t *, const NCcoordinate_t *);
+double NCmathVectorByVector     (const NCcoordinate_t *, const NCcoordinate_t *, const NCcoordinate_t *);
+double NCmathVectorXVector      (const NCcoordinate_t *, const NCcoordinate_t *, const NCcoordinate_t *);
+void   NCmathGauss (double [],int,int);
+double NCmathStudentsT (double);
 
 #if defined(__cplusplus)
 }
 #endif
 
-#endif /* _NCGmath_H */
+#endif /* _NCmath_H */

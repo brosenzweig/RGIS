@@ -1,5 +1,5 @@
-#ifndef _NCGcore_H
-#define _NCGcore_H
+#ifndef _NCcore_H
+#define _NCcore_H
 
 #include<stdio.h>
 
@@ -18,15 +18,15 @@ typedef enum { false = 0, true = 1 } bool;
 
 #endif
 
-typedef enum { NCGsucceeded =  0, NCGfailed    = -1, NCGundefined = -2 } NCGstate; 
+typedef enum { NCsucceeded =  0, NCfailed    = -1, NCundefined = -2 } NCstate; 
 
 
-#define NCGcoreEpsilon   0.000001
-#define NCGcorePrecision 0.0001
-#define NCGcoreTolerance 0.001
+#define NCcoreEpsilon   0.000001
+#define NCcorePrecision 0.0001
+#define NCcoreTolerance 0.001
 
-#define NCGcoreYesNoString(cond)     (cond ? "yes" : "no")
-#define NCGcoreTrueFalseString(cond) (cond ? "true" : "false")
+#define NCcoreYesNoString(cond)     (cond ? "yes" : "no")
+#define NCcoreTrueFalseString(cond) (cond ? "true" : "false")
 
 #if defined(__cplusplus)
 }

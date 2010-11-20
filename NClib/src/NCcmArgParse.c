@@ -1,6 +1,6 @@
 #include <NCcm.h>
 
-void NCGcmArgShiftLeft (int argPos, char *argList [], int argNum)
+void NCcmArgShiftLeft (int argPos, char *argList [], int argNum)
 
 {
 	int i;
@@ -11,12 +11,12 @@ void NCGcmArgShiftLeft (int argPos, char *argList [], int argNum)
 	argList [i - 1] = tmp;
 }
 
-int NCGcmStringLookup (char *choices [], char *option, bool matchLength)
+int NCcmStringLookup (char *choices [], char *option, bool matchLength)
 
 {
 	int i, optLen, len;
 
-	if ((choices == (char **) NULL) || (option == (char *) NULL)) return (NCGfailed);
+	if ((choices == (char **) NULL) || (option == (char *) NULL)) return (NCfailed);
 
 	if (matchLength)
 	{
@@ -32,10 +32,10 @@ int NCGcmStringLookup (char *choices [], char *option, bool matchLength)
 			if (strncmp (choices [i],option,optLen < len ? optLen : len) == 0) return (i);
 		}
 	}
-	return (NCGfailed);
+	return (NCfailed);
 }
 
-char *NCGcmProgName (char *arg0)
+char *NCcmProgName (char *arg0)
 
 {
 	int i;

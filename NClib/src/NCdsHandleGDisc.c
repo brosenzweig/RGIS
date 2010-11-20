@@ -1,23 +1,23 @@
 #include<NCdsHandle.h>
 #include<NCmath.h>
 
-NCGstate NCGdsHandleGDiscDefine (NCGdsHandleGDisc_t *gDisc, int *ncids, size_t n)
+NCstate NCdsHandleGDiscDefine (NCdsHandleGDisc_t *gDisc, int *ncids, size_t n)
 {
 	int status, varid;
 
-	if (n < 1) return (NCGfailed);
-	if (NCGdsHandleGridDefine ((NCGdsHandleGrid_t *) gDisc, ncids, n) == NCGfailed) return (NCGfailed);
+	if (n < 1) return (NCfailed);
+	if (NCdsHandleGridDefine ((NCdsHandleGrid_t *) gDisc, ncids, n) == NCfailed) return (NCfailed);
 
-	if (gDisc->DataType != NCGtypeGDisc)
+	if (gDisc->DataType != NCtypeGDisc)
 	{
-		fprintf (stderr,"Invalid grid data in: NCGdsHandleGDiscDefine ()\n");
-		NCGdsHandleGridClear ((NCGdsHandleGrid_t *) gDisc);
-		return (NCGfailed);
+		fprintf (stderr,"Invalid grid data in: NCdsHandleGDiscDefine ()\n");
+		NCdsHandleGridClear ((NCdsHandleGrid_t *) gDisc);
+		return (NCfailed);
 	}
-	return (NCGsucceeded);
+	return (NCsucceeded);
 }
 
-void NCGdsHandleGDiscClear (NCGdsHandleGDisc_t *gDisc)
+void NCdsHandleGDiscClear (NCdsHandleGDisc_t *gDisc)
 {
-	NCGdsHandleGridClear ((NCGdsHandleGrid_t *) gDisc);
+	NCdsHandleGridClear ((NCdsHandleGrid_t *) gDisc);
 }

@@ -1,5 +1,5 @@
-#ifndef _NCG_H
-#define _NCG_H
+#ifndef _NC_H
+#define _NC_H
 
 #include<NCcm.h>
 #include<NCnames.h>
@@ -9,127 +9,127 @@
 extern "C" {
 #endif
 
-typedef enum { NCGscaleNone, NCGscaleLinear, NCGscaleLogarithmic } NCGscale;
+typedef enum { NCscaleNone, NCscaleLinear, NCscaleLogarithmic } NCscale;
 
-typedef enum { NCGsizeShortString =   8,
-               NCGsizeString      =  64,
-               NCGsizeLongString  = 128,
-               NCGsizeText        = 256,
-               NCGsizeLongText    = 512 } NCGsize;
+typedef enum { NCsizeShortString =   8,
+               NCsizeString      =  64,
+               NCsizeLongString  = 128,
+               NCsizeText        = 256,
+               NCsizeLongText    = 512 } NCsize;
 
-typedef enum { NCGdirE  = (0x01 << 0x00),
-               NCGdirSE = (0x01 << 0x01),
-               NCGdirS  = (0x01 << 0x02),
-               NCGdirSW = (0x01 << 0x03),
-               NCGdirW  = (0x01 << 0x04),
-               NCGdirNW = (0x01 << 0x05),
-               NCGdirN  = (0x01 << 0x06),
-               NCGdirNE = (0x01 << 0x07) } NCGdir;
+typedef enum { NCdirE  = (0x01 << 0x00),
+               NCdirSE = (0x01 << 0x01),
+               NCdirS  = (0x01 << 0x02),
+               NCdirSW = (0x01 << 0x03),
+               NCdirW  = (0x01 << 0x04),
+               NCdirNW = (0x01 << 0x05),
+               NCdirN  = (0x01 << 0x06),
+               NCdirNE = (0x01 << 0x07) } NCdir;
 
-#define NCGNetworkOppositeDirection(dir) (((dir >> 0x04) | (dir << 0x04)) & 0xff)
+#define NCNetworkOppositeDirection(dir) (((dir >> 0x04) | (dir << 0x04)) & 0xff)
 
-typedef struct NCGcoordinate_s
+typedef struct NCcoordinate_s
 {
 	double X;
 	double Y;
-} NCGcoordinate_t;
+} NCcoordinate_t;
 
-void NCGcoordinateAdd           (NCGcoordinate_t *, NCGcoordinate_t *, NCGcoordinate_t *);
-void NCGcoordinateAddConst      (NCGcoordinate_t *, double, NCGcoordinate_t *);
-void NCGcoordinateSubtract      (NCGcoordinate_t *, NCGcoordinate_t *, NCGcoordinate_t *);
-void NCGcoordinateSubtractConst (NCGcoordinate_t *, double, NCGcoordinate_t *);
-void NCGcoordinateMultiply      (NCGcoordinate_t *, NCGcoordinate_t *, NCGcoordinate_t *);
-void NCGcoordinateMultiplyConst (NCGcoordinate_t *, double, NCGcoordinate_t *);
-void NCGcoordinateDivide        (NCGcoordinate_t *, NCGcoordinate_t *, NCGcoordinate_t *);
-void NCGcoordinateDivideConst   (NCGcoordinate_t *, double, NCGcoordinate_t *);
+void NCcoordinateAdd           (NCcoordinate_t *, NCcoordinate_t *, NCcoordinate_t *);
+void NCcoordinateAddConst      (NCcoordinate_t *, double, NCcoordinate_t *);
+void NCcoordinateSubtract      (NCcoordinate_t *, NCcoordinate_t *, NCcoordinate_t *);
+void NCcoordinateSubtractConst (NCcoordinate_t *, double, NCcoordinate_t *);
+void NCcoordinateMultiply      (NCcoordinate_t *, NCcoordinate_t *, NCcoordinate_t *);
+void NCcoordinateMultiplyConst (NCcoordinate_t *, double, NCcoordinate_t *);
+void NCcoordinateDivide        (NCcoordinate_t *, NCcoordinate_t *, NCcoordinate_t *);
+void NCcoordinateDivideConst   (NCcoordinate_t *, double, NCcoordinate_t *);
 
-typedef struct NCGregion_s
+typedef struct NCregion_s
 {
-	NCGcoordinate_t LowerLeft;
-	NCGcoordinate_t UpperRight;
-} NCGregion_t;
+	NCcoordinate_t LowerLeft;
+	NCcoordinate_t UpperRight;
+} NCregion_t;
 
-void NCGregionInitialize        (NCGregion_t *);
-void NCGregionExpand            (NCGregion_t *, NCGregion_t *,     NCGregion_t *);
-void NCGregionExpandCoord       (NCGregion_t *, NCGcoordinate_t *, NCGregion_t *);
-void NCGregionUnion             (NCGregion_t *, NCGregion_t *,     NCGregion_t *);
-bool NCGregionTestCoord         (NCGregion_t *, NCGcoordinate_t *);
-bool NCGregionTestRegion        (NCGregion_t *, NCGregion_t *);
+void NCregionInitialize        (NCregion_t *);
+void NCregionExpand            (NCregion_t *, NCregion_t *,     NCregion_t *);
+void NCregionExpandCoord       (NCregion_t *, NCcoordinate_t *, NCregion_t *);
+void NCregionUnion             (NCregion_t *, NCregion_t *,     NCregion_t *);
+bool NCregionTestCoord         (NCregion_t *, NCcoordinate_t *);
+bool NCregionTestRegion        (NCregion_t *, NCregion_t *);
 
-typedef enum { NCGtypeUndefined = NCGundefined,
-	            NCGtypeGCont     = 1,
-               NCGtypeGDisc     = 2,
-               NCGtypeNetwork   = 3,
-	            NCGtypePoint     = 4,
-               NCGtypeLine      = 5,
-               NCGtypePolygon   = 6 } NCGdataType;
+typedef enum { NCtypeUndefined = NCundefined,
+	            NCtypeGCont     = 1,
+               NCtypeGDisc     = 2,
+               NCtypeNetwork   = 3,
+	            NCtypePoint     = 4,
+               NCtypeLine      = 5,
+               NCtypePolygon   = 6 } NCdataType;
 
-NCGdataType NCGdataGetType (int ncid);
+NCdataType NCdataGetType (int ncid);
 // Reads the data type from netCDF data file. If data type global attribute exists,
-// it reads that attributes and translate to NCGdataType numerical code, otherwise
-// it defaults to NCGtypeContGrid.
+// it reads that attributes and translate to NCdataType numerical code, otherwise
+// it defaults to NCtypeContGrid.
 
-char *NCGnameTypeString (NCGdataType dataType);
+char *NCnameTypeString (NCdataType dataType);
 // Returns data type as character string 
 
-char    *NCGdataGetTextAttribute (int ncid, int varid, const char *name);
+char    *NCdataGetTextAttribute (int ncid, int varid, const char *name);
 // Checks the length of the named attribute and allocates memory before retrieving
 // the attribute content. Returns NULL when the attribute does not exist, or a character
 // pointer to the allocated memory with the content of the attribute.
-NCGstate NCGdataSetTextAttribute (int ncid, int varid, const char *name,const char *text);
+NCstate NCdataSetTextAttribute (int ncid, int varid, const char *name,const char *text);
 // Sets the named text attributes.
 
-NCGstate NCGdataCopyAttributes (int source_ncid, int source_varid, int dest_ncid, int dest_varid, bool overwrite);
+NCstate NCdataCopyAttributes (int source_ncid, int source_varid, int dest_ncid, int dest_varid, bool overwrite);
 // Copies all attributes of a given variable from the source file to the destination variable.
-NCGstate NCGdataCopyAllAttributes (int source_ncid, int dest_ncid, bool overwrite);
+NCstate NCdataCopyAllAttributes (int source_ncid, int dest_ncid, bool overwrite);
 // Copies all attributes (global and variable) from source to destination.
 
-typedef enum { NCGprojNoCoordinates = NCGundefined, NCGprojSpherical, NCGprojCartesian } NCGprojection;
+typedef enum { NCprojNoCoordinates = NCundefined, NCprojSpherical, NCprojCartesian } NCprojection;
 
-NCGprojection NCGdataGetProjection (int ncid);
-// If projection global attribute the function reads its content and translates to NCGprojection code.
-// Otherwise, test the name of the horizontal dimension (Xdim) and returns "NCGprojCartesian", if the
-// horizontal dimension is "x_coord" or NCGproSpherical when the horizontal dimension is either lon or longitude.
+NCprojection NCdataGetProjection (int ncid);
+// If projection global attribute the function reads its content and translates to NCprojection code.
+// Otherwise, test the name of the horizontal dimension (Xdim) and returns "NCprojCartesian", if the
+// horizontal dimension is "x_coord" or NCproSpherical when the horizontal dimension is either lon or longitude.
 
-char *NCGnameProjString (NCGprojection);
+char *NCnameProjString (NCprojection);
 // Returns projection name.
 
-int NCGdataGetXDimId      (int ncid);
+int NCdataGetXDimId      (int ncid);
 // Returns the identifier of the horizontal dimension ("x_coord", "lon" or "longitude").
-int NCGdataGetXVarId      (int ncid);
+int NCdataGetXVarId      (int ncid);
 // Returns the identifier of the horizontal variable  ("x_coord", "lon" or "longitude").
-int NCGdataGetYDimId      (int ncid);
+int NCdataGetYDimId      (int ncid);
 // Returns the identifier of the vertical   dimension ("y_coord", "lat" or "latitude").
-int NCGdataGetYVarId      (int ncid);
+int NCdataGetYVarId      (int ncid);
 // Returns the identifier of the vertical   variable  ("y_coord", "lat" or "latitude").
-int NCGdataGetCDimId      (int ncid);
+int NCdataGetCDimId      (int ncid);
 // Returns the identifier of the coordinate dimension ("coord").
-int NCGdataGetLVarId      (int ncid);
+int NCdataGetLVarId      (int ncid);
 // Returns the identifier of the level      variable  ("level").
-int NCGdataGetTVarId      (int ncid);
+int NCdataGetTVarId      (int ncid);
 // Returns the identifier of the time       variable  ("time").
 
-double *NCGdataGetVector (int ncid, int dimid, int varid, size_t *len);
+double *NCdataGetVector (int ncid, int dimid, int varid, size_t *len);
 // Allocates memory and reads the vector values from NetCDF file. Returns the vector array and its length.
-#define NCGdataGetXCoords(ncid,len) NCGdataGetVector (ncid,NCGdataGetXDimId(ncid),NCGdataGetXVarId(ncid),len)
-#define NCGdataGetYCoords(ncid,len) NCGdataGetVector (ncid,NCGdataGetYDimId(ncid),NCGdataGetYVarId(ncid),len)
-int     NCGdataGetCoreVarId   (int ncid);
+#define NCdataGetXCoords(ncid,len) NCdataGetVector (ncid,NCdataGetXDimId(ncid),NCdataGetXVarId(ncid),len)
+#define NCdataGetYCoords(ncid,len) NCdataGetVector (ncid,NCdataGetYDimId(ncid),NCdataGetYVarId(ncid),len)
+int     NCdataGetCoreVarId   (int ncid);
 // Returns the variable identifier of the grid variable by searching for the first variable that has both
 // horizontal ("x_coord, "lon" or "longitude") and vertical ("y_coord", "lat", "latitude") dimensions.
-#define NCGprintNCError(status,func) fprintf (stderr, "NCError \"%s\" in:  %s ()\n", nc_strerror(status), func)
+#define NCprintNCError(status,func) fprintf (stderr, "NCError \"%s\" in:  %s ()\n", nc_strerror(status), func)
 
-NCGstate NCGfileCreate        (char *, int);
-int      NCGfileVarAdd        (int, const char *, nc_type, nc_type, nc_type);
-NCGstate NCGfileVarClone      (int, int);
-NCGstate NCGfileSetTimeUnit   (int, const char *);
-NCGstate NCGfileSetLevelUnit  (int, const char *);
-NCGstate NCGfileSetVarUnit    (int, const char *);
-NCGstate NCGfileSetTransform  (int, double, double);
-NCGstate NCGfileSetMissingVal (int, double);
-NCGstate NCGfileSetValidRange (int, double, double);
+NCstate NCfileCreate        (char *, int);
+int      NCfileVarAdd        (int, const char *, nc_type, nc_type, nc_type);
+NCstate NCfileVarClone      (int, int);
+NCstate NCfileSetTimeUnit   (int, const char *);
+NCstate NCfileSetLevelUnit  (int, const char *);
+NCstate NCfileSetVarUnit    (int, const char *);
+NCstate NCfileSetTransform  (int, double, double);
+NCstate NCfileSetMissingVal (int, double);
+NCstate NCfileSetValidRange (int, double, double);
 
-char   **NCGfileList         (const char *, size_t *);
-void     NCGfileListFree     (char **, size_t);
+char   **NCfileList         (const char *, size_t *);
+void     NCfileListFree     (char **, size_t);
 
 #if defined(__cplusplus)
 }

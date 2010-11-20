@@ -1,78 +1,78 @@
 #include <NCtable.h>
 
-void NCGtableClose(NCGtable_t *tbl)
+void NCtableClose(NCtable_t *tbl)
 	{
 	register int i;
-	if (tbl == (NCGtable_t *) NULL) return;
+	if (tbl == (NCtable_t *) NULL) return;
 	for (i = 0; i < tbl->NFields; i++)
 	{
 		if (tbl->Fields [i].Data != (void *) NULL) free (tbl->Fields [i].Data);
 		if (tbl->Fields [i].Name != (char *) NULL) free (tbl->Fields [i].Name);
 	}
 	if (tbl->Name != (char *) NULL) free(tbl->Name);
-	if (tbl->Fields != (NCGfield_t *) NULL) free(tbl->Fields); // Allocated with realloc
+	if (tbl->Fields != (NCfield_t *) NULL) free(tbl->Fields); // Allocated with realloc
 	free(tbl);
 }
 
-static int _NCGtableVarLen(int ncid, int varid, int dimid, int *dimids)
+static int _NCtableVarLen(int ncid, int varid, int dimid, int *dimids)
 {
 	int status, ndims, i, len = 1, dimlen;
 
 	if((status = nc_inq_varndims (ncid,varid,&ndims))  != NC_NOERR)
-	{ NCGprintNCError (status,"_NCGtableVarCheck"); return (NCGfailed); }
+	{ NCprintNCError (status,"_NCtableVarCheck"); return (NCfailed); }
 	if((status = nc_inq_vardimid (ncid,varid,dimids)) != NC_NOERR)
-	{ NCGprintNCError (status,"_NCGtableVarCheck"); return (NCGfailed); }
-	if(dimids[0] != dimid) return (NCGfailed);
+	{ NCprintNCError (status,"_NCtableVarCheck"); return (NCfailed); }
+	if(dimids[0] != dimid) return (NCfailed);
 	for(i = 1; i < ndims; i++)
 	{
 		if((status = nc_inq_dimlen(ncid,dimids [i],&dimlen)) != NC_NOERR)
-		{ NCGprintNCError (status,"_NCGtableVarCheck"); return (NCGfailed); }
+		{ NCprintNCError (status,"_NCtableVarCheck"); return (NCfailed); }
 		len = len * dimlen;
 	}
 	return (len);
 }
 
-NCGtable_t *NCGtableOpen(int ncid, char *tablename)
+NCtable_t *NCtableOpen(int ncid, char *tablename)
 {
 	int status, *dimids, dimid, i = 0, j = 0;
 	int ndims, nvars, nrecords;
 	size_t len;
 	char varname [NC_MAX_NAME];
 	nc_type type;
-	NCGfield_t *field = (NCGfield_t *) NULL;
-	NCGtable_t *tbl   = (NCGtable_t *) NULL;
+	NCfield_t *field = (NCfield_t *) NULL;
+	NCtable_t *tbl   = (NCtable_t *) NULL;
 
 	if((status = nc_inq_dimid  (ncid,tablename,&dimid)) != NC_NOERR)
-	{ NCGprintNCError (status,"NCGtableOpen"); return ((NCGtable_t *) NULL); }
+	{ NCprintNCError (status,"NCtableOpen"); return ((NCtable_t *) NULL); }
 	if((status = nc_inq_dimlen (ncid,dimid,&nrecords))  != NC_NOERR)
-	{ NCGprintNCError (status,"NCGtableOpen"); return ((NCGtable_t *) NULL); }
+	{ NCprintNCError (status,"NCtableOpen"); return ((NCtable_t *) NULL); }
 	if((status = nc_inq_nvars  (ncid,&nvars))           != NC_NOERR)
-	{ NCGprintNCError (status,"NCGtableOpen"); return ((NCGtable_t *) NULL); }
+	{ NCprintNCError (status,"NCtableOpen"); return ((NCtable_t *) NULL); }
 	if(nc_inq_ndims(ncid,&ndims) != NC_NOERR)
-	{ NCGprintNCError (status,"NCGtableOpen"); return ((NCGtable_t *) NULL); }
+	{ NCprintNCError (status,"NCtableOpen"); return ((NCtable_t *) NULL); }
 	if ((dimids = (int *) malloc(sizeof(int) * ndims)) == (int *) NULL)
-	{ perror("Memory allocation error in: NCGtableOpen ()"); return (NCGtable_t *) NULL; }
+	{ perror("Memory allocation error in: NCtableOpen ()"); return (NCtable_t *) NULL; }
 
-	if ((tbl = (NCGtable_t *) malloc(sizeof(NCGtable_t))) == (NCGtable_t *) NULL)
-	{ perror("Memory allocation error in: NCGtableOpen ()"); free (dimids); return ((NCGtable_t *) NULL); }
+	if ((tbl = (NCtable_t *) malloc(sizeof(NCtable_t))) == (NCtable_t *) NULL)
+	{ perror("Memory allocation error in: NCtableOpen ()"); free (dimids); return ((NCtable_t *) NULL); }
 	if ((tbl->Name = (char *) malloc (strlen(tablename) + 1)) == (char *) NULL)
-	{ perror("Memory allocation error in: NCGtableOpen ()"); free (dimids); free (tbl); return ((NCGtable_t *) NULL); }
+	{ perror("Memory allocation error in: NCtableOpen ()"); free (dimids); free (tbl); return ((NCtable_t *) NULL); }
 	strcpy(tbl->Name,tablename);
 	tbl->NFields  = 0;
-	tbl->Fields   = (NCGfield_t *) NULL;
+	tbl->Fields   = (NCfield_t *) NULL;
 
 	for(i = 0; i < nvars; i++)
 	{
 		if ((status = nc_inq_vartype(ncid,i,&type)) != NC_NOERR)
-		{ NCGprintNCError (status,"NCGtableOpen"); free (dimids); NCGtableClose (tbl); return ((NCGtable_t *) NULL); }
-		if ((len = _NCGtableVarLen(ncid,i,dimid,dimids)) == NCGfailed) continue;
+		{ NCprintNCError (status,"NCtableOpen"); free (dimids); NCtableClose (tbl); return ((NCtable_t *) NULL); }
+		if ((len = _NCtableVarLen(ncid,i,dimid,dimids)) == NCfailed) continue;
 		if ((type != NC_CHAR) && (len > 1)) continue;
 
 		if((status = nc_inq_varname(ncid,i,varname)) != NC_NOERR)
-		{ NCGprintNCError (status,"NCGtableOpen"); free (dimids); NCGtableClose (tbl); return ((NCGtable_t *) NULL); }
+		{ NCprintNCError (status,"NCtableOpen"); free (dimids); NCtableClose (tbl); return ((NCtable_t *) NULL); }
 
-		if ((tbl->Fields = (NCGfield_t *) realloc (tbl->Fields, sizeof (NCGfield_t) * (tbl->NFields + 1))) == (NCGfield_t *) NULL)
-		{ perror ("Error allocating memory in: NCGtableOpen ()"); free (dimids); NCGtableClose (tbl); return ((NCGtable_t *) NULL); }
+		if ((tbl->Fields = (NCfield_t *) realloc (tbl->Fields, sizeof (NCfield_t) * (tbl->NFields + 1))) == (NCfield_t *) NULL)
+		{ perror ("Error allocating memory in: NCtableOpen ()"); free (dimids); NCtableClose (tbl); return ((NCtable_t *) NULL); }
 		field = tbl->Fields + tbl->NFields;
 		tbl->NFields += 1;
 		field->NRecords = nrecords;
@@ -82,38 +82,38 @@ NCGtable_t *NCGtableOpen(int ncid, char *tablename)
 		field->Len  = len;
 
 		if ((field->Name = malloc (strlen (varname) + 1)) == (char *) NULL)
-		{ perror ("Error allocating memory in: NCGtableOpen ()"); free (dimids); NCGtableClose (tbl); return ((NCGtable_t *) NULL); }
+		{ perror ("Error allocating memory in: NCtableOpen ()"); free (dimids); NCtableClose (tbl); return ((NCtable_t *) NULL); }
 		strcpy (field->Name,varname);
 
-		if (nc_get_att_double (ncid,i,NCGnameVAScaleFactor,&field->Scale)      != NC_NOERR) field->Scale      = 1.0;
-		if (nc_get_att_double (ncid,i,NCGnameVAAddOffset,  &field->Offset)     != NC_NOERR) field->Offset     = 0.0;
+		if (nc_get_att_double (ncid,i,NCnameVAScaleFactor,&field->Scale)      != NC_NOERR) field->Scale      = 1.0;
+		if (nc_get_att_double (ncid,i,NCnameVAAddOffset,  &field->Offset)     != NC_NOERR) field->Offset     = 0.0;
 
 		switch(field->Type)
 		{
 			case NC_CHAR:
 				if ((field->Data = (void *) malloc(field->NRecords * field->Len * sizeof (char)))   == (void *) NULL)
-				{ perror ("Error allocating memory in: NCGtableOpen ()"); free (dimids); NCGtableClose (tbl); return ((NCGtable_t *) NULL); }
+				{ perror ("Error allocating memory in: NCtableOpen ()"); free (dimids); NCtableClose (tbl); return ((NCtable_t *) NULL); }
 				if((status = nc_get_var_text(ncid,i,(char *) (field->Data))) != NC_NOERR)
-				{ NCGprintNCError (status,"NCGtableOpen"); free (dimids); NCGtableClose (tbl); return ((NCGtable_t *) NULL); }
+				{ NCprintNCError (status,"NCtableOpen"); free (dimids); NCtableClose (tbl); return ((NCtable_t *) NULL); }
 				break;
 			case NC_BYTE:
 			case NC_SHORT:
 			case NC_INT:
 				if ((field->Data = (void *) malloc(field->NRecords * field->Len * sizeof (int)))   == (void *) NULL)
-				{ perror ("Error allocating memory in: NCGtableOpen ()"); free (dimids); NCGtableClose (tbl); return ((NCGtable_t *) NULL); }
+				{ perror ("Error allocating memory in: NCtableOpen ()"); free (dimids); NCtableClose (tbl); return ((NCtable_t *) NULL); }
 				if((status = nc_get_var_int(ncid,i,(int *) (field->Data))) != NC_NOERR)
-				{ NCGprintNCError (status,"NCGtableOpen"); free (dimids); NCGtableClose (tbl); return ((NCGtable_t *) NULL); }
-				if (nc_get_att_int    (ncid,i,NCGnameVAFillValue,  &field->FillValue.Int)  != NC_NOERR) field->FillValue.Int  = INT_NOVALUE;
-				if (nc_get_att_double (ncid,i,NCGnameVAMissingVal, &field->MissingVal)     != NC_NOERR) field->MissingVal     = FLOAT_NOVALUE;
+				{ NCprintNCError (status,"NCtableOpen"); free (dimids); NCtableClose (tbl); return ((NCtable_t *) NULL); }
+				if (nc_get_att_int    (ncid,i,NCnameVAFillValue,  &field->FillValue.Int)  != NC_NOERR) field->FillValue.Int  = INT_NOVALUE;
+				if (nc_get_att_double (ncid,i,NCnameVAMissingVal, &field->MissingVal)     != NC_NOERR) field->MissingVal     = FLOAT_NOVALUE;
 				break;
 			case NC_FLOAT:
 			case NC_DOUBLE:
 				if ((field->Data = (void *) malloc(field->NRecords * field->Len * sizeof (double))) == (void *) NULL)
-				{ perror ("Error allocating memory in: NCGtableOpen ()"); free (dimids); NCGtableClose (tbl); return ((NCGtable_t *) NULL); }
+				{ perror ("Error allocating memory in: NCtableOpen ()"); free (dimids); NCtableClose (tbl); return ((NCtable_t *) NULL); }
 				if((status = nc_get_var_double(ncid,i,(double *) (field->Data))) != NC_NOERR)
-				{ NCGprintNCError (status,"NCGtableOpen"); free (dimids); NCGtableClose (tbl); return ((NCGtable_t *) NULL); }
-				if (nc_get_att_double (ncid,i,NCGnameVAFillValue,  &field->FillValue.Float)  != NC_NOERR) field->FillValue.Float = FLOAT_NOVALUE;
-				if (nc_get_att_double (ncid,i,NCGnameVAMissingVal, &field->MissingVal)       != NC_NOERR) field->MissingVal      = FLOAT_NOVALUE;
+				{ NCprintNCError (status,"NCtableOpen"); free (dimids); NCtableClose (tbl); return ((NCtable_t *) NULL); }
+				if (nc_get_att_double (ncid,i,NCnameVAFillValue,  &field->FillValue.Float)  != NC_NOERR) field->FillValue.Float = FLOAT_NOVALUE;
+				if (nc_get_att_double (ncid,i,NCnameVAMissingVal, &field->MissingVal)       != NC_NOERR) field->MissingVal      = FLOAT_NOVALUE;
 				break;
 			default:        field->Data = (void *) NULL; break;
 		}
@@ -159,11 +159,11 @@ NCGtable_t *NCGtableOpen(int ncid, char *tablename)
 	return (tbl);
 }
 
-void NCGtableExportAscii(NCGtable_t *tbl, FILE *file)
+void NCtableExportAscii(NCtable_t *tbl, FILE *file)
 {
 	int i,j, intVal;
 	double floatVal;
-	NCGfield_t *field;
+	NCfield_t *field;
 
 	for(j = 0; j < tbl->NFields; j++) { if (j > 0) fprintf(file,"\t"); fprintf(file,"\"%s\"",tbl->Fields [j].Name); }
 	fprintf (file,"\n");
@@ -185,23 +185,23 @@ void NCGtableExportAscii(NCGtable_t *tbl, FILE *file)
 					case NC_BYTE:
 					case NC_SHORT:
 					case NC_INT:
-						if (NCGfieldGetInt   (field, i, &intVal))  fprintf(file,"%i",intVal);   else fprintf (file,"-"); break;
+						if (NCfieldGetInt   (field, i, &intVal))  fprintf(file,"%i",intVal);   else fprintf (file,"-"); break;
 					case NC_FLOAT:
 					case NC_DOUBLE:
-						if (NCGfieldGetFloat (field,i, &floatVal)) fprintf(file,"%f",floatVal); else fprintf (file,"-"); break;
+						if (NCfieldGetFloat (field,i, &floatVal)) fprintf(file,"%f",floatVal); else fprintf (file,"-"); break;
 				}
 			}
 			fprintf(file,"\n");
 		}
 }
 
-NCGfield_t *NCGtableAddField (NCGtable_t *tbl, char *name, nc_type type)
+NCfield_t *NCtableAddField (NCtable_t *tbl, char *name, nc_type type)
 {
 	int i;
-	NCGfield_t *field;
+	NCfield_t *field;
 
-	if ((tbl->Fields = (NCGfield_t *) realloc(tbl->Fields, sizeof (NCGfield_t) * (tbl->NFields + 1))) == (NCGfield_t *) NULL)
-	{ perror ("Memory allocation error in: NCGtableAddField ()"); return ((NCGfield_t *) NULL); }
+	if ((tbl->Fields = (NCfield_t *) realloc(tbl->Fields, sizeof (NCfield_t) * (tbl->NFields + 1))) == (NCfield_t *) NULL)
+	{ perror ("Memory allocation error in: NCtableAddField ()"); return ((NCfield_t *) NULL); }
 	field = tbl->Fields + tbl->NFields;
 	field->NRecords = tbl->NFields > 1 ? tbl->Fields [tbl->NFields - 1].NRecords : 0;
 	field->Data = (void *) NULL;
@@ -211,7 +211,7 @@ NCGfield_t *NCGtableAddField (NCGtable_t *tbl, char *name, nc_type type)
 	field->Offset = 0.0;
 	tbl->NFields += 1;
 	if ((field->Name = (char *) malloc(strlen (name) + 1)) == (char *) NULL)
-	{ perror ("Memory allocation error in: NCGtableAddField ()"); return ((NCGfield_t *) NULL); }
+	{ perror ("Memory allocation error in: NCtableAddField ()"); return ((NCfield_t *) NULL); }
 	strcpy(field->Name,name);
 
 	switch (field->Type)
@@ -219,14 +219,14 @@ NCGfield_t *NCGtableAddField (NCGtable_t *tbl, char *name, nc_type type)
 		default:
 		case NC_CHAR:
 			if ((field->Data = (void *) malloc (field->NRecords * sizeof (char)))   == (void *) NULL)
-			{ perror ("Memory allocation error in: NCGtableAddField ()"); return ((NCGfield_t *) NULL); }
+			{ perror ("Memory allocation error in: NCtableAddField ()"); return ((NCfield_t *) NULL); }
 			for (i = 0; i < field->NRecords; i++) ((char *)   field->Data) [i] = '\0';
 			break;
 		case NC_BYTE:
 		case NC_SHORT:
 		case NC_INT:
 			if ((field->Data = (void *) malloc (field->NRecords * sizeof (int)))    == (void *) NULL)
-			{ perror ("Memory allocation error in: NCGtableAddField ()"); return ((NCGfield_t *) NULL); }
+			{ perror ("Memory allocation error in: NCtableAddField ()"); return ((NCfield_t *) NULL); }
 			field->MissingVal = INT_NOVALUE;
 			field->FillValue.Int = INT_NOVALUE;
 			for (i = 0; i < field->NRecords; i++) ((int *)    field->Data) [i] = INT_NOVALUE;
@@ -234,7 +234,7 @@ NCGfield_t *NCGtableAddField (NCGtable_t *tbl, char *name, nc_type type)
 		case NC_FLOAT:
 		case NC_DOUBLE:
 			if ((field->Data = (void *) malloc (field->NRecords * sizeof (double))) == (void *) NULL)
-			{ perror ("Memory allocation error in: NCGtableAddField ()"); return ((NCGfield_t *) NULL); }
+			{ perror ("Memory allocation error in: NCtableAddField ()"); return ((NCfield_t *) NULL); }
 			field->MissingVal = FLOAT_NOVALUE;
 			field->FillValue.Float = FLOAT_NOVALUE;
 			for (i = 0; i < field->NRecords; i++) ((double *) field->Data) [i] = FLOAT_NOVALUE;
@@ -243,68 +243,68 @@ NCGfield_t *NCGtableAddField (NCGtable_t *tbl, char *name, nc_type type)
 	return (field);
 }
 
-NCGstate NCGtableCommit(int ncid, NCGtable_t *tbl)
+NCstate NCtableCommit(int ncid, NCtable_t *tbl)
 {
-	NCGstate ret = NCGsucceeded;
+	NCstate ret = NCsucceeded;
 	int j;
 	for(j = 1; j < tbl->NFields; j++)
-		if (NCGtableCommitField (ncid,tbl->Name,tbl->Fields + j) != NCGsucceeded) ret = NCGfailed;
+		if (NCtableCommitField (ncid,tbl->Name,tbl->Fields + j) != NCsucceeded) ret = NCfailed;
 	return (ret);
 }
 
-NCGstate NCGtableCommitField (int ncid, char *tablename, NCGfield_t *field)
+NCstate NCtableCommitField (int ncid, char *tablename, NCfield_t *field)
 {
 	int status, dimid, varid;
 
 	if (nc_inq_varid(ncid,field->Name,&varid) != NC_NOERR)
 	{
-		if(field->Len > 1) return (NCGfailed);
+		if(field->Len > 1) return (NCfailed);
 		if((status = nc_inq_dimid(ncid,tablename,&dimid)) != NC_NOERR)
-		{ NCGprintNCError (status,"NCGtableCommitField"); return (NCGfailed);}
+		{ NCprintNCError (status,"NCtableCommitField"); return (NCfailed);}
 		if((status = nc_redef(ncid) != NC_NOERR))
-		{ NCGprintNCError (status,"NCGtableCommitField"); return (NCGfailed);}
+		{ NCprintNCError (status,"NCtableCommitField"); return (NCfailed);}
 		if ((status = nc_def_var(ncid,field->Name,field->Type,1,&dimid,&varid)) != NC_NOERR)
-		{ NCGprintNCError (status,"NCGtableCommitField"); return (NCGfailed);}
+		{ NCprintNCError (status,"NCtableCommitField"); return (NCfailed);}
 		if((status = nc_enddef(ncid) != NC_NOERR))
-		{ NCGprintNCError (status,"NCGtableCommitField"); return (NCGfailed);}
+		{ NCprintNCError (status,"NCtableCommitField"); return (NCfailed);}
 	}
 	switch (field->Type)
 	{
 		default:
 		case NC_CHAR:
 			if((status = nc_put_var_text(ncid,varid,(char *) field->Data)) != NC_NOERR)
-			{ NCGprintNCError (status,"NCGtableCommitField"); return (NCGfailed);}
+			{ NCprintNCError (status,"NCtableCommitField"); return (NCfailed);}
 			break;
 		case NC_BYTE:
 		case NC_SHORT:
 		case NC_INT:
 			if((status = nc_put_var_int(ncid,varid, (int *)  field->Data)) != NC_NOERR)
-			{ NCGprintNCError (status,"NCGtableCommitField"); return (NCGfailed);}
+			{ NCprintNCError (status,"NCtableCommitField"); return (NCfailed);}
 			break;
 		case NC_FLOAT:
 		case NC_DOUBLE:
 			if((status = nc_put_var_double(ncid,varid,(double *) field->Data)) != NC_NOERR)
-			{ NCGprintNCError (status,"NCGtableCommitField"); return (NCGfailed);}
+			{ NCprintNCError (status,"NCtableCommitField"); return (NCfailed);}
 			break;
 	}
-	return (NCGsucceeded);
+	return (NCsucceeded);
 }
 
-NCGfield_t *NCGtableGetFieldByName (NCGtable_t *table,const char *name)
+NCfield_t *NCtableGetFieldByName (NCtable_t *table,const char *name)
 {
 	int i;
 
 	for (i = 0;i < table->NFields;++i) if (strcmp (table->Fields [i].Name,name) == 0) return (table->Fields + i);
-	return ((NCGfield_t *) NULL);
+	return ((NCfield_t *) NULL);
 }
 
-NCGfield_t *NCGtableGetFieldById (NCGtable_t *table,int id)
+NCfield_t *NCtableGetFieldById (NCtable_t *table,int id)
 {
 	if ((id >= 0) && (id < table->NFields)) return (table->Fields + id);
-	return ((NCGfield_t *) NULL);
+	return ((NCfield_t *) NULL);
 }
 
-bool NCGfieldGetInt (NCGfield_t *field,int id, int *val)
+bool NCfieldGetInt (NCfield_t *field,int id, int *val)
 {
 	int    intVal;
 	double floatVal;
@@ -319,18 +319,18 @@ bool NCGfieldGetInt (NCGfield_t *field,int id, int *val)
 			if ((id < 0) && (id >= field->NRecords)) goto NOVALUE;
 			intVal = ((int *) field->Data) [id];
 			if (intVal == field->FillValue.Int)      goto NOVALUE;
-			if (NCGmathEqualValues (field->Scale,1.0) && ((int) field->Offset == 0)) { *val = intVal; return (true); }
+			if (NCmathEqualValues (field->Scale,1.0) && ((int) field->Offset == 0)) { *val = intVal; return (true); }
 			floatVal = (double) intVal * field->Scale + field->Offset;
 			break;
 		case NC_FLOAT:
 		case NC_DOUBLE:
 			if ((id < 0) && (id >= field->NRecords)) goto NOVALUE;
 			floatVal = ((double *) field->Data) [id];
-			if (NCGmathEqualValues (floatVal, field->FillValue.Float)) goto NOVALUE;
+			if (NCmathEqualValues (floatVal, field->FillValue.Float)) goto NOVALUE;
 			floatVal = floatVal * field->Scale + field->Offset;
 			break;
 	}
-	if (NCGmathEqualValues (floatVal,field->MissingVal)) goto NOVALUE; 
+	if (NCmathEqualValues (floatVal,field->MissingVal)) goto NOVALUE; 
 	*val = (int) floatVal;
 	return (true);
 
@@ -339,24 +339,24 @@ NOVALUE:
 	return (false);
 }
 
-NCGstate NCGfieldSetInt (NCGfield_t *field,int id, int setVal)
+NCstate NCfieldSetInt (NCfield_t *field,int id, int setVal)
 {
-	if ((id < 0) && (id >= field->NRecords)) return (NCGfailed);
-	if(setVal == INT_NOVALUE) NCGfieldSetFill (field, id);
+	if ((id < 0) && (id >= field->NRecords)) return (NCfailed);
+	if(setVal == INT_NOVALUE) NCfieldSetFill (field, id);
 	switch (field->Type)
 	{
 		default:
-		case NC_CHAR:  return (NCGfailed);
+		case NC_CHAR:  return (NCfailed);
 		case NC_BYTE:
 		case NC_SHORT:
 		case NC_INT:    ((int *)    field->Data) [id] = (int) ((setVal - field->Offset) / field->Scale);  break;
 		case NC_FLOAT:
 		case NC_DOUBLE: ((double *) field->Data) [id] = ((double) setVal - field->Offset) / field->Scale; break;
 	}
-	return (NCGsucceeded);
+	return (NCsucceeded);
 }
 
-bool NCGfieldGetFloat (NCGfield_t *field,int id, double *val)
+bool NCfieldGetFloat (NCfield_t *field,int id, double *val)
 {
 	int      intVal;
 	double   floatVal;
@@ -377,11 +377,11 @@ bool NCGfieldGetFloat (NCGfield_t *field,int id, double *val)
 		case NC_DOUBLE:
 			if ((id < 0) && (id >= field->NRecords)) goto NOVALUE;
 			floatVal = ((double *) field->Data) [id];
-			if (NCGmathEqualValues (floatVal, field->FillValue.Float)) goto NOVALUE;
+			if (NCmathEqualValues (floatVal, field->FillValue.Float)) goto NOVALUE;
 			floatVal = floatVal * field->Scale + field->Offset;
 			break;
 	}
-	if (NCGmathEqualValues (floatVal, field->MissingVal)) goto NOVALUE;
+	if (NCmathEqualValues (floatVal, field->MissingVal)) goto NOVALUE;
 	*val = floatVal;
 	return (true);
 
@@ -390,34 +390,34 @@ NOVALUE:
 	return (false);
 }
 
-NCGstate NCGfieldSetFloat (NCGfield_t *field,int id, double setVal)
+NCstate NCfieldSetFloat (NCfield_t *field,int id, double setVal)
 {
-	if ((id < 0) && (id >= field->NRecords)) return (NCGfailed);
+	if ((id < 0) && (id >= field->NRecords)) return (NCfailed);
 	switch (field->Type)
 	{
 		default:
-		case NC_CHAR:  return (NCGfailed);
+		case NC_CHAR:  return (NCfailed);
 		case NC_BYTE:
 		case NC_SHORT:
 		case NC_INT:    ((int *)    field->Data) [id] = (int) ((setVal - field->Offset) / field->Scale); break;
 		case NC_FLOAT:
 		case NC_DOUBLE: ((double *) field->Data) [id] = (setVal - field->Offset) / field->Scale; break;
 	}
-	return (NCGsucceeded);
+	return (NCsucceeded);
 }
 
-NCGstate NCGfieldSetFill (NCGfield_t *field,int id)
+NCstate NCfieldSetFill (NCfield_t *field,int id)
 {
-	if ((id < 0) && (id >= field->NRecords)) return (NCGfailed);
+	if ((id < 0) && (id >= field->NRecords)) return (NCfailed);
 	switch (field->Type)
 	{
 		default:
-		case NC_CHAR:  return (NCGfailed);
+		case NC_CHAR:  return (NCfailed);
 		case NC_BYTE:
 		case NC_SHORT:
 		case NC_INT:    ((int *)    field->Data) [id] = field->FillValue.Int;   break;
 		case NC_FLOAT:
 		case NC_DOUBLE: ((double *) field->Data) [id] = field->FillValue.Float; break;
 	}
-	return (NCGsucceeded);
+	return (NCsucceeded);
 }

@@ -2,7 +2,7 @@
 
 // *** GLOBAL VARIABLES
 
-// Don't forget to change numFunc in the NCGmathEqtn.h if you add/remove items from this array.
+// Don't forget to change numFunc in the NCmathEqtn.h if you add/remove items from this array.
 static char *funcNames [] = { "abs", "sin", "asin", "cos", "acos", "tan", "atan", "ln", "log", "floor", "ceil", (char *) NULL };
 static double (*functions [])(double) = { fabs, sin, asin, cos, acos, tan, atan, log, log10, floor, ceil, NULL };
 static bool lisp = false;
@@ -16,7 +16,7 @@ static Equal getIneq(char expr[], int *i)
 {
 	register int s = (*i == 0) ? 1 : *i;
 	int strLen = strlen(expr);
-	if((expr[s] == '(') || (expr[s] == '[') || (expr[s] == '{')) s = NCGstringEndPar(expr,s) + 1;
+	if((expr[s] == '(') || (expr[s] == '[') || (expr[s] == '{')) s = NCstringEndPar(expr,s) + 1;
 	while(s+1 <= strLen)
 	{
 		if ((expr[s-1] == ' ') && (expr[s+1] == ' '))
@@ -25,10 +25,10 @@ static Equal getIneq(char expr[], int *i)
 			if(expr[s] == '>') { *i = s; return GT; }
 		}
 		s++;
-		if((expr[s] == '(') || (expr[s] == '[') || (expr[s] == '{')) s = NCGstringEndPar(expr,s) + 1;
+		if((expr[s] == '(') || (expr[s] == '[') || (expr[s] == '{')) s = NCstringEndPar(expr,s) + 1;
 	}
 	s = (*i == 0) ? 1 : *i;
-	if((expr[s] == '(') || (expr[s] == '[') || (expr[s] == '{')) s = NCGstringEndPar(expr,s) + 1;
+	if((expr[s] == '(') || (expr[s] == '[') || (expr[s] == '{')) s = NCstringEndPar(expr,s) + 1;
 	while(s+2 <= strLen)
 	{
 		if ((expr[s-1] == ' ') && (expr[s+2] == ' '))
@@ -42,7 +42,7 @@ static Equal getIneq(char expr[], int *i)
 			if((expr[s] == '=') && (expr[s+1] == '=')) { *i = s; return EQ; }
 		}
 		s++;
-		if((expr[s] == '(') || (expr[s] == '[') || (expr[s] == '{')) s = NCGstringEndPar(expr,s) + 1;
+		if((expr[s] == '(') || (expr[s] == '[') || (expr[s] == '{')) s = NCstringEndPar(expr,s) + 1;
 	}
 	return NOEQ;
 }
@@ -51,7 +51,7 @@ static Oper getOper(char expr[], int *i)
 {
 	register int s = (*i == 0) ? 1 : *i;
 	int c = strlen(expr) - 1;
-	if((expr[c] == ')') || (expr[c] == ']') || (expr[c] == '}')) c = NCGstringEndPar(expr,c) - 2;
+	if((expr[c] == ')') || (expr[c] == ']') || (expr[c] == '}')) c = NCstringEndPar(expr,c) - 2;
 	while(c >= s)
 	{
 		if ((expr[c-1] == ' ') && (expr[c+1] == ' '))
@@ -60,10 +60,10 @@ static Oper getOper(char expr[], int *i)
 			if(expr[c] == '-') { *i = c; return SUB; }
 		}
 		c--;
-		if((expr[c] == ')') || (expr[c] == ']') || (expr[c] == '}')) c = NCGstringEndPar(expr,c) - 2;
+		if((expr[c] == ')') || (expr[c] == ']') || (expr[c] == '}')) c = NCstringEndPar(expr,c) - 2;
 	}
 	c = strlen(expr) - 1;
-	if((expr[c] == ')') || (expr[c] == ']') || (expr[c] == '}')) c = NCGstringEndPar(expr,c) - 2;
+	if((expr[c] == ')') || (expr[c] == ']') || (expr[c] == '}')) c = NCstringEndPar(expr,c) - 2;
 	while(c >= s)
 	{
 		if ((expr[c-1] == ' ') && (expr[c+1] == ' '))
@@ -73,10 +73,10 @@ static Oper getOper(char expr[], int *i)
 			if(expr[c] == '%') { *i = c; return MOD; }
 		}
 		c--;
-		if((expr[c] == ')') || (expr[c] == ']') || (expr[c] == '}')) c = NCGstringEndPar(expr,c) - 2;
+		if((expr[c] == ')') || (expr[c] == ']') || (expr[c] == '}')) c = NCstringEndPar(expr,c) - 2;
 	}
 	c = strlen(expr) - 1;
-	if((expr[c] == ')') || (expr[c] == ']') || (expr[c] == '}')) c = NCGstringEndPar(expr,c) - 2;
+	if((expr[c] == ')') || (expr[c] == ']') || (expr[c] == '}')) c = NCstringEndPar(expr,c) - 2;
 	while(c >= s)
 	{
 		if ((expr[c-1] == ' ') && (expr[c+1] == ' '))
@@ -84,7 +84,7 @@ static Oper getOper(char expr[], int *i)
 			if(expr[c] == '^') { *i = c; return EXP; }
 		}
 		c--;
-		if((expr[c] == ')') || (expr[c] == ']') || (expr[c] == '}')) c = NCGstringEndPar(expr,c) - 2;
+		if((expr[c] == ')') || (expr[c] == ']') || (expr[c] == '}')) c = NCstringEndPar(expr,c) - 2;
 	}
 	return NOOP;
 }
@@ -92,46 +92,46 @@ static Oper getOper(char expr[], int *i)
 static double (*getFunc(char expr[], int *i))(double)
 { // returns a pointer to a double function(double)
 	int strLen = strlen(expr), j;
-	if((expr[*i] == '(') || (expr[*i] == '[') || (expr[*i] == '{')) *i = NCGstringEndPar(expr,*i) + 2;
+	if((expr[*i] == '(') || (expr[*i] == '[') || (expr[*i] == '{')) *i = NCstringEndPar(expr,*i) + 2;
 	while(*i < strLen)
 	{
-		for(j = 0; j < numFunc; j++) if(NCGstringMatch(expr,*i,funcNames[j])) { *i += strlen(funcNames[j]) + 1; return functions[j]; }
+		for(j = 0; j < numFunc; j++) if(NCstringMatch(expr,*i,funcNames[j])) { *i += strlen(funcNames[j]) + 1; return functions[j]; }
 		(*i)++;
-		if((expr[*i] == '(') || (expr[*i] == '[') || (expr[*i] == '{')) *i = NCGstringEndPar(expr,*i) + 2;
+		if((expr[*i] == '(') || (expr[*i] == '[') || (expr[*i] == '{')) *i = NCstringEndPar(expr,*i) + 2;
 	}
 	return functions[numFunc]; // NOFC
 }
 
 static bool findVar(char expr[], int *i) {
-	for(*i = 0; *i < _VarNum; (*i)++) if(NCGstringMatch(_Vars[*i].name,0,expr)) return true;
+	for(*i = 0; *i < _VarNum; (*i)++) if(NCstringMatch(_Vars[*i].name,0,expr)) return true;
 	return false;
 }
 
 // *** PUBLIC FUNCTIONS
 
-int NCGmathGetVarNum() { return _VarNum; }
-int NCGmathAddVar(int colnum,char *name,bool vary)
+int NCmathGetVarNum() { return _VarNum; }
+int NCmathAddVar(int colnum,char *name,bool vary)
 {
 	if((_Vars = realloc(_Vars,(_VarNum + 1) * sizeof(Variable_t))) == (Variable_t *) NULL)
-		{ perror("Memory Allocation error in: NCGmathAddVar ()\n"); return (NCGfailed); }
+		{ perror("Memory Allocation error in: NCmathAddVar ()\n"); return (NCfailed); }
 	if((_Vars[_VarNum].name = (char *) malloc(sizeof(char) * (strlen(name) + 1))) == (char *) NULL)
-		{ perror("Memory allocation error in: NCGmathAddVar ()\n"); return (NCGfailed); }
+		{ perror("Memory allocation error in: NCmathAddVar ()\n"); return (NCfailed); }
 	else strcpy(_Vars[_VarNum].name,name);
 	_Vars[_VarNum].colnum = colnum;
 	_Vars[_VarNum].vary = vary;
 	return _VarNum++;
 }
 
-int NCGmathGetVarColNum(int varID) { return _Vars[varID].colnum; }
+int NCmathGetVarColNum(int varID) { return _Vars[varID].colnum; }
 
-void NCGmathSetVarVal(int varID, double value) { _Vars[varID].val = value; }
-double NCGmathGetVarVal(int varID) { return _Vars[varID].val; }
+void NCmathSetVarVal(int varID, double value) { _Vars[varID].val = value; }
+double NCmathGetVarVal(int varID) { return _Vars[varID].val; }
 
-bool NCGmathGetVarVary(int varID) { return _Vars[varID].vary; }
+bool NCmathGetVarVary(int varID) { return _Vars[varID].vary; }
 
-char *NCGmathGetVarName(int varID) { return _Vars[varID].name; }
+char *NCmathGetVarName(int varID) { return _Vars[varID].name; }
 
-void NCGmathFreeVars() { int i; for(i = 0; i < _VarNum; i++) free(_Vars[i].name); free(_Vars); }
+void NCmathFreeVars() { int i; for(i = 0; i < _VarNum; i++) free(_Vars[i].name); free(_Vars); }
 
 bool isIneq(char expr[], int *i) { return getIneq(expr,i) != NOEQ; }
 
@@ -151,17 +151,17 @@ TreeNode_t* mkTree(char expr[])
 		{ perror("Memory allocation error in: mkTree()\n"); return ((TreeNode_t *) NULL); }
 	if(GetDebug()) { Dprint(stderr,"mkTree(): malloc(%p)\n",head); }
 
-	while(NCGstringStripch(&expr,' ') || NCGstringStripbr(&expr));
+	while(NCstringStripch(&expr,' ') || NCstringStripbr(&expr));
 	strLen = strlen(expr);
 	if(GetDebug()) fprintf(stderr,"mkTree: expr='%s'\n",expr);
 	if(expr[0] == '(')
 	{
-		i = NCGstringEndPar(expr,i);
+		i = NCstringEndPar(expr,i);
 		s = i;
 		if((head->oper = getOper(expr,&i)) != NOOP) {
 			if(GetDebug()) fprintf(stderr,"mkTree(): PAR:i='%d' i-1='%c' i='%c' i+1='%c'\n",i,expr[i-1],expr[i],expr[i+1]);
-			head->left = mkTree(NCGstringSubstr(expr,0,i - 2));
-			head->right = mkTree(NCGstringSubstr(expr,i + 2, strLen - 1));
+			head->left = mkTree(NCstringSubstr(expr,0,i - 2));
+			head->right = mkTree(NCstringSubstr(expr,i + 2, strLen - 1));
 			head->type = OPER;
 		} else
 		{ 
@@ -170,14 +170,14 @@ TreeNode_t* mkTree(char expr[])
 			{
 				if(GetDebug()) fprintf(stderr,"mkTree(): PAR:i='%d' i-1='%c' i='%c' i+1='%c'\n",i,expr[i-1],expr[i],expr[i+1]);
 				head->left = NULL;
-				head->right = mkTree(NCGstringSubstr(expr,i, NCGstringEndPar(expr,i)));
+				head->right = mkTree(NCstringSubstr(expr,i, NCstringEndPar(expr,i)));
 				head->type = FUNC;
 			} else if(findVar(expr,&i))
 			{
 				head->left = head->right = NULL;
 				if(_Vars[i].vary) { head->type = VAR; head->var = &(_Vars[i].val); }
 				else { head->type = CONST; head->cons = _Vars[i].val; }
-			} else if(NCGmathIsNumber(expr))
+			} else if(NCmathIsNumber(expr))
 			{
 				head->left = head->right = NULL;
 				head->cons = atof(expr);
@@ -189,8 +189,8 @@ TreeNode_t* mkTree(char expr[])
 		if((head->oper = getOper(expr,&i)) != NOOP)
 		{
 			if(GetDebug()) fprintf(stderr,"mkTree(): NOPAR:i='%d' i-1='%c' i='%c' i+1='%c'\n",i,expr[i-1],expr[i],expr[i+1]);
-			head->left = mkTree(NCGstringSubstr(expr,0,i - 2));
-			head->right = mkTree(NCGstringSubstr(expr,i + 2, strLen - 1));
+			head->left = mkTree(NCstringSubstr(expr,0,i - 2));
+			head->right = mkTree(NCstringSubstr(expr,i + 2, strLen - 1));
 			head->type = OPER;
 		} else
 		{
@@ -199,14 +199,14 @@ TreeNode_t* mkTree(char expr[])
 			{
 				if(GetDebug()) fprintf(stderr,"mkTree(): NOPAR:i='%d' i-1='%c' i='%c' i+1='%c'\n",i,expr[i-1],expr[i],expr[i+1]);
 				head->left = NULL;
-				head->right = mkTree(NCGstringSubstr(expr,i, NCGstringEndPar(expr,i)));
+				head->right = mkTree(NCstringSubstr(expr,i, NCstringEndPar(expr,i)));
 				head->type = FUNC;
 			} else if(findVar(expr,&i))
 			{
 				head->left = head->right = NULL;
 				if(_Vars[i].vary) { head->type = VAR; head->var = &(_Vars[i].val); }
 				else { head->type = CONST; head->cons = _Vars[i].val; }
-			} else if(NCGmathIsNumber(expr))
+			} else if(NCmathIsNumber(expr))
 			{
 				if(GetDebug()) fprintf(stderr,"mkTree(): NOPAR:i='%d' i-1='%c' i='%c' i+1='%c'\n",i,expr[i-1],expr[i],expr[i+1]);
 				head->left = head->right = NULL;
@@ -230,23 +230,23 @@ IneqNode_t* mkTreeI(char expr[])
 		{ perror("Memory allocation error in: mkTreeI ()\n"); return ((IneqNode_t *) NULL); }
 	if(GetDebug()) { Dprint(stderr,"mkTreeI(): malloc(%p)\n",head); }
 
-	while(NCGstringStripch(&expr, ' ') || NCGstringStripbr(&expr));
+	while(NCstringStripch(&expr, ' ') || NCstringStripbr(&expr));
 	strLen = strlen(expr);
 	if(GetDebug()) fprintf(stderr,"mkTreeI: expr='%s'\n",expr);
-	if(expr[0] == '(') i = NCGstringEndPar(expr,0);
+	if(expr[0] == '(') i = NCstringEndPar(expr,0);
 	if((head->equal = getIneq(expr,&i)) != NOEQ)
 	{
 		if(GetDebug()) fprintf(stderr,"mkTreeI(): PAR:i='%d' i-1='%c' i='%c' i+1='%c'\n",i,expr[i-1],expr[i],expr[i+1]);
-		if((temp = NCGstringSubstr(expr, 0, i - 1)) == (char *) NULL)
-			{ fprintf(stderr,"Problem encountered with NCGstringSubstr(%s, %d, %d)!\n",expr,0,i - 1); return ((IneqNode_t *) NULL); }
+		if((temp = NCstringSubstr(expr, 0, i - 1)) == (char *) NULL)
+			{ fprintf(stderr,"Problem encountered with NCstringSubstr(%s, %d, %d)!\n",expr,0,i - 1); return ((IneqNode_t *) NULL); }
 		s = (expr[i+1] == ' ') ? i + 1 : i + 2;
-		while(NCGstringStripch(&temp, ' ') || NCGstringStripbr(&temp));
+		while(NCstringStripch(&temp, ' ') || NCstringStripbr(&temp));
 		i = 0;
 		if(getIneq(temp,&i) == NOEQ) { head->lTree = true; head->lhead = mkTree(temp);
 		} else { head->lTree = false; head->left = mkTreeI(temp); }
-		if((temp = NCGstringSubstr(expr, s, strLen)) == (char *) NULL)
-			{ fprintf(stderr,"Problem encountered with NCGstringSubstr(%s, %d, %d)!\n",expr,s,strLen); return ((IneqNode_t *) NULL); }
-		while(NCGstringStripch(&temp, ' ') || NCGstringStripbr(&temp));
+		if((temp = NCstringSubstr(expr, s, strLen)) == (char *) NULL)
+			{ fprintf(stderr,"Problem encountered with NCstringSubstr(%s, %d, %d)!\n",expr,s,strLen); return ((IneqNode_t *) NULL); }
+		while(NCstringStripch(&temp, ' ') || NCstringStripbr(&temp));
 		i = 0;
 		if(getIneq(temp,&i) == NOEQ) { head->rTree = true; head->rhead = mkTree(temp);
 		} else { head->rTree = false; head->right = mkTreeI(temp); }
@@ -352,13 +352,13 @@ void printInorderI(IneqNode_t *s, FILE *out)
 	}
 }
 
-void NCGmathEqtnFixTreeI(IneqNode_t *s) {
+void NCmathEqtnFixTreeI(IneqNode_t *s) {
 	if(s != NULL)
 	{
 		if(s->lTree) {
-			NCGmathEqtnFixTree(&(s->lhead));
+			NCmathEqtnFixTree(&(s->lhead));
 			if(s->rTree) {
-				NCGmathEqtnFixTree(&(s->rhead));
+				NCmathEqtnFixTree(&(s->rhead));
 				if((Calculate(s->lhead) != FLOAT_NOVALUE) && (Calculate(s->rhead) != FLOAT_NOVALUE)) {
 					s->equal = CalculateI(s);
 					delTree(s->lhead);
@@ -374,7 +374,7 @@ void NCGmathEqtnFixTreeI(IneqNode_t *s) {
 			}
 		} else {
 			if(s->rTree) {
-				NCGmathEqtnFixTree(&(s->rhead));
+				NCmathEqtnFixTree(&(s->rhead));
 				if((Calculate(s->rhead) != FLOAT_NOVALUE) && ((s->left->equal == TRUE) || (s->left->equal == FALSE))) {
 					s->equal = CalculateI(s);
 					delTreeI(s->left); s->left = (IneqNode_t *) NULL;
@@ -392,18 +392,18 @@ void NCGmathEqtnFixTreeI(IneqNode_t *s) {
 	}
 }
 
-void NCGmathEqtnFixTree(TreeNode_t **s) {
+void NCmathEqtnFixTree(TreeNode_t **s) {
 	float result;
 	TreeNode_t *prev = (TreeNode_t *) NULL;
 	if(*s != (TreeNode_t *) NULL) {
 		if((result = Calculate(*s)) == FLOAT_NOVALUE) {
-			NCGmathEqtnFixTree(&((*s)->left));
-			NCGmathEqtnFixTree(&((*s)->right));
+			NCmathEqtnFixTree(&((*s)->left));
+			NCmathEqtnFixTree(&((*s)->right));
 		} else {
 			prev = *s;
 			if((*s = malloc(sizeof(TreeNode_t))) == (TreeNode_t *) NULL)
-				{ perror("Memory allocation error in: NCGmathEqtnFixTree()\n"); *s = ((TreeNode_t *) NULL); }
-			if(GetDebug()) { Dprint(stderr,"NCGmathEqtnFixTree(): malloc(%p)\n",s); }
+				{ perror("Memory allocation error in: NCmathEqtnFixTree()\n"); *s = ((TreeNode_t *) NULL); }
+			if(GetDebug()) { Dprint(stderr,"NCmathEqtnFixTree(): malloc(%p)\n",s); }
 			(*s)->type = CONST;
 			(*s)->cons = result;
 			(*s)->left = (*s)->right = (TreeNode_t *) NULL;
@@ -425,8 +425,8 @@ double Calculate(TreeNode_t *s)
 			case OPER:
 				left = Calculate(s->left);
 				right = Calculate(s->right);
-				if(NCGmathEqualValues(right,FLOAT_NOVALUE) ||
-					NCGmathEqualValues(left,FLOAT_NOVALUE)) return FLOAT_NOVALUE;
+				if(NCmathEqualValues(right,FLOAT_NOVALUE) ||
+					NCmathEqualValues(left,FLOAT_NOVALUE)) return FLOAT_NOVALUE;
 				switch(s->oper)
 				{
 					case ADD:
@@ -442,8 +442,8 @@ double Calculate(TreeNode_t *s)
 						if(GetDebug()) { fprintf(stderr,"%f [oper] = ",left / right); printInorder(s,stderr); fprintf(stderr,"\n"); }
 						return left / right;
 					case MOD:
-						if(NCGmathEqualValues(right,(double) ((int) right)) &&
-							NCGmathEqualValues(left,(double) ((int) left)))
+						if(NCmathEqualValues(right,(double) ((int) right)) &&
+							NCmathEqualValues(left,(double) ((int) left)))
 						{
 							if(GetDebug()) { fprintf(stderr,"%i [oper] = ",(int) left % (int) right); printInorder(s,stderr); fprintf(stderr,"\n"); }
 							return (int) left % (int) right;
@@ -462,7 +462,7 @@ double Calculate(TreeNode_t *s)
 				break;
 			case FUNC:
 				right = Calculate(s->right);
-				if(NCGmathEqualValues(right,FLOAT_NOVALUE)) return FLOAT_NOVALUE;
+				if(NCmathEqualValues(right,FLOAT_NOVALUE)) return FLOAT_NOVALUE;
 				if((GetDebug()) && (s->func == functions[numFunc])) fprintf(stderr,"WARN: Bad function used!\n");
 				if(GetDebug()) { fprintf(stderr,"%f [func] = ",s->func(right)); printInorder(s,stderr); fprintf(stderr,"\n"); }
 				return s->func(right);

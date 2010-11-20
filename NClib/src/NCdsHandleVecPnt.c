@@ -1,64 +1,64 @@
 #include<NCdsHandle.h>
 #include<NCmath.h>
 
-NCGstate NCGdsHandleVPointDefine (NCGdsHandleVPoint_t *point, int ncid)
+NCstate NCdsHandleVPointDefine (NCdsHandleVPoint_t *point, int ncid)
 {
-	if (NCGdataGetType (ncid) != NCGtypePoint) 
+	if (NCdataGetType (ncid) != NCtypePoint) 
 	{
-		fprintf (stderr,"Invalid point data in: NCGdsHandleVPointCreate ()\n");
-		return (NCGfailed);
+		fprintf (stderr,"Invalid point data in: NCdsHandleVPointCreate ()\n");
+		return (NCfailed);
 	}
-	if (NCGdsHandleVectorDefine ((NCGdsHandleVector_t *) point, ncid) == NCGfailed)
+	if (NCdsHandleVectorDefine ((NCdsHandleVector_t *) point, ncid) == NCfailed)
 	{
-		NCGdsHandleVectorClear ((NCGdsHandleVector_t *) point);
-		return (NCGfailed);
+		NCdsHandleVectorClear ((NCdsHandleVector_t *) point);
+		return (NCfailed);
 	}
 
 	point->XCoords = point->YCoords = (double *) NULL;
 	if ((point->XCoords = (double *) calloc (point->ItemNum,sizeof (double))) == (double *) NULL)
 	{
-		perror ("Memory allocation error in: NCGdsHandleVPointCreate ()");
-		NCGdsHandleVectorClear ((NCGdsHandleVector_t *) point);
-		return (NCGfailed);
+		perror ("Memory allocation error in: NCdsHandleVPointCreate ()");
+		NCdsHandleVectorClear ((NCdsHandleVector_t *) point);
+		return (NCfailed);
 	}
 
 	if ((point->YCoords = (double *) calloc (point->ItemNum,sizeof (double))) == (double *) NULL)
 	{
-		perror ("Memory allocation error in: NCGdsHandleVPointCreate ()");
+		perror ("Memory allocation error in: NCdsHandleVPointCreate ()");
 		free (point->XCoords);
-		NCGdsHandleVectorClear ((NCGdsHandleVector_t *) point);
-		return (NCGfailed);
+		NCdsHandleVectorClear ((NCdsHandleVector_t *) point);
+		return (NCfailed);
 	}
-	return (NCGsucceeded);
+	return (NCsucceeded);
 }
 
-void NCGdsHandleVPointClear (NCGdsHandleVPoint_t *point)
+void NCdsHandleVPointClear (NCdsHandleVPoint_t *point)
 {
 	if (point->XCoords != (double *) NULL) free (point->XCoords);
 	if (point->YCoords != (double *) NULL) free (point->YCoords);
 }
 
-#define NCGVPointNeighborNum 6
+#define NCVPointNeighborNum 6
 
-int NCGdsHandleVPointReference (const NCGdsHandleVPoint_t *point, const NCGcoordinate_t *coord, NCGreference_t *ref)
+int NCdsHandleVPointReference (const NCdsHandleVPoint_t *point, const NCcoordinate_t *coord, NCreference_t *ref)
 {
-	int idx [NCGVPointNeighborNum], i, k, l, num;
-	double minDist [NCGVPointNeighborNum], dist;
-	NCGcoordinate_t pCoord;
+	int idx [NCVPointNeighborNum], i, k, l, num;
+	double minDist [NCVPointNeighborNum], dist;
+	NCcoordinate_t pCoord;
 
 	num = 0;
 	for (i = 0;i < point->ItemNum;i++)
 	{
 		pCoord.X = point->XCoords [i];
 		pCoord.Y = point->YCoords [i];
-		if (NCGmathEqualValues (pCoord.X,coord->X) && NCGmathEqualValues (pCoord.Y,coord->Y))
+		if (NCmathEqualValues (pCoord.X,coord->X) && NCmathEqualValues (pCoord.Y,coord->Y))
 		{
 			num = 1;
 			idx [0] = i;
 			break;
 		}
-		dist = NCGmathCoordinateDistance (point->Projection, &pCoord, coord);
-		if (num < NCGVPointNeighborNum) num++;
+		dist = NCmathCoordinateDistance (point->Projection, &pCoord, coord);
+		if (num < NCVPointNeighborNum) num++;
 		for (k = 0;k < num;k++)
 			if (minDist [k] > dist)
 			{ 
@@ -74,21 +74,21 @@ int NCGdsHandleVPointReference (const NCGdsHandleVPoint_t *point, const NCGcoord
 	}
 	if ((ref->Idx = (int *) calloc (num,sizeof (int))) == (int *) NULL)
 	{
-		perror ("Memory allocation error in: NCGVPointReference ()");
-		return (NCGfailed);
+		perror ("Memory allocation error in: NCVPointReference ()");
+		return (NCfailed);
 	}
 	for (k = 0;k < num;k++) { ref->Idx [k] = idx [k]; }
 	if (num > 1)
 	{
 		if ((ref->Weight = (double *) calloc (num,sizeof (double))) == (double *) NULL)
 		{
-			perror ("Memory allocation error in: NCGVPointReference ()");
+			perror ("Memory allocation error in: NCVPointReference ()");
 			free (ref->Idx);
-			NCGreferenceInitialize (ref);
-			return (NCGfailed);
+			NCreferenceInitialize (ref);
+			return (NCfailed);
 		}
 		for (k = 0;k < num;k++) ref->Weight [k] = minDist [k];
 	}
 	ref->Num = num;
-	return (NCGsucceeded);
+	return (NCsucceeded);
 }

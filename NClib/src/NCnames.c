@@ -1,28 +1,28 @@
 #include<NC.h>
 #include<NCnames.h>
 
-char *NCGnameTypeString (NCGdataType dataType)
+char *NCnameTypeString (NCdataType dataType)
 {
 	switch (dataType)
 	{
 		default:	break;
-		case NCGtypeGCont:   return (NCGnameTypeGCont);
-//		case NCGtypeGDisc:   return (NCGnameTypeGDisc); 
-		case NCGtypeNetwork: return (NCGnameTypeNetwork);
-		case NCGtypePoint:   return (NCGnameTypePoint);
-//		case NCGtypeLine:    return (NCGnameTypeLine);
-//		case NCGtypePolygon: return (NCGnameTypePolygon);
+		case NCtypeGCont:   return (NCnameTypeGCont);
+//		case NCtypeGDisc:   return (NCnameTypeGDisc); 
+		case NCtypeNetwork: return (NCnameTypeNetwork);
+		case NCtypePoint:   return (NCnameTypePoint);
+//		case NCtypeLine:    return (NCnameTypeLine);
+//		case NCtypePolygon: return (NCnameTypePolygon);
 	}
 	return ((char *) NULL);
 }
 
-char *NCGnameProjString (NCGprojection proj)
+char *NCnameProjString (NCprojection proj)
 {
 	switch (proj)
 	{
 		default: break;
-		case NCGprojCartesian: return (NCGnameGAProjCartesian);
-		case NCGprojSpherical: return (NCGnameGAProjSpherical);
+		case NCprojCartesian: return (NCnameGAProjCartesian);
+		case NCprojSpherical: return (NCnameGAProjSpherical);
 	}
 	return ((char *) NULL);
 }

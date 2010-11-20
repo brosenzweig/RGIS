@@ -20,7 +20,7 @@ void do_help(char *progName)
 }
 
 // Checks to see if a new interval has been reached by the difference in the dates
-bool NCGnewInterval( const char *date1, const char *date2, const int i)
+bool NCnewInterval( const char *date1, const char *date2, const int i)
 {
 	int t1, t2, tmp;
 	static int numberOfDays [12] = { 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 };
@@ -79,89 +79,89 @@ int main(int argc, char* argv[])
 	char *tmp = (char *) NULL, *filename = (char *) NULL, *rename = (char *) NULL, *varname = (char *) NULL;
 	int argPos = 0, argNum = argc, interval = NONE, ncid = 0, *dimIDs = (int *) NULL, ndims, bLen, idx[3], inVar = 0, outVar = 0, i;
 	double val;
-	NCGdsHandle_t *dsHandle;
+	NCdsHandle_t *dsHandle;
 
-	if(argNum == 1) { do_help(NCGcmProgName(argv[0])); return (NCGsucceeded); }
+	if(argNum == 1) { do_help(NCcmProgName(argv[0])); return (NCsucceeded); }
 	if ((argNum == 2) && (argv[1][0] == '-'))
 	{
-		if (NCGcmArgTest(argv[1],"-d","--debug")) SetDebug();
-		do_help(NCGcmProgName(argv[0])); return (NCGsucceeded);
+		if (NCcmArgTest(argv[1],"-d","--debug")) SetDebug();
+		do_help(NCcmProgName(argv[0])); return (NCsucceeded);
 	}
 	initMemInfo();
 	for(argPos = 1; argPos < argNum;)
 	{
-		if (NCGcmArgTest(argv[argPos],"-d","--debug")) { SetDebug(); NCGcmArgShiftLeft(argPos,argv,argc); argNum--; continue; }
-		if (NCGcmArgTest(argv[argPos],"-h","--help")) { do_help(NCGcmProgName(argv[0])); cleanup(NCGsucceeded); }
-		if (NCGcmArgTest(argv[argPos],"-f","--file"))
+		if (NCcmArgTest(argv[argPos],"-d","--debug")) { SetDebug(); NCcmArgShiftLeft(argPos,argv,argc); argNum--; continue; }
+		if (NCcmArgTest(argv[argPos],"-h","--help")) { do_help(NCcmProgName(argv[0])); cleanup(NCsucceeded); }
+		if (NCcmArgTest(argv[argPos],"-f","--file"))
 		{
-			NCGcmArgShiftLeft(argPos,argv,argc); argNum--;
+			NCcmArgShiftLeft(argPos,argv,argc); argNum--;
 			filename = argv[argPos];
-			NCGcmArgShiftLeft(argPos,argv,argc); argNum--;
+			NCcmArgShiftLeft(argPos,argv,argc); argNum--;
 			continue;
 		}
-		if (NCGcmArgTest(argv[argPos],"-r","--rename"))
+		if (NCcmArgTest(argv[argPos],"-r","--rename"))
 		{
-			NCGcmArgShiftLeft(argPos,argv,argc); argNum--;
+			NCcmArgShiftLeft(argPos,argv,argc); argNum--;
 			if(rename == (char *) NULL) rename = argv[argPos];
-			else { fprintf(stderr,"Output field name defined twice!\n"); cleanup(NCGfailed); }
-			NCGcmArgShiftLeft(argPos,argv,argc); argNum--;
+			else { fprintf(stderr,"Output field name defined twice!\n"); cleanup(NCfailed); }
+			NCcmArgShiftLeft(argPos,argv,argc); argNum--;
 			continue;
 		}
-		if (NCGcmArgTest(argv[argPos],"-s","--set"))
+		if (NCcmArgTest(argv[argPos],"-s","--set"))
 		{
-			NCGcmArgShiftLeft(argPos,argv,argc); argNum--;
-			if(interval != NONE) { fprintf(stderr,"Interval already set!\n"); cleanup(NCGfailed); }
-			if(NCGmathIsNumber(argv[argPos])) interval = atoi(argv[argPos]);
+			NCcmArgShiftLeft(argPos,argv,argc); argNum--;
+			if(interval != NONE) { fprintf(stderr,"Interval already set!\n"); cleanup(NCfailed); }
+			if(NCmathIsNumber(argv[argPos])) interval = atoi(argv[argPos]);
 			else if (strcmp(argv[argPos],"hour") == 0) interval = HOUR;
 			else if (strcmp(argv[argPos],"day") == 0) interval = DAY;
 			else if (strcmp(argv[argPos],"month") == 0) interval = MONTH;
 			else if (strcmp(argv[argPos],"year") == 0) interval = YEAR;
-			else { fprintf(stderr,"Undefined time interval '%s'\n",argv[argPos]); cleanup(NCGfailed); }
-			NCGcmArgShiftLeft(argPos,argv,argc); argNum--;
+			else { fprintf(stderr,"Undefined time interval '%s'\n",argv[argPos]); cleanup(NCfailed); }
+			NCcmArgShiftLeft(argPos,argv,argc); argNum--;
 			if(varname == (char *) NULL) varname = argv[argPos];
-			else { fprintf(stderr,"Input field name defined twice!\n"); cleanup(NCGfailed); }
-			NCGcmArgShiftLeft(argPos,argv,argc); argNum--;
+			else { fprintf(stderr,"Input field name defined twice!\n"); cleanup(NCfailed); }
+			NCcmArgShiftLeft(argPos,argv,argc); argNum--;
 			continue;
 		}
 		if ((argv[argPos][0] == '-') && (strlen (argv[argPos]) > 1))
-			{ fprintf(stderr,"Unknown option: %s!\n",argv[argPos]); cleanup(NCGfailed); }
+			{ fprintf(stderr,"Unknown option: %s!\n",argv[argPos]); cleanup(NCfailed); }
 		argPos++;
 	}
-	if(interval == NONE) { fprintf(stderr,"Invalid interval!\n"); cleanup(NCGfailed); }
+	if(interval == NONE) { fprintf(stderr,"Invalid interval!\n"); cleanup(NCfailed); }
 	if (filename != (char *) NULL) {
 		if(nc_open(filename,NC_WRITE,&ncid) != NC_NOERR)
-			{ fprintf(stderr,"Error opening file: %s!\n",filename); return (NCGfailed); }
+			{ fprintf(stderr,"Error opening file: %s!\n",filename); return (NCfailed); }
 	} else if ((argNum > 1) && (strcmp(argv[1],"-") != 0)) {
-		if(nc_open(argv[1],NC_WRITE,&ncid) != NC_NOERR) { fprintf(stderr,"Error opening file: %s!\n",argv[1]); return (NCGfailed); }
-	} else do_help(NCGcmProgName(argv[0]));
+		if(nc_open(argv[1],NC_WRITE,&ncid) != NC_NOERR) { fprintf(stderr,"Error opening file: %s!\n",argv[1]); return (NCfailed); }
+	} else do_help(NCcmProgName(argv[0]));
 
-	dsHandle = NCGdsHandleOpenById (ncid);
-/*	if((nc_inq_varid(ncid,varname,&inVar)) != NC_NOERR) { fprintf(stderr,"NC: Error getting varID!\n"); cleanup(NCGfailed); }
-	if(nc_inq_ndims(ncid,&ndims) != NC_NOERR) { perror("Cannot get the ndims!\n"); cleanup(NCGfailed); }
+	dsHandle = NCdsHandleOpenById (ncid);
+/*	if((nc_inq_varid(ncid,varname,&inVar)) != NC_NOERR) { fprintf(stderr,"NC: Error getting varID!\n"); cleanup(NCfailed); }
+	if(nc_inq_ndims(ncid,&ndims) != NC_NOERR) { perror("Cannot get the ndims!\n"); cleanup(NCfailed); }
 	dimIDs = malloc(sizeof(int) * ndims);
-	if((nc_inq_vardimid(ncid,inVar,dimIDs)) != NC_NOERR) { fprintf(stderr,"NC: Error getting dimIDs!\n"); cleanup(NCGfailed); }
-	if(nc_redef(ncid) != NC_NOERR) { perror("Cannot place into redef mode!\n"); cleanup(NCGfailed); }
+	if((nc_inq_vardimid(ncid,inVar,dimIDs)) != NC_NOERR) { fprintf(stderr,"NC: Error getting dimIDs!\n"); cleanup(NCfailed); }
+	if(nc_redef(ncid) != NC_NOERR) { perror("Cannot place into redef mode!\n"); cleanup(NCfailed); }
 	fprintf(stderr,"id=%d ndims=%d, dimIDs[0]=%d dimIDs[1]=%d dimIDs[2]=%d\n",ncid,ndims, dimIDs[0],dimIDs[1],dimIDs[2]);
 	if(rename == (char *) NULL) {
 		if((nc_def_var(ncid,"Aggregate",NC_DOUBLE,ndims,dimIDs,&outVar)) != NC_NOERR)
-			{ fprintf(stderr,"NC: Error creating new variable!\n"); cleanup(NCGfailed); }
+			{ fprintf(stderr,"NC: Error creating new variable!\n"); cleanup(NCfailed); }
 	} else {
 		if((nc_def_var(ncid,rename,NC_DOUBLE,ndims,dimIDs,&outVar)) != NC_NOERR)
-			{ fprintf(stderr,"NC: Error creating new variable!\n"); cleanup(NCGfailed); }
+			{ fprintf(stderr,"NC: Error creating new variable!\n"); cleanup(NCfailed); }
 	}
 	fprintf(stderr,"id=%d ndims=%d, dimIDs[0]=%d dimIDs[1]=%d dimIDs[2]=%d\n",ncid,ndims, dimIDs[0],dimIDs[1],dimIDs[2]);
-	//if(nc_enddef(ncid) != NC_NOERR) { perror("Cannot get out of redef mode!\n"); cleanup(NCGfailed); }
-	cleanup(NCGsucceeded);
+	//if(nc_enddef(ncid) != NC_NOERR) { perror("Cannot get out of redef mode!\n"); cleanup(NCfailed); }
+	cleanup(NCsucceeded);
 
 	if((nc_inq_dimlen(ncid,dimIDs[0],&bLen)) != NC_NOERR)
-		{ fprintf(stderr,"NC: Error getting length of dimension!\n"); cleanup(NCGfailed); }
+		{ fprintf(stderr,"NC: Error getting length of dimension!\n"); cleanup(NCfailed); }
 	for(i = 0; i < bLen; i++)
 	{ 
 		idx[0] = i;
 		if(nc_get_var1_double(ncid,inVar,idx, &val) != NC_NOERR)
-			{ fprintf(stderr,"NC: There's a problem getting a value!\n"); cleanup(NCGfailed); }
+			{ fprintf(stderr,"NC: There's a problem getting a value!\n"); cleanup(NCfailed); }
 		printf("inVar: %d, outVar: %d, val: %f\n",inVar,outVar,val);
 	}*/
 //	for (i = 0; i < dsHandle->ColNum * dsHandle->RowNum * dsHandle->TimeNum; i++) printf("i: %f\n",data[i]);
-	cleanup(NCGsucceeded);
+	cleanup(NCsucceeded);
 }

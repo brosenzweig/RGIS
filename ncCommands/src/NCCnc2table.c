@@ -24,54 +24,54 @@ void do_help(char *progName,bool extend)
 // *** MAIN
 
 #define cleanup(ret) if((fname != (char *) NULL) && (nc_close(ncid) != NC_NOERR)) fprintf(stderr,"Error closing file!\n"); \
-	NCGtableClose(tbl); if(output != stdout) fclose(output); printMemInfo(); return ret;
+	NCtableClose(tbl); if(output != stdout) fclose(output); printMemInfo(); return ret;
 
 int main(int argc, char* argv[])
 {
 	int argPos = 0, argNum = argc, ncid;
 	char *fname = (char *) NULL, *tname = "time";
 	FILE *output = stdout;
-	NCGtable_t *tbl = (NCGtable_t *) NULL;
+	NCtable_t *tbl = (NCtable_t *) NULL;
 
 	initMemInfo();
 	for(argPos = 1; argPos < argNum;) {
-		if (NCGcmArgTest(argv[argPos],"-d","--debug")) { SetDebug(); NCGcmArgShiftLeft(argPos,argv,argc); argNum--; continue; }
-		if (NCGcmArgTest(argv[argPos],"-h","--help")) {
-			if((argPos + 1 < argNum) && (argv[argPos+1][0] == 'e')) do_help(NCGcmProgName(argv[0]),true);
-			else do_help(NCGcmProgName(argv[0]),false);
-			cleanup(NCGsucceeded);
+		if (NCcmArgTest(argv[argPos],"-d","--debug")) { SetDebug(); NCcmArgShiftLeft(argPos,argv,argc); argNum--; continue; }
+		if (NCcmArgTest(argv[argPos],"-h","--help")) {
+			if((argPos + 1 < argNum) && (argv[argPos+1][0] == 'e')) do_help(NCcmProgName(argv[0]),true);
+			else do_help(NCcmProgName(argv[0]),false);
+			cleanup(NCsucceeded);
 		}
-		if (NCGcmArgTest(argv[argPos],"-t","--table"))
+		if (NCcmArgTest(argv[argPos],"-t","--table"))
 		{
-			NCGcmArgShiftLeft(argPos,argv,argc); argNum--;
+			NCcmArgShiftLeft(argPos,argv,argc); argNum--;
 			tname = argv[argPos];
-			NCGcmArgShiftLeft(argPos,argv,argc); argNum--;
+			NCcmArgShiftLeft(argPos,argv,argc); argNum--;
 			continue;
 		}
-		if (NCGcmArgTest(argv[argPos],"-f","--file"))
+		if (NCcmArgTest(argv[argPos],"-f","--file"))
 		{
-			NCGcmArgShiftLeft(argPos,argv,argc); argNum--;
+			NCcmArgShiftLeft(argPos,argv,argc); argNum--;
 			fname = argv[argPos];
-			NCGcmArgShiftLeft(argPos,argv,argc); argNum--;
+			NCcmArgShiftLeft(argPos,argv,argc); argNum--;
 			continue;
 		}
-		if (NCGcmArgTest(argv[argPos],"-o","--output"))
+		if (NCcmArgTest(argv[argPos],"-o","--output"))
 		{
-			NCGcmArgShiftLeft(argPos,argv,argc); argNum--;
-			if(output != stdout) { fprintf(stderr,"Output file defined twice!\n"); cleanup(NCGfailed); }
+			NCcmArgShiftLeft(argPos,argv,argc); argNum--;
+			if(output != stdout) { fprintf(stderr,"Output file defined twice!\n"); cleanup(NCfailed); }
 			if((output = fopen(argv[argPos],"w")) == (FILE *) NULL)
-				{ fprintf(stderr,"Cannot open for writing: %s\n",argv[argPos]); cleanup(NCGfailed); }
-			NCGcmArgShiftLeft(argPos,argv,argc); argNum--;
+				{ fprintf(stderr,"Cannot open for writing: %s\n",argv[argPos]); cleanup(NCfailed); }
+			NCcmArgShiftLeft(argPos,argv,argc); argNum--;
 			continue;
 		}
 		if ((argv[argPos][0] == '-') && (strlen (argv[argPos]) > 1))
-			{ fprintf(stderr,"Unknown option: %s!\n",argv[argPos]); cleanup(NCGfailed); }
+			{ fprintf(stderr,"Unknown option: %s!\n",argv[argPos]); cleanup(NCfailed); }
 		argPos++;
 	}
-	if(fname == (char *) NULL) { do_help(argv[0],false); fprintf(stderr,"\nNo file specified!\n"); cleanup(NCGfailed); }
-	if(nc_open(fname,NC_NOWRITE,&ncid) != NC_NOERR) { fprintf (stderr,"Error opening file!\n"); cleanup(NCGfailed); }
-	if((tbl = NCGtableOpen(ncid,tname)) == (NCGtable_t *) NULL) { fprintf(stderr,"Error opening table!\n"); cleanup(NCGfailed); }
+	if(fname == (char *) NULL) { do_help(argv[0],false); fprintf(stderr,"\nNo file specified!\n"); cleanup(NCfailed); }
+	if(nc_open(fname,NC_NOWRITE,&ncid) != NC_NOERR) { fprintf (stderr,"Error opening file!\n"); cleanup(NCfailed); }
+	if((tbl = NCtableOpen(ncid,tname)) == (NCtable_t *) NULL) { fprintf(stderr,"Error opening table!\n"); cleanup(NCfailed); }
 	if(GetDebug()) fprintf(stderr,"Loaded file!\n");
-	NCGtableExportAscii(tbl,output);
-	cleanup(NCGsucceeded);
+	NCtableExportAscii(tbl,output);
+	cleanup(NCsucceeded);
 }

@@ -1,31 +1,31 @@
 #include<NC.h>
 
-NCGstate NCGifyContinuous (NCGObjData_t *objData)
+NCstate NCifyContinuous (NCObjData_t *objData)
 {
 	
-		gCont->MColumn = (NCGObjColumn_t *) NCGObjListFindItemByName (table->Columns, NCGnameVAAverage);
-		gCont->IColumn = (NCGObjColumn_t *) NCGObjListFindItemByName (table->Columns, NCGnameVAMinimum);
-		gCont->AColumn = (NCGObjColumn_t *) NCGObjListFindItemByName (table->Columns, NCGnameVAMaximum);
-		gCont->SColumn = (NCGObjColumn_t *) NCGObjListFindItemByName (table->Columns, NCGnameVAStdDev);
+		gCont->MColumn = (NCObjColumn_t *) NCObjListFindItemByName (table->Columns, NCnameVAAverage);
+		gCont->IColumn = (NCObjColumn_t *) NCObjListFindItemByName (table->Columns, NCnameVAMinimum);
+		gCont->AColumn = (NCObjColumn_t *) NCObjListFindItemByName (table->Columns, NCnameVAMaximum);
+		gCont->SColumn = (NCObjColumn_t *) NCObjListFindItemByName (table->Columns, NCnameVAStdDev);
 }
 
-NCGstate NCGify (NCGObjData_t *objData)
+NCstate NCify (NCObjData_t *objData)
 {
 	switch (objData->DType)
 	{
-		case NCGTypePoint:
+		case NCTypePoint:
 			break;
-		case NCGTypeLine:
+		case NCTypeLine:
 			break;
-		case NCGTypePolygon:
+		case NCTypePolygon:
 			break;
-		case NCGTypeContGrid:
+		case NCTypeContGrid:
 			break;
-		case NCGTypeDiscGrid:
+		case NCTypeDiscGrid:
 			break;
-		case NCGTypeNetwork:
+		case NCTypeNetwork:
 			break;
-		case NCGTypeTabular:
+		case NCTypeTabular:
 			break;
 	}
 }

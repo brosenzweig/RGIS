@@ -1,25 +1,25 @@
 #include<NCmath.h>
 
-static double _NCGRadius = 6371.2213;
-static double _NCGEpsilon =   0.000001;
+static double _NCRadius = 6371.2213;
+static double _NCEpsilon =   0.000001;
 
-bool NCGmathIsNumber(char *expr)
+bool NCmathIsNumber(char *expr)
 {
 	register int i, strLen = strlen(expr);
 	for(i = (expr[0] == '-') ? 1 : 0; i < strLen; i++) if((!isdigit(expr[i])) && (expr[i] != '.')) return false;
 	return true;
 }
 
-void NCGmathSetSphereRadius (double radius) { _NCGRadius = radius; }
-void NCGmathSetEpsilon (double epsilon) { _NCGEpsilon = epsilon; }
+void NCmathSetSphereRadius (double radius) { _NCRadius = radius; }
+void NCmathSetEpsilon (double epsilon) { _NCEpsilon = epsilon; }
 
-bool NCGmathEqualValues (double var0,double var1)
+bool NCmathEqualValues (double var0,double var1)
 {
 	if (fabs (var0) + fabs (var1) == (double) 0.0) return (true);
-	return (fabs (var0 - var1) / (fabs (var0) + fabs (var1)) < _NCGEpsilon);
+	return (fabs (var0 - var1) / (fabs (var0) + fabs (var1)) < _NCEpsilon);
 }
 
-double NCGmathCoordinateDistance (NCGprojection projection, const NCGcoordinate_t *coord0, const NCGcoordinate_t *coord1)
+double NCmathCoordinateDistance (NCprojection projection, const NCcoordinate_t *coord0, const NCcoordinate_t *coord1)
 {
 	double cosC, sinC;
 	double lon0, lat0, lon1, lat1;
@@ -28,11 +28,11 @@ double NCGmathCoordinateDistance (NCGprojection projection, const NCGcoordinate_
 	switch (projection)
 	{
 		default:
-		case NCGprojCartesian:
+		case NCprojCartesian:
 			distance = (coord0->X - coord1->X) * (coord0->X - coord1->X) + (coord0->Y - coord1->Y) * (coord0->Y - coord1->Y);
 			distance = sqrt (distance);
 			break;
-		case NCGprojSpherical:
+		case NCprojSpherical:
 			lon0 = coord0->X * M_PI / 180.0;
 			lat0 = coord0->Y * M_PI / 180.0;
 			lon1 = coord1->X * M_PI / 180.0;
@@ -45,15 +45,15 @@ double NCGmathCoordinateDistance (NCGprojection projection, const NCGcoordinate_
 				sinC = sqrt (cos (lat1) * cos (lat1) * sin (lon1 - lon0) * sin (lon1 - lon0) +
 				            (cos (lat0) * sin (lat1) - sin (lat0) * cos (lat1) * cos (lon1 - lon0)) *
 				            (cos (lat0) * sin (lat1) - sin (lat0) * cos (lat1) * cos (lon1 - lon0)));
-				distance = _NCGRadius * atan (sinC/cosC);
+				distance = _NCRadius * atan (sinC/cosC);
 			}
-			else distance = _NCGRadius * acos (cosC);
+			else distance = _NCRadius * acos (cosC);
 			break;
 	}
 	return (distance);
 }
 
-double NCGmathRectangleArea (NCGprojection projection, const NCGcoordinate_t *coord0, const NCGcoordinate_t *coord1)
+double NCmathRectangleArea (NCprojection projection, const NCcoordinate_t *coord0, const NCcoordinate_t *coord1)
 {
 	double lat0,lat1,lon0,lon1;
 	double area, dc;
@@ -61,22 +61,22 @@ double NCGmathRectangleArea (NCGprojection projection, const NCGcoordinate_t *co
 	switch (projection)
 	{
 		default:
-		case NCGprojCartesian:
+		case NCprojCartesian:
 			area = fabs ((coord1->X -coord0->X) * (coord1->Y -coord0->Y)) / 1000000.0;
 			break;
-		case NCGprojSpherical:
+		case NCprojSpherical:
 			lon1 = coord1->X * M_PI / 180.0;
 			lat1 = coord1->Y * M_PI / 180.0;
 			lon0 = coord0->X * M_PI / 180.0;
 			lat0 = coord0->Y * M_PI / 180.0;
 			dc = fabs (sin (lat1) - sin (lat0));
-			area = _NCGRadius * _NCGRadius * dc * fabs (lon1 - lon0);
+			area = _NCRadius * _NCRadius * dc * fabs (lon1 - lon0);
 			break;
 	}
 	return (area);
 }
 
-double NCGmathVectorByVector (const NCGcoordinate_t *commonPoint, const NCGcoordinate_t *pnt0, const NCGcoordinate_t *pnt1)
+double NCmathVectorByVector (const NCcoordinate_t *commonPoint, const NCcoordinate_t *pnt0, const NCcoordinate_t *pnt1)
 {
 	double x0, y0, x1, y1;
 
@@ -88,7 +88,7 @@ double NCGmathVectorByVector (const NCGcoordinate_t *commonPoint, const NCGcoord
 	return ((x0 * x1) + (y0 * y1));
 }
 
-double NCGmathVectorXVector (const NCGcoordinate_t *commonPoint, const NCGcoordinate_t *pnt0, const NCGcoordinate_t *pnt1)
+double NCmathVectorXVector (const NCcoordinate_t *commonPoint, const NCcoordinate_t *pnt0, const NCcoordinate_t *pnt1)
 {
 	double x0, y0, x1, y1;
 
@@ -100,7 +100,7 @@ double NCGmathVectorXVector (const NCGcoordinate_t *commonPoint, const NCGcoordi
 	return ((x0 * y1) - (x1 * y0));
 }
 
-void NCGmathGauss (double a [],int n,int m)
+void NCmathGauss (double a [],int n,int m)
 {
 	int i,j,k;
 	double q;
@@ -135,7 +135,7 @@ void NCGmathGauss (double a [],int n,int m)
 	}
 }
 
-double NCGmathStudentsT(double df)
+double NCmathStudentsT(double df)
 {
 	int i = 0;
 	int DFval[37] = {0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,40,60,120,240,520,1000 };
@@ -149,7 +149,7 @@ double NCGmathStudentsT(double df)
 	return(Tvalue[i]);
 }
 
-size_t NCGVariableSize (int type)
+size_t NCVariableSize (int type)
 {
 	switch (type)
 	{

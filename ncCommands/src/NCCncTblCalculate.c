@@ -51,20 +51,20 @@ typedef struct Files
 		struct // if (ncTYPE)
 		{
 			int ncid;
-			NCGtable_t *tbl;
-			NCGfield_t *outCol;
+			NCtable_t *tbl;
+			NCfield_t *outCol;
 		};
 	};
 } Files_t;
 	
-void NCGcloseFile(Files_t *file)
+void NCcloseFile(Files_t *file)
 {
 	if(file->ncTYPE)
 	{
 		if(nc_close(file->ncid) != NC_NOERR)
 			{ fprintf(stderr,"Error closing file: %s!\n",file->fname); abort(); }
-		NCGtableClose(file->tbl);
-		file->tbl = (NCGtable_t *) NULL;
+		NCtableClose(file->tbl);
+		file->tbl = (NCtable_t *) NULL;
 		return;
 	}
 	else if((file->file == (FILE *) NULL) || (file->file == stdout)) return;
@@ -74,8 +74,8 @@ void NCGcloseFile(Files_t *file)
 
 // *** MAIN
 
-#define cleanup(ret) { if(tHead) delTree(tHead); if(iHead) delTreeI(iHead); NCGmathFreeVars(); \
-	NCGcloseFile(&inFile); if ((outFile != (FILE *) NULL) && (outFile != stdout)) fclose(outFile); if(fieldname != (char *) NULL) free(fieldname); \
+#define cleanup(ret) { if(tHead) delTree(tHead); if(iHead) delTreeI(iHead); NCmathFreeVars(); \
+	NCcloseFile(&inFile); if ((outFile != (FILE *) NULL) && (outFile != stdout)) fclose(outFile); if(fieldname != (char *) NULL) free(fieldname); \
 	printMemInfo(); return ret; }
 
 int main(int argc, char* argv[])
@@ -89,8 +89,8 @@ int main(int argc, char* argv[])
 	int argPos = 0, argNum = argc;
 	double output = 0.0;
 
-	if(argNum == 1) { do_help(NCGcmProgName(argv[0])); return (NCGsucceeded); }
-	if ((argNum == 2) && (argv[1][0] == '-')) { if (NCGcmArgTest(argv[1],"-d","--debug")) SetDebug(); do_help(NCGcmProgName(argv[0])); return (NCGsucceeded); }
+	if(argNum == 1) { do_help(NCcmProgName(argv[0])); return (NCsucceeded); }
+	if ((argNum == 2) && (argv[1][0] == '-')) { if (NCcmArgTest(argv[1],"-d","--debug")) SetDebug(); do_help(NCcmProgName(argv[0])); return (NCsucceeded); }
 	inFile.fname = (char *) NULL;
 	inFile.ncTYPE = false;
 	inFile.file = (FILE *) NULL;
@@ -100,105 +100,105 @@ int main(int argc, char* argv[])
 	initMemInfo();
 	for(argPos = 1; argPos < argNum;)
 	{
-		if (NCGcmArgTest(argv[argPos],"-d","--debug")) { SetDebug(); NCGcmArgShiftLeft(argPos,argv,argc); argNum--; continue; }
-		if (NCGcmArgTest(argv[argPos],"-l","--lisp")) { setLisp(); NCGcmArgShiftLeft(argPos,argv,argc); argNum--; continue; }
-		if (NCGcmArgTest(argv[argPos],"-h","--help")) { do_help(NCGcmProgName(argv[0])); cleanup(NCGsucceeded); }
-		if (NCGcmArgTest(argv[argPos],"-t","--table"))
+		if (NCcmArgTest(argv[argPos],"-d","--debug")) { SetDebug(); NCcmArgShiftLeft(argPos,argv,argc); argNum--; continue; }
+		if (NCcmArgTest(argv[argPos],"-l","--lisp")) { setLisp(); NCcmArgShiftLeft(argPos,argv,argc); argNum--; continue; }
+		if (NCcmArgTest(argv[argPos],"-h","--help")) { do_help(NCcmProgName(argv[0])); cleanup(NCsucceeded); }
+		if (NCcmArgTest(argv[argPos],"-t","--table"))
 		{
-			NCGcmArgShiftLeft(argPos,argv,argc); argNum--;
-			if((inFile.ncTYPE != false) && (inFile.file != (FILE *) NULL)) { fprintf(stderr,"-t flag must precede -f flag!\n"); cleanup(NCGfailed); }
+			NCcmArgShiftLeft(argPos,argv,argc); argNum--;
+			if((inFile.ncTYPE != false) && (inFile.file != (FILE *) NULL)) { fprintf(stderr,"-t flag must precede -f flag!\n"); cleanup(NCfailed); }
 			tablename = argv[argPos];
-			NCGcmArgShiftLeft(argPos,argv,argc); argNum--;
+			NCcmArgShiftLeft(argPos,argv,argc); argNum--;
 			continue;
 		}
-		if (NCGcmArgTest(argv[argPos],"-f","--file"))
+		if (NCcmArgTest(argv[argPos],"-f","--file"))
 		{
-			NCGcmArgShiftLeft(argPos,argv,argc); argNum--;
-			if((inFile.ncTYPE != false) && (inFile.file != (FILE *) NULL)) { fprintf(stderr,"multiple -f flags!\n"); cleanup(NCGfailed); }
+			NCcmArgShiftLeft(argPos,argv,argc); argNum--;
+			if((inFile.ncTYPE != false) && (inFile.file != (FILE *) NULL)) { fprintf(stderr,"multiple -f flags!\n"); cleanup(NCfailed); }
 			inFile.fname = argv[argPos];
 			if(nc_open(inFile.fname,NC_WRITE,&i) == NC_NOERR)
 			{
 				inFile.ncTYPE = true;
 				inFile.ncid = i;
-				if((inFile.tbl = NCGtableOpen(i,tablename)) == (NCGtable_t *) NULL)
-					{ fprintf(stderr,"Error encountered!\n"); cleanup(NCGfailed); }
+				if((inFile.tbl = NCtableOpen(i,tablename)) == (NCtable_t *) NULL)
+					{ fprintf(stderr,"Error encountered!\n"); cleanup(NCfailed); }
 			} else if((inFile.file = fopen(inFile.fname,"r")) != (FILE *) NULL)
 			{
 				inFile.ncTYPE = false;
 				inFile.curRow = (char *) NULL;
 				getline(&(inFile.curRow),&i,inFile.file);
-				if (inFile.curRow == (char *) NULL) { fprintf(stderr,"Empty File '%s'",inFile.fname); cleanup(NCGfailed); }
+				if (inFile.curRow == (char *) NULL) { fprintf(stderr,"Empty File '%s'",inFile.fname); cleanup(NCfailed); }
 				else { i = strlen(inFile.curRow); (inFile.curRow)[i - 1] = '\0'; }
 				inFile.row = (char **) NULL;
-				inFile.numCol = NCGstringTokenize(inFile.curRow, &(inFile.row),'\t');
-			} else { fprintf(stderr,"Cannot open file '%s'!\n",inFile.fname); cleanup(NCGfailed); }
-			NCGcmArgShiftLeft(argPos,argv,argc); argNum--;
+				inFile.numCol = NCstringTokenize(inFile.curRow, &(inFile.row),'\t');
+			} else { fprintf(stderr,"Cannot open file '%s'!\n",inFile.fname); cleanup(NCfailed); }
+			NCcmArgShiftLeft(argPos,argv,argc); argNum--;
 			continue;
 		}
-		if (NCGcmArgTest(argv[argPos],"-o","--output"))
+		if (NCcmArgTest(argv[argPos],"-o","--output"))
 		{
-			NCGcmArgShiftLeft(argPos,argv,argc); argNum--;
+			NCcmArgShiftLeft(argPos,argv,argc); argNum--;
 			if(strcmp(argv[argPos],"-") == 0) outFile = stdout;
 			else if ((outFile = fopen(argv[argPos],"w")) == (FILE *) NULL)
-				{ fprintf(stderr,"Error opening file '%s' for writing!\n",argv[argPos]); cleanup(NCGfailed); }
-			NCGcmArgShiftLeft(argPos,argv,argc); argNum--;
+				{ fprintf(stderr,"Error opening file '%s' for writing!\n",argv[argPos]); cleanup(NCfailed); }
+			NCcmArgShiftLeft(argPos,argv,argc); argNum--;
 			continue;
 		}
 		argPos++;
 	}
 	if((inFile.ncTYPE == false) && (outFile == (FILE *) NULL)) outFile = stdout;
 	for(argPos = 1; argPos < argNum;) {
-		if (NCGcmArgTest(argv[argPos],"-v","--variable"))
+		if (NCcmArgTest(argv[argPos],"-v","--variable"))
 		{ // constant variable
-			if(NCGstringMatch(argv[argPos + 1],0,"VAR")) { fprintf(stderr,"Variable names cannot start with 'VAR'!\n"); cleanup(NCGfailed); }
-			NCGcmArgShiftLeft(argPos,argv,argc); argNum--;
+			if(NCstringMatch(argv[argPos + 1],0,"VAR")) { fprintf(stderr,"Variable names cannot start with 'VAR'!\n"); cleanup(NCfailed); }
+			NCcmArgShiftLeft(argPos,argv,argc); argNum--;
 			i = strlen(argv[argPos]);
 			for(j = 0; (j < i) && (argv[argPos][j] != '='); j++);
-			name = NCGstringSubstr(argv[argPos],0,j - 1);
-			tmp = NCGstringSubstr(argv[argPos],j + 1,i);
-			if((k = NCGmathAddVar(-1,name,false)) == NCGfailed) cleanup(NCGfailed);
-			if(NCGmathIsNumber(tmp)) NCGmathSetVarVal(k,atof(tmp));
-			else { fprintf(stderr,"%s is not a <double>!\n",tmp); cleanup(NCGfailed); }
+			name = NCstringSubstr(argv[argPos],0,j - 1);
+			tmp = NCstringSubstr(argv[argPos],j + 1,i);
+			if((k = NCmathAddVar(-1,name,false)) == NCfailed) cleanup(NCfailed);
+			if(NCmathIsNumber(tmp)) NCmathSetVarVal(k,atof(tmp));
+			else { fprintf(stderr,"%s is not a <double>!\n",tmp); cleanup(NCfailed); }
 			free(tmp);
 			free(name);
-			NCGcmArgShiftLeft(argPos,argv,argc); argNum--;
+			NCcmArgShiftLeft(argPos,argv,argc); argNum--;
 			continue;
 		}
-		if (NCGcmArgTest(argv[argPos],"-e","--expression"))
+		if (NCcmArgTest(argv[argPos],"-e","--expression"))
 		{
-			NCGcmArgShiftLeft(argPos,argv,argc); argNum--;
-			if(input != (char *) NULL) { fprintf(stderr,"Expression defined twice!\n"); cleanup(NCGfailed); }
+			NCcmArgShiftLeft(argPos,argv,argc); argNum--;
+			if(input != (char *) NULL) { fprintf(stderr,"Expression defined twice!\n"); cleanup(NCfailed); }
 			if((input = malloc((strlen(argv[argPos]) + 1) * sizeof(char))) == NULL)
-				{ perror("Memory Allocation error in: NCGtblCalculate ()\n"); cleanup(NCGfailed); }
+				{ perror("Memory Allocation error in: NCtblCalculate ()\n"); cleanup(NCfailed); }
 			strcpy(input,argv[argPos]);
-			NCGcmArgShiftLeft(argPos,argv,argc); argNum--;
+			NCcmArgShiftLeft(argPos,argv,argc); argNum--;
 			continue;
 		}
-		if (NCGcmArgTest(argv[argPos],"-r","--rename"))
+		if (NCcmArgTest(argv[argPos],"-r","--rename"))
 		{
-			NCGcmArgShiftLeft(argPos,argv,argc); argNum--;
+			NCcmArgShiftLeft(argPos,argv,argc); argNum--;
 			if(fieldname == (char *) NULL)
 			{
 				if((fieldname = malloc(sizeof(char) * (strlen(argv[argPos]) + 1))) == NULL)
-					{ perror("Memory Allocation error in: NCGtblCalculate ()\n"); cleanup(NCGfailed); }
+					{ perror("Memory Allocation error in: NCtblCalculate ()\n"); cleanup(NCfailed); }
 				strcpy(fieldname,argv[argPos]);
 			}
-			else { fprintf(stderr,"Output field name defined twice!\n"); cleanup(NCGfailed); }
-			NCGcmArgShiftLeft(argPos,argv,argc); argNum--;
+			else { fprintf(stderr,"Output field name defined twice!\n"); cleanup(NCfailed); }
+			NCcmArgShiftLeft(argPos,argv,argc); argNum--;
 			continue;
 		}
 		if ((argv[argPos][0] == '-') && (strlen (argv[argPos]) > 1))
-			{ fprintf(stderr,"Unknown option: %s!\n",argv[argPos]); cleanup(NCGfailed); }
+			{ fprintf(stderr,"Unknown option: %s!\n",argv[argPos]); cleanup(NCfailed); }
 		// if nothing else it must be an equation
 		if(input == (char *) NULL) {
 			if((input = malloc((strlen(argv[argPos]) + 1) * sizeof(char))) == NULL)
-			 { perror("Memory Allocation error in: NCGtblCalculate ()\n"); cleanup(NCGfailed); }
+			 { perror("Memory Allocation error in: NCtblCalculate ()\n"); cleanup(NCfailed); }
 			strcpy(input,argv[argPos]);
-			NCGcmArgShiftLeft(argPos,argv,argc); argNum--;
+			NCcmArgShiftLeft(argPos,argv,argc); argNum--;
 			continue;
 		}
 		fprintf(stderr,"Unknown option: %s!\n",argv[argPos]);
-		cleanup(NCGfailed);
+		cleanup(NCfailed);
 //		argPos++;
 	}
 
@@ -206,22 +206,22 @@ int main(int argc, char* argv[])
 	if(input == (char *) NULL)
 	{
 		fprintf(stderr,"Missing <expression>\n\n");
-		do_help(NCGcmProgName(argv[0]));
-		cleanup(NCGfailed);
+		do_help(NCcmProgName(argv[0]));
+		cleanup(NCfailed);
 /*		fprintf(stderr,"\n<expression> =? ");
 		getline(&input,&inLen,stdin);
 		cons++;
 		if(GetDebug()) Dprint(stderr,"Main(): malloc(%p)\n",input);
 		input[strlen(input) - 1] = '\0';*/
 	}
-	if(strcmp(input,"") == 0) { printf("Nothing to do\n"); cleanup(NCGsucceeded); }
+	if(strcmp(input,"") == 0) { printf("Nothing to do\n"); cleanup(NCsucceeded); }
 
-	while(NCGstringStripch(&input, ' ') || NCGstringStripbr(&input));
+	while(NCstringStripch(&input, ' ') || NCstringStripbr(&input));
 	i = 0;
 	if(fieldname == (char *) NULL)
 	{
 		if((fieldname = malloc(sizeof(char) * (strlen("Results") + 1))) == NULL)
-			{ perror("Memory Allocation error in: NCGtblCalculate ()\n"); cleanup(NCGfailed); }
+			{ perror("Memory Allocation error in: NCtblCalculate ()\n"); cleanup(NCfailed); }
 		strcpy(fieldname,"Results");
 	}
 	while(i < strlen(input))
@@ -229,29 +229,29 @@ int main(int argc, char* argv[])
 		if(input[i] != '[') i++;
 		else
 		{
-			j = NCGstringEndPar(input,i);
-			tmp = NCGstringSubstr(input,i + 1,j - 1);
+			j = NCstringEndPar(input,i);
+			tmp = NCstringSubstr(input,i + 1,j - 1);
 			if(inFile.ncTYPE) {
 				colnum = -1;
 				for(k = 0; k < (inFile.tbl)->NFields; k++)
 					if(strcmp(((inFile.tbl)->Fields)[k].Name,tmp) == 0)
 					{
 						if(colnum != -1)
-							{ fprintf(stderr,"Multiple matches for column '%s'!\n",tmp); free(tmp); free(input); cleanup(NCGfailed); }
+							{ fprintf(stderr,"Multiple matches for column '%s'!\n",tmp); free(tmp); free(input); cleanup(NCfailed); }
 						colnum = k;
 					}
 				if(colnum == -1) { 
-					if(!NCGstringUnStripch(&tmp,'"')) { free(tmp); free(input); cleanup(NCGfailed); }
+					if(!NCstringUnStripch(&tmp,'"')) { free(tmp); free(input); cleanup(NCfailed); }
 					for(k = 0; k < (inFile.tbl)->NFields; k++)
 						if(strcmp(((inFile.tbl)->Fields)[k].Name,tmp) == 0)
 						{
 							if(colnum != -1)
-								{ printf("Multiple matches for column '%s'!\n",tmp); free(tmp); free(input); cleanup(NCGfailed); }
+								{ printf("Multiple matches for column '%s'!\n",tmp); free(tmp); free(input); cleanup(NCfailed); }
 							colnum = k;
 						}
-					if(colnum == -1) { fprintf(stderr,"Missing column '%s'!",tmp); free(tmp); free(input); cleanup(NCGfailed); }
+					if(colnum == -1) { fprintf(stderr,"Missing column '%s'!",tmp); free(tmp); free(input); cleanup(NCfailed); }
 				}
-			} else if(inFile.file == (FILE *) NULL) { fprintf(stderr,"No input file given!\n"); cleanup(NCGfailed);
+			} else if(inFile.file == (FILE *) NULL) { fprintf(stderr,"No input file given!\n"); cleanup(NCfailed);
 			} else
 			{
 				colnum = -1;
@@ -259,34 +259,34 @@ int main(int argc, char* argv[])
 					if(strcmp((inFile.row)[k],tmp) == 0)
 					{
 						if(colnum != -1)
-							{ fprintf(stderr,"Multiple matches for column '%s'!\n",tmp); free(tmp); free(input); cleanup(NCGfailed); }
+							{ fprintf(stderr,"Multiple matches for column '%s'!\n",tmp); free(tmp); free(input); cleanup(NCfailed); }
 						colnum = k;
 					}
 				if(colnum == -1)
 				{
-					if(!NCGstringUnStripch(&tmp,'"')) { free(tmp); free(input); cleanup(NCGfailed); }
+					if(!NCstringUnStripch(&tmp,'"')) { free(tmp); free(input); cleanup(NCfailed); }
 					for(k = 0; k < inFile.numCol; k++)
 						if(strcmp((inFile.row)[k],tmp) == 0)
 						{
 							if(colnum != -1)
-								{ fprintf(stderr,"Multiple matches for column '%s'!\n",tmp); free(tmp); free(input); cleanup(NCGfailed); }
+								{ fprintf(stderr,"Multiple matches for column '%s'!\n",tmp); free(tmp); free(input); cleanup(NCfailed); }
 							colnum = k;
 						}
-					if(colnum == -1) { fprintf(stderr,"Missing column '%s'!",tmp); free(tmp); free(input); cleanup(NCGfailed); }
+					if(colnum == -1) { fprintf(stderr,"Missing column '%s'!",tmp); free(tmp); free(input); cleanup(NCfailed); }
 				}
 			}
 			free(tmp);
 			if((name = malloc(sizeof(char) * 6)) == NULL)
-				{ perror("Memory Allocation error in: NCGtblCalculate ()\n"); cleanup(NCGfailed); }
+				{ perror("Memory Allocation error in: NCtblCalculate ()\n"); cleanup(NCfailed); }
 			strcpy(name,"VAR");
-			if((tmp = malloc(sizeof(char) * 3)) == NULL) { perror("Memory Allocation error in: NCGtblCalculate ()\n"); cleanup(NCGfailed); }
-			sprintf(tmp,"%.2d",NCGmathGetVarNum() + 1);
+			if((tmp = malloc(sizeof(char) * 3)) == NULL) { perror("Memory Allocation error in: NCtblCalculate ()\n"); cleanup(NCfailed); }
+			sprintf(tmp,"%.2d",NCmathGetVarNum() + 1);
 			tmp[2] = '\0';
 			strcat(name,tmp);
 			free(tmp);
 			name[5] = '\0';
-			NCGstringReplace(&input,i,j+1,name);
-			if(NCGmathAddVar(colnum,name,true) == NCGfailed) cleanup(NCGfailed);
+			NCstringReplace(&input,i,j+1,name);
+			if(NCmathAddVar(colnum,name,true) == NCfailed) cleanup(NCfailed);
 			free(name);
 			i = i + 6;
 		}
@@ -294,28 +294,28 @@ int main(int argc, char* argv[])
 	if(GetDebug())
 	{
 		fprintf(stderr,"echo: '%s' strlen=%d\n",input,strlen(input));
-		for(i = 0; i < NCGmathGetVarNum(); i++)
+		for(i = 0; i < NCmathGetVarNum(); i++)
 		{
-			if(NCGmathGetVarVary(i)) fprintf(stderr,"%s = colnum(%d)\n",NCGmathGetVarName(i),NCGmathGetVarColNum(i));
-			else fprintf(stderr,"%s = %f\n",NCGmathGetVarName(i),NCGmathGetVarVal(i));
+			if(NCmathGetVarVary(i)) fprintf(stderr,"%s = colnum(%d)\n",NCmathGetVarName(i),NCmathGetVarColNum(i));
+			else fprintf(stderr,"%s = %f\n",NCmathGetVarName(i),NCmathGetVarVal(i));
 		}
 	}
 
 	if(inFile.ncTYPE) {
-		if(isIneq(input,&i)) inFile.outCol = NCGtableAddField (inFile.tbl,fieldname,NC_BYTE);
-		else inFile.outCol = NCGtableAddField (inFile.tbl,fieldname,NC_DOUBLE);
+		if(isIneq(input,&i)) inFile.outCol = NCtableAddField (inFile.tbl,fieldname,NC_BYTE);
+		else inFile.outCol = NCtableAddField (inFile.tbl,fieldname,NC_DOUBLE);
 	} else if(inFile.file == (FILE *) NULL) fprintf(outFile,"\"%s\"\n",fieldname);
 	else fprintf(outFile,"%s\t\"%s\"\n",inFile.curRow,fieldname);
 	i = 0;
 	if(isIneq(input,&i))
 	{
 		iHead = mkTreeI(input);
-		NCGmathEqtnFixTreeI(iHead);
+		NCmathEqtnFixTreeI(iHead);
 		if(GetDebug()) { fprintf(stderr,"\nUsing equation: ("); printInorderI(iHead,stderr); fprintf(stderr,")\n"); }
 	} else
 	{
 		tHead = mkTree(input);
-		NCGmathEqtnFixTree(&tHead);
+		NCmathEqtnFixTree(&tHead);
 		if(GetDebug()) { fprintf(stderr,"\nUsing equation: ("); printInorder(tHead,stderr); fprintf(stderr,")\n"); }
 	}
 
@@ -324,22 +324,22 @@ int main(int argc, char* argv[])
 		if (inFile.tbl->NFields > 0)
 			for(i = 0; i < inFile.tbl->Fields [0].NRecords; i++)
 			{ 
-				for(j = 0; j < NCGmathGetVarNum(); j++)
-					if (NCGfieldGetFloat (inFile.tbl->Fields + NCGmathGetVarColNum(j),i,&output)) break;
-					else NCGmathSetVarVal(j,output);
+				for(j = 0; j < NCmathGetVarNum(); j++)
+					if (NCfieldGetFloat (inFile.tbl->Fields + NCmathGetVarColNum(j),i,&output)) break;
+					else NCmathSetVarVal(j,output);
 				if(iHead)
 				{
-						  if(j != NCGmathGetVarNum()) NCGfieldSetFill (inFile.outCol,i);
-						  else NCGfieldSetInt (inFile.outCol,i,(int) CalculateI(iHead));
+						  if(j != NCmathGetVarNum()) NCfieldSetFill (inFile.outCol,i);
+						  else NCfieldSetInt (inFile.outCol,i,(int) CalculateI(iHead));
 				}
 				else
 				{
-						  if(j != NCGmathGetVarNum()) NCGfieldSetFill (inFile.outCol,i);
-						  else NCGfieldSetFloat (inFile.outCol,i,Calculate(tHead));
+						  if(j != NCmathGetVarNum()) NCfieldSetFill (inFile.outCol,i);
+						  else NCfieldSetFloat (inFile.outCol,i,Calculate(tHead));
 				}
 			}
-		if(outFile == (FILE *) NULL) NCGtableCommit(inFile.ncid,inFile.tbl);
-		else NCGtableExportAscii(inFile.tbl,outFile);
+		if(outFile == (FILE *) NULL) NCtableCommit(inFile.ncid,inFile.tbl);
+		else NCtableExportAscii(inFile.tbl,outFile);
 	}
 	else if((inFile.ncTYPE == false) && (inFile.file == (FILE *) NULL))
 	{
@@ -347,7 +347,7 @@ int main(int argc, char* argv[])
 		else
 		{
 			output = Calculate(tHead);
-			if(NCGmathEqualValues(output,(double) ((int) output))) fprintf(outFile,"%d\n",(int) output);
+			if(NCmathEqualValues(output,(double) ((int) output))) fprintf(outFile,"%d\n",(int) output);
 			else fprintf(outFile,"%f\n",output);
 		}
 	}
@@ -360,17 +360,17 @@ int main(int argc, char* argv[])
 			free(inFile.curRow);
 			inFile.curRow = (char *) NULL;
 			if (getline(&(inFile.curRow),&i,inFile.file) == -1) break;
-//			if (inFile.curRow == (char *) NULL) { fprintf(stderr,"Unexpected end of file!"); cleanup(NCGfailed); }
+//			if (inFile.curRow == (char *) NULL) { fprintf(stderr,"Unexpected end of file!"); cleanup(NCfailed); }
 			else
 			{
 				i = strlen(inFile.curRow);
 				(inFile.curRow)[i - 1] = '\0';
 			}
-			inFile.numCol = NCGstringTokenize(inFile.curRow, &(inFile.row),'\t');
-			for(i = 0; i < NCGmathGetVarNum(); i++)
+			inFile.numCol = NCstringTokenize(inFile.curRow, &(inFile.row),'\t');
+			for(i = 0; i < NCmathGetVarNum(); i++)
 			{
-				if((inFile.row)[NCGmathGetVarColNum(i)] == (char *) NULL) NCGmathSetVarVal(i,FLOAT_NOVALUE);
-				else NCGmathSetVarVal(i,atof((inFile.row)[NCGmathGetVarColNum(i)]));
+				if((inFile.row)[NCmathGetVarColNum(i)] == (char *) NULL) NCmathSetVarVal(i,FLOAT_NOVALUE);
+				else NCmathSetVarVal(i,atof((inFile.row)[NCmathGetVarColNum(i)]));
 			}
 			if(iHead)
 			{
@@ -382,10 +382,10 @@ int main(int argc, char* argv[])
 			{
 				if(GetDebug()) { printInorder(tHead,stderr); fprintf(stderr," => "); }
 				output = Calculate(tHead);
-				if(NCGmathEqualValues(output,(double) ((int) output))) fprintf(outFile,"%s\t%d\n",inFile.curRow,(int) output);
+				if(NCmathEqualValues(output,(double) ((int) output))) fprintf(outFile,"%s\t%d\n",inFile.curRow,(int) output);
 				else fprintf(outFile,"%s\t%f\n",inFile.curRow,output);
 			}
 		}
 	}
-	cleanup(NCGsucceeded);
+	cleanup(NCsucceeded);
 }

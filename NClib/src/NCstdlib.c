@@ -1,11 +1,11 @@
 #include<NCstdlib.h>
 
-static bool _NCGdebug = false;
+static bool _NCdebug = false;
 
-void SetDebug() { _NCGdebug = true; }
-bool GetDebug() { return (_NCGdebug); }
+void SetDebug() { _NCdebug = true; }
+bool GetDebug() { return (_NCdebug); }
 
-#ifdef NCGDEBUG
+#ifdef NCDEBUG
 
 int _StartSize = -1;
 int _MaxSize = 0;

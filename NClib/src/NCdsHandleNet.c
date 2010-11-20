@@ -1,62 +1,62 @@
 #include<NCdsHandle.h>
 
-NCGstate NCGdsHandleNetworkDefine (NCGdsHandleNetwork_t *net, int ncid)
+NCstate NCdsHandleNetworkDefine (NCdsHandleNetwork_t *net, int ncid)
 {
 	int status;
-	if (NCGdataGetType (ncid) != NCGtypeNetwork) 
-	{ fprintf (stderr,"Invalid network in: NCGdsHandleNetworkDefine ()\n"); return (NCGfailed); }
+	if (NCdataGetType (ncid) != NCtypeNetwork) 
+	{ fprintf (stderr,"Invalid network in: NCdsHandleNetworkDefine ()\n"); return (NCfailed); }
 
-	if (NCGdsHandleGLayoutDefine ((NCGdsHandleGLayout_t *) net, &ncid, 1) == NCGfailed) return (NCGfailed);
+	if (NCdsHandleGLayoutDefine ((NCdsHandleGLayout_t *) net, &ncid, 1) == NCfailed) return (NCfailed);
 	
-	net->Data = (int *) NULL; net->Basins.Table = net->Cells.Table = (NCGtable_t *) NULL;
+	net->Data = (int *) NULL; net->Basins.Table = net->Cells.Table = (NCtable_t *) NULL;
 	if ((net->Data = (int *) calloc (net->ColNum * net->RowNum,sizeof (int))) == (int *) NULL)
 	{
-		perror ("Memory allocation error in: NCGdsHandleNetworkDefine ()");
-		NCGdsHandleNetworkClear (net);
-		return (NCGfailed);
+		perror ("Memory allocation error in: NCdsHandleNetworkDefine ()");
+		NCdsHandleNetworkClear (net);
+		return (NCfailed);
 	}
 	if ((status = nc_get_var_int (ncid,net->GVarIds [0],net->Data)) != NC_NOERR)
 	{
-		NCGprintNCError (status, "NCGdsHandleNetworkDefine");
-		NCGdsHandleNetworkClear (net);
-		return (NCGfailed);
+		NCprintNCError (status, "NCdsHandleNetworkDefine");
+		NCdsHandleNetworkClear (net);
+		return (NCfailed);
 	}
 
-	if ((net->Basins.Table = NCGtableOpen (ncid, NCGnameTBItems)) == (NCGtable_t *) NULL) { NCGdsHandleNetworkClear (net); return (NCGfailed); }
-	if ((net->Cells.Table  = NCGtableOpen (ncid, NCGnameTBCells)) == (NCGtable_t *) NULL) { NCGdsHandleNetworkClear (net); return (NCGfailed); }
+	if ((net->Basins.Table = NCtableOpen (ncid, NCnameTBItems)) == (NCtable_t *) NULL) { NCdsHandleNetworkClear (net); return (NCfailed); }
+	if ((net->Cells.Table  = NCtableOpen (ncid, NCnameTBCells)) == (NCtable_t *) NULL) { NCdsHandleNetworkClear (net); return (NCfailed); }
 
-	if (((net->Basins.NameFld    = NCGtableGetFieldByName (net->Basins.Table,NCGnameTBItems))     == (NCGfield_t *) NULL) ||
-	    ((net->Basins.RowFld     = NCGtableGetFieldByName (net->Basins.Table,NCGnameBSNRow))      == (NCGfield_t *) NULL) ||
-	    ((net->Basins.ColFld     = NCGtableGetFieldByName (net->Basins.Table,NCGnameBSNCol))      == (NCGfield_t *) NULL) ||
-	    ((net->Basins.OrderFld   = NCGtableGetFieldByName (net->Basins.Table,NCGnameBSNOrder))    == (NCGfield_t *) NULL) ||
-	    ((net->Basins.SymbolFld  = NCGtableGetFieldByName (net->Basins.Table,NCGnameBSNSymbol))   == (NCGfield_t *) NULL) ||
-	    ((net->Basins.LengthFld  = NCGtableGetFieldByName (net->Basins.Table,NCGnameBSNLength))   == (NCGfield_t *) NULL) ||
-	    ((net->Basins.AreaFld    = NCGtableGetFieldByName (net->Basins.Table,NCGnameBSNArea))     == (NCGfield_t *) NULL) ||
-	    ((net->Cells.RowFld      = NCGtableGetFieldByName (net->Cells.Table, NCGnameCLSRow))      == (NCGfield_t *) NULL) ||
-	    ((net->Cells.ColFld      = NCGtableGetFieldByName (net->Cells.Table, NCGnameCLSCol))      == (NCGfield_t *) NULL) ||
-	    ((net->Cells.ToCellFld   = NCGtableGetFieldByName (net->Cells.Table, NCGnameCLSToCell))   == (NCGfield_t *) NULL) ||
-	    ((net->Cells.FromCellFld = NCGtableGetFieldByName (net->Cells.Table, NCGnameCLSFromCell)) == (NCGfield_t *) NULL) ||
-	    ((net->Cells.BasinFld    = NCGtableGetFieldByName (net->Cells.Table, NCGnameCLSBasinId))  == (NCGfield_t *) NULL) ||
-	    ((net->Cells.NCellsFld   = NCGtableGetFieldByName (net->Cells.Table, NCGnameCLSNCells))   == (NCGfield_t *) NULL) ||
-	    ((net->Cells.TravelFld   = NCGtableGetFieldByName (net->Cells.Table, NCGnameCLSTravel))   == (NCGfield_t *) NULL) ||
-	    ((net->Cells.OrderFld    = NCGtableGetFieldByName (net->Cells.Table, NCGnameCLSOrder))    == (NCGfield_t *) NULL) ||
-	    ((net->Cells.LengthFld   = NCGtableGetFieldByName (net->Cells.Table, NCGnameCLSLength))   == (NCGfield_t *) NULL) ||
-	    ((net->Cells.AreaFld     = NCGtableGetFieldByName (net->Cells.Table, NCGnameCLSArea))     == (NCGfield_t *) NULL))
+	if (((net->Basins.NameFld    = NCtableGetFieldByName (net->Basins.Table,NCnameTBItems))     == (NCfield_t *) NULL) ||
+	    ((net->Basins.RowFld     = NCtableGetFieldByName (net->Basins.Table,NCnameBSNRow))      == (NCfield_t *) NULL) ||
+	    ((net->Basins.ColFld     = NCtableGetFieldByName (net->Basins.Table,NCnameBSNCol))      == (NCfield_t *) NULL) ||
+	    ((net->Basins.OrderFld   = NCtableGetFieldByName (net->Basins.Table,NCnameBSNOrder))    == (NCfield_t *) NULL) ||
+	    ((net->Basins.SymbolFld  = NCtableGetFieldByName (net->Basins.Table,NCnameBSNSymbol))   == (NCfield_t *) NULL) ||
+	    ((net->Basins.LengthFld  = NCtableGetFieldByName (net->Basins.Table,NCnameBSNLength))   == (NCfield_t *) NULL) ||
+	    ((net->Basins.AreaFld    = NCtableGetFieldByName (net->Basins.Table,NCnameBSNArea))     == (NCfield_t *) NULL) ||
+	    ((net->Cells.RowFld      = NCtableGetFieldByName (net->Cells.Table, NCnameCLSRow))      == (NCfield_t *) NULL) ||
+	    ((net->Cells.ColFld      = NCtableGetFieldByName (net->Cells.Table, NCnameCLSCol))      == (NCfield_t *) NULL) ||
+	    ((net->Cells.ToCellFld   = NCtableGetFieldByName (net->Cells.Table, NCnameCLSToCell))   == (NCfield_t *) NULL) ||
+	    ((net->Cells.FromCellFld = NCtableGetFieldByName (net->Cells.Table, NCnameCLSFromCell)) == (NCfield_t *) NULL) ||
+	    ((net->Cells.BasinFld    = NCtableGetFieldByName (net->Cells.Table, NCnameCLSBasinId))  == (NCfield_t *) NULL) ||
+	    ((net->Cells.NCellsFld   = NCtableGetFieldByName (net->Cells.Table, NCnameCLSNCells))   == (NCfield_t *) NULL) ||
+	    ((net->Cells.TravelFld   = NCtableGetFieldByName (net->Cells.Table, NCnameCLSTravel))   == (NCfield_t *) NULL) ||
+	    ((net->Cells.OrderFld    = NCtableGetFieldByName (net->Cells.Table, NCnameCLSOrder))    == (NCfield_t *) NULL) ||
+	    ((net->Cells.LengthFld   = NCtableGetFieldByName (net->Cells.Table, NCnameCLSLength))   == (NCfield_t *) NULL) ||
+	    ((net->Cells.AreaFld     = NCtableGetFieldByName (net->Cells.Table, NCnameCLSArea))     == (NCfield_t *) NULL))
 	{
-		fprintf (stderr,"Corrupt networkd data in: NCGdsHandleNetworkDefine ()\n");
-		NCGdsHandleNetworkClear (net);
-		return (NCGfailed);
+		fprintf (stderr,"Corrupt networkd data in: NCdsHandleNetworkDefine ()\n");
+		NCdsHandleNetworkClear (net);
+		return (NCfailed);
 	}
-	return (NCGsucceeded);
+	return (NCsucceeded);
 }
 
-void NCGdsHandleNetworkClear (NCGdsHandleNetwork_t *net)
+void NCdsHandleNetworkClear (NCdsHandleNetwork_t *net)
 {
-	NCGdsHandleGLayoutClear ((NCGdsHandleGLayout_t *) net);
+	NCdsHandleGLayoutClear ((NCdsHandleGLayout_t *) net);
 
 	if (net->Data != (int *) NULL) free (net->Data);
-	if (net->Basins.Table != (NCGtable_t *) NULL) NCGtableClose (net->Basins.Table);
-	if (net->Cells.Table  != (NCGtable_t *) NULL) NCGtableClose (net->Cells.Table);
+	if (net->Basins.Table != (NCtable_t *) NULL) NCtableClose (net->Basins.Table);
+	if (net->Cells.Table  != (NCtable_t *) NULL) NCtableClose (net->Cells.Table);
 }
 
 

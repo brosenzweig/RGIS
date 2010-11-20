@@ -68,22 +68,22 @@ extern int _VarNum;
 bool isIneq(char [], int *); // returns true if the given equation has an inequality, and sets
                              // int to it's location. If your equation has an inequality, you
                              // must use the functions with an 'I' at the end.
-int NCGmathGetVarNum();
-int NCGmathAddVar(int colnum, char *name, bool vary);
-int NCGmathGetVarColNum(int varID);
-void NCGmathSetVarVal(int varID, double value);
-double NCGmathGetVarVal(int varID);
-bool NCGmathGetVarVary(int varID);
-char *NCGmathGetVarName(int varID);
-void NCGmathFreeVars();
+int NCmathGetVarNum();
+int NCmathAddVar(int colnum, char *name, bool vary);
+int NCmathGetVarColNum(int varID);
+void NCmathSetVarVal(int varID, double value);
+double NCmathGetVarVal(int varID);
+bool NCmathGetVarVary(int varID);
+char *NCmathGetVarName(int varID);
+void NCmathFreeVars();
 void setLisp(); // Enable extra parentheses while using printInorder() or printInorderI()
 void unsetLisp();
 TreeNode_t* mkTree(char []);
 IneqNode_t* mkTreeI(char []);
 void printInorder(TreeNode_t *,FILE *);
 void printInorderI(IneqNode_t *, FILE *);
-void NCGmathEqtnFixTree(TreeNode_t **); // simplifies the equation the best it can
-void NCGmathEqtnFixTreeI(IneqNode_t *); // simplifies the expression the best it can
+void NCmathEqtnFixTree(TreeNode_t **); // simplifies the equation the best it can
+void NCmathEqtnFixTreeI(IneqNode_t *); // simplifies the expression the best it can
 double Calculate(TreeNode_t *);
 bool   CalculateI(IneqNode_t *);
 void delTree(TreeNode_t *);

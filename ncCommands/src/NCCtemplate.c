@@ -1,4 +1,4 @@
-#include <NC.h> // or use NCGmath.h if math libraries needed
+#include <NC.h> // or use NCmath.h if math libraries needed
 
 void do_help(char *progName,bool extend)
 {
@@ -25,20 +25,20 @@ int main(int argc, char* argv[])
 
 	initMemInfo();
 	for(argPos = 1; argPos < argNum;) {
-		if (NCGcmArgTest(argv[argPos],"-d","--debug")) { SetDebug(); NCGcmArgShiftLeft(argPos,argv,argc); argNum--; continue; }
-		if (NCGcmArgTest(argv[argPos],"-h","--help")) {
-			if(argv[argPos+1][0] == 'e') do_help(NCGcmProgName(argv[0]),true); else do_help(NCGcmProgName(argv[0]),false);
-			cleanup(NCGsucceeded);
+		if (NCcmArgTest(argv[argPos],"-d","--debug")) { SetDebug(); NCcmArgShiftLeft(argPos,argv,argc); argNum--; continue; }
+		if (NCcmArgTest(argv[argPos],"-h","--help")) {
+			if(argv[argPos+1][0] == 'e') do_help(NCcmProgName(argv[0]),true); else do_help(NCcmProgName(argv[0]),false);
+			cleanup(NCsucceeded);
 		}
-		if (NCGcmArgTest(argv[argPos],"- ","-- "))
+		if (NCcmArgTest(argv[argPos],"- ","-- "))
 		{
-			NCGcmArgShiftLeft(argPos,argv,argc); argNum--;
+			NCcmArgShiftLeft(argPos,argv,argc); argNum--;
 			continue;
 		}
 		if ((argv[argPos][0] == '-') && (strlen (argv[argPos]) > 1))
-			{ fprintf(stderr,"Unknown option: %s!\n",argv[argPos]); cleanup(NCGfailed); }
+			{ fprintf(stderr,"Unknown option: %s!\n",argv[argPos]); cleanup(NCfailed); }
 		argPos++;
 	}
 
-	cleanup(NCGsucceeded);
+	cleanup(NCsucceeded);
 }

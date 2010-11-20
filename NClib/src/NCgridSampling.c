@@ -1,60 +1,60 @@
 #include<NCdsHandle.h>
 
-int NCGGridGetPointVector (NCGdsHandleGCont_t *gCont, NCGreference_t *ref,double *vector)
+int NCGridGetPointVector (NCdsHandleGCont_t *gCont, NCreference_t *ref,double *vector)
 {
-	return (NCGsucceeded);
+	return (NCsucceeded);
 }
 
 /*
-NCGObjTable_t *NCGGridContPointSampling (NCGObjData_t *objGrid, NCGObjData_t *objPoint, NCGtableLayout layout)
+NCObjTable_t *NCGridContPointSampling (NCObjData_t *objGrid, NCObjData_t *objPoint, NCtableLayout layout)
 {
 	int i;
-	NCGdsHandleGCont_t    *gCont;
-	NCGdsHandleVPoint_t *point;
-	NCGObjTable_t *result = (NCGObjTable_t *) NULL;
-	NCGReference_t *refs;
-	NCGCoordinate_t coord;
+	NCdsHandleGCont_t    *gCont;
+	NCdsHandleVPoint_t *point;
+	NCObjTable_t *result = (NCObjTable_t *) NULL;
+	NCReference_t *refs;
+	NCCoordinate_t coord;
 
-	if ((gCont = NCGdsHandleGContCreate    (objGrid))  == (NCGdsHandleGCont_t *)    NULL) return (NCGObjTable_t *) NULL;
-	if ((point = NCGdsHandleVPointCreate (objPoint)) == (NCGdsHandleVPoint_t *) NULL) return (NCGObjTable_t *) NULL;
+	if ((gCont = NCdsHandleGContCreate    (objGrid))  == (NCdsHandleGCont_t *)    NULL) return (NCObjTable_t *) NULL;
+	if ((point = NCdsHandleVPointCreate (objPoint)) == (NCdsHandleVPoint_t *) NULL) return (NCObjTable_t *) NULL;
 
-	refs = (NCGReference_t *) calloc (point->Vector.ItemNum,sizeof (NCGReference_t *));
-	if (refs == (NCGReference_t *) NULL)
+	refs = (NCReference_t *) calloc (point->Vector.ItemNum,sizeof (NCReference_t *));
+	if (refs == (NCReference_t *) NULL)
 	{
-		perror ("Memory allocation error in: NCGGridPointSampling ()");
-		return (NCGObjTable_t *) NULL;
+		perror ("Memory allocation error in: NCGridPointSampling ()");
+		return (NCObjTable_t *) NULL;
 	}
-	for (i = 0;i < point->Vector.ItemNum;i++) NCGReferenceInitialize (refs + i);
+	for (i = 0;i < point->Vector.ItemNum;i++) NCReferenceInitialize (refs + i);
 	for (i = 0;i < point->Vector.ItemNum;i++)
 	{
 		coord.X = point->XCoords [i];
 		coord.Y = point->YCoords [i];
-		if (NCGdsHandleGContReference (gCont,&coord,refs + i) == NCGfailed)
+		if (NCdsHandleGContReference (gCont,&coord,refs + i) == NCfailed)
 		{
-			for (i = i - 1;i >= 0;i--) NCGReferenceClear (refs + i);
-			return (NCGObjTable_t *) NULL;
+			for (i = i - 1;i >= 0;i--) NCReferenceClear (refs + i);
+			return (NCObjTable_t *) NULL;
 		}
 	}
-	NCGdsHandleGContFree    (gCont);
-	NCGdsHandleVPointFree (point);
+	NCdsHandleGContFree    (gCont);
+	NCdsHandleVPointFree (point);
 	return (result);
 }
 */
 
-NCGstate NCGGridContSampling (int inNC, int outNC)
+NCstate NCGridContSampling (int inNC, int outNC)
 {
 	size_t tStep, level, row, col, refNum = 0, ref;
 	double val;
-	NCGcoordinate_t coord;
-	NCGdsHandleGCont_t *inGrid = (NCGdsHandleGCont_t *) NULL, *outGrid = (NCGdsHandleGCont_t *) NULL;
-	NCGreference_t *gRefs = (NCGreference_t *) NULL;
+	NCcoordinate_t coord;
+	NCdsHandleGCont_t *inGrid = (NCdsHandleGCont_t *) NULL, *outGrid = (NCdsHandleGCont_t *) NULL;
+	NCreference_t *gRefs = (NCreference_t *) NULL;
 
-	if (((inGrid  = (NCGdsHandleGCont_t *) NCGdsHandleOpenById (inNC))  == (NCGdsHandleGCont_t *) NULL) ||
-	    ((outGrid = (NCGdsHandleGCont_t *) NCGdsHandleOpenById (outNC)) == (NCGdsHandleGCont_t *) NULL)) goto ABORT;
+	if (((inGrid  = (NCdsHandleGCont_t *) NCdsHandleOpenById (inNC))  == (NCdsHandleGCont_t *) NULL) ||
+	    ((outGrid = (NCdsHandleGCont_t *) NCdsHandleOpenById (outNC)) == (NCdsHandleGCont_t *) NULL)) goto ABORT;
 
-	gRefs = (NCGreference_t *) calloc (outGrid->RowNum * outGrid->ColNum, sizeof (NCGreference_t));
-	if (gRefs == (NCGreference_t *) NULL)
-	{ perror ("Memory allocation error in: NCGGridSampling ()"); goto ABORT; }
+	gRefs = (NCreference_t *) calloc (outGrid->RowNum * outGrid->ColNum, sizeof (NCreference_t));
+	if (gRefs == (NCreference_t *) NULL)
+	{ perror ("Memory allocation error in: NCGridSampling ()"); goto ABORT; }
 
 	for (row = 0;row < outGrid->RowNum;row++)
 	{
@@ -63,16 +63,16 @@ NCGstate NCGGridContSampling (int inNC, int outNC)
 		{
 			coord.X = outGrid->XCoords [col];
 			refNum = row * outGrid->ColNum + col;
-			if (NCGdsHandleGContReference (inGrid,&coord, gRefs + refNum) == NCGfailed) goto ABORT;
+			if (NCdsHandleGContReference (inGrid,&coord, gRefs + refNum) == NCfailed) goto ABORT;
 		}
 	}
 	if ((outGrid->TNum < inGrid->TNum) && ((outGrid->Times = (double *) realloc (outGrid->Times,inGrid->TNum * sizeof (double))) == (double *) NULL))
-	{ perror ("Memory allocation error in: NCGGridSampling ()"); goto ABORT; }
+	{ perror ("Memory allocation error in: NCGridSampling ()"); goto ABORT; }
 
 	outGrid->TNum = inGrid->TNum;
 	if (((outGrid->NCindex  = (size_t *) realloc (outGrid->NCindex,  outGrid->TNum * sizeof (size_t))) == (size_t *) NULL) ||
 	    ((outGrid->NCoffset = (size_t *) realloc (outGrid->NCoffset, outGrid->TNum * sizeof (size_t))) == (size_t *) NULL))
-	{ perror ("Memory allocation error in: NCGGridSampling ()"); goto ABORT; }
+	{ perror ("Memory allocation error in: NCGridSampling ()"); goto ABORT; }
 	for (tStep = 0;tStep < inGrid->TNum; tStep++)
 		outGrid->NCindex [tStep] = outGrid->NCoffset [tStep] = 0;
 
@@ -82,28 +82,28 @@ NCGstate NCGGridContSampling (int inNC, int outNC)
 		for (level = 0;level < inGrid->LNum;level++)
 		{
 			if (outGrid->Levels != (double *) NULL) outGrid->Levels [level] = inGrid->Levels [level];
-			if (NCGdsHandleGContLoadCache (inGrid, tStep, 1, level, 1) == NCGfailed) goto ABORT;
+			if (NCdsHandleGContLoadCache (inGrid, tStep, 1, level, 1) == NCfailed) goto ABORT;
 
 			for (row = 0;row < outGrid->RowNum;row++)
 				for (col = 0;col < outGrid->ColNum;col++)
 				{
 				ref = row * outGrid->ColNum + col;
-				if (NCGdsHandleGContGetFloat  (inGrid,  gRefs + ref, &val))
-					  NCGdsHandleGContSetFloat (outGrid, row, col, val);
-				else NCGdsHandleGContSetFill  (outGrid, row, col);
+				if (NCdsHandleGContGetFloat  (inGrid,  gRefs + ref, &val))
+					  NCdsHandleGContSetFloat (outGrid, row, col, val);
+				else NCdsHandleGContSetFill  (outGrid, row, col);
 				}
-			if (NCGdsHandleGContSaveCache (outGrid, tStep, level) == NCGfailed) goto ABORT;
+			if (NCdsHandleGContSaveCache (outGrid, tStep, level) == NCfailed) goto ABORT;
 		}
 	}
-	for (ref = 0;ref < refNum;ref++) NCGreferenceClear (gRefs + ref);
+	for (ref = 0;ref < refNum;ref++) NCreferenceClear (gRefs + ref);
 	free (gRefs);
-	NCGdsHandleClose ((NCGdsHandle_t *) inGrid);
-	NCGdsHandleClose ((NCGdsHandle_t *) outGrid);
-	return (NCGsucceeded);
+	NCdsHandleClose ((NCdsHandle_t *) inGrid);
+	NCdsHandleClose ((NCdsHandle_t *) outGrid);
+	return (NCsucceeded);
 ABORT:
-	for (ref = 0;ref < refNum;ref++) NCGreferenceClear (gRefs + ref);
+	for (ref = 0;ref < refNum;ref++) NCreferenceClear (gRefs + ref);
 	free (gRefs);
-	NCGdsHandleClose ((NCGdsHandle_t *) inGrid);
-	NCGdsHandleClose ((NCGdsHandle_t *) outGrid);
-	return (NCGsucceeded);
+	NCdsHandleClose ((NCdsHandle_t *) inGrid);
+	NCdsHandleClose ((NCdsHandle_t *) outGrid);
+	return (NCsucceeded);
 }

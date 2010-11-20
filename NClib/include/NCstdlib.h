@@ -1,5 +1,5 @@
-#ifndef _NCGSTDLIB_H
-#define _NCGSTDLIB_H
+#ifndef _NCSTDLIB_H
+#define _NCSTDLIB_H
 
 #include<stdlib.h>
 #include<NCcore.h>
@@ -11,7 +11,7 @@ extern "C" {
 void SetDebug();
 bool GetDebug();
 
-	#ifdef NCGDEBUG
+	#ifdef NCDEBUG
 	#include<malloc.h>
 		extern int _StartSize;
 		extern int _MaxSize;

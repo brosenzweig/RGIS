@@ -1,5 +1,5 @@
-#ifndef _NCGtime_H
-#define _NCGtime_H
+#ifndef _NCtime_H
+#define _NCtime_H
 
 #include<NC.h>
 
@@ -9,22 +9,22 @@ extern "C" {
 
 #include<udunits.h>
 
-typedef enum { NCGtimeYear   = 0,
-					NCGtimeMonth  = 1,
-					NCGtimeDay    = 2,
-					NCGtimeHour   = 3,
-	            NCGtimeMinute = 4,
-					NCGtimeSecond = 5 } NCGtimeStep;
+typedef enum { NCtimeYear   = 0,
+					NCtimeMonth  = 1,
+					NCtimeDay    = 2,
+					NCtimeHour   = 3,
+	            NCtimeMinute = 4,
+					NCtimeSecond = 5 } NCtimeStep;
 
-bool     NCGtimeLeapYear    (int);
-size_t   NCGtimeMonthLength (int, size_t);
-size_t   NCGtimeDayOfYear   (int, size_t, size_t);
-NCGstate NCGtimeParse (const char *, NCGtimeStep, utUnit *, double *);
-NCGstate NCGtimePrint (NCGtimeStep, utUnit *, double, char *);
-const char *NCGtimeStepString (NCGtimeStep);
+bool     NCtimeLeapYear    (int);
+size_t   NCtimeMonthLength (int, size_t);
+size_t   NCtimeDayOfYear   (int, size_t, size_t);
+NCstate NCtimeParse (const char *, NCtimeStep, utUnit *, double *);
+NCstate NCtimePrint (NCtimeStep, utUnit *, double, char *);
+const char *NCtimeStepString (NCtimeStep);
 
 #if defined(__cplusplus)
 }
 #endif
 
-#endif /* _NCGtime_H */
+#endif /* _NCtime_H */
