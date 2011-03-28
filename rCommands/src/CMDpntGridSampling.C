@@ -86,7 +86,7 @@ int main (int argc,char *argv [])
 		if (CMargTest (argv [argPos],"-h","--help"))
 			{
 			CMmsgPrint (CMmsgInfo,"%s [options] <input grid> <output table>\n",CMprgName(argv[0]));
-			CMmsgPrint (CMmsgInfo,"     -s,--sample    [sampling network or grid]\n");
+			CMmsgPrint (CMmsgInfo,"     -s,--sample    [sampling points or network]\n");
 			CMmsgPrint (CMmsgInfo,"     -m,--mode      [table|attrib]\n");
 			CMmsgPrint (CMmsgInfo,"     -t,--title     [dataset title]\n");
 			CMmsgPrint (CMmsgInfo,"     -u,--subject   [subject]\n");
