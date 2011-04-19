@@ -33,14 +33,15 @@ UTILS = $(BIN)/dsAggregate\
         $(BIN)/grdCellStats\
         $(BIN)/grdCreateNetwork\
         $(BIN)/grdDifference\
+        $(BIN)/grdImport\
+        $(BIN)/grdMerge\
+        $(BIN)/grdMinMax\
         $(BIN)/grdReclassDisc\
         $(BIN)/grdRunningMean\
-        $(BIN)/grdTimeSeries\
-        $(BIN)/grdTSAggr\
         $(BIN)/grdSeasonAggr\
         $(BIN)/grdSeasonMean\
-        $(BIN)/grdMinMax\
-        $(BIN)/grdImport\
+        $(BIN)/grdTimeSeries\
+        $(BIN)/grdTSAggr\
         $(BIN)/netAccumulate\
         $(BIN)/netUnaccumulate\
         $(BIN)/netInvAccum\
