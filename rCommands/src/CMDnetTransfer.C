@@ -13,7 +13,7 @@ wil.wollheim@unh.edu
 
 #include <cm.h>
 #include <DB.H>
-#include <DBio.H>
+#include <DBif.H>
 #include <RG.H>
 
 /*char *_CMDWhat = GHAASVersion;*/
@@ -33,92 +33,92 @@ int _CMDnetTransfer (DBObjData *netData,
 	DBInt ret = DBSuccess, layerID, cellID, progress, maxProgress;
 	DBFloat inValue, weight, outValue, *sumWeights, kCoeff, q, hl, Conc, Uptake, Vf;
 	DBPosition pos;
-	DBNetworkIO *netIO = new DBNetworkIO (netData);
-	DBGridIO *inIO  = new DBGridIO (inData);
-	DBGridIO *outIO = new DBGridIO (outData);
-	DBGridIO *weightIO = weightData != (DBObjData *) NULL ? new DBGridIO (weightData) : (DBGridIO *) NULL;
-	DBGridIO *coeffIO = coeffData != (DBObjData *) NULL ? new DBGridIO (coeffData) : (DBGridIO *) NULL;
-	DBGridIO *Q_IO = QData != (DBObjData *) NULL ? new DBGridIO (QData) : (DBGridIO *) NULL;
-	DBGridIO *HL_IO = HLData != (DBObjData *) NULL ? new DBGridIO (HLData) : (DBGridIO *) NULL;
+	DBNetworkIF *netIF = new DBNetworkIF (netData);
+	DBGridIF *inIF  = new DBGridIF (inData);
+	DBGridIF *outIF = new DBGridIF (outData);
+	DBGridIF *weightIF = weightData != (DBObjData *) NULL ? new DBGridIF (weightData) : (DBGridIF *) NULL;
+	DBGridIF *coeffIF = coeffData != (DBObjData *) NULL ? new DBGridIF (coeffData) : (DBGridIF *) NULL;
+	DBGridIF *Q_IF = QData != (DBObjData *) NULL ? new DBGridIF (QData) : (DBGridIF *) NULL;
+	DBGridIF *HL_IF = HLData != (DBObjData *) NULL ? new DBGridIF (HLData) : (DBGridIF *) NULL;
 	DBObjRecord *inLayerRec, *outLayerRec, *weightLayerRec, *coeffLayerRec, *Q_LayerRec, *HL_LayerRec, *cellRec, *toCell;
 	DBCoordinate coord;
 
 
-	if ((sumWeights = (DBFloat *) calloc (netIO->CellNum (),sizeof (DBFloat))) == (DBFloat *) NULL)
+	if ((sumWeights = (DBFloat *) calloc (netIF->CellNum (),sizeof (DBFloat))) == (DBFloat *) NULL)
 		{ perror ("Memory allocation error in:_CMDnetTransfer ()"); ret = DBFault; goto Stop; }
 
 	layerID = 0;
-	inLayerRec = inIO->Layer (layerID);
+	inLayerRec = inIF->Layer (layerID);
 
-	outLayerRec = outIO->Layer (layerID);
-	outIO->RenameLayer (outLayerRec,inLayerRec->Name ());
-	outValue = outIO->MissingValue (outLayerRec);
-	for (pos.Row = 0;pos.Row < outIO->RowNum ();pos.Row++)
-		for (pos.Col = 0;pos.Col < outIO->ColNum ();pos.Col++) outIO->Value (outLayerRec,pos,outValue);
+	outLayerRec = outIF->Layer (layerID);
+	outIF->RenameLayer (outLayerRec,inLayerRec->Name ());
+	outValue = outIF->MissingValue (outLayerRec);
+	for (pos.Row = 0;pos.Row < outIF->RowNum ();pos.Row++)
+		for (pos.Col = 0;pos.Col < outIF->ColNum ();pos.Col++) outIF->Value (outLayerRec,pos,outValue);
 
-	for (layerID = 1;layerID < inIO->LayerNum ();++layerID)
+	for (layerID = 1;layerID < inIF->LayerNum ();++layerID)
 		{
-		inLayerRec = inIO->Layer (layerID);
-		if ((outLayerRec = outIO->AddLayer (inLayerRec->Name ())) == (DBObjRecord *) NULL)
+		inLayerRec = inIF->Layer (layerID);
+		if ((outLayerRec = outIF->AddLayer (inLayerRec->Name ())) == (DBObjRecord *) NULL)
 			{ ret = DBFault; goto Stop; }
-		for (pos.Row = 0;pos.Row < outIO->RowNum ();pos.Row++)
-			for (pos.Col = 0;pos.Col < outIO->ColNum ();pos.Col++) outIO->Value (outLayerRec,pos,outValue);
+		for (pos.Row = 0;pos.Row < outIF->RowNum ();pos.Row++)
+			for (pos.Col = 0;pos.Col < outIF->ColNum ();pos.Col++) outIF->Value (outLayerRec,pos,outValue);
 		}
-	maxProgress = inIO->LayerNum () * netIO->CellNum ();
-	for (layerID = 0;layerID < inIO->LayerNum ();++layerID)
+	maxProgress = inIF->LayerNum () * netIF->CellNum ();
+	for (layerID = 0;layerID < inIF->LayerNum ();++layerID)
 		{
-		inLayerRec  = inIO->Layer  (layerID);
-		outLayerRec = outIO->Layer (layerID);
-		if (weightIO != (DBGridIO *) NULL)
-			weightLayerRec = weightIO->Layer (layerID % weightIO->LayerNum ());
-		if (coeffIO != (DBGridIO *) NULL)
-			coeffLayerRec = coeffIO->Layer (layerID % coeffIO->LayerNum ());
-		if (Q_IO != (DBGridIO *) NULL)
-			Q_LayerRec = Q_IO->Layer (layerID % Q_IO->LayerNum ());
-		if (HL_IO != (DBGridIO *) NULL)
-			HL_LayerRec = HL_IO->Layer (layerID % HL_IO->LayerNum ());
+		inLayerRec  = inIF->Layer  (layerID);
+		outLayerRec = outIF->Layer (layerID);
+		if (weightIF != (DBGridIF *) NULL)
+			weightLayerRec = weightIF->Layer (layerID % weightIF->LayerNum ());
+		if (coeffIF != (DBGridIF *) NULL)
+			coeffLayerRec = coeffIF->Layer (layerID % coeffIF->LayerNum ());
+		if (Q_IF != (DBGridIF *) NULL)
+			Q_LayerRec = Q_IF->Layer (layerID % Q_IF->LayerNum ());
+		if (HL_IF != (DBGridIF *) NULL)
+			HL_LayerRec = HL_IF->Layer (layerID % HL_IF->LayerNum ());
 
-		for (cellID = 0;cellID < netIO->CellNum ();cellID++)
+		for (cellID = 0;cellID < netIF->CellNum ();cellID++)
 			{
 			sumWeights [cellID] = 0.0;
-			cellRec = netIO->Cell (cellID);
-			coord = netIO->Center (cellRec);
-			if (inIO->Value  (inLayerRec,coord, &inValue) == false)
-				outIO->Value (outLayerRec,netIO->CellPosition (cellRec),0.0);
+			cellRec = netIF->Cell (cellID);
+			coord = netIF->Center (cellRec);
+			if (inIF->Value  (inLayerRec,coord, &inValue) == false)
+				outIF->Value (outLayerRec,netIF->CellPosition (cellRec),0.0);
 			else
 				{
-				if (weightIO != (DBGridIO *) NULL)
-					weight = weightIO->Value (weightLayerRec,coord,&weight) == false ?
+				if (weightIF != (DBGridIF *) NULL)
+					weight = weightIF->Value (weightLayerRec,coord,&weight) == false ?
 								0.0 : weight * coeff;
 				else weight = coeff;
 
-				if (areaMult)	weight = weight * netIO->CellArea (cellRec);
+				if (areaMult)	weight = weight * netIF->CellArea (cellRec);
 				sumWeights [cellID] = weight;
-				outIO->Value (outLayerRec,netIO->CellPosition (cellRec),inValue * weight);
+				outIF->Value (outLayerRec,netIF->CellPosition (cellRec),inValue * weight);
 				}
 			}
 
-		for (cellID = netIO->CellNum () - 1;cellID >= 0;--cellID)
+		for (cellID = netIF->CellNum () - 1;cellID >= 0;--cellID)
 			{
-			progress = layerID * netIO->CellNum () + (netIO->CellNum () - cellID);
+			progress = layerID * netIF->CellNum () + (netIF->CellNum () - cellID);
 			if (DBPause (progress * 100 / maxProgress)) goto Stop;
-			cellRec = netIO->Cell (cellID);
-			coord = netIO->Center (cellRec);
-			if ((toCell = netIO->ToCell (cellRec)) == (DBObjRecord *) NULL) continue;
-			if (outIO->Value (outLayerRec,netIO->CellPosition (cellRec),&inValue)  == false) continue;
-			if (outIO->Value (outLayerRec,netIO->CellPosition (toCell),&outValue) == false) continue;
+			cellRec = netIF->Cell (cellID);
+			coord = netIF->Center (cellRec);
+			if ((toCell = netIF->ToCell (cellRec)) == (DBObjRecord *) NULL) continue;
+			if (outIF->Value (outLayerRec,netIF->CellPosition (cellRec),&inValue)  == false) continue;
+			if (outIF->Value (outLayerRec,netIF->CellPosition (toCell),&outValue) == false) continue;
 
 			sumWeights [toCell->RowID ()] = sumWeights [toCell->RowID ()] + weight;
 
 
-			if (coeffIO != (DBGridIO *) NULL)
+			if (coeffIF != (DBGridIF *) NULL)
 				{
-				if (coeffIO->Value (coeffLayerRec,netIO->Center (cellRec),&kCoeff) == false) kCoeff = 1.0;
+				if (coeffIF->Value (coeffLayerRec,netIF->Center (cellRec),&kCoeff) == false) kCoeff = 1.0;
 				}
 			else
 				{
-				if ( ((Q_IO == (DBGridIO *) NULL) || (Q_IO->Value (Q_LayerRec,netIO->Center (cellRec),&q) == false)) ||
-				     ((HL_IO == (DBGridIO *) NULL) || (HL_IO->Value (HL_LayerRec,netIO->Center (cellRec),&hl) == false)) ||
+				if ( ((Q_IF == (DBGridIF *) NULL) || (Q_IF->Value (Q_LayerRec,netIF->Center (cellRec),&q) == false)) ||
+				     ((HL_IF == (DBGridIF *) NULL) || (HL_IF->Value (HL_LayerRec,netIF->Center (cellRec),&hl) == false)) ||
 					  (umax == 0) || (ksat == 0) )	kCoeff = 1.0;
 				else {
 							if ((q > 0) && (hl > 0))
@@ -145,15 +145,15 @@ int _CMDnetTransfer (DBObjData *netData,
 			*/
 			inValue = kCoeff * inValue;
 
-			outIO->Value (outLayerRec,netIO->CellPosition (toCell),outValue + inValue);
+			outIF->Value (outLayerRec,netIF->CellPosition (toCell),outValue + inValue);
 			}
-		outIO->RecalcStats (outLayerRec);
+		outIF->RecalcStats (outLayerRec);
 		}
 
 	free (sumWeights);
 Stop:
-	delete netIO; delete inIO; delete outIO;
-	if (weightIO != (DBGridIO *) NULL) delete weightIO;
+	delete netIF; delete inIF; delete outIF;
+	if (weightIF != (DBGridIF *) NULL) delete weightIF;
 	return (ret);
 
 	return (DBSuccess);

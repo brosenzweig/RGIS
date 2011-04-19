@@ -11,29 +11,29 @@ balazs.fekete@unh.edu
 *******************************************************************************/
 
 #include <DB.H>
-#include <DBio.H>
+#include <DBif.H>
 
-DBVPointIO	*_DBPntIO;
-DBNetworkIO *_DBNetIO;
-DBGridIO 	*_DBGrdIO;
+DBVPointIF	*_DBPntIF;
+DBNetworkIF *_DBNetIF;
+DBGridIF 	*_DBGrdIF;
 
 static DBInt _DBPointSort (const void *obj0,const void *obj1)
 
 	{
-	DBObjRecord *cellRec0 = _DBNetIO->Cell (_DBPntIO->Coordinate (((DBObjRecord **) obj0) [0]));
-	DBObjRecord *cellRec1 = _DBNetIO->Cell (_DBPntIO->Coordinate (((DBObjRecord **) obj1) [0]));
+	DBObjRecord *cellRec0 = _DBNetIF->Cell (_DBPntIF->Coordinate (((DBObjRecord **) obj0) [0]));
+	DBObjRecord *cellRec1 = _DBNetIF->Cell (_DBPntIF->Coordinate (((DBObjRecord **) obj1) [0]));
 
 	if (cellRec0 == cellRec1) return (0);
-	if (_DBNetIO->CellBasinArea (cellRec0) > _DBNetIO->CellBasinArea (cellRec1)) return  (1);
-	if (_DBNetIO->CellBasinArea (cellRec0) < _DBNetIO->CellBasinArea (cellRec1)) return (-1);
+	if (_DBNetIF->CellBasinArea (cellRec0) > _DBNetIF->CellBasinArea (cellRec1)) return  (1);
+	if (_DBNetIF->CellBasinArea (cellRec0) < _DBNetIF->CellBasinArea (cellRec1)) return (-1);
 	return (0);
 	}
 
 
-static DBInt DBPointUpStreamAction (DBNetworkIO *netIO,DBObjRecord *cellRec,DBInt pntID)
+static DBInt DBPointUpStreamAction (DBNetworkIF *netIF,DBObjRecord *cellRec,DBInt pntID)
 
 	{
-	_DBGrdIO->Value (netIO->CellPosition (cellRec),pntID);
+	_DBGrdIF->Value (netIF->CellPosition (cellRec),pntID);
 	return (true);
 	}
 
@@ -53,32 +53,32 @@ DBInt DBPointToGrid (DBObjData *pntData,DBObjData *netData,DBObjData *grdData)
 	DBObjRecord *cellRec, **recARR;
 	DBObjRecord *symRec = symTable->First ();
 
-	_DBPntIO = new DBVPointIO(pntData);
+	_DBPntIF = new DBVPointIF(pntData);
 
-	if ((recARR = (DBObjRecord **) calloc (_DBPntIO->ItemNum (),2 * sizeof (DBObjRecord *))) == (DBObjRecord **) NULL)
+	if ((recARR = (DBObjRecord **) calloc (_DBPntIF->ItemNum (),2 * sizeof (DBObjRecord *))) == (DBObjRecord **) NULL)
 		{
 		perror ("Memory Allocation Error in: DBPointToGrid ()");
-		delete _DBPntIO;
+		delete _DBPntIF;
 		return (DBFault);
 		}
-	_DBGrdIO = new DBGridIO (grdData);
-	_DBGrdIO->RenameLayer (_DBGrdIO->Layer ((DBInt) 0),(char *) "Subbasins");
-	_DBNetIO	= new DBNetworkIO (netData);
+	_DBGrdIF = new DBGridIF (grdData);
+	_DBGrdIF->RenameLayer (_DBGrdIF->Layer ((DBInt) 0),(char *) "Subbasins");
+	_DBNetIF	= new DBNetworkIF (netData);
 
-	for (pos.Row = 0;pos.Row < _DBGrdIO->RowNum ();++pos.Row)
-		for (pos.Col = 0;pos.Col < _DBGrdIO->ColNum ();++pos.Col)	_DBGrdIO->Value (pos,DBFault);
+	for (pos.Row = 0;pos.Row < _DBGrdIF->RowNum ();++pos.Row)
+		for (pos.Col = 0;pos.Col < _DBGrdIF->ColNum ();++pos.Col)	_DBGrdIF->Value (pos,DBFault);
 	grdTable->AddField (new DBObjTableField (DBrNGridArea,DBTableFieldFloat,"%10.1f",sizeof (DBFloat4)));
 	grdTable->AddField (new DBObjTableField (DBrNGridPercent,DBTableFieldFloat,"%5.1f",sizeof (DBFloat4)));
 	for (pntFLD = pntFields->First ();pntFLD != (DBObjTableField *) NULL;pntFLD = pntFields->Next ())
 		if (DBTableFieldIsVisible (pntFLD)) grdTable->AddField (new DBObjTableField (*pntFLD));
 
 	recID = 0;
-	for (i = 0;i < _DBPntIO->ItemNum ();++i)
+	for (i = 0;i < _DBPntIF->ItemNum ();++i)
 		{
-		DBPause (i * 100 / _DBPntIO->ItemNum ());
-		recARR [(recID << 0x01)] = _DBPntIO->Item (i);
+		DBPause (i * 100 / _DBPntIF->ItemNum ());
+		recARR [(recID << 0x01)] = _DBPntIF->Item (i);
 		if ((recARR [(recID << 0x01)]->Flags () & DBObjectFlagIdle) == DBObjectFlagIdle) continue;
-		if (_DBNetIO->Cell (_DBPntIO->Coordinate (recARR [(recID << 0x01)])) == (DBObjRecord *) NULL) continue;
+		if (_DBNetIF->Cell (_DBPntIF->Coordinate (recARR [(recID << 0x01)])) == (DBObjRecord *) NULL) continue;
 		recARR [(recID << 0x01) + 1] = grdTable->Add (recARR [(recID << 0x01)]->Name ());
 		grdFLD->Int (recARR [(recID << 0x01) + 1],recARR [(recID << 0x01)]->RowID () + 1);
 		symFLD->Record (recARR [(recID << 0x01) + 1],symRec);
@@ -106,13 +106,13 @@ DBInt DBPointToGrid (DBObjData *pntData,DBObjData *netData,DBObjData *grdData)
 
 	for (recID = recID - 1;recID >= 0;--recID)
 		{
-		if ((cellRec = _DBNetIO->Cell (_DBPntIO->Coordinate (recARR [(recID << 0x01)]))) == (DBObjRecord *) NULL) continue;
-		_DBNetIO->UpStreamSearch (cellRec,(DBNetworkACTION) DBPointUpStreamAction,(void *) recARR [(recID << 0x01) + 1]->RowID ());
+		if ((cellRec = _DBNetIF->Cell (_DBPntIF->Coordinate (recARR [(recID << 0x01)]))) == (DBObjRecord *) NULL) continue;
+		_DBNetIF->UpStreamSearch (cellRec,(DBNetworkACTION) DBPointUpStreamAction,(void *) recARR [(recID << 0x01) + 1]->RowID ());
 		}
-	_DBGrdIO->DiscreteStats ();
-	delete _DBPntIO;
-	delete _DBGrdIO;
-	delete _DBNetIO;
+	_DBGrdIF->DiscreteStats ();
+	delete _DBPntIF;
+	delete _DBGrdIF;
+	delete _DBNetIF;
 	free (recARR);
 	return (DBSuccess);
 	}
@@ -127,26 +127,26 @@ DBInt DBPointToGrid (DBObjData *pntData,DBObjData *grdData,DBFloat factor)
 	DBObjRecord *grdRec, *pntRec, *symRec;
 	DBObjTable  *itemTable, *symTable;
 	DBObjTableField *valField, *symField;
-	DBVPointIO	*pntIO;
-	DBGridIO 	*grdIO;
+	DBVPointIF	*pntIF;
+	DBGridIF 	*gridIF;
 	DBMathDistanceFunction distFunc = DBMathGetDistanceFunction (pntData);
 
 	if (distFunc != DBMathGetDistanceFunction (grdData))
 	{ fprintf (stderr,"Incompatible projections in: DBPointToGrid ()\n"); return (DBFault); }
 
-	pntIO = new DBVPointIO(pntData);
-	itemNum = pntIO->ItemNum ();
+	pntIF = new DBVPointIF(pntData);
+	itemNum = pntIF->ItemNum ();
 	if ((pCoord = (DBCoordinate *) calloc (itemNum,sizeof (DBCoordinate))) == (DBCoordinate *) NULL)
 		{ perror ("Memory allocation Error in: DBPointToGrid ()"); return (DBFault); }
 
-	grdIO = new DBGridIO (grdData);
-	for (pntID = 0;pntID < itemNum;++pntID) pCoord [pntID] = pntIO->Coordinate (pntIO->Item (pntID));
+	gridIF = new DBGridIF (grdData);
+	for (pntID = 0;pntID < itemNum;++pntID) pCoord [pntID] = pntIF->Coordinate (pntIF->Item (pntID));
 
 	if (grdData->Type () == DBTypeGridContinuous)
-		grdIO->RenameLayer (grdIO->Layer ((DBInt) 0),(char *) "Distance to Station");
+		gridIF->RenameLayer (gridIF->Layer ((DBInt) 0),(char *) "Distance to Station");
 	else
 		{
-		grdIO->RenameLayer (grdIO->Layer ((DBInt) 0),(char *) "Station grid");
+		gridIF->RenameLayer (gridIF->Layer ((DBInt) 0),(char *) "Station grid");
 		itemTable = grdData->Table (DBrNItems);
 		symTable  = grdData->Table (DBrNSymbols);
 	   valField  = itemTable->Field (DBrNGridValue);
@@ -154,7 +154,7 @@ DBInt DBPointToGrid (DBObjData *pntData,DBObjData *grdData,DBFloat factor)
 		if ((symRec = symTable->Item (0)) == (DBObjRecord *) NULL) fprintf (stderr, "Total Metal Gebasz in: DBPointToGrid ()\n");
 		for (pntID = 0;pntID < itemNum; ++pntID)
 			{
-			pntRec = pntIO->Item (pntID);
+			pntRec = pntIF->Item (pntID);
 			grdRec = itemTable->Add (pntRec->Name ());
 			valField->Int (grdRec,pntID + 1);
 			symField->Record (grdRec,symRec);
@@ -162,12 +162,12 @@ DBInt DBPointToGrid (DBObjData *pntData,DBObjData *grdData,DBFloat factor)
 		}
 
 	startID = 0;
-	for (pos.Row = 0;pos.Row < grdIO->RowNum ();++pos.Row)
+	for (pos.Row = 0;pos.Row < gridIF->RowNum ();++pos.Row)
 		{
-		DBPause (pos.Row * 100 / grdIO->RowNum ());
-		for (pos.Col = 0;pos.Col < grdIO->ColNum ();++pos.Col)
+		DBPause (pos.Row * 100 / gridIF->RowNum ());
+		for (pos.Col = 0;pos.Col < gridIF->ColNum ();++pos.Col)
 			{
-			grdIO->Pos2Coord (pos,gCoord);
+			gridIF->Pos2Coord (pos,gCoord);
 			minDist = box0  = DBHugeVal;
 			pnt0ID  = pntID = startID;
 			id = DBFault;
@@ -184,11 +184,11 @@ DBInt DBPointToGrid (DBObjData *pntData,DBObjData *grdData,DBFloat factor)
 					}
 				pntID = pntID + 1 < itemNum ? pntID + 1 : 0;
 				} while (pntID != pnt0ID);
-			if (grdData->Type () == DBTypeGridContinuous) grdIO->Value (pos,minDist); else grdIO->Value (pos,id);
+			if (grdData->Type () == DBTypeGridContinuous) gridIF->Value (pos,minDist); else gridIF->Value (pos,id);
 			}
 		}
-	if (grdData->Type () == DBTypeGridContinuous) grdIO->RecalcStats (); else grdIO->DiscreteStats ();
-	delete grdIO;
+	if (grdData->Type () == DBTypeGridContinuous) gridIF->RecalcStats (); else gridIF->DiscreteStats ();
+	delete gridIF;
 	free (pCoord);
 	return (DBSuccess);
 	}

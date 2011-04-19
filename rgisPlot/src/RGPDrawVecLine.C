@@ -12,7 +12,7 @@ balazs.fekete@unh.edu
 
 #include<cm.h>
 #include<rgisPlot.H>
-#include<DBio.H>
+#include<DBif.H>
 
 DBInt RGPDrawVecLine (DBInt mode, DBInt *entryNum, DBObjData *lineData)
 
@@ -23,16 +23,16 @@ DBInt RGPDrawVecLine (DBInt mode, DBInt *entryNum, DBObjData *lineData)
 	float *xCoord, *yCoord;
 	DBCoordinate nodeCoord, *vertexCoords;
 	DBObjRecord *record;
-	DBVLineIO *lineIO = new DBVLineIO (lineData);
+	DBVLineIF *lineIF = new DBVLineIF (lineData);
 
 	cpgqls (&lineStyle);
 	cpgqlw (&lineWidth);
 	cpgqci (&lineColor);
 	
 	if ((xCoord = (float *) calloc (maxVertexNum, sizeof (float))) == (float *) NULL)
-		{ perror ("Memory Allocation Error in: RGPDrawLine ()"); delete lineIO; return (DBFault); }
+		{ perror ("Memory Allocation Error in: RGPDrawLine ()"); delete lineIF; return (DBFault); }
 	if ((yCoord = (float *) calloc (maxVertexNum, sizeof (float))) == (float *) NULL)
-		{ perror ("Memory Allocation Error in: RGPDrawLine ()"); free (xCoord); delete lineIO; return (DBFault); }
+		{ perror ("Memory Allocation Error in: RGPDrawLine ()"); free (xCoord); delete lineIF; return (DBFault); }
 	
 	do	{
 		RGPPrintMessage (mode,entryNum,"Symbol mode [default|uniform|custom]:");
@@ -51,42 +51,42 @@ DBInt RGPDrawVecLine (DBInt mode, DBInt *entryNum, DBObjData *lineData)
 		case 1:	break;
 		case 2:	break;
 		}
-	for (record = lineIO->FirstItem ();record != (DBObjRecord *) NULL;record = lineIO->NextItem ())
+	for (record = lineIF->FirstItem ();record != (DBObjRecord *) NULL;record = lineIF->NextItem ())
 		{
-		switch (lineIO->ItemStyle (record) >> 0x02)
+		switch (lineIF->ItemStyle (record) >> 0x02)
 			{
 			default:
 			case 0:	cpgsls (1);	break;
 			case 1:	cpgsls (2);	break;
 			case 2:	cpgsls (4); break;
 			}
-		cpgslw ((lineIO->ItemStyle (record) & 0x03) + 1);
-		cpgsci (lineIO->ItemForeground (record));
+		cpgslw ((lineIF->ItemStyle (record) & 0x03) + 1);
+		cpgsci (lineIF->ItemForeground (record));
 
-		if (maxVertexNum < lineIO->VertexNum (record) + 2)
+		if (maxVertexNum < lineIF->VertexNum (record) + 2)
 			{
-			maxVertexNum = lineIO->VertexNum (record) + 2;
+			maxVertexNum = lineIF->VertexNum (record) + 2;
 			if ((xCoord = (float *) realloc (xCoord, maxVertexNum * sizeof (float))) == (float *) NULL)
-				{ perror ("Memory Reallocation Error in: RGPDrawLine ()"); free (yCoord); delete lineIO; return (DBFault); }
+				{ perror ("Memory Reallocation Error in: RGPDrawLine ()"); free (yCoord); delete lineIF; return (DBFault); }
 			if ((yCoord = (float *) realloc (yCoord, maxVertexNum * sizeof (float))) == (float *) NULL)
-				{ perror ("Memory Reallocation Error in: RGPDrawLine ()"); free (xCoord); delete lineIO; return (DBFault); }
+				{ perror ("Memory Reallocation Error in: RGPDrawLine ()"); free (xCoord); delete lineIF; return (DBFault); }
 			}
 		vertex = 0;
-		nodeCoord = lineIO->FromCoord (record);
+		nodeCoord = lineIF->FromCoord (record);
 		xCoord [vertex] = nodeCoord.X;
 		yCoord [vertex] = nodeCoord.Y;
 		vertex++;
-		if (lineIO->VertexNum (record) > 0)
+		if (lineIF->VertexNum (record) > 0)
 			{
-			vertexCoords = lineIO->Vertexes (record);
-			while (vertex - 1 < lineIO->VertexNum (record))
+			vertexCoords = lineIF->Vertexes (record);
+			while (vertex - 1 < lineIF->VertexNum (record))
 				{
 				xCoord [vertex] = vertexCoords [vertex - 1].X;
 				yCoord [vertex] = vertexCoords [vertex - 1].Y;
 				vertex++;
 				}
 			}
-		nodeCoord = lineIO->ToCoord (record);
+		nodeCoord = lineIF->ToCoord (record);
 		xCoord [vertex] = nodeCoord.X;
 		yCoord [vertex] = nodeCoord.Y;
 		vertex++;
@@ -98,6 +98,6 @@ Stop:
 	cpgslw (lineWidth);
 	cpgsci (lineColor);
 	free (xCoord), free (yCoord);
-	delete lineIO;
+	delete lineIF;
 	return (ret);
 	}

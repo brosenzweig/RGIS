@@ -12,7 +12,7 @@ balazs.fekete@unh.edu
 
 #include <cm.h>
 #include <DB.H>
-#include <DBio.H>
+#include <DBif.H>
 #include <RG.H>
 #include <MF.h>
 
@@ -67,15 +67,15 @@ int main (int argc,char *argv [])
 			{
 			case DBTypeVectorPoint:
 				{
-				DBVPointIO *pntIO = new DBVPointIO (data);
+				DBVPointIF *pntIF = new DBVPointIF (data);
 
-				domain->ObjNum = pntIO->ItemNum ();
+				domain->ObjNum = pntIF->ItemNum ();
 				if ((domain->Objects = (MFObject_t *) calloc (domain->ObjNum,sizeof (MFObject_t))) == (MFObject_t *) NULL)
 					{ perror ("Memory Allocation Error"); MFDomainFree (domain); goto Stop; }
 				for (objID = 0;objID < domain->ObjNum;++objID)
 					{
-					objRec = pntIO->Item (objID);
-					coord = pntIO->Coordinate (objRec);
+					objRec = pntIF->Item (objID);
+					coord = pntIF->Coordinate (objRec);
 					domain->Objects [objID].ID = objRec->RowID ();
 					domain->Objects [objID].DLinkNum = 0;
 					domain->Objects [objID].ULinkNum = 0;
@@ -95,8 +95,8 @@ int main (int argc,char *argv [])
 				{
 				DBInt dir;
 				DBObjRecord *nextCell;
-				DBNetworkIO *netIO = new DBNetworkIO (data);
-				domain->ObjNum = netIO->CellNum ();
+				DBNetworkIF *netIF = new DBNetworkIF (data);
+				domain->ObjNum = netIF->CellNum ();
 				if ((domain->Objects = (MFObject_t *) calloc (domain->ObjNum,sizeof (MFObject_t))) == (MFObject_t *) NULL)
 					{ perror ("Memory Allocation Error"); MFDomainFree (domain); goto Stop; }
 				for (objID = 0;objID < domain->ObjNum;++objID)
@@ -106,16 +106,16 @@ int main (int argc,char *argv [])
 					}
 				for (objID = 0;objID < domain->ObjNum;++objID)
 					{
-					objRec = netIO->Cell (objID);
-					coord = netIO->Center (objRec);
+					objRec = netIF->Cell (objID);
+					coord = netIF->Center (objRec);
 					domain->Objects [objID].ID = objRec->RowID ();
 					domain->Objects [objID].DLinkNum = 0;
 					domain->Objects [objID].ULinkNum = 0;
 					domain->Objects [objID].XCoord = domain->Objects [objID].Lon = coord.X;
 					domain->Objects [objID].YCoord = domain->Objects [objID].Lat = coord.Y;
-					domain->Objects [objID].Area   = netIO->CellArea   (objRec);
-					domain->Objects [objID].Length = netIO->CellLength (objRec) *lCorrection;
-					if ((nextCell = netIO->ToCell (objRec)) != (DBObjRecord *) NULL)
+					domain->Objects [objID].Area   = netIF->CellArea   (objRec);
+					domain->Objects [objID].Length = netIF->CellLength (objRec) *lCorrection;
+					if ((nextCell = netIF->ToCell (objRec)) != (DBObjRecord *) NULL)
 					{
 						size = (domain->Objects [objID].DLinkNum + 1) * sizeof (size_t);
 						if ((domain->Objects [objID].DLinks = (size_t *) realloc (domain->Objects [objID].DLinks,size)) == (size_t *) NULL)
@@ -124,7 +124,7 @@ int main (int argc,char *argv [])
 						domain->Objects [objID].DLinkNum++;
 					}
 					for (dir = 0;dir < 8;++dir)
-						if ((nextCell = netIO->FromCell (objRec,0x01 << dir)) != (DBObjRecord *) NULL)
+						if ((nextCell = netIF->FromCell (objRec,0x01 << dir)) != (DBObjRecord *) NULL)
 							{
 							size = (domain->Objects [objID].ULinkNum + 1) * sizeof (size_t);
 							if ((domain->Objects [objID].ULinks = (size_t *) realloc (domain->Objects [objID].ULinks,size)) == (size_t *) NULL)

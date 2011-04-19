@@ -11,7 +11,7 @@ balazs.fekete@unh.edu
 *******************************************************************************/
 
 #include <DB.H>
-#include <DBio.H>
+#include <DBif.H>
 
 DBObjData *DBNetworkToGrid (DBObjData *netData,DBInt type)
 
@@ -28,8 +28,8 @@ DBObjData *DBNetworkToGrid (DBObjData *netData,DBInt type)
 	DBObjTableField *valueTypeFLD = layerTable->Field (DBrNValueType);
 	DBObjTableField *valueSizeFLD = layerTable->Field (DBrNValueSize);
 	DBObjTableField *layerFLD 		= layerTable->Field (DBrNLayer);
-	DBNetworkIO *netIO;
-	DBGridIO *gridIO;
+	DBNetworkIF *netIF;
+	DBGridIF *gridIF;
 
 	grdData->Projection (netData->Projection ());
 	grdData->Precision  (netData->Precision ());
@@ -38,15 +38,15 @@ DBObjData *DBNetworkToGrid (DBObjData *netData,DBInt type)
 	grdData->Extent  	  (netData->Extent ());
 	grdData->Document   (DBDocGeoDomain,netData->Document (DBDocGeoDomain));
 
-	netIO = new DBNetworkIO (netData);
+	netIF = new DBNetworkIF (netData);
 
 	layerTable->Add ("FirstLayer");
 	if ((layerRec = layerTable->Item ()) == (DBObjRecord *) NULL)
-		{ delete netIO; return ((DBObjData *) NULL); }
-	rowNumFLD->Int (layerRec,netIO->RowNum ());
-	colNumFLD->Int (layerRec,netIO->ColNum ());
-	cellWidthFLD->Float  (layerRec,netIO->CellWidth ());
-	cellHeightFLD->Float (layerRec,netIO->CellHeight ());
+		{ delete netIF; return ((DBObjData *) NULL); }
+	rowNumFLD->Int (layerRec,netIF->RowNum ());
+	colNumFLD->Int (layerRec,netIF->ColNum ());
+	cellWidthFLD->Float  (layerRec,netIF->CellWidth ());
+	cellHeightFLD->Float (layerRec,netIF->CellHeight ());
 	switch (type)
 		{
 		case DBTypeGridContinuous:
@@ -60,23 +60,23 @@ DBObjData *DBNetworkToGrid (DBObjData *netData,DBInt type)
 		default:
 			fprintf (stderr,"Invalid Data Type in: DBNetworkToGrid ()\n");
 			delete grdData;
-			delete netIO;
+			delete netIF;
 			return ((DBObjData *) NULL);
 		}
-	if ((dataRec = new DBObjRecord (layerRec->Name (),netIO->ColNum () * netIO->RowNum () * valueSizeFLD->Int (layerRec),valueSizeFLD->Int (layerRec))) == (DBObjRecord *) NULL)
-		{ delete netIO; return ((DBObjData *) NULL); }
+	if ((dataRec = new DBObjRecord (layerRec->Name (),netIF->ColNum () * netIF->RowNum () * valueSizeFLD->Int (layerRec),valueSizeFLD->Int (layerRec))) == (DBObjRecord *) NULL)
+		{ delete netIF; return ((DBObjData *) NULL); }
 	(grdData->Arrays ())->Add (dataRec);
 	layerFLD->Record (layerRec,dataRec);
 
-	gridIO = new DBGridIO (grdData);
+	gridIF = new DBGridIF (grdData);
 	if (type == DBTypeGridContinuous)
 		{
 		itemTable->Add (layerRec->Name ());
 		DBObjTableField *missingValueFLD	= itemTable->Field (DBrNMissingValue);
 		missingValueFLD->Float (itemTable->Item (layerRec->Name ()),DBDefaultMissingFloatVal);
-		for (pos.Row = 0;pos.Row < netIO->RowNum ();pos.Row++)
-			for (pos.Col = 0;pos.Col < netIO->ColNum ();pos.Col++)
-				gridIO->Value (layerRec,pos,DBDefaultMissingFloatVal);
+		for (pos.Row = 0;pos.Row < netIF->RowNum ();pos.Row++)
+			for (pos.Col = 0;pos.Col < netIF->ColNum ();pos.Col++)
+				gridIF->Value (layerRec,pos,DBDefaultMissingFloatVal);
 		}
 	else
 		{
@@ -89,11 +89,11 @@ DBObjData *DBNetworkToGrid (DBObjData *netData,DBInt type)
 		foregroundFLD->Int (symbolRec,1);
 		backgroundFLD->Int (symbolRec,0);
 		styleFLD->Int (symbolRec,0);
-		for (pos.Row = 0;pos.Row < netIO->RowNum ();pos.Row++)
-			for (pos.Col = 0;pos.Col < netIO->ColNum ();pos.Col++)
-				gridIO->Value (layerRec,pos,0);
+		for (pos.Row = 0;pos.Row < netIF->RowNum ();pos.Row++)
+			for (pos.Col = 0;pos.Col < netIF->ColNum ();pos.Col++)
+				gridIF->Value (layerRec,pos,0);
 		}
-	delete netIO;
-	delete gridIO;
+	delete netIF;
+	delete gridIF;
 	return (grdData);
 	}

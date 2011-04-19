@@ -11,7 +11,7 @@ balazs.fekete@unh.edu
 *******************************************************************************/
 
 #include <DB.H>
-#include <DBio.H>
+#include <DBif.H>
 #include <ctype.h>
 #include <netcdf.h>
 #include <udunits2.h>
@@ -153,7 +153,7 @@ static DBInt _DBExportNetCDFPoint (DBObjData *dbData, int ncid)
 	DBInt pntID;
 	DBCoordinate coord;
 	DBObjTable *table = dbData->Table (DBrNItems);
-	DBVPointIO *pointIO;
+	DBVPointIF *pntIF;
 
 	if ((status = nc_redef (ncid)) != NC_NOERR)
 		{ fprintf(stderr, "NC Error: %s\n", nc_strerror(status)); return (DBFault); }
@@ -215,19 +215,19 @@ static DBInt _DBExportNetCDFPoint (DBObjData *dbData, int ncid)
 	if ((status = nc_enddef (ncid)) != NC_NOERR)
 		{ fprintf(stderr, "NC Error: %s\n", nc_strerror(status)); return (DBFault); }
 
-	pointIO = new DBVPointIO (dbData);
-	for (pntID = 0;pntID < pointIO->ItemNum ();pntID++)
+	pntIF = new DBVPointIF (dbData);
+	for (pntID = 0;pntID < pntIF->ItemNum ();pntID++)
 	{
-		coord = pointIO->Coordinate (pointIO->Item (pntID));
+		coord = pntIF->Coordinate (pntIF->Item (pntID));
 		start = pntID;
 		count = 1;
 	if ((status = nc_put_vara_double (ncid,latid,&start,&count,&coord.X)) != NC_NOERR)
-		{ fprintf(stderr, "NC Error: %s\n", nc_strerror(status)); delete pointIO; return (DBFault); }
+		{ fprintf(stderr, "NC Error: %s\n", nc_strerror(status)); delete pntIF; return (DBFault); }
 	if ((status = nc_put_vara_double (ncid,lonid,&start,&count,&coord.Y)) != NC_NOERR)
-		{ fprintf(stderr, "NC Error: %s\n", nc_strerror(status)); delete pointIO; return (DBFault); }
+		{ fprintf(stderr, "NC Error: %s\n", nc_strerror(status)); delete pntIF; return (DBFault); }
 	}
 
-	delete pointIO;
+	delete pntIF;
 	return (DBSuccess);
 	}
 
@@ -245,22 +245,22 @@ static DBInt _DBExportNetCDFGridDefine (DBObjData *dbData,int ncid, int dimids [
 		case DBTypeGridDiscrete:
 		case DBTypeGridContinuous:
 			{
-			DBGridIO *gridIO = new DBGridIO (dbData);
+			DBGridIF *gridIF = new DBGridIF (dbData);
 
-			rowNum = gridIO->RowNum ();
-			colNum = gridIO->ColNum ();
-			cellWidth  = gridIO->CellWidth ();
-			cellHeight = gridIO->CellHeight ();
-			delete gridIO;
+			rowNum = gridIF->RowNum ();
+			colNum = gridIF->ColNum ();
+			cellWidth  = gridIF->CellWidth ();
+			cellHeight = gridIF->CellHeight ();
+			delete gridIF;
 			} break;
 		case DBTypeNetwork:
 			{
-			DBNetworkIO *netIO = new DBNetworkIO (dbData);
-			rowNum = netIO->RowNum ();
-			colNum = netIO->ColNum ();
-			cellWidth  = netIO->CellWidth ();
-			cellHeight = netIO->CellHeight ();
-			delete netIO;
+			DBNetworkIF *netIF = new DBNetworkIF (dbData);
+			rowNum = netIF->RowNum ();
+			colNum = netIF->ColNum ();
+			cellWidth  = netIF->CellWidth ();
+			cellHeight = netIF->CellHeight ();
+			delete netIF;
 			} break;
 		default:
 			fprintf (stderr,"Invalid data type in: _DBExportNetCDFGridDefine ()\n");
@@ -392,7 +392,7 @@ static DBInt _DBExportNetCDFTimeDefine (DBObjData *dbData,int ncid,int dimids []
 	size_t start, count;
 	int *record, extent [2];
 	DBInt layerID;
-	DBGridIO	*gridIO = new DBGridIO (dbData);
+	DBGridIF	*gridIF = new DBGridIF (dbData);
 
 	if ((utSystem = ut_read_xml ((char *) NULL)) == (ut_system *) NULL)
 		{
@@ -417,7 +417,7 @@ static DBInt _DBExportNetCDFTimeDefine (DBObjData *dbData,int ncid,int dimids []
 		fprintf(stderr, "NC Error: %s\n", nc_strerror(status));
 		ut_free (baseTimeUnit);
 		ut_free_system (utSystem);
-		delete gridIO;
+		delete gridIF;
 		return (DBFault);
 		}
 	if ((status = nc_def_dim (ncid,"time",NC_UNLIMITED,    dimids + DIMTime)) != NC_NOERR)
@@ -425,7 +425,7 @@ static DBInt _DBExportNetCDFTimeDefine (DBObjData *dbData,int ncid,int dimids []
 		fprintf(stderr, "NC Error: %s\n", nc_strerror(status));
 		ut_free (baseTimeUnit);
 		ut_free_system (utSystem);
-		delete gridIO;
+		delete gridIF;
 		return (DBFault);
 		}
 	/* End Defining Dimensions */
@@ -436,7 +436,7 @@ static DBInt _DBExportNetCDFTimeDefine (DBObjData *dbData,int ncid,int dimids []
 		fprintf(stderr, "NC Error: %s\n", nc_strerror(status));
 		ut_free (baseTimeUnit);
 		ut_free_system (utSystem);
-		delete gridIO;
+		delete gridIF;
 		return (DBFault);
 		}
 	str = (char *) "Time";
@@ -445,7 +445,7 @@ static DBInt _DBExportNetCDFTimeDefine (DBObjData *dbData,int ncid,int dimids []
 		fprintf(stderr, "NC Error: %s\n", nc_strerror(status));
 		ut_free (baseTimeUnit);
 		ut_free_system (utSystem);
-		delete gridIO;
+		delete gridIF;
 		return (DBFault);
 		}
 	str = (char *) "time";
@@ -454,10 +454,10 @@ static DBInt _DBExportNetCDFTimeDefine (DBObjData *dbData,int ncid,int dimids []
 		fprintf(stderr, "NC Error: %s\n", nc_strerror(status));
 		ut_free (baseTimeUnit);
 		ut_free_system (utSystem);
-		delete gridIO;
+		delete gridIF;
 		return (DBFault);
 		}
-	strcpy (timeStr,(gridIO->Layer (gridIO->LayerNum () - 1))->Name ());
+	strcpy (timeStr,(gridIF->Layer (gridIF->LayerNum () - 1))->Name ());
 	if (strncmp (timeStr,"XXXX",4) == 0) for (i = 0;i < 4;i++) timeStr [i] = '0';
 	month  = 6;
 	day    = 15;
@@ -466,31 +466,31 @@ static DBInt _DBExportNetCDFTimeDefine (DBObjData *dbData,int ncid,int dimids []
 	switch (strlen (timeStr))
 		{
 		case  4:
-			strcpy (timeStr,(gridIO->Layer (0))->Name ());
+			strcpy (timeStr,(gridIF->Layer (0))->Name ());
 			if (strncmp (timeStr,"XXXX",4) == 0) for (i = 0;i < 4;i++) timeStr [i] = '0';
 			sscanf (timeStr,"%4d",&year);
 			sprintf (unitStr,"years since %s-01-01 00:00", timeStr);
 			break;
 		case  7:
-			strcpy (timeStr,(gridIO->Layer (0))->Name ());
+			strcpy (timeStr,(gridIF->Layer (0))->Name ());
 			if (strncmp (timeStr,"XXXX",4) == 0) for (i = 0;i < 4;i++) timeStr [i] = '0';
 			sscanf (timeStr,"%4d-%2d",&year,&month);
 			sprintf (unitStr,"months since %s-01 00:00", timeStr);
 			break;
 		case 10:
-			strcpy (timeStr,(gridIO->Layer (0))->Name ());
+			strcpy (timeStr,(gridIF->Layer (0))->Name ());
 			if (strncmp (timeStr,"XXXX",4) == 0) for (i = 0;i < 4;i++) timeStr [i] = '0';
 			sscanf (timeStr,"%4d-%2d-%2d",&year,&month,&day);
 			sprintf (unitStr,"days since %s 00:00",   timeStr);
 			break;
 		case 13:
-			strcpy (timeStr,(gridIO->Layer (0))->Name ());
+			strcpy (timeStr,(gridIF->Layer (0))->Name ());
 			if (strncmp (timeStr,"XXXX",4) == 0) for (i = 0;i < 4;i++) timeStr [i] = '0';
 			sscanf (timeStr,"%4d-%2d-%2d %2d",&year,&month,&day,&hour);
 			sprintf (unitStr,"hours since %s:00",  timeStr);
 			break;
 		case 16:
-			strcpy (timeStr,(gridIO->Layer (0))->Name ());
+			strcpy (timeStr,(gridIF->Layer (0))->Name ());
 			if (strncmp (timeStr,"XXXX",4) == 0) for (i = 0;i < 4;i++) timeStr [i] = '0';
 			sscanf (timeStr,"%4d-%2d-%2d %2d:%2d",&year,&month,&day,&hour,&minute);
 			sprintf (unitStr,"minutes since %s",timeStr);
@@ -501,7 +501,7 @@ static DBInt _DBExportNetCDFTimeDefine (DBObjData *dbData,int ncid,int dimids []
 		fprintf (stderr,"Invalid time Unit [%s] in: DBImportNetCDF ()",unitStr);
 		ut_free (baseTimeUnit);
 		ut_free_system (utSystem);
-		delete gridIO;
+		delete gridIF;
 		return (DBFault);
 		}
 	if ((cvConverter = ut_get_converter (baseTimeUnit, utUnit)) == (cv_converter *) NULL)
@@ -515,7 +515,7 @@ static DBInt _DBExportNetCDFTimeDefine (DBObjData *dbData,int ncid,int dimids []
 		ut_free (utUnit);
 		ut_free (baseTimeUnit);
 		ut_free_system (utSystem);
-		delete gridIO;
+		delete gridIF;
 		return (DBFault);
 		}
 	if ((status = nc_put_att_text (ncid,timeid,"units",strlen (unitStr),unitStr)) != NC_NOERR)
@@ -525,7 +525,7 @@ static DBInt _DBExportNetCDFTimeDefine (DBObjData *dbData,int ncid,int dimids []
 		ut_free (utUnit);
 		ut_free (baseTimeUnit);
 		cv_free (cvConverter);
-		delete gridIO;
+		delete gridIF;
 		return (DBFault);
 		}
 	str = (char *) "t";
@@ -536,7 +536,7 @@ static DBInt _DBExportNetCDFTimeDefine (DBObjData *dbData,int ncid,int dimids []
 		ut_free (utUnit);
 		ut_free (baseTimeUnit);
 		cv_free (cvConverter);
-		delete gridIO;
+		delete gridIF;
 		return (DBFault);
 		}
 	/* End Defining Time Variable */
@@ -548,29 +548,29 @@ static DBInt _DBExportNetCDFTimeDefine (DBObjData *dbData,int ncid,int dimids []
 		ut_free (utUnit);
 		ut_free (baseTimeUnit);
 		cv_free (cvConverter);
-		delete gridIO;
+		delete gridIF;
 		return (DBFault);
 		}
 
-	if ((record = (int *) calloc (gridIO->LayerNum () * 2,sizeof (int))) == (int *) NULL)
+	if ((record = (int *) calloc (gridIF->LayerNum () * 2,sizeof (int))) == (int *) NULL)
 		{
 		fprintf (stderr,"Memory allocation error in: DBExportNetCDF ()\n");
 		ut_free_system (utSystem);
 		ut_free (utUnit);
 		ut_free (baseTimeUnit);
 		cv_free (cvConverter);
-		delete gridIO;
+		delete gridIF;
 		return (DBFault);
 		}
 	start = 0;
-	count = gridIO->LayerNum ();;
+	count = gridIF->LayerNum ();;
 	month  = 6;
 	day    = 15;
 	hour   = 12;
 	minute = 30;
-	for (layerID = 0;layerID < gridIO->LayerNum ();layerID++)
+	for (layerID = 0;layerID < gridIF->LayerNum ();layerID++)
 		{
-		strcpy (timeStr,(gridIO->Layer (layerID))->Name ());
+		strcpy (timeStr,(gridIF->Layer (layerID))->Name ());
 		if (strncmp (timeStr,"XXXX",4) == 0) for (i = 0;i < 4;i++) timeStr [i] = '0';
 		switch (strlen (timeStr))
 			{
@@ -591,7 +591,7 @@ static DBInt _DBExportNetCDFTimeDefine (DBObjData *dbData,int ncid,int dimids []
 		ut_free (utUnit);
 		ut_free (baseTimeUnit);
 		cv_free (cvConverter);
-		delete gridIO;
+		delete gridIF;
 		free (record);
 		return (DBFault);
 		}
@@ -603,7 +603,7 @@ static DBInt _DBExportNetCDFTimeDefine (DBObjData *dbData,int ncid,int dimids []
 		ut_free (utUnit);
 		ut_free (baseTimeUnit);
 		cv_free (cvConverter);
-		delete gridIO;
+		delete gridIF;
 		return (DBFault);
 		}
 	extent[0] = record[0];
@@ -615,7 +615,7 @@ static DBInt _DBExportNetCDFTimeDefine (DBObjData *dbData,int ncid,int dimids []
 		ut_free (utUnit);
 		ut_free (baseTimeUnit);
 		cv_free (cvConverter);
-		delete gridIO;
+		delete gridIF;
 		return (DBFault);
 		}
 	if ((status = nc_enddef (ncid)) != NC_NOERR)
@@ -625,11 +625,11 @@ static DBInt _DBExportNetCDFTimeDefine (DBObjData *dbData,int ncid,int dimids []
 		ut_free (utUnit);
 		ut_free (baseTimeUnit);
 		cv_free (cvConverter);
-		delete gridIO;
+		delete gridIF;
 		return (DBFault);
 		}
 
-	delete gridIO;
+	delete gridIF;
 	free (record);
 	ut_free (utUnit);
 	ut_free (baseTimeUnit);
@@ -896,7 +896,7 @@ DBInt DBExportNetCDF (DBObjData *dbData,const char *fileName)
 			DBInt layerID;
 			DBPosition pos;
 			DBObjRecord *layerRec;
-			DBGridIO *gridIO;
+			DBGridIF *gridIF;
 
 			if (_DBExportNetCDFGridDefine (dbData,ncid,dimids)          == DBFault) { nc_close (ncid); return (DBFault); }
 			if (_DBExportNetCDFTimeDefine (dbData,ncid,dimids)          == DBFault) { nc_close (ncid); return (DBFault); }
@@ -924,36 +924,36 @@ DBInt DBExportNetCDF (DBObjData *dbData,const char *fileName)
 			if ((status = nc_enddef (ncid)) != NC_NOERR)
 				{ fprintf(stderr, "NC Error: %s\n", nc_strerror(status)); nc_close (ncid); return (DBFault); }
 
-			gridIO = new DBGridIO (dbData);
-			if ((record = (short *) calloc (gridIO->ColNum (),sizeof (short))) == (short *) NULL)
+			gridIF = new DBGridIF (dbData);
+			if ((record = (short *) calloc (gridIF->ColNum (),sizeof (short))) == (short *) NULL)
 				{
 				fprintf (stderr,"Memory allocation error in: DBExportNetCDF ()\n");
-				delete gridIO;
+				delete gridIF;
 				nc_close (ncid);
 				return (DBFault);
 				}
-			for (layerID = 0;layerID < gridIO->LayerNum ();layerID++)
+			for (layerID = 0;layerID < gridIF->LayerNum ();layerID++)
 				{
-				layerRec = gridIO->Layer (layerID);
+				layerRec = gridIF->Layer (layerID);
 				start [DIMTime]  = layerID; count [DIMTime]  = 1;
-				for (pos.Row = 0;pos.Row < gridIO->RowNum ();pos.Row++)
+				for (pos.Row = 0;pos.Row < gridIF->RowNum ();pos.Row++)
 					{
 					start [DIMLat] = pos.Row; count [DIMLat] = 1;
-					start [DIMLon] = 0; count [DIMLon] = gridIO->ColNum ();
-					for (pos.Col = 0;pos.Col < gridIO->ColNum ();pos.Col++)
-						record [pos.Col] = gridIO->Value (layerRec,pos,&intVal) ? intVal : fillVal;
+					start [DIMLon] = 0; count [DIMLon] = gridIF->ColNum ();
+					for (pos.Col = 0;pos.Col < gridIF->ColNum ();pos.Col++)
+						record [pos.Col] = gridIF->Value (layerRec,pos,&intVal) ? intVal : fillVal;
 					if ((status = nc_put_vara_short (ncid,varid,start,count,record)) != NC_NOERR)
 						{
 						fprintf(stderr, "NC Error: %s\n", nc_strerror(status));
 						free (record);
-						delete gridIO;
+						delete gridIF;
 						nc_close (ncid);
 						return (DBFault);
 						}
 					}
 				}
 			free (record);
-			delete gridIO;
+			delete gridIF;
 			} break;
 		case DBTypeGridContinuous:
 			{
@@ -963,7 +963,7 @@ DBInt DBExportNetCDF (DBObjData *dbData,const char *fileName)
 			DBInt layerID;
 			DBPosition pos;
 			DBObjRecord *layerRec;
-			DBGridIO *gridIO;
+			DBGridIF *gridIF;
 
 			if (_DBExportNetCDFGridDefine (dbData,ncid,dimids)          == DBFault) { nc_close (ncid); return (DBFault); }
 			if (_DBExportNetCDFTimeDefine (dbData,ncid,dimids)          == DBFault) { nc_close (ncid); return (DBFault); }
@@ -984,63 +984,63 @@ DBInt DBExportNetCDF (DBObjData *dbData,const char *fileName)
 			if ((status = nc_put_att_text (ncid,varid,"var_desc",strlen (str),str)) != NC_NOERR)
 				{ fprintf(stderr, "NC Error: %s\n", nc_strerror(status)); nc_close (ncid); return (DBFault); }
 
-			gridIO = new DBGridIO (dbData);
+			gridIF = new DBGridIF (dbData);
 
-			fillVal     = gridIO->MissingValue ();
+			fillVal     = gridIF->MissingValue ();
 			scaleFactor = 1.0;
 			dataOffset  = 0.0;
-			extent [0]  = gridIO->Minimum ();
-			extent [1]  = gridIO->Maximum ();
+			extent [0]  = gridIF->Minimum ();
+			extent [1]  = gridIF->Maximum ();
 			if ((status = nc_put_att_float (ncid,varid,"missing_value",NC_FLOAT,1,&fillVal)) != NC_NOERR)
 				{ fprintf(stderr, "NC Error: %s\n", nc_strerror(status)); nc_close (ncid); return (DBFault); }
 			if ((status = nc_put_att_float (ncid,varid,"_FillValue",   NC_FLOAT,1,&fillVal)) != NC_NOERR)
 				{ fprintf(stderr, "NC Error: %s\n", nc_strerror(status)); nc_close (ncid); return (DBFault); }
 			if ((status = nc_put_att_float (ncid,varid,"scale_factor",NC_FLOAT,1,&scaleFactor)) != NC_NOERR)
-				{ fprintf(stderr, "NC Error: %s\n", nc_strerror(status)); delete gridIO; nc_close (ncid); return (DBFault); }
+				{ fprintf(stderr, "NC Error: %s\n", nc_strerror(status)); delete gridIF; nc_close (ncid); return (DBFault); }
 			if ((status = nc_put_att_float (ncid,varid,"add_offset",  NC_FLOAT,1,&dataOffset)) != NC_NOERR)
-				{ fprintf(stderr, "NC Error: %s\n", nc_strerror(status)); delete gridIO; nc_close (ncid); return (DBFault); }
+				{ fprintf(stderr, "NC Error: %s\n", nc_strerror(status)); delete gridIF; nc_close (ncid); return (DBFault); }
 			if ((status = nc_put_att_float (ncid,varid,"actual_range",NC_FLOAT,2,extent)) != NC_NOERR)
-				{ fprintf(stderr, "NC Error: %s\n", nc_strerror(status)); delete gridIO; nc_close (ncid); return (DBFault); }
+				{ fprintf(stderr, "NC Error: %s\n", nc_strerror(status)); delete gridIF; nc_close (ncid); return (DBFault); }
 			if ((status = nc_enddef (ncid)) != NC_NOERR)
-				{ fprintf(stderr, "NC Error: %s\n", nc_strerror(status)); delete gridIO; nc_close (ncid); return (DBFault); }
+				{ fprintf(stderr, "NC Error: %s\n", nc_strerror(status)); delete gridIF; nc_close (ncid); return (DBFault); }
 			/* End Defining Core Variable */
 
-			if ((record = (float *) calloc (gridIO->ColNum (),sizeof (float))) == (float *) NULL)
+			if ((record = (float *) calloc (gridIF->ColNum (),sizeof (float))) == (float *) NULL)
 				{
 				fprintf (stderr,"Memory allocation error in: DBExportNetCDF ()\n");
-				delete gridIO;
+				delete gridIF;
 				nc_close (ncid);
 				return (DBFault);
 				}
-			for (layerID = 0;layerID < gridIO->LayerNum ();layerID++)
+			for (layerID = 0;layerID < gridIF->LayerNum ();layerID++)
 				{
-				layerRec = gridIO->Layer (layerID);
+				layerRec = gridIF->Layer (layerID);
 				start [DIMTime]  = layerID; count [DIMTime]  = 1;
-				for (pos.Row = 0;pos.Row < gridIO->RowNum ();pos.Row++)
+				for (pos.Row = 0;pos.Row < gridIF->RowNum ();pos.Row++)
 					{
 					start [DIMLat] = pos.Row; count [DIMLat] = 1;
-					start [DIMLon] = 0; count [DIMLon] = gridIO->ColNum ();
-					for (pos.Col = 0;pos.Col < gridIO->ColNum ();pos.Col++)
-						record [pos.Col] = gridIO->Value (layerRec,pos,&gridVal) ? gridVal : fillVal;
+					start [DIMLon] = 0; count [DIMLon] = gridIF->ColNum ();
+					for (pos.Col = 0;pos.Col < gridIF->ColNum ();pos.Col++)
+						record [pos.Col] = gridIF->Value (layerRec,pos,&gridVal) ? gridVal : fillVal;
 					if ((status = nc_put_vara_float (ncid,varid,start,count,record)) != NC_NOERR)
 						{
 						fprintf(stderr, "NC Error: %s\n", nc_strerror(status));
 						free (record);
-						delete gridIO;
+						delete gridIF;
 						nc_close (ncid);
 						return (DBFault);
 						}
 					}
 				}
 			free (record);
-			delete gridIO;
+			delete gridIF;
 			} break;
 		case DBTypeNetwork:
 			{
 			int *record, fillVal = DBFault;
 			int extent [2];
 			DBPosition pos;
-			DBNetworkIO *netIO;
+			DBNetworkIF *netIF;
 			DBObjRecord *cellRec;
 
 			if (_DBExportNetCDFGridDefine (dbData,ncid,dimids)          == DBFault) { nc_close (ncid); return (DBFault); }
@@ -1067,42 +1067,42 @@ DBInt DBExportNetCDF (DBObjData *dbData,const char *fileName)
 			if ((status = nc_put_att_int (ncid,varid,"missing_value",NC_INT,1,&fillVal)) != NC_NOERR)
 				{ fprintf(stderr, "NC Error: %s\n", nc_strerror(status)); nc_close (ncid); return (DBFault); }
 
-			netIO = new DBNetworkIO (dbData);
+			netIF = new DBNetworkIF (dbData);
 
 			extent [0] = 0;
-			extent [1] = netIO->CellNum ();
+			extent [1] = netIF->CellNum ();
 			if ((status = nc_put_att_int (ncid,varid,"actual_range",NC_INT,2,extent)) != NC_NOERR)
-				{ fprintf(stderr, "NC Error: %s\n", nc_strerror(status)); delete netIO; nc_close (ncid); return (DBFault); }
+				{ fprintf(stderr, "NC Error: %s\n", nc_strerror(status)); delete netIF; nc_close (ncid); return (DBFault); }
 			if ((status = nc_enddef (ncid)) != NC_NOERR)
-				{ fprintf(stderr, "NC Error: %s\n", nc_strerror(status)); delete netIO; nc_close (ncid); return (DBFault); }
+				{ fprintf(stderr, "NC Error: %s\n", nc_strerror(status)); delete netIF; nc_close (ncid); return (DBFault); }
 
-			if ((record = (int *) calloc (netIO->ColNum (),sizeof (int))) == (int *) NULL)
+			if ((record = (int *) calloc (netIF->ColNum (),sizeof (int))) == (int *) NULL)
 				{
 				fprintf (stderr,"Memory allocation error in: DBExportNetCDF ()\n");
-				delete netIO;
+				delete netIF;
 				nc_close (ncid);
 				return (DBFault);
 				}
-			for (pos.Row = 0;pos.Row < netIO->RowNum ();pos.Row++)
+			for (pos.Row = 0;pos.Row < netIF->RowNum ();pos.Row++)
 				{
 				start [DIMLat] = pos.Row; count [DIMLat]   = 1;
-				start [DIMLon] = 0;       count [DIMLon]   = netIO->ColNum ();
-				for (pos.Col = 0;pos.Col < netIO->ColNum ();pos.Col++)
+				start [DIMLon] = 0;       count [DIMLon]   = netIF->ColNum ();
+				for (pos.Col = 0;pos.Col < netIF->ColNum ();pos.Col++)
 					{
-					cellRec = netIO->Cell (pos);
+					cellRec = netIF->Cell (pos);
 					record [pos.Col] = cellRec != (DBObjRecord *) NULL ? cellRec->RowID () : fillVal;
 					}
 				if ((status = nc_put_vara_int (ncid,varid,start + 1,count + 1,record)) != NC_NOERR)
 					{
 					fprintf(stderr, "NC Error: %s\n", nc_strerror(status));
 					free (record);
-					delete netIO;
+					delete netIF;
 					nc_close (ncid);
 					return (DBFault);
 					}
 				}
 			free (record);
-			delete netIO;
+			delete netIF;
 			} break;
 		}
 	nc_close (ncid);
@@ -1146,7 +1146,7 @@ DBInt DBImportNetCDF (DBObjData *data,const char *filename)
 	DBObjTableField *valueSizeFLD  = layerTable->Field (DBrNValueSize);
 	DBObjTableField *layerFLD      = layerTable->Field (DBrNLayer);
 	DBObjTableField *missingValueFLD		= itemTable->Field (DBrNMissingValue);
-	DBGridIO *gridIO;
+	DBGridIF *gridIF;
 
 	if ((utSystem = ut_read_xml ((char *) NULL)) == (ut_system *) NULL)
 		{
@@ -1687,9 +1687,9 @@ DBInt DBImportNetCDF (DBObjData *data,const char *filename)
 				for (colID = 0;colID < colNum;colID++) ((float *) (dataRec->Data ())) [colNum * rowID + colID] = vector [colNum - colID - 1];
 			}
 		}
-	gridIO = new DBGridIO (data);
+	gridIF = new DBGridIF (data);
 	data->Document (DBDocSubject,varname);
-	gridIO->RecalcStats ();
+	gridIF->RecalcStats ();
 	free (vector);
 	free (longitudes);
 	free (latitudes);

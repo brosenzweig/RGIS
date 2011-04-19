@@ -11,7 +11,7 @@ balazs.fekete@unh.edu
 *******************************************************************************/
 
 #include <DB.H>
-#include <DBio.H>
+#include <DBif.H>
 
 DBObjData *DBGridToGrid (DBObjData *srcGridData)
 
@@ -23,24 +23,24 @@ DBObjData *DBGridToGrid (DBObjData *srcGridData,DBInt type)
 
 	if (srcGridData->Type () == type)
 		{
-		DBGridIO *gridIO;
+		DBGridIF *gridIF;
 
-		gridIO = new DBGridIO (srcGridData);
+		gridIF = new DBGridIF (srcGridData);
 		switch (type)
 			{
 			case DBTypeGridContinuous:
 				valueType = DBTableFieldFloat;
-				valueSize = gridIO->ValueType () == DBTableFieldFloat ? gridIO->ValueSize () : sizeof (DBFloat4);
+				valueSize = gridIF->ValueType () == DBTableFieldFloat ? gridIF->ValueSize () : sizeof (DBFloat4);
 				break;
 			case DBTypeGridDiscrete:
-				valueType = gridIO->ValueType ();
-				valueSize = gridIO->ValueSize ();
+				valueType = gridIF->ValueType ();
+				valueSize = gridIF->ValueSize ();
 				break;
 			default:
 				fprintf (stderr,"Invalid Data Type in: DBGridToGrid ()\n");
 				return ((DBObjData *) NULL);
 			}
-		delete gridIO;
+		delete gridIF;
 		}
 	else
 		switch (type)
@@ -74,7 +74,7 @@ DBObjData *DBGridToGrid (DBObjData *srcGridData,DBInt type, DBInt valueType, DBI
 	DBObjTableField *valueTypeFLD = layerTable->Field (DBrNValueType);
 	DBObjTableField *valueSizeFLD = layerTable->Field (DBrNValueSize);
 	DBObjTableField *layerFLD 		= layerTable->Field (DBrNLayer);
-	DBGridIO *gridIO;
+	DBGridIF *gridIF;
 
 	grdData->Projection (srcGridData->Projection ());
 	grdData->Precision  (srcGridData->Precision ());
@@ -84,15 +84,15 @@ DBObjData *DBGridToGrid (DBObjData *srcGridData,DBInt type, DBInt valueType, DBI
 	grdData->Document   (DBDocGeoDomain,srcGridData->Document (DBDocGeoDomain));
 	grdData->Document   (DBDocSubject,  srcGridData->Document (DBDocSubject));
 
-	gridIO = new DBGridIO (srcGridData);
+	gridIF = new DBGridIF (srcGridData);
 
 	layerTable->Add ("FirstLayer");
 	if ((layerRec = layerTable->Item ()) == (DBObjRecord *) NULL)
-		{ delete gridIO; return ((DBObjData *) NULL); }
-	rowNumFLD->Int (layerRec,gridIO->RowNum ());
-	colNumFLD->Int (layerRec,gridIO->ColNum ());
-	cellWidthFLD->Float  (layerRec,gridIO->CellWidth ());
-	cellHeightFLD->Float (layerRec,gridIO->CellHeight ());
+		{ delete gridIF; return ((DBObjData *) NULL); }
+	rowNumFLD->Int (layerRec,gridIF->RowNum ());
+	colNumFLD->Int (layerRec,gridIF->ColNum ());
+	cellWidthFLD->Float  (layerRec,gridIF->CellWidth ());
+	cellHeightFLD->Float (layerRec,gridIF->CellHeight ());
 
 	valueTypeFLD->Int (layerRec,valueType);
 	valueSizeFLD->Int (layerRec,valueSize);
@@ -101,8 +101,8 @@ DBObjData *DBGridToGrid (DBObjData *srcGridData,DBInt type, DBInt valueType, DBI
 		grdData->Flags (DBDataFlagDispModeContShadeSets,DBClear);
 		grdData->Flags (srcGridData->Flags () & DBDataFlagDispModeContShadeSets,DBSet);
 		}
-	if ((dataRec = new DBObjRecord (layerRec->Name (),gridIO->ColNum () * gridIO->RowNum () * valueSize,valueSize)) == (DBObjRecord *) NULL)
-		{ delete gridIO; return ((DBObjData *) NULL); }
+	if ((dataRec = new DBObjRecord (layerRec->Name (),gridIF->ColNum () * gridIF->RowNum () * valueSize,valueSize)) == (DBObjRecord *) NULL)
+		{ delete gridIF; return ((DBObjData *) NULL); }
 	(grdData->Arrays ())->Add (dataRec);
 	layerFLD->Record (layerRec,dataRec);
 
@@ -111,7 +111,7 @@ DBObjData *DBGridToGrid (DBObjData *srcGridData,DBInt type, DBInt valueType, DBI
 		itemTable->Add (layerRec->Name ());
 		DBObjTableField *missingValueFLD	= itemTable->Field (DBrNMissingValue);
 		if (srcGridData->Type () == type)
-				missingValueFLD->Float (itemTable->Item (layerRec->Name ()),gridIO->MissingValue ());
+				missingValueFLD->Float (itemTable->Item (layerRec->Name ()),gridIF->MissingValue ());
 		else	missingValueFLD->Float (itemTable->Item (layerRec->Name ()),DBDefaultMissingFloatVal);
 		}
 	else
@@ -126,7 +126,7 @@ DBObjData *DBGridToGrid (DBObjData *srcGridData,DBInt type, DBInt valueType, DBI
 		backgroundFLD->Int (symbolRec,0);
 		styleFLD->Int (symbolRec,0);
 		}
-	delete gridIO;
+	delete gridIF;
 	return (grdData);
 	}
 
@@ -224,7 +224,7 @@ DBInt DBGridAppend (DBObjData *grdData, DBObjData *appData)
 	DBFloat gridValue;
 	DBPosition pos;
 	DBCoordinate coord;
-	DBGridIO *grdIO, *appIO;
+	DBGridIF *gridIF, *appIF;
 	DBObjRecord *grdLayerRec, *appLayerRec;
 
 	if (((grdData->Type () != DBTypeGridDiscrete) && (grdData->Type () != DBTypeGridContinuous)) ||
@@ -232,25 +232,25 @@ DBInt DBGridAppend (DBObjData *grdData, DBObjData *appData)
 		(grdData->Type () != appData->Type ()))
 		return (DBFault);
 
-	grdIO = new DBGridIO (grdData);
-	appIO = new DBGridIO (appData);
+	gridIF = new DBGridIF (grdData);
+	appIF = new DBGridIF (appData);
 
-	for (appLayerID = 0;appLayerID < appIO->LayerNum ();++appLayerID)
+	for (appLayerID = 0;appLayerID < appIF->LayerNum ();++appLayerID)
 		{
-		appLayerRec = appIO->Layer (appLayerID);
-		grdLayerRec = grdIO->AddLayer (appLayerRec->Name ());
+		appLayerRec = appIF->Layer (appLayerID);
+		grdLayerRec = gridIF->AddLayer (appLayerRec->Name ());
 		switch (grdData->Type ())
 			{
 			case DBTypeGridContinuous:
-				for (pos.Row = 0;pos.Row < grdIO->RowNum ();++pos.Row)
-					for (pos.Col = 0;pos.Col < grdIO->ColNum ();++pos.Col)
+				for (pos.Row = 0;pos.Row < gridIF->RowNum ();++pos.Row)
+					for (pos.Col = 0;pos.Col < gridIF->ColNum ();++pos.Col)
 						{
-					 	grdIO->Pos2Coord (pos,coord);
-						if (appIO->Value (appLayerRec,coord,&gridValue))
-								grdIO->Value (grdLayerRec,pos,gridValue);
-						else	grdIO->Value (grdLayerRec,pos,grdIO->MissingValue());
+					 	gridIF->Pos2Coord (pos,coord);
+						if (appIF->Value (appLayerRec,coord,&gridValue))
+								gridIF->Value (grdLayerRec,pos,gridValue);
+						else	gridIF->Value (grdLayerRec,pos,gridIF->MissingValue());
 						}
-				grdIO->RecalcStats (grdLayerRec);
+				gridIF->RecalcStats (grdLayerRec);
 				break;
 			case DBTypeGridDiscrete:
 				{
@@ -263,11 +263,11 @@ DBInt DBGridAppend (DBObjData *grdData, DBObjData *appData)
 				DBObjRecord *symRec = (grdData->Table (DBrNSymbols))->Item ();
 				DBObjRecord *appRec, *grdRec;
 
-				for (pos.Row = 0;pos.Row < grdIO->RowNum ();++pos.Row)
-					for (pos.Col = 0;pos.Col < grdIO->ColNum ();++pos.Col)
+				for (pos.Row = 0;pos.Row < gridIF->RowNum ();++pos.Row)
+					for (pos.Col = 0;pos.Col < gridIF->ColNum ();++pos.Col)
 						{
-						grdIO->Pos2Coord (pos,coord);
-						if ((appRec = appIO->GridItem (appLayerRec,coord)) != (DBObjRecord *) NULL)
+						gridIF->Pos2Coord (pos,coord);
+						if ((appRec = appIF->GridItem (appLayerRec,coord)) != (DBObjRecord *) NULL)
 							{
 							for (tblRecID = 0;tblRecID  < grdTable->ItemNum ();++tblRecID)
 								{
@@ -280,15 +280,15 @@ DBInt DBGridAppend (DBObjData *grdData, DBObjData *appData)
 								grdValueFLD->Int (grdRec,appValueFLD->Int (appRec));
 								grdSymbolFLD->Record (grdRec,symRec);
 								}
-							grdIO->Value (grdLayerRec,pos,grdRec->RowID ());
+							gridIF->Value (grdLayerRec,pos,grdRec->RowID ());
 							}
-						else	grdIO->Value (grdLayerRec,pos, DBFault);
+						else	gridIF->Value (grdLayerRec,pos, DBFault);
 						}
-				grdIO->DiscreteStats ();
+				gridIF->DiscreteStats ();
 				} break;
 			}
 		}
-	delete grdIO;
-	delete appIO;
+	delete gridIF;
+	delete appIF;
 	return (DBSuccess);
 	}

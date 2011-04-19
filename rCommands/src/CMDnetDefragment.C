@@ -13,7 +13,7 @@ balazs.fekete@unh.edu
 #include <cm.h>
 #include <math.h>
 #include <DB.H>
-#include <DBio.H>
+#include <DBif.H>
 #include <RG.H>
 
 int main (int argc,char *argv [])
@@ -193,23 +193,23 @@ DBInt RGlibNetworkDefragment (DBObjData *netData, DBObjData *elevData,DBFloat ma
 	DBPosition pos, cellPos, pourPos;
 	DBCoordinate coord;
 	DBObjRecord *layerRec, *cellRec, *pourCell, *mouthCell, *toCell, *fromCell;
-	DBNetworkIO *netIO = new DBNetworkIO (netData);
-	DBGridIO    *grdIO = new DBGridIO (elevData);
+	DBNetworkIF *netIF = new DBNetworkIF (netData);
+	DBGridIF    *gridIF = new DBGridIF (elevData);
 
-	if ((basinIDs  = (DBInt *)   calloc (netIO->BasinNum (),sizeof (DBInt)))   == (DBInt *)   NULL)
+	if ((basinIDs  = (DBInt *)   calloc (netIF->BasinNum (),sizeof (DBInt)))   == (DBInt *)   NULL)
 		{ perror ("Memory allocation erron in: RGlibNetworkDefragment ()"); return (CMfailed); }
-	if ((_RGlibNetworkBasinIDX  = (DBInt *)   calloc (netIO->BasinNum (),sizeof (DBInt)))   == (DBInt *)   NULL)
+	if ((_RGlibNetworkBasinIDX  = (DBInt *)   calloc (netIF->BasinNum (),sizeof (DBInt)))   == (DBInt *)   NULL)
 		{ perror ("Memory allocation erron in: RGlibNetworkDefragment ()"); free (basinIDs); return (CMfailed); }
-	if ((_RGlibNetworkBasinElev = (DBFloat *) calloc (netIO->BasinNum (),sizeof (DBFloat))) == (DBFloat *) NULL)
+	if ((_RGlibNetworkBasinElev = (DBFloat *) calloc (netIF->BasinNum (),sizeof (DBFloat))) == (DBFloat *) NULL)
 		{ perror ("Memory allocation erron in: RGlibNetworkDefragment ()"); free (basinIDs); free (_RGlibNetworkBasinIDX); return (CMfailed); }
-	layerRec = grdIO->Layer (0);
-	for (basin = 0;basin < netIO->BasinNum ();basin++)
+	layerRec = gridIF->Layer (0);
+	for (basin = 0;basin < netIF->BasinNum ();basin++)
 		{
-		mouthCell = netIO->MouthCell (netIO->Basin (basin));
-		prevDir = netIO->CellDirection (mouthCell);
-		if ((prevDir == 0x0) && (grdIO->Value (layerRec, netIO->Center (mouthCell), &pourElev) != false))
+		mouthCell = netIF->MouthCell (netIF->Basin (basin));
+		prevDir = netIF->CellDirection (mouthCell);
+		if ((prevDir == 0x0) && (gridIF->Value (layerRec, netIF->Center (mouthCell), &pourElev) != false))
 			{
-			cellPos = netIO->CellPosition (mouthCell);
+			cellPos = netIF->CellPosition (mouthCell);
 			for (dir = 0;dir < 8;dir++)
 				{
 				pos = cellPos;
@@ -217,46 +217,46 @@ DBInt RGlibNetworkDefragment (DBObjData *netData, DBObjData *elevData,DBFloat ma
    			else if (((0x01 << dir) == DBNetDirSE) || ((0x01 << dir) == DBNetDirS) || ((0x01 << dir) == DBNetDirSW)) pos.Row--;
 				if      (((0x01 << dir) == DBNetDirNE) || ((0x01 << dir) == DBNetDirE) || ((0x01 << dir) == DBNetDirSE)) pos.Col++;
 				else if (((0x01 << dir) == DBNetDirNW) || ((0x01 << dir) == DBNetDirW) || ((0x01 << dir) == DBNetDirSW)) pos.Col--;
-				if (netIO->Cell (pos) != (DBObjRecord *) NULL) continue;
-				netIO->Pos2Coord (pos,coord);
-				if (grdIO->Value (layerRec,coord,&elev) == false) elev = grdIO->Minimum ();
+				if (netIF->Cell (pos) != (DBObjRecord *) NULL) continue;
+				netIF->Pos2Coord (pos,coord);
+				if (gridIF->Value (layerRec,coord,&elev) == false) elev = gridIF->Minimum ();
 				if (pourElev > elev) { pourElev = elev; prevDir = 0x01 << dir; }
 				}
-			if (prevDir != 0x0) netIO->CellDirection (mouthCell,prevDir);
+			if (prevDir != 0x0) netIF->CellDirection (mouthCell,prevDir);
 			}
 		}
 
-	if (maxClimb <= 0.0) maxClimb = grdIO->Maximum () - grdIO->Minimum ();
+	if (maxClimb <= 0.0) maxClimb = gridIF->Maximum () - gridIF->Minimum ();
 	do	{
 		count = 0;
-		for (basin = 0;basin < netIO->BasinNum ();basin++)
+		for (basin = 0;basin < netIF->BasinNum ();basin++)
 			{
 			basinIDs [basin] = basin;
 			_RGlibNetworkBasinIDX  [basin] = basin;
-			mouthCell = netIO->MouthCell (netIO->Basin (basin));
-			if (grdIO->Value (layerRec,netIO->Center (mouthCell),&elev) &&
-			    (netIO->CellDirection (mouthCell) == 0x0))
+			mouthCell = netIF->MouthCell (netIF->Basin (basin));
+			if (gridIF->Value (layerRec,netIF->Center (mouthCell),&elev) &&
+			    (netIF->CellDirection (mouthCell) == 0x0))
 				  _RGlibNetworkBasinElev [basin] = elev;
-			else _RGlibNetworkBasinElev [basin] = grdIO->Minimum ();
+			else _RGlibNetworkBasinElev [basin] = gridIF->Minimum ();
 			}
-		qsort (_RGlibNetworkBasinIDX,netIO->BasinNum (),sizeof (DBInt),_RGlibNetworkDefragCompare);
-		for (basin = 0;basin <  netIO->BasinNum ();basin++)
+		qsort (_RGlibNetworkBasinIDX,netIF->BasinNum (),sizeof (DBInt),_RGlibNetworkDefragCompare);
+		for (basin = 0;basin <  netIF->BasinNum ();basin++)
 			{
 			cBasinID  = _RGlibNetworkBasinIDX  [basin];
 			if (basinIDs [_RGlibNetworkBasinIDX  [basin]] != cBasinID) printf ("Ezt nem ertem\n");
 			pourElev = _RGlibNetworkBasinElev [cBasinID] + maxClimb;
-			if (CMmathEqualValues (_RGlibNetworkBasinElev [cBasinID],grdIO->Minimum ())) continue;
-			toCell = pourCell = mouthCell = netIO->MouthCell (netIO->Basin (cBasinID));
-			if (netIO->CellDirection (mouthCell) != 0x0)                continue;
-			if (netIO->BasinArea (netIO->Basin (cBasinID)) >= maxBasin) continue;
+			if (CMmathEqualValues (_RGlibNetworkBasinElev [cBasinID],gridIF->Minimum ())) continue;
+			toCell = pourCell = mouthCell = netIF->MouthCell (netIF->Basin (cBasinID));
+			if (netIF->CellDirection (mouthCell) != 0x0)                continue;
+			if (netIF->BasinArea (netIF->Basin (cBasinID)) >= maxBasin) continue;
 
 			pourDir = 0x0;
-			cellNum  = mouthCell->RowID () + netIO->CellBasinCells (mouthCell);
+			cellNum  = mouthCell->RowID () + netIF->CellBasinCells (mouthCell);
 			for (cellID = mouthCell->RowID ();cellID < cellNum;cellID++)
 				{
-				cellRec = netIO->Cell (cellID);
-				if (grdIO->Value (layerRec, netIO->Center (cellRec), &elev) == false) continue;
-				cellPos = netIO->CellPosition (cellRec);
+				cellRec = netIF->Cell (cellID);
+				if (gridIF->Value (layerRec, netIF->Center (cellRec), &elev) == false) continue;
+				cellPos = netIF->CellPosition (cellRec);
 				if (pourElev > elev)
 					for (dir = 0;dir < 8;dir++)
 						{
@@ -265,12 +265,12 @@ DBInt RGlibNetworkDefragment (DBObjData *netData, DBObjData *elevData,DBFloat ma
    					else if (((0x01 << dir) == DBNetDirSE) || ((0x01 << dir) == DBNetDirS) || ((0x01 << dir) == DBNetDirSW)) pos.Row--;
 						if      (((0x01 << dir) == DBNetDirNE) || ((0x01 << dir) == DBNetDirE) || ((0x01 << dir) == DBNetDirSE)) pos.Col++;
 						else if (((0x01 << dir) == DBNetDirNW) || ((0x01 << dir) == DBNetDirW) || ((0x01 << dir) == DBNetDirSW)) pos.Col--;
-						if (((fromCell = netIO->Cell (pos)) == (DBObjRecord *) NULL) ||
-						    (((nBasinID = basinIDs [netIO->CellBasinID (fromCell) - 1]) != cBasinID) &&
+						if (((fromCell = netIF->Cell (pos)) == (DBObjRecord *) NULL) ||
+						    (((nBasinID = basinIDs [netIF->CellBasinID (fromCell) - 1]) != cBasinID) &&
 							  (_RGlibNetworkBasinElev [nBasinID] <=  _RGlibNetworkBasinElev [cBasinID])))
 							{
-							netIO->Pos2Coord (pos,coord);
-							if (grdIO->Value (layerRec,coord,&elev2) != false) elev = elev > elev2 ? elev : elev2;
+							netIF->Pos2Coord (pos,coord);
+							if (gridIF->Value (layerRec,coord,&elev2) != false) elev = elev > elev2 ? elev : elev2;
 							if (pourElev > elev)
 								{
 								pourElev = elev;
@@ -282,38 +282,38 @@ DBInt RGlibNetworkDefragment (DBObjData *netData, DBObjData *elevData,DBFloat ma
 						}
 				}
 			if (pourDir == 0x0) continue;
-			if ((pourCell = netIO->Cell (pourPos)) != (DBObjRecord *) NULL)
+			if ((pourCell = netIF->Cell (pourPos)) != (DBObjRecord *) NULL)
 				{
-				nBasinID = basinIDs [netIO->CellBasinID (pourCell) - 1];
-				cellRec = netIO->MouthCell (netIO->Basin (nBasinID));
-				if ((netIO->CellDirection (cellRec) == 0x0) &&
-				    ((grdIO->Value (layerRec,netIO->Center (cellRec),&elev) != false) &&
+				nBasinID = basinIDs [netIF->CellBasinID (pourCell) - 1];
+				cellRec = netIF->MouthCell (netIF->Basin (nBasinID));
+				if ((netIF->CellDirection (cellRec) == 0x0) &&
+				    ((gridIF->Value (layerRec,netIF->Center (cellRec),&elev) != false) &&
 					 (_RGlibNetworkBasinElev [cBasinID] < elev))) continue;
 				}
 			if (toCell != mouthCell)
 				{
-				if ((fromCell = netIO->ToCell (toCell)) != (DBObjRecord *) NULL)
+				if ((fromCell = netIF->ToCell (toCell)) != (DBObjRecord *) NULL)
 					{
-					prevDir = netIO->CellDirection (toCell);
+					prevDir = netIF->CellDirection (toCell);
 					while (fromCell != mouthCell)
 						{
 						dir = (((prevDir >> 0x04) | (prevDir << 0x04)) & 0xff);
 						cellRec = fromCell;
-						fromCell = netIO->ToCell (cellRec);
-						prevDir = netIO->CellDirection (cellRec);
-						netIO->CellDirection (cellRec,dir);
+						fromCell = netIF->ToCell (cellRec);
+						prevDir = netIF->CellDirection (cellRec);
+						netIF->CellDirection (cellRec,dir);
 						}
 					dir = (((prevDir >> 0x04) | (prevDir << 0x04)) & 0xff);
-					netIO->CellDirection (mouthCell,dir);
+					netIF->CellDirection (mouthCell,dir);
 					}
 				}
-			netIO->CellDirection (toCell, pourDir);
+			netIF->CellDirection (toCell, pourDir);
 			if (pourCell != (DBObjRecord *) NULL)
-				for (basinID = 0;basinID < netIO->BasinNum ();++basinID)
+				for (basinID = 0;basinID < netIF->BasinNum ();++basinID)
 					if (cBasinID == basinIDs [basinID]) basinIDs [basinID] = nBasinID;
 			count++;
 			}
-		if (count > 0) { printf ("Building [%d]\n", count); netIO->Build (); if (save) netData->Write (netData->FileName ()); }
+		if (count > 0) { printf ("Building [%d]\n", count); netIF->Build (); if (save) netData->Write (netData->FileName ()); }
 		} while (count > 0);
 	free (basinIDs);
 	free (_RGlibNetworkBasinIDX);

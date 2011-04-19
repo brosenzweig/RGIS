@@ -11,9 +11,9 @@ balazs.fekete@unh.edu
 *******************************************************************************/
 
 #include <DB.H>
-#include <DBio.H>
+#include <DBif.H>
 
-DBVPolyIO::DBVPolyIO (DBObjData *data) : DBVLineIO (data,data->Table (DBrNContours))
+DBVPolyIF::DBVPolyIF (DBObjData *data) : DBVLineIF (data,data->Table (DBrNContours))
 
 	{
 	DBObjTable *items = data->Table (DBrNItems);
@@ -34,10 +34,10 @@ DBVPolyIO::DBVPolyIO (DBObjData *data) : DBVLineIO (data,data->Table (DBrNContou
 	for (polyRec = FirstItem ();polyRec != (DBObjRecord *) NULL;polyRec = NextItem ())
 		MaxVertexNumVAR = MaxVertexNumVAR > VertexNum (polyRec) ? MaxVertexNumVAR : VertexNum (polyRec);
 	if ((CoordsPTR = (DBCoordinate *) malloc (MaxVertexNumVAR * sizeof (DBCoordinate))) == (DBCoordinate *) NULL)
-		{ perror ("Memory Allocation Error in: DBVPolyIO::DBVPolyIO ()"); }
+		{ perror ("Memory Allocation Error in: DBVPolyIF::DBVPolyIF ()"); }
 	}
 
-DBCoordinate *DBVPolyIO::Vertexes (const DBObjRecord *polyRec) const
+DBCoordinate *DBVPolyIF::Vertexes (const DBObjRecord *polyRec) const
 
 	{
 	DBInt vertex, i, line;
@@ -58,10 +58,10 @@ DBCoordinate *DBVPolyIO::Vertexes (const DBObjRecord *polyRec) const
 				nodeRec = FromNode (lineRec);
 				}
 			CoordsPTR [vertex++] = NodeCoord (nodeRec);
-			if (DBVLineIO::VertexNum(lineRec) > 0)
+			if (DBVLineIF::VertexNum(lineRec) > 0)
 				{
-				lcoords = DBVLineIO::Vertexes (lineRec);
-				for (i = 0;i < DBVLineIO::VertexNum (lineRec);++i) CoordsPTR [vertex++] = lcoords [i];
+				lcoords = DBVLineIF::Vertexes (lineRec);
+				for (i = 0;i < DBVLineIF::VertexNum (lineRec);++i) CoordsPTR [vertex++] = lcoords [i];
 				}
 			nodeRec = ToNode (lineRec);
 			lineRec = LineNextLine (lineRec);
@@ -75,10 +75,10 @@ DBCoordinate *DBVPolyIO::Vertexes (const DBObjRecord *polyRec) const
 				nodeRec = ToNode (lineRec);
 				}
 			CoordsPTR [vertex++] = NodeCoord (nodeRec);
-			if (DBVLineIO::VertexNum (lineRec) > 0)
+			if (DBVLineIF::VertexNum (lineRec) > 0)
 				{
-				lcoords = (DBCoordinate *) (DBVLineIO::Vertexes (lineRec));
-				for (i = DBVLineIO::VertexNum (lineRec);i > 0;--i) CoordsPTR [vertex++] = lcoords [i - 1];
+				lcoords = (DBCoordinate *) (DBVLineIF::Vertexes (lineRec));
+				for (i = DBVLineIF::VertexNum (lineRec);i > 0;--i) CoordsPTR [vertex++] = lcoords [i - 1];
 				}
 			nodeRec = FromNode (lineRec);
 			lineRec = LinePrevLine (lineRec);
@@ -87,11 +87,11 @@ DBCoordinate *DBVPolyIO::Vertexes (const DBObjRecord *polyRec) const
 	CoordsPTR [vertex++] = NodeCoord (nodeRec);
 	if (nodeRec != firstNodeRec) CoordsPTR [vertex++] = NodeCoord (firstNodeRec); 
 	if (VertexNum (polyRec) != vertex)
-		fprintf (stderr,"Warning in Polygon %d VertexNum [%d %d] in: DBVPolyIO::Vertexes ()\n",polyRec->RowID (), VertexNum (polyRec),vertex);
+		fprintf (stderr,"Warning in Polygon %d VertexNum [%d %d] in: DBVPolyIF::Vertexes ()\n",polyRec->RowID (), VertexNum (polyRec),vertex);
 	return (CoordsPTR);
 	}
 
-void DBVPolyIO::FourColoring ()
+void DBVPolyIF::FourColoring ()
 
 	{
 	char nameStr [DBStringLength];

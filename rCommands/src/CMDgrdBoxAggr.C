@@ -13,7 +13,7 @@ balazs.fekete@unh.edu
 #include <cm.h>
 #include <math.h>
 #include <DB.H>
-#include <DBio.H>
+#include <DBif.H>
 #include <RG.H>
 
 typedef enum { CMDboxAverage, CMDboxMinimum, CMDboxMaximum, CMDboxSum } CMDboxMethod;
@@ -32,7 +32,7 @@ int main (int argc,char *argv [])
 	DBCoordinate coord, cellSize;
 	DBObjData *inData, *outData;
 	DBObjRecord *inLayerRec, *outLayerRec;
-	DBGridIO *inGridIO, *outGridIO;
+	DBGridIF *inGridIF, *outGridIF;
 
 	for (argPos = 1;argPos < argNum; )
 		{
@@ -149,10 +149,10 @@ int main (int argc,char *argv [])
 	if (version == (char *) NULL) version = (char *) "0.01pre";
 	if (shadeSet == DBFault)     shadeSet = DBDataFlagDispModeContGreyScale;
 
-	inGridIO  = new DBGridIO (inData);
+	inGridIF  = new DBGridIF (inData);
 
-	cellSize.X = (DBFloat) kernelSize * inGridIO->CellWidth  ();
-	cellSize.Y = (DBFloat) kernelSize * inGridIO->CellHeight ();
+	cellSize.X = (DBFloat) kernelSize * inGridIF->CellWidth  ();
+	cellSize.Y = (DBFloat) kernelSize * inGridIF->CellHeight ();
 	extent = inData->Extent ();
 	if ((outData = DBGridCreate (title,extent,cellSize)) == (DBObjData *) NULL) return (CMfailed);
 	outData->Document (DBDocSubject,subject);
@@ -161,89 +161,89 @@ int main (int argc,char *argv [])
 	outData->Flags (DBDataFlagDispModeContShadeSets,DBClear);
 	outData->Flags (shadeSet,DBSet);
 	outData->Projection (inData->Projection());
-	outGridIO = new DBGridIO (outData);
-	outGridIO->MissingValue (inGridIO->MissingValue ());
-	if ((sumArea = (DBFloat *) calloc (outGridIO->ColNum () * outGridIO->RowNum (), sizeof (DBFloat))) == (DBFloat *)   NULL)
+	outGridIF = new DBGridIF (outData);
+	outGridIF->MissingValue (inGridIF->MissingValue ());
+	if ((sumArea = (DBFloat *) calloc (outGridIF->ColNum () * outGridIF->RowNum (), sizeof (DBFloat))) == (DBFloat *)   NULL)
 		{ CMmsgPrint (CMmsgSysError, "Memory allocation error in %s:%d\n",__FILE__,__LINE__); return (CMfailed); }
-	if ((misArea = (DBFloat *) calloc (outGridIO->ColNum () * outGridIO->RowNum (), sizeof (DBFloat))) == (DBFloat *)   NULL)
+	if ((misArea = (DBFloat *) calloc (outGridIF->ColNum () * outGridIF->RowNum (), sizeof (DBFloat))) == (DBFloat *)   NULL)
 		{ CMmsgPrint (CMmsgSysError, "Memory allocation error in %s:%d\n",__FILE__,__LINE__); return (CMfailed); }
-	if ((array   = (DBFloat *) calloc (outGridIO->ColNum () * outGridIO->RowNum (), sizeof (DBFloat))) == (DBFloat *) NULL)
+	if ((array   = (DBFloat *) calloc (outGridIF->ColNum () * outGridIF->RowNum (), sizeof (DBFloat))) == (DBFloat *) NULL)
 		{ CMmsgPrint (CMmsgSysError, "Memory allocation error in %s:%d\n",__FILE__,__LINE__); return (CMfailed); }
 
-	for (layerID = 0;layerID < inGridIO->LayerNum ();++layerID)
+	for (layerID = 0;layerID < inGridIF->LayerNum ();++layerID)
 		{
-		inLayerRec = inGridIO->Layer (layerID);
+		inLayerRec = inGridIF->Layer (layerID);
 		if (layerID == 0)
 			{
-			outLayerRec = outGridIO->Layer (layerID);
-			outGridIO->RenameLayer (outLayerRec,inLayerRec->Name ());
+			outLayerRec = outGridIF->Layer (layerID);
+			outGridIF->RenameLayer (outLayerRec,inLayerRec->Name ());
 			}
 		else
-			outLayerRec = outGridIO->AddLayer (inLayerRec->Name ());
-		for (outPos.Row = 0;outPos.Row < outGridIO->RowNum (); ++outPos.Row)
-			for (outPos.Col = 0;outPos.Col < outGridIO->ColNum ();++outPos.Col)
+			outLayerRec = outGridIF->AddLayer (inLayerRec->Name ());
+		for (outPos.Row = 0;outPos.Row < outGridIF->RowNum (); ++outPos.Row)
+			for (outPos.Col = 0;outPos.Col < outGridIF->ColNum ();++outPos.Col)
 				{
-				sumArea [outPos.Row * outGridIO->ColNum () + outPos.Col] = 0.0;
-				misArea [outPos.Row * outGridIO->ColNum () + outPos.Col] = 0.0;
+				sumArea [outPos.Row * outGridIF->ColNum () + outPos.Col] = 0.0;
+				misArea [outPos.Row * outGridIF->ColNum () + outPos.Col] = 0.0;
 				switch (method)
 					{
 					case CMDboxSum:
 					case CMDboxAverage:
-						array [outPos.Row * outGridIO->ColNum () + outPos.Col] = 0.0;
+						array [outPos.Row * outGridIF->ColNum () + outPos.Col] = 0.0;
 						break;
 					case CMDboxMinimum:
-						array [outPos.Row * outGridIO->ColNum () + outPos.Col] =  HUGE_VAL;
+						array [outPos.Row * outGridIF->ColNum () + outPos.Col] =  HUGE_VAL;
 						break;
 					case CMDboxMaximum:
-						array [outPos.Row * outGridIO->ColNum () + outPos.Col] = -HUGE_VAL;
+						array [outPos.Row * outGridIF->ColNum () + outPos.Col] = -HUGE_VAL;
 						break;
 					}
 				}
-		for (inPos.Row = 0;inPos.Row < inGridIO->RowNum ();++inPos.Row)
-			for (inPos.Col = 0;inPos.Col < inGridIO->ColNum ();++inPos.Col)
+		for (inPos.Row = 0;inPos.Row < inGridIF->RowNum ();++inPos.Row)
+			for (inPos.Col = 0;inPos.Col < inGridIF->ColNum ();++inPos.Col)
 				{
-			 	inGridIO->Pos2Coord  (inPos,coord);
-			 	outGridIO->Coord2Pos (coord,outPos);
-			 	cellArea = inGridIO->CellArea(inPos);
-				if (inGridIO->Value (inLayerRec,inPos,&var))
+			 	inGridIF->Pos2Coord  (inPos,coord);
+			 	outGridIF->Coord2Pos (coord,outPos);
+			 	cellArea = inGridIF->CellArea(inPos);
+				if (inGridIF->Value (inLayerRec,inPos,&var))
 					{
-					sumArea [outPos.Row * outGridIO->ColNum () + outPos.Col] += cellArea;
+					sumArea [outPos.Row * outGridIF->ColNum () + outPos.Col] += cellArea;
 					switch (method)
 						{
 						case CMDboxSum:
 						case CMDboxAverage:
-							array [outPos.Row * outGridIO->ColNum () + outPos.Col] += var * cellArea;
+							array [outPos.Row * outGridIF->ColNum () + outPos.Col] += var * cellArea;
 							break;
 						case CMDboxMinimum:
-							array [outPos.Row * outGridIO->ColNum () + outPos.Col] = var < array [outPos.Row * outGridIO->ColNum () + outPos.Col] ?
-						                                                             var : array [outPos.Row * outGridIO->ColNum () + outPos.Col];
+							array [outPos.Row * outGridIF->ColNum () + outPos.Col] = var < array [outPos.Row * outGridIF->ColNum () + outPos.Col] ?
+						                                                             var : array [outPos.Row * outGridIF->ColNum () + outPos.Col];
 							break;
 						case CMDboxMaximum:
-							array [outPos.Row * outGridIO->ColNum () + outPos.Col] = var > array [outPos.Row * outGridIO->ColNum () + outPos.Col] ?
-						                                                             var : array [outPos.Row * outGridIO->ColNum () + outPos.Col];
+							array [outPos.Row * outGridIF->ColNum () + outPos.Col] = var > array [outPos.Row * outGridIF->ColNum () + outPos.Col] ?
+						                                                             var : array [outPos.Row * outGridIF->ColNum () + outPos.Col];
 							break;
 						}
 					}
 				else
-					misArea [outPos.Row * outGridIO->ColNum () + outPos.Col] += cellArea;
+					misArea [outPos.Row * outGridIF->ColNum () + outPos.Col] += cellArea;
 				}
-		for (outPos.Row = 0;outPos.Row < outGridIO->RowNum (); ++outPos.Row)
-			for (outPos.Col = 0;outPos.Col < outGridIO->ColNum ();++outPos.Col)
+		for (outPos.Row = 0;outPos.Row < outGridIF->RowNum (); ++outPos.Row)
+			for (outPos.Col = 0;outPos.Col < outGridIF->ColNum ();++outPos.Col)
 				{
-				if (sumArea [outPos.Row * outGridIO->ColNum () + outPos.Col] > 0.0)
+				if (sumArea [outPos.Row * outGridIF->ColNum () + outPos.Col] > 0.0)
 					{
-					var = array [outPos.Row * outGridIO->ColNum () + outPos.Col];
+					var = array [outPos.Row * outGridIF->ColNum () + outPos.Col];
 					if (method == CMDboxAverage)
-						var = var / (DBFloat) sumArea [outPos.Row * outGridIO->ColNum () + outPos.Col];
+						var = var / (DBFloat) sumArea [outPos.Row * outGridIF->ColNum () + outPos.Col];
 					else if (method == CMDboxSum)
-						var = var * (misArea [outPos.Row * outGridIO->ColNum () + outPos.Col] + sumArea [outPos.Row * outGridIO->ColNum () + outPos.Col])
-						    / (DBFloat) sumArea [outPos.Row * outGridIO->ColNum () + outPos.Col];
-					outGridIO->Value (outLayerRec,outPos,var);
+						var = var * (misArea [outPos.Row * outGridIF->ColNum () + outPos.Col] + sumArea [outPos.Row * outGridIF->ColNum () + outPos.Col])
+						    / (DBFloat) sumArea [outPos.Row * outGridIF->ColNum () + outPos.Col];
+					outGridIF->Value (outLayerRec,outPos,var);
 					}
 				else
-					outGridIO->Value (outLayerRec,outPos,outGridIO->MissingValue ());
+					outGridIF->Value (outLayerRec,outPos,outGridIF->MissingValue ());
 				}
-		outGridIO->RecalcStats (outLayerRec);
+		outGridIF->RecalcStats (outLayerRec);
 		}
 
 	ret = (argNum > 2) && (strcmp (argv [2],"-") != 0) ? outData->Write (argv [2]) : outData->Write (stdout);

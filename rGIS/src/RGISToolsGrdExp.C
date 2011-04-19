@@ -23,12 +23,12 @@ int _RGISToolsGridExportARCInfo (DBObjData *data,char *selection)
 	char attribDef   		[FILENAME_MAX];
 	char attribData   	[FILENAME_MAX];
 	char amlFile    [FILENAME_MAX];
-	DBGridIO *gridIO = new DBGridIO (data);
+	DBGridIF *gridIF = new DBGridIF (data);
 	DBObjRecord *layerRec;
 
-	for (layerID = 0;layerID < gridIO->LayerNum ();++layerID)
+	for (layerID = 0;layerID < gridIF->LayerNum ();++layerID)
 		{
-		layerRec = gridIO->Layer (layerID);
+		layerRec = gridIF->Layer (layerID);
 		sprintf (asciiGrid,"%s/asciigrid%d.tmp",selection,layerID);
 		if (DBExportARCGridLayer (data,layerRec,asciiGrid) == DBFault) return (DBFault);
 		}
@@ -45,9 +45,9 @@ int _RGISToolsGridExportARCInfo (DBObjData *data,char *selection)
 	sprintf (amlFile,"%s/grdcreate.aml",selection);
 	if ((file = fopen (amlFile,"w")) == NULL)
 		{
-		for (layerID = 0;layerID < gridIO->LayerNum ();++layerID)
+		for (layerID = 0;layerID < gridIF->LayerNum ();++layerID)
 			{
-			layerRec = gridIO->Layer (layerID);
+			layerRec = gridIF->Layer (layerID);
 			sprintf (asciiGrid,"%s/asciigrid%d.tmp",selection,layerID);
 			unlink (asciiGrid);
 			}
@@ -56,9 +56,9 @@ int _RGISToolsGridExportARCInfo (DBObjData *data,char *selection)
 		return (DBFault);
 		}
 	fprintf (file,"&workspace %s\n",selection);
-	for (layerID = 0;layerID < gridIO->LayerNum ();++layerID)
+	for (layerID = 0;layerID < gridIF->LayerNum ();++layerID)
 		{
-		layerRec = gridIO->Layer (layerID);
+		layerRec = gridIF->Layer (layerID);
 		strncpy (coverName,layerRec->Name (),sizeof (coverName) - 1);
 		coverName	[sizeof (coverName) - 1] = '\0';
 		for (i = 0;i < (DBInt) strlen (coverName);++i) if (coverName [i] == '.') coverName [i] = '\0';
@@ -94,9 +94,9 @@ int _RGISToolsGridExportARCInfo (DBObjData *data,char *selection)
 		sprintf (command,getenv ("GHAAS_ARC"),amlFile);
 
 		system (command);
-		for (layerID = 0;layerID < gridIO->LayerNum ();++layerID)
+		for (layerID = 0;layerID < gridIF->LayerNum ();++layerID)
 			{
-			layerRec = gridIO->Layer (layerID);
+			layerRec = gridIF->Layer (layerID);
 			sprintf (asciiGrid,"%s/asciigrid%d.tmp",selection,layerID);
 			unlink (asciiGrid);
 			}

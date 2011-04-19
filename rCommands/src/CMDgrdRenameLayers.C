@@ -17,7 +17,7 @@ balazs.fekete@unh.edu
 
 #include <cm.h>
 #include <DB.H>
-#include <DBio.H>
+#include <DBif.H>
 #include <RG.H>
 
 int main(int argc, char* argv[])
@@ -28,7 +28,7 @@ int main(int argc, char* argv[])
 	int shadeSet        = DBDataFlagDispModeContGreyScale;
 	bool changeShadeSet = false;
 	DBObjData *dbData;
-	DBGridIO *gridIO;
+	DBGridIF *gridIF;
 	class RenameCLS
 		{
 		public:
@@ -46,11 +46,11 @@ int main(int argc, char* argv[])
 				{
 				if (Next != (RenameCLS *) NULL) { Next->DeleteLink (); delete Next; }
 				}
-			void RenameLayer (DBGridIO *gridIO)
+			void RenameLayer (DBGridIF *gridIF)
 				{
 				DBObjRecord *layerRec;
-				if ((layerRec = gridIO->Layer (LayerID - 1)) != (DBObjRecord *) NULL) gridIO->RenameLayer (layerRec,LayerName);
-				if (Next != (RenameCLS *) NULL) Next->RenameLayer (gridIO);
+				if ((layerRec = gridIF->Layer (LayerID - 1)) != (DBObjRecord *) NULL) gridIF->RenameLayer (layerRec,LayerName);
+				if (Next != (RenameCLS *) NULL) Next->RenameLayer (gridIF);
 				}
 		} *renameCLS = (RenameCLS *) NULL;
   
@@ -136,9 +136,9 @@ int main(int argc, char* argv[])
 		if (renameCLS != (RenameCLS *) NULL) { renameCLS->DeleteLink (); delete renameCLS; }
 		return (CMfailed);
 		}
-	gridIO = new DBGridIO (dbData);
+	gridIF = new DBGridIF (dbData);
 
-	if (renameCLS != (RenameCLS *) NULL) renameCLS->RenameLayer (gridIO);
+	if (renameCLS != (RenameCLS *) NULL) renameCLS->RenameLayer (gridIF);
 
 	if (changeShadeSet && (dbData->Type () == DBTypeGridContinuous))
 		{
@@ -149,7 +149,7 @@ int main(int argc, char* argv[])
 
 	if (renameCLS != (RenameCLS *) NULL) { renameCLS->DeleteLink (); delete renameCLS; }
 
-	delete gridIO;
+	delete gridIF;
 	delete dbData;
 	if (verbose) RGlibPauseClose ();
 	return (ret);

@@ -17,7 +17,7 @@ void _RGISUserFuncionNetwork (DBObjData *data,UI2DView *view,XEvent *event)
 
 	{
 	DBInt sX, sY, redraw = false;
-	DBNetworkIO *netIO;
+	DBNetworkIF *netIF;
 	DBCoordinate coord;
 	DBObjRecord *cellRec, *basinRec;
 	void _RGISUserFuncionQuery (DBObjData *,UI2DView *,XEvent *);
@@ -33,7 +33,7 @@ void _RGISUserFuncionNetwork (DBObjData *data,UI2DView *view,XEvent *event)
 	sY = event->xbutton.y;
 	view->Window2Map  (sX,sY, &coord.X, &coord.Y);
 
-	netIO = new DBNetworkIO (data);
+	netIF = new DBNetworkIF (data);
 	switch (data->Flags () & DBDataFlagUserModeFlags)
 		{
 		case DBDataFlagUserModeSelect:
@@ -42,24 +42,24 @@ void _RGISUserFuncionNetwork (DBObjData *data,UI2DView *view,XEvent *event)
 			DBRegion extent;
 			UITable *tableView;
 
-			if ((cellRec = netIO->Cell (coord)) == (DBObjRecord *) NULL)
+			if ((cellRec = netIF->Cell (coord)) == (DBObjRecord *) NULL)
 				{ UIMessage ((char *) "Cell Does not Exists!"); return; }
-			for (basinID = 0;basinID < netIO->BasinNum ();++basinID)
+			for (basinID = 0;basinID < netIF->BasinNum ();++basinID)
 				{
-				basinRec = netIO->Basin (basinID);
+				basinRec = netIF->Basin (basinID);
 				if ((basinRec->Flags () & DBObjectFlagSelected) == DBObjectFlagSelected)
 					{
 					data->SelectObject (basinRec,DBClear);
 					extent.Expand (data->Extent (basinRec));
 					}
 				}
-			for (cellID = 0;cellID < netIO->CellNum ();++cellID)
+			for (cellID = 0;cellID < netIF->CellNum ();++cellID)
 				{
-				cellRec = netIO->Cell (cellID);
+				cellRec = netIF->Cell (cellID);
 				if ((cellRec->Flags () & DBObjectFlagSelected) == DBObjectFlagSelected)
 					{
-					extent.Expand (netIO->Center (cellRec) + (netIO->CellSize () / 2.0));
-					extent.Expand (netIO->Center (cellRec) - (netIO->CellSize () / 2.0));
+					extent.Expand (netIF->Center (cellRec) + (netIF->CellSize () / 2.0));
+					extent.Expand (netIF->Center (cellRec) - (netIF->CellSize () / 2.0));
 					cellRec->Flags (DBObjectFlagSelected,DBClear);
 					}
 				}
@@ -68,20 +68,20 @@ void _RGISUserFuncionNetwork (DBObjData *data,UI2DView *view,XEvent *event)
 			if ((tableView = (UITable *) data->Display (UITableName (data,data->Table (DBrNCells)))) != (UITable *) NULL)
 				tableView->Draw ();
 			UI2DViewRedrawAll (extent);
-			cellRec = netIO->Cell (coord);
+			cellRec = netIF->Cell (coord);
 			switch (data->Flags () & DBDataFlagSelectMode)
 				{
-				case DBDataFlagSelectMode:	netIO->DownStreamSearch	(cellRec,(DBNetworkACTION) DBNetworkSelect);	break;
-				default:							netIO->UpStreamSearch	(cellRec,(DBNetworkACTION) DBNetworkSelect);	break;
+				case DBDataFlagSelectMode:	netIF->DownStreamSearch	(cellRec,(DBNetworkACTION) DBNetworkSelect);	break;
+				default:							netIF->UpStreamSearch	(cellRec,(DBNetworkACTION) DBNetworkSelect);	break;
 				}
 			extent.Initialize ();
-			for (cellID = 0;cellID < netIO->CellNum ();++cellID)
+			for (cellID = 0;cellID < netIF->CellNum ();++cellID)
 				{
-				cellRec = netIO->Cell (cellID);
+				cellRec = netIF->Cell (cellID);
 				if ((cellRec->Flags () & DBObjectFlagSelected) == DBObjectFlagSelected)
 					{
-					extent.Expand (netIO->Center (cellRec) + (netIO->CellSize () / 2.0));
-					extent.Expand (netIO->Center (cellRec) - (netIO->CellSize () / 2.0));
+					extent.Expand (netIF->Center (cellRec) + (netIF->CellSize () / 2.0));
+					extent.Expand (netIF->Center (cellRec) - (netIF->CellSize () / 2.0));
 					}
 				}
 			UI2DViewRedrawAll (extent);
@@ -89,28 +89,28 @@ void _RGISUserFuncionNetwork (DBObjData *data,UI2DView *view,XEvent *event)
 				tableView->Draw ();
 			} break;
 		case DBDataFlagUserModeAdd:
-			if (netIO->CellAdd (coord) == (DBObjRecord *) NULL) UIMessage ((char *) "Cell Creation Error");
+			if (netIF->CellAdd (coord) == (DBObjRecord *) NULL) UIMessage ((char *) "Cell Creation Error");
 			else redraw = true;
 			break;
 		case DBDataFlagUserModeDelete:
-			if (netIO->CellDelete (coord) == DBFault) UIMessage ((char *) "Cell Does not Exists!");
+			if (netIF->CellDelete (coord) == DBFault) UIMessage ((char *) "Cell Does not Exists!");
 			else redraw = true;
 			break;
 		case DBDataFlagUserModeRotate:
 			{
-			DBObjRecord *cellRec = netIO->Cell (coord);
+			DBObjRecord *cellRec = netIF->Cell (coord);
 
 			if (cellRec != (DBObjRecord *) NULL)
 				{
 				switch (event->xbutton.button)
 					{
-					case Button1:	netIO->CellRotate (cellRec,DBForward);		break;
+					case Button1:	netIF->CellRotate (cellRec,DBForward);		break;
 					case Button2:
-						if (netIO->CellDirection (cellRec) == DBNull)
-								netIO->CellDirection (cellRec,DBNetDirN);
-						else	netIO->CellDirection (cellRec,DBNull);
+						if (netIF->CellDirection (cellRec) == DBNull)
+								netIF->CellDirection (cellRec,DBNetDirN);
+						else	netIF->CellDirection (cellRec,DBNull);
 						break;
-					case Button3:	netIO->CellRotate (cellRec,DBBackward);	break;
+					case Button3:	netIF->CellRotate (cellRec,DBBackward);	break;
 					}
 				redraw = true;
 				}
@@ -122,15 +122,15 @@ void _RGISUserFuncionNetwork (DBObjData *data,UI2DView *view,XEvent *event)
 		{
 		DBPosition pos;
 
-		if (netIO->Coord2Pos (coord,pos) == DBSuccess)
+		if (netIF->Coord2Pos (coord,pos) == DBSuccess)
 			{
 			DBRegion extent;
-			DBCoordinate delta (netIO->CellWidth () * 1.25, netIO->CellHeight () * 1.25);
+			DBCoordinate delta (netIF->CellWidth () * 1.25, netIF->CellHeight () * 1.25);
 
-			netIO->Pos2Coord (pos,coord); coord = coord + delta; extent.Expand (coord);
-			netIO->Pos2Coord (pos,coord); coord = coord - delta; extent.Expand (coord);
+			netIF->Pos2Coord (pos,coord); coord = coord + delta; extent.Expand (coord);
+			netIF->Pos2Coord (pos,coord); coord = coord - delta; extent.Expand (coord);
 			UI2DViewRedrawAll (extent);
 			}
 		}
-	delete netIO;
+	delete netIF;
 	}

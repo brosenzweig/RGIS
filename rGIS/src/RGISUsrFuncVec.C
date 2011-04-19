@@ -38,9 +38,9 @@ void _RGISUserFuncionVector (DBObjData *data,UI2DView *view,XEvent *event)
 			{
 			DBInt flags, select;
 			DBObjData *linkedData;
-			DBVectorIO *vectorIO = new DBVectorIO (data);
+			DBVectorIF *vectorIF = new DBVectorIF (data);
 
-			record = vectorIO->Item (coord);
+			record = vectorIF->Item (coord);
 			select = (record->Flags () & DBObjectFlagSelected) !=  DBObjectFlagSelected ? DBSet : DBClear;
 			record->Flags (DBObjectFlagSelected,select);
 			if ((select == DBSet) && ((linkedData = data->LinkedData ()) != (DBObjData *) NULL) && (linkedData->Type () == DBTypeNetwork))
@@ -53,7 +53,7 @@ void _RGISUserFuncionVector (DBObjData *data,UI2DView *view,XEvent *event)
 				linkedData->Flags (flags,DBSet);
 				}
 			if (record != (DBObjRecord *) NULL) UI2DViewRedrawAll (data->Extent (record));
-			delete vectorIO;
+			delete vectorIF;
 			} break;
 		case DBDataFlagUserModeAdd:
 			break;
@@ -63,12 +63,12 @@ void _RGISUserFuncionVector (DBObjData *data,UI2DView *view,XEvent *event)
 			if (data->Type () == DBTypeVectorPoint)
 				{
 				DBInt x, y;
-				DBVPointIO *pointIO = new DBVPointIO (data);
+				DBVPointIF *pntIF = new DBVPointIF (data);
 				int UIGetLine (Widget,XEvent *,int,int,int *,int *);
 
-				if ((record = pointIO->Item (coord)) != (DBObjRecord *) NULL)
+				if ((record = pntIF->Item (coord)) != (DBObjRecord *) NULL)
 					{
-					coord = pointIO->Coordinate (record);
+					coord = pntIF->Coordinate (record);
 
 					view->Map2Window (coord.X,coord.Y,&sX,&sY);
 					if (UIGetLine (view->DrawingArea (),event,sX,sY,&x,&y))
@@ -79,35 +79,35 @@ void _RGISUserFuncionVector (DBObjData *data,UI2DView *view,XEvent *event)
 						view->Window2Map  (x,y,&coord.X, &coord.Y);
 						if ((linkedData = data->LinkedData ()) != (DBObjData *) NULL)
 							{
-							DBNetworkIO *netIO = new DBNetworkIO (linkedData);
+							DBNetworkIF *netIF = new DBNetworkIF (linkedData);
 							DBPosition pos;
-							netIO->Coord2Pos (coord,pos);netIO->Pos2Coord (pos,coord);
-							delete netIO;
+							netIF->Coord2Pos (coord,pos);netIF->Pos2Coord (pos,coord);
+							delete netIF;
 							}
-						pointIO->Coordinate (record,coord);
+						pntIF->Coordinate (record,coord);
 						UI2DViewRedrawAll (extent);
 						extent.Initialize ();
 						extent.Expand (data->Extent (record));
 						UI2DViewRedrawAll (extent);
 						}
 					}
-				delete pointIO;
+				delete pntIF;
 				}
 			break;
 		case DBDataFlagUserModeDelete:
 			if (data->Type () == DBTypeVectorPoint)
 				{
-				DBVPointIO *pointIO = new DBVPointIO (data);
+				DBVPointIF *pntIF = new DBVPointIF (data);
 				DBObjTable *items = data->Table (DBrNItems);
 
-				if ((record = pointIO->Item (coord)) != (DBObjRecord *) NULL)
+				if ((record = pntIF->Item (coord)) != (DBObjRecord *) NULL)
 					{
 					DBRegion extent;
 					extent.Expand (data->Extent (record));
 					items->Delete (record);
 					UI2DViewRedrawAll (extent);
 					}
-				delete pointIO;
+				delete pntIF;
 				}
 			break;
 		default: printf ("Unknown Mode %lX",data->Flags () & DBDataFlagUserModeFlags); break;

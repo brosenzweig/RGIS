@@ -117,7 +117,7 @@ int UI2DView::DrawMesh ()
 	return (DBSuccess);
 	}
 
-void UI2DView::DrawPointObject (DBVPointIO *pointIO,DBObjRecord *record,GC gc)
+void UI2DView::DrawPointObject (DBVPointIF *pntIF,DBObjRecord *record,GC gc)
 
 	{
 	short sX,sY;
@@ -125,11 +125,11 @@ void UI2DView::DrawPointObject (DBVPointIO *pointIO,DBObjRecord *record,GC gc)
 	DBCoordinate coord;
 	Pixmap pixmap;
 
-	if (ViewEXT.InRegion (coord = pointIO->Coordinate  (record)) == false) return;
+	if (ViewEXT.InRegion (coord = pntIF->Coordinate  (record)) == false) return;
 
 	foreground = (record->Flags () & DBObjectFlagSelected) == DBObjectFlagSelected ?
-					 pointIO->ItemBackground (record) : pointIO->ItemForeground (record);
-	style = pointIO->ItemStyle (record);
+					 pntIF->ItemBackground (record) : pntIF->ItemForeground (record);
+	style = pntIF->ItemStyle (record);
 	pixmap = UIMarker (style,UIColor (UIColorStandard,foreground),UIColor (UIColorStandard,0));
 	Map2Window (coord.X,coord.Y,&sX,&sY);
 	XCopyArea (XtDisplay (DrawingAreaW),pixmap,XtWindow (DrawingAreaW),gc,0,0,11,11,sX - 5,sY -5);
@@ -139,61 +139,61 @@ void UI2DView::DrawPointObject (DBVPointIO *pointIO,DBObjRecord *record,GC gc)
 void UI2DView::DrawPoints (DBObjData *data,GC gc)
 
 	{
-	DBVPointIO *pointIO;
+	DBVPointIF *pntIF;
 	DBObjRecord *record;
 
 	if (ActiveEXT.InRegion (data->Extent ()) == false) return;
-	pointIO = new DBVPointIO (data);
-	for (record = pointIO->FirstItem ();record != (DBObjRecord *) NULL;record = pointIO->NextItem ())
-		DrawPointObject (pointIO,record,gc);
-	delete pointIO;
+	pntIF = new DBVPointIF (data);
+	for (record = pntIF->FirstItem ();record != (DBObjRecord *) NULL;record = pntIF->NextItem ())
+		DrawPointObject (pntIF,record,gc);
+	delete pntIF;
 	}
 
-void UI2DView::DrawLineObject (DBVLineIO *lineIO, DBObjRecord *record,GC gc)
+void UI2DView::DrawLineObject (DBVLineIF *lineIF, DBObjRecord *record,GC gc)
 
 	{
 	DBInt vertex, lWidth, lStyle;
 	DBCoordinate *coord, nodeCoord;
 	XGCValues xgcv;
 
-	if (ViewEXT.InRegion (lineIO->Extent (record)) == false) return;
-	switch (lineIO->ItemStyle (record) >> 0x02)
+	if (ViewEXT.InRegion (lineIF->Extent (record)) == false) return;
+	switch (lineIF->ItemStyle (record) >> 0x02)
 		{
 		case 0:	lStyle = LineSolid;			break;
 		case 1:	lStyle = LineOnOffDash;		break;
 		case 2:	lStyle = LineDoubleDash;	break;
 		}
-	lWidth = lineIO->ItemStyle (record) & 0x03;
+	lWidth = lineIF->ItemStyle (record) & 0x03;
 	if ((record->Flags () & DBObjectFlagSelected) == DBObjectFlagSelected)
 		{
-		xgcv.foreground = UIColor (UIColorStandard,lineIO->ItemBackground (record));
-		xgcv.background = UIColor (UIColorStandard,lineIO->ItemForeground (record));
+		xgcv.foreground = UIColor (UIColorStandard,lineIF->ItemBackground (record));
+		xgcv.background = UIColor (UIColorStandard,lineIF->ItemForeground (record));
 		}
 	else
 		{
-		xgcv.foreground = UIColor (UIColorStandard,lineIO->ItemForeground (record));
-		xgcv.background = UIColor (UIColorStandard,lineIO->ItemBackground (record));
+		xgcv.foreground = UIColor (UIColorStandard,lineIF->ItemForeground (record));
+		xgcv.background = UIColor (UIColorStandard,lineIF->ItemBackground (record));
 		}
 	xgcv.line_width = lWidth;
 	xgcv.line_style = lStyle;
 	XChangeGC (XtDisplay (DrawingAreaW),gc,GCForeground | GCBackground | GCLineWidth | GCLineStyle,&xgcv);
 
-	if (MaxVertexNumVAR < lineIO->VertexNum (record) + 2)
+	if (MaxVertexNumVAR < lineIF->VertexNum (record) + 2)
 		{
-		PointARR = PointARR = (XPoint *) realloc (PointARR,(lineIO->VertexNum (record) + 2) * sizeof (XPoint));
+		PointARR = PointARR = (XPoint *) realloc (PointARR,(lineIF->VertexNum (record) + 2) * sizeof (XPoint));
 		if (PointARR == NULL) { perror ("Memory Allocation Error in: UI2DView::DrawLines ()"); return; }
-		MaxVertexNumVAR =  lineIO->VertexNum (record) + 2;
+		MaxVertexNumVAR =  lineIF->VertexNum (record) + 2;
 		}
-	nodeCoord = lineIO->FromCoord (record);
+	nodeCoord = lineIF->FromCoord (record);
 	Map2Window (nodeCoord.X,nodeCoord.Y,&PointARR [0].x,&PointARR [0].y);
-	if (lineIO->VertexNum (record) > 0)
+	if (lineIF->VertexNum (record) > 0)
 		{
-		coord = lineIO->Vertexes (record);
-		for (vertex = 0;vertex < lineIO->VertexNum (record);++vertex)
+		coord = lineIF->Vertexes (record);
+		for (vertex = 0;vertex < lineIF->VertexNum (record);++vertex)
 			Map2Window (coord [vertex].X,coord [vertex].Y,&PointARR [vertex + 1].x,&PointARR [vertex + 1].y);
 		}
 	else vertex = 0;
-	nodeCoord = lineIO->ToCoord (record);
+	nodeCoord = lineIF->ToCoord (record);
 	Map2Window (nodeCoord.X,nodeCoord.Y,&PointARR [vertex + 1].x,&PointARR [vertex + 1].y);
 	XDrawLines (XtDisplay (DrawingAreaW),XtWindow (DrawingAreaW),gc,PointARR,vertex + 2,CoordModeOrigin);
 	}
@@ -201,38 +201,38 @@ void UI2DView::DrawLineObject (DBVLineIO *lineIO, DBObjRecord *record,GC gc)
 void UI2DView::DrawLines (DBObjData *data,GC gc)
 
 	{
-	DBVLineIO *lineIO;
+	DBVLineIF *lineIF;
 	DBObjRecord *record;
 
 	if (ActiveEXT.InRegion (data->Extent ()) == false) return;
-	lineIO = new DBVLineIO (data);
+	lineIF = new DBVLineIF (data);
 
-	for (record = lineIO->FirstItem ();record != (DBObjRecord *) NULL;record = lineIO->NextItem ())
-		DrawLineObject (lineIO,record,gc);
-	delete lineIO;
+	for (record = lineIF->FirstItem ();record != (DBObjRecord *) NULL;record = lineIF->NextItem ())
+		DrawLineObject (lineIF,record,gc);
+	delete lineIF;
 	}
 
-void UI2DView::DrawPolyObject (DBVPolyIO *polyIO, DBObjRecord *record,GC gc)
+void UI2DView::DrawPolyObject (DBVPolyIF *polyIF, DBObjRecord *record,GC gc)
 
 	{
 	DBInt vertex, i;
 	DBCoordinate *coords;
 	XGCValues xgcv;
 
-	if (ViewEXT.InRegion (polyIO->Extent (record)) == false) return;
-	xgcv.foreground = UIColor (UIColorStandard,polyIO->ItemForeground (record));
-	xgcv.background = UIColor (UIColorStandard,polyIO->ItemBackground (record));
+	if (ViewEXT.InRegion (polyIF->Extent (record)) == false) return;
+	xgcv.foreground = UIColor (UIColorStandard,polyIF->ItemForeground (record));
+	xgcv.background = UIColor (UIColorStandard,polyIF->ItemBackground (record));
 	XChangeGC (XtDisplay (DrawingAreaW),gc,GCForeground | GCBackground,&xgcv);
-	if (polyIO->VertexNum (record) > MaxVertexNumVAR)
+	if (polyIF->VertexNum (record) > MaxVertexNumVAR)
 		{
-		PointARR = (XPoint *) realloc (PointARR,polyIO->VertexNum (record) * sizeof (XPoint));
+		PointARR = (XPoint *) realloc (PointARR,polyIF->VertexNum (record) * sizeof (XPoint));
 		if (PointARR == (XPoint *) NULL)
 			{ perror ("Memory Allocation Error in: UI2DView::DrawPolygons ()"); return; }
-		MaxVertexNumVAR = polyIO->VertexNum (record);
+		MaxVertexNumVAR = polyIF->VertexNum (record);
 		}
-	if ((coords = polyIO->Vertexes (record)) == (DBCoordinate *) NULL) return;
+	if ((coords = polyIF->Vertexes (record)) == (DBCoordinate *) NULL) return;
 	i = 0;
-	for (vertex = 0;vertex < polyIO->VertexNum (record);++vertex)
+	for (vertex = 0;vertex < polyIF->VertexNum (record);++vertex)
 		{
 		Map2Window (coords [vertex].X,coords [vertex].Y,&PointARR [i].x,&PointARR [i].y);
 		if ((i == 0) || (PointARR [i].x != PointARR [i - 1].x) || (PointARR [i].y != PointARR [i - 1].y)) i++;
@@ -244,24 +244,24 @@ void UI2DView::DrawPolygons (DBObjData *data,GC gc)
 
 	{
 	DBObjRecord *record;
-	DBVPolyIO *polyIO;
+	DBVPolyIF *polyIF;
 
 	if (ActiveEXT.InRegion (data->Extent ()) == false) return;
-	polyIO = new DBVPolyIO (data);
+	polyIF = new DBVPolyIF (data);
 
-	for (record = polyIO->FirstItem ();record != (DBObjRecord *) NULL;record = polyIO->NextItem ())
-		DrawPolyObject (polyIO,record,gc);
-	delete polyIO;
+	for (record = polyIF->FirstItem ();record != (DBObjRecord *) NULL;record = polyIF->NextItem ())
+		DrawPolyObject (polyIF,record,gc);
+	delete polyIF;
 	}
 
-void UI2DView::DrawVectorAnnotation (DBVectorIO *vectorIO, DBObjRecord *record,GC gc)
+void UI2DView::DrawVectorAnnotation (DBVectorIF *vectorIF, DBObjRecord *record,GC gc)
 
 	{
 	DBInt flags;
 	DBShort sX, sY, offsetX, offsetY;
 	Dimension width, height;
 	DBCoordinate coord;
-	DBObjData *dbData = vectorIO->Data ();
+	DBObjData *dbData = vectorIF->Data ();
 	DBRegion extent;
 	XmString xmString;
 
@@ -287,14 +287,14 @@ void UI2DView::DrawVectorAnnotations (DBObjData *data,GC gc)
 
 	{
 	DBObjRecord *record;
-	DBVectorIO *vectorIO;
+	DBVectorIF *vectorIF;
 
 	if (ActiveEXT.InRegion (data->Extent ()) == false) return;
-	vectorIO = new DBVectorIO (data);
+	vectorIF = new DBVectorIF (data);
 
-	for (record = vectorIO->FirstItem ();record != (DBObjRecord *) NULL;record = vectorIO->NextItem ())
-		DrawVectorAnnotation (vectorIO,record,gc);
-	delete vectorIO;
+	for (record = vectorIF->FirstItem ();record != (DBObjRecord *) NULL;record = vectorIF->NextItem ())
+		DrawVectorAnnotation (vectorIF,record,gc);
+	delete vectorIF;
 	}
 
 static DBInt _UI2DViewContPosShades;
@@ -302,29 +302,29 @@ static DBInt _UI2DViewContNegShades;
 static DBFloat _UI2DViewContMaxValue;
 static DBFloat _UI2DViewContMinValue;
 
-static DBInt _UI2DViewContinuousSingleShadeFunc (DBGridIO *gridIO,DBCoordinate coord)
+static DBInt _UI2DViewContinuousSingleShadeFunc (DBGridIF *gridIF,DBCoordinate coord)
 
 	{
 	DBPosition pos;
 	DBInt retPixel;
 	DBFloat value;
 
-	if (gridIO->Coord2Pos (coord,pos) == DBFault) return (DBFault);
-	if (gridIO->Value (pos,&value) == false) return (DBFault);
+	if (gridIF->Coord2Pos (coord,pos) == DBFault) return (DBFault);
+	if (gridIF->Value (pos,&value) == false) return (DBFault);
 	retPixel = (DBInt) ((DBFloat) (UIColorNum (_UI2DViewContPosShades)) * (value - _UI2DViewContMinValue) / (_UI2DViewContMaxValue - _UI2DViewContMinValue));
 	if (retPixel == UIColorNum (_UI2DViewContPosShades)) retPixel -= 1;
 	return (UIColor (_UI2DViewContPosShades,retPixel));
 	}
 
-static DBInt _UI2DViewContinuousDualShadeFunc (DBGridIO *gridIO,DBCoordinate coord)
+static DBInt _UI2DViewContinuousDualShadeFunc (DBGridIF *gridIF,DBCoordinate coord)
 
 	{
 	DBPosition pos;
 	DBInt retPixel;
 	DBFloat value;
 
-	if (gridIO->Coord2Pos (coord,pos) == DBFault) return (DBFault);
-	if (gridIO->Value (pos,&value) == false) return (DBFault);
+	if (gridIF->Coord2Pos (coord,pos) == DBFault) return (DBFault);
+	if (gridIF->Value (pos,&value) == false) return (DBFault);
 	if (value >= 0.0)
 		{
 		retPixel = _UI2DViewContMinValue < 0.0 ?
@@ -343,13 +343,13 @@ static DBInt _UI2DViewContinuousDualShadeFunc (DBGridIO *gridIO,DBCoordinate coo
 		}
 	}
 
-static DBInt _UI2DViewDiscreteShadeFunc (DBGridIO *gridIO,DBCoordinate coord)
+static DBInt _UI2DViewDiscreteShadeFunc (DBGridIF *gridIF,DBCoordinate coord)
 
 	{
-	DBInt symbol = gridIO->SymbolFGColor (coord);
+	DBInt symbol = gridIF->SymbolFGColor (coord);
 
 	if (symbol == DBFault) return (DBFault);
-	if (symbol == gridIO->SymbolBGColor (coord)) return (DBFault);
+	if (symbol == gridIF->SymbolBGColor (coord)) return (DBFault);
 	return (UIColor (UIColorStandard,symbol));
 	}
 
@@ -361,11 +361,11 @@ void UI2DView::DrawGrid (DBObjData *data,GC gc)
 	DBPosition pos;
 	DBCoordinate coord, centerCoord;
 	DBFloat mapX, mapY;
-	DBGridIO *gridIO;
-	DBInt (*pixelFunc) (DBGridIO *, DBCoordinate);
+	DBGridIF *gridIF;
+	DBInt (*pixelFunc) (DBGridIF *, DBCoordinate);
 
 	if (ActiveEXT.InRegion (data->Extent ()) == false) return;
-	gridIO = new DBGridIO (data);
+	gridIF = new DBGridIF (data);
 	switch (data->Type ())
 		{
 		case DBTypeGridContinuous:
@@ -400,8 +400,8 @@ void UI2DView::DrawGrid (DBObjData *data,GC gc)
 			break;
 		}
 
-	if (((ViewEXT.UpperRight.X - ViewEXT.LowerLeft.X) / gridIO->CellWidth ())  > (Image->width >> 0x01) ||
-		 ((ViewEXT.UpperRight.Y - ViewEXT.LowerLeft.Y) / gridIO->CellHeight ()) > (Image->height >> 0x01))
+	if (((ViewEXT.UpperRight.X - ViewEXT.LowerLeft.X) / gridIF->CellWidth ())  > (Image->width >> 0x01) ||
+		 ((ViewEXT.UpperRight.Y - ViewEXT.LowerLeft.Y) / gridIF->CellHeight ()) > (Image->height >> 0x01))
 		{
 		startPos.x = startPos.y = 0; endPos.x = Image->width; endPos.y = Image->height;
 		Map2Window (ViewEXT.LowerLeft.X,ViewEXT.UpperRight.Y,&winPos.x,&winPos.y);
@@ -413,8 +413,8 @@ void UI2DView::DrawGrid (DBObjData *data,GC gc)
 
 		if (data->Type () == DBTypeGridContinuous)
 			{
-			_UI2DViewContMaxValue = gridIO->Maximum ();
-			_UI2DViewContMinValue = gridIO->Minimum ();
+			_UI2DViewContMaxValue = gridIF->Maximum ();
+			_UI2DViewContMinValue = gridIF->Minimum ();
 			}
 
 		for (winPos.y = startPos.y;winPos.y < endPos.y;++winPos.y)
@@ -422,7 +422,7 @@ void UI2DView::DrawGrid (DBObjData *data,GC gc)
 				{
 				Window2Map (winPos.x,winPos.y,&mapX, &mapY);
 				coord.X = mapX; coord.Y = mapY;
-				if ((pixel = (*pixelFunc) (gridIO,coord)) != DBFault)
+				if ((pixel = (*pixelFunc) (gridIF,coord)) != DBFault)
 					XPutPixel (Image, winPos.x, winPos.y, pixel);
 				}
 		XPutImage (XtDisplay (DrawingAreaW),XtWindow (DrawingAreaW), gc, Image,0,0,0,0, Image->width, Image->height);
@@ -434,16 +434,16 @@ void UI2DView::DrawGrid (DBObjData *data,GC gc)
 		DBCoordinate dataExtentLL = data->Extent ().LowerLeft;
 		DBCoordinate dataExtentUR = data->Extent ().UpperRight;
 
-		Map2Window (ViewEXT.LowerLeft.X,ViewEXT.LowerLeft.Y + gridIO->CellHeight (),&startPos.x,&startPos.y);
-		Map2Window (ViewEXT.LowerLeft.X + gridIO->CellWidth (), ViewEXT.LowerLeft.Y,&endPos.x,&endPos.y);
+		Map2Window (ViewEXT.LowerLeft.X,ViewEXT.LowerLeft.Y + gridIF->CellHeight (),&startPos.x,&startPos.y);
+		Map2Window (ViewEXT.LowerLeft.X + gridIF->CellWidth (), ViewEXT.LowerLeft.Y,&endPos.x,&endPos.y);
 		XGCValues xgcv;
 
 		cellBox.x = endPos.x - startPos.x;
 		cellBox.y = endPos.y - startPos.y;
 		startCoord.X = dataExtentLL.X > ViewEXT.LowerLeft.X ? dataExtentLL.X : dataExtentLL.X
-						 + floor ((ViewEXT.LowerLeft.X - dataExtentLL.X) / gridIO->CellWidth  ()) * gridIO->CellWidth  ();
+						 + floor ((ViewEXT.LowerLeft.X - dataExtentLL.X) / gridIF->CellWidth  ()) * gridIF->CellWidth  ();
 		startCoord.Y = dataExtentLL.Y > ViewEXT.LowerLeft.Y ? dataExtentLL.Y : dataExtentLL.Y
-						 + floor ((ViewEXT.LowerLeft.Y - dataExtentLL.Y) / gridIO->CellHeight ()) * gridIO->CellHeight ();
+						 + floor ((ViewEXT.LowerLeft.Y - dataExtentLL.Y) / gridIF->CellHeight ()) * gridIF->CellHeight ();
 		endCoord.X = dataExtentUR.X < ViewEXT.UpperRight.X ? dataExtentUR.X: ViewEXT.UpperRight.X;
 		endCoord.Y = dataExtentUR.Y < ViewEXT.UpperRight.Y ? dataExtentUR.Y : ViewEXT.UpperRight.Y;
 
@@ -452,11 +452,11 @@ void UI2DView::DrawGrid (DBObjData *data,GC gc)
 				DBFloat value;
 				_UI2DViewContMaxValue = -DBHugeVal;
 				_UI2DViewContMinValue =  DBHugeVal;
-				for (coord.Y = startCoord.Y;coord.Y < endCoord.Y;coord.Y = coord.Y + gridIO->CellHeight ())
-					for (coord.X = startCoord.X;coord.X < endCoord.X;coord.X = coord.X + gridIO->CellWidth ())
+				for (coord.Y = startCoord.Y;coord.Y < endCoord.Y;coord.Y = coord.Y + gridIF->CellHeight ())
+					for (coord.X = startCoord.X;coord.X < endCoord.X;coord.X = coord.X + gridIF->CellWidth ())
 						{
-						if (gridIO->Coord2Pos (coord,pos) == DBFault) continue;
-						if (gridIO->Value (pos,&value))
+						if (gridIF->Coord2Pos (coord,pos) == DBFault) continue;
+						if (gridIF->Value (pos,&value))
 							{
 							_UI2DViewContMaxValue = _UI2DViewContMaxValue > value ? _UI2DViewContMaxValue : value;
 							_UI2DViewContMinValue = _UI2DViewContMinValue < value ? _UI2DViewContMinValue : value;
@@ -464,12 +464,12 @@ void UI2DView::DrawGrid (DBObjData *data,GC gc)
 						}
 				}
 
-		for (coord.Y = startCoord.Y;coord.Y < endCoord.Y;coord.Y = coord.Y + gridIO->CellHeight ())
-			for (coord.X = startCoord.X;coord.X < endCoord.X;coord.X = coord.X + gridIO->CellWidth ())
+		for (coord.Y = startCoord.Y;coord.Y < endCoord.Y;coord.Y = coord.Y + gridIF->CellHeight ())
+			for (coord.X = startCoord.X;coord.X < endCoord.X;coord.X = coord.X + gridIF->CellWidth ())
 				{
-				centerCoord.X = coord.X + gridIO->CellWidth ()  / 2.0;
-				centerCoord.Y = coord.Y + gridIO->CellHeight () / 2.0;
-				if ((pixel = (*pixelFunc) (gridIO,centerCoord)) == DBFault) continue;
+				centerCoord.X = coord.X + gridIF->CellWidth ()  / 2.0;
+				centerCoord.Y = coord.Y + gridIF->CellHeight () / 2.0;
+				if ((pixel = (*pixelFunc) (gridIF,centerCoord)) == DBFault) continue;
 				xgcv.foreground = pixel;
 				XChangeGC (XtDisplay (DrawingAreaW),gc,GCForeground,&xgcv);
 				Map2Window (coord.X,coord.Y,&winPos.x,&winPos.y);
@@ -479,17 +479,17 @@ void UI2DView::DrawGrid (DBObjData *data,GC gc)
 						winPos.x,winPos.y - (int) cellBox.y,(int) cellBox.x,(int) cellBox.y);
 				}
 		}
-	delete gridIO;
+	delete gridIF;
 	}
 
-void UI2DView::DrawNetworkCellBox (DBNetworkIO *netIO,DBObjRecord *cellRec,GC gc)
+void UI2DView::DrawNetworkCellBox (DBNetworkIF *netIF,DBObjRecord *cellRec,GC gc)
 
 	{
 	DBCoordinate coord [2];
 	XPoint box [2];
 
-	coord [0] = netIO->Center (cellRec) - (netIO->CellSize () / 2.0);
-	coord [1] = netIO->Center (cellRec) + (netIO->CellSize () / 2.0);
+	coord [0] = netIF->Center (cellRec) - (netIF->CellSize () / 2.0);
+	coord [1] = netIF->Center (cellRec) + (netIF->CellSize () / 2.0);
 	Map2Window (coord [0].X,coord [0].Y,&box [0].x,&box [1].y);
 	Map2Window (coord [1].X,coord [1].Y,&box [1].x,&box [0].y);
 	box [1].x -= box [0].x;
@@ -500,7 +500,7 @@ void UI2DView::DrawNetworkCellBox (DBNetworkIO *netIO,DBObjRecord *cellRec,GC gc
 						(int)box [0].x,(int) box [0].y,(int) box [1].x,(int) box [1].y);
 	}
 
-void UI2DView::DrawNetworkCell(DBNetworkIO *netIO,DBObjRecord *cellRec,DBUnsigned displayColor, DBUnsigned displayMode, GC gc)
+void UI2DView::DrawNetworkCell(DBNetworkIF *netIF,DBObjRecord *cellRec,DBUnsigned displayColor, DBUnsigned displayMode, GC gc)
 
 	{
 	DBInt basinID;
@@ -508,14 +508,14 @@ void UI2DView::DrawNetworkCell(DBNetworkIO *netIO,DBObjRecord *cellRec,DBUnsigne
 	DBShort sX0, sY0, sX1, sY1;
 	XGCValues xgcv;
 
-	coord [0] = netIO->Center (cellRec);
-	coord [1] = netIO->Delta  (cellRec);
+	coord [0] = netIF->Center (cellRec);
+	coord [1] = netIF->Delta  (cellRec);
 	coord [1].X = coord [0].X + coord [1].X;
 	coord [1].Y = coord [0].Y + coord [1].Y;
 	Map2Window (coord [0].X,coord [0].Y,&sX0,&sY0);
 	Map2Window (coord [1].X,coord [1].Y,&sX1,&sY1);
 
-	basinID = netIO->CellBasinID (cellRec);
+	basinID = netIF->CellBasinID (cellRec);
 	switch (displayColor)
 		{
 		default:
@@ -526,12 +526,12 @@ void UI2DView::DrawNetworkCell(DBNetworkIO *netIO,DBObjRecord *cellRec,DBUnsigne
 		case DBDataFlagDispModeNetColorBasin:
 			xgcv.foreground = (cellRec->Flags () & DBObjectFlagSelected) == DBObjectFlagSelected ?
 									 UIColor (UIColorStandard,UIStandardRed) :
-									 UIColor (UIColorStandard,basinID == DBFault ? 1 : netIO->Color (netIO->Basin (cellRec)));
+									 UIColor (UIColorStandard,basinID == DBFault ? 1 : netIF->Color (netIF->Basin (cellRec)));
 			break;
 		case DBDataFlagDispModeNetColorSymbol:
 			xgcv.foreground = (cellRec->Flags () & DBObjectFlagSelected) == DBObjectFlagSelected ?
-									 UIColor (UIColorStandard,basinID != DBFault ? netIO->ItemBackground (netIO->Basin (cellRec)) : 1) :
-					 				 UIColor (UIColorStandard,basinID != DBFault ? netIO->ItemForeground (netIO->Basin (cellRec)) : 2);
+									 UIColor (UIColorStandard,basinID != DBFault ? netIF->ItemBackground (netIF->Basin (cellRec)) : 1) :
+					 				 UIColor (UIColorStandard,basinID != DBFault ? netIF->ItemForeground (netIF->Basin (cellRec)) : 2);
 			break;
 		}
 	if (displayMode == DBDataFlagDispModeNetDirection)
@@ -547,7 +547,7 @@ void UI2DView::DrawNetworkCell(DBNetworkIO *netIO,DBObjRecord *cellRec,DBUnsigne
 		}
 	else
 		{
-		xgcv.line_width = netIO->CellOrder (cellRec);
+		xgcv.line_width = netIF->CellOrder (cellRec);
 		xgcv.line_width = xgcv.line_width > 1 ? xgcv.line_width - 1 : 1;
 		XChangeGC (XtDisplay (DrawingAreaW),gc,GCForeground | GCLineWidth,&xgcv);
 		XDrawLine (XtDisplay (DrawingAreaW),XtWindow  (DrawingAreaW),gc,sX0, sY0, sX1,sY1);
@@ -562,12 +562,12 @@ void UI2DView::DrawNetwork(DBObjData *data,GC gc)
 	DBUnsigned displayMode	= data->Flags () & DBDataFlagDispModeNetDirection;
 	DBRegion dataExtent = data->Extent ();
 	DBPosition pos, ll, ur;
-	DBNetworkIO *netIO;
+	DBNetworkIF *netIF;
 	DBObjRecord *cellRec, *basinRec;
 	XGCValues xgcv;
 
 	if (ActiveEXT.InRegion (dataExtent) == false) return;
-	netIO = new DBNetworkIO (data);
+	netIF = new DBNetworkIF (data);
 
 	xgcv.cap_style = CapRound;
 	xgcv.background = 0;
@@ -576,31 +576,31 @@ void UI2DView::DrawNetwork(DBObjData *data,GC gc)
 	XChangeGC (XtDisplay (DrawingAreaW),gc,GCBackground | GCLineWidth | GCLineStyle | GCCapStyle,&xgcv);
 
 	ll.Col = ActiveEXT.LowerLeft.X < dataExtent.LowerLeft.X ? 0 :
-				(DBShort) (floor ((ActiveEXT.LowerLeft.X - dataExtent.LowerLeft.X) / netIO->CellWidth ()));
+				(DBShort) (floor ((ActiveEXT.LowerLeft.X - dataExtent.LowerLeft.X) / netIF->CellWidth ()));
 	ll.Row = ActiveEXT.LowerLeft.Y < dataExtent.LowerLeft.Y ? 0 :
-				(DBShort) (floor ((ActiveEXT.LowerLeft.Y - dataExtent.LowerLeft.Y) / netIO->CellHeight ()));
-	ur.Col = ActiveEXT.UpperRight.X > dataExtent.UpperRight.X ? netIO->ColNum () - 1 :
-				(DBShort) (ceil ((ActiveEXT.UpperRight.X - dataExtent.LowerLeft.X) / netIO->CellWidth ()));
-	ur.Row = ActiveEXT.UpperRight.Y > dataExtent.UpperRight.Y ? netIO->RowNum () - 1 :
-				(DBShort) (ceil ((ActiveEXT.UpperRight.Y - dataExtent.LowerLeft.Y) / netIO->CellHeight ()));
+				(DBShort) (floor ((ActiveEXT.LowerLeft.Y - dataExtent.LowerLeft.Y) / netIF->CellHeight ()));
+	ur.Col = ActiveEXT.UpperRight.X > dataExtent.UpperRight.X ? netIF->ColNum () - 1 :
+				(DBShort) (ceil ((ActiveEXT.UpperRight.X - dataExtent.LowerLeft.X) / netIF->CellWidth ()));
+	ur.Row = ActiveEXT.UpperRight.Y > dataExtent.UpperRight.Y ? netIF->RowNum () - 1 :
+				(DBShort) (ceil ((ActiveEXT.UpperRight.Y - dataExtent.LowerLeft.Y) / netIF->CellHeight ()));
 
-	if (((ur.Col - ll.Col) * 4 < netIO->ColNum ()) || ((ur.Row - ll.Row) * 4 < netIO->RowNum ()))
+	if (((ur.Col - ll.Col) * 4 < netIF->ColNum ()) || ((ur.Row - ll.Row) * 4 < netIF->RowNum ()))
 		{
 		xgcv.foreground = UIColor (UIColorStandard,UIStandardYellow);
 		XChangeGC (XtDisplay (DrawingAreaW),gc,GCForeground,&xgcv);
 		for (pos.Row = ll.Row;pos.Row < ur.Row;++pos.Row)
 			for (pos.Col = ll.Col;pos.Col < ur.Col;++pos.Col)
 				{
-				if ((cellRec = netIO->Cell (pos)) == (DBObjRecord *) NULL) continue;
+				if ((cellRec = netIF->Cell (pos)) == (DBObjRecord *) NULL) continue;
 				if (((cellRec->Flags () & DBObjectFlagSelected) == DBObjectFlagSelected) &&
-					 (netIO->Cell (netIO->CellPosition (cellRec)) != (DBObjRecord *) NULL))
-					DrawNetworkCellBox (netIO,cellRec,gc);
+					 (netIF->Cell (netIF->CellPosition (cellRec)) != (DBObjRecord *) NULL))
+					DrawNetworkCellBox (netIF,cellRec,gc);
 				}
 		for (pos.Row = ll.Row;pos.Row < ur.Row;++pos.Row)
 			for (pos.Col = ll.Col;pos.Col < ur.Col;++pos.Col)
 				{
-				if ((cellRec = netIO->Cell (pos)) == (DBObjRecord *) NULL) continue;
-				DrawNetworkCell(netIO,cellRec,displayColor,displayMode,gc);
+				if ((cellRec = netIF->Cell (pos)) == (DBObjRecord *) NULL) continue;
+				DrawNetworkCell(netIF,cellRec,displayColor,displayMode,gc);
 				}
 		}
 	else
@@ -609,42 +609,42 @@ void UI2DView::DrawNetwork(DBObjData *data,GC gc)
 
 		xgcv.foreground = UIColor (UIColorStandard,UIStandardYellow);
 		XChangeGC (XtDisplay (DrawingAreaW),gc,GCForeground,&xgcv);
-		for (cellID = 0;cellID < netIO->CellNum ();++cellID)
+		for (cellID = 0;cellID < netIF->CellNum ();++cellID)
 			{
-			cellRec = netIO->Cell (cellID);
+			cellRec = netIF->Cell (cellID);
 			if (((cellRec->Flags () & DBObjectFlagSelected) == DBObjectFlagSelected) &&
-				 (netIO->Cell (netIO->CellPosition (cellRec)) != (DBObjRecord *) NULL))
+				 (netIF->Cell (netIF->CellPosition (cellRec)) != (DBObjRecord *) NULL))
 				{
-				if (basinID != netIO->CellBasinID (cellRec))
+				if (basinID != netIF->CellBasinID (cellRec))
 					{
-					basinID = netIO->CellBasinID (cellRec);
-					basinRec = netIO->Basin (cellRec);
+					basinID = netIF->CellBasinID (cellRec);
+					basinRec = netIF->Basin (cellRec);
 					if ((basinRec != (DBObjRecord *) NULL) && (ActiveEXT.InRegion (data->Extent (basinRec)) == false))
-						{ cellID += netIO->CellBasinCells (cellRec) - 1; continue; }
+						{ cellID += netIF->CellBasinCells (cellRec) - 1; continue; }
 					}
-				DrawNetworkCellBox (netIO,cellRec,gc);
+				DrawNetworkCellBox (netIF,cellRec,gc);
 				}
 			}
 
 		xgcv.foreground = UIColor (UIColorStandard,1);
 		XChangeGC (XtDisplay (DrawingAreaW),gc,GCForeground,&xgcv);
 		basinID = DBFault;
-		for (cellID = 0;cellID < netIO->CellNum ();++cellID)
+		for (cellID = 0;cellID < netIF->CellNum ();++cellID)
 			{
-			cellRec = netIO->Cell (cellID);
-			if (netIO->Cell (netIO->CellPosition (cellRec)) == (DBObjRecord *) NULL) continue;
+			cellRec = netIF->Cell (cellID);
+			if (netIF->Cell (netIF->CellPosition (cellRec)) == (DBObjRecord *) NULL) continue;
 
-			if (basinID != netIO->CellBasinID (cellRec))
+			if (basinID != netIF->CellBasinID (cellRec))
 				{
-				basinID = netIO->CellBasinID (cellRec);
-				basinRec = netIO->Basin (cellRec);
+				basinID = netIF->CellBasinID (cellRec);
+				basinRec = netIF->Basin (cellRec);
 				if ((basinRec != (DBObjRecord *) NULL) && (ViewEXT.InRegion (data->Extent (basinRec)) == false))
-					{ cellID += netIO->CellBasinCells (cellRec) - 1; continue; }
+					{ cellID += netIF->CellBasinCells (cellRec) - 1; continue; }
 				}
-			DrawNetworkCell(netIO,cellRec,displayColor,displayMode,gc);
+			DrawNetworkCell(netIF,cellRec,displayColor,displayMode,gc);
 			}
 		}
-	delete netIO;
+	delete netIF;
 	}
 
 void UI2DView::Draw ()

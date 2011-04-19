@@ -11,7 +11,7 @@ balazs.fekete@unh.edu
 *******************************************************************************/
 
 #include <DB.H>
-#include <DBio.H>
+#include <DBif.H>
 
 DBInt DBExportASCIITable (DBObjTable *table, const char *fileName)
 

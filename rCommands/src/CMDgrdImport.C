@@ -20,7 +20,7 @@ balazs.fekete@unh.edu
 #include <iostream>
 #include <fstream>
 #include <DB.H>
-#include <DBio.H>
+#include <DBif.H>
 #include <RG.H>
 
 using namespace std;
@@ -310,7 +310,7 @@ int main(int argc, char* argv[])
 	DBObjTableField *valueSizeFLD = layerTable->Field (DBrNValueSize);
 	DBObjTableField *layerFLD 		= layerTable->Field (DBrNLayer);
 	DBObjRecord *layerRec, *itemRec, *dataRec;
-	DBGridIO *gridIO;
+	DBGridIF *gridIF;
 
 	coord.X = llXCoord;
 	coord.Y = llYCoord;
@@ -527,12 +527,12 @@ int main(int argc, char* argv[])
 		fclose (inFILE);
 		}
 	if (listFile) fclose (lstFILE);
-	gridIO = new DBGridIO (grdData);
+	gridIF = new DBGridIF (grdData);
 	if (grdData->Type () == DBTypeGridContinuous)
 		{
 		DBObjTableField *missingValueFLD = itemTable->Field (DBrNMissingValue);
 		missingValueFLD->Float (itemTable->Item (layerRec->Name ()),(DBFloat) missingVal);
-		gridIO->RecalcStats ();
+		gridIF->RecalcStats ();
 		}
 	else
 		{
@@ -563,7 +563,7 @@ int main(int argc, char* argv[])
 					if ((itemRec = itemTable->Add (buffer)) == (DBObjRecord *) NULL)
 						{
 						perror ("Item Object Creation Error in: RGISToolsImportGridCBK ()");
-						delete gridIO; delete grdData;
+						delete gridIF; delete grdData;
 						return 0;
 						}
 					gridValueFLD->Int (itemRec,intVal);
@@ -590,9 +590,9 @@ int main(int argc, char* argv[])
 				}
 			}
 		itemTable->ItemSort ();
-		gridIO->DiscreteStats ();
+		gridIF->DiscreteStats ();
 		}
-	delete gridIO;
+	delete gridIF;
 	if(grdData->Write (outFile) == DBFault) return(-1);
 	return 0;
 }

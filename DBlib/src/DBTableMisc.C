@@ -11,16 +11,16 @@ balazs.fekete@unh.edu
 *******************************************************************************/
 
 #include <DB.H>
-#include <DBio.H>
+#include <DBif.H>
 
-DBTableIO::DBTableIO (DBObjData *data)
+DBTableIF::DBTableIF (DBObjData *data)
 
 	{
 	DataPTR = data;
 	ItemTablePTR = data->Table (DBrNItems);
 	}
 
-DBInt DBTableIO::AppendASCII (char *fileName)
+DBInt DBTableIF::AppendASCII (char *fileName)
 
 	{
 	DBInt fieldID, fieldNum, intValue, bufferLength, i;
@@ -32,10 +32,10 @@ DBInt DBTableIO::AppendASCII (char *fileName)
 	DBObjRecord *record;
 	
 	if ((inFile = fopen (fileName,"r")) == (FILE *) NULL)
-		{ perror ("File Openning Error in: DBTableIO::AppendASCII ()"); return (DBFault); }
+		{ perror ("File Openning Error in: DBTableIF::AppendASCII ()"); return (DBFault); }
 
 	if (fgets (buffer,sizeof (buffer) - 1,inFile) == (char *) NULL)
-		{ perror ("File Reading Error in: DBTableIO::AppendASCII ()"); fclose (inFile);  return (DBFault); }
+		{ perror ("File Reading Error in: DBTableIF::AppendASCII ()"); fclose (inFile);  return (DBFault); }
 	bufferLength = strlen (buffer);
 	while ((buffer [bufferLength - 1] == '\n') || (buffer [bufferLength - 1] == '\r'))
 		{ buffer [bufferLength - 1] = '\0'; bufferLength = strlen (buffer); }
@@ -49,7 +49,7 @@ DBInt DBTableIO::AppendASCII (char *fileName)
 			{ fieldToken [--i] = '\0'; fieldToken++;}
 		fields = (DBObjTableField **) realloc (fields,sizeof (DBObjTableField *) * (fieldNum + 1));
 		if (fields == (DBObjTableField **) NULL)
-			{ perror ("Memory Allocation Error in: DBTableIO::AppendASCII ()"); fclose (inFile); return (DBFault); }
+			{ perror ("Memory Allocation Error in: DBTableIF::AppendASCII ()"); fclose (inFile); return (DBFault); }
 		fields [fieldNum] = ItemTablePTR->Field (fieldToken);
 		fieldToken = fieldToken + i + 1;
 		fieldNum++;

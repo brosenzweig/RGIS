@@ -26,7 +26,7 @@ static DBInt			_RGISAnNetVertexNum = 0;
 static DBCoordinate *_RGISAnNetCoord = (DBCoordinate *) NULL;
 static DBFloat  		_RGISAnNetArea;
 
-static int _RGISAnNetworkUpStreamAction (DBNetworkIO *netIO,DBObjRecord *cellRec)
+static int _RGISAnNetworkUpStreamAction (DBNetworkIF *netIF,DBObjRecord *cellRec)
 
 	{
 	DBInt nextOrder [2];
@@ -34,15 +34,15 @@ static int _RGISAnNetworkUpStreamAction (DBNetworkIO *netIO,DBObjRecord *cellRec
 	if (_RGISAnNetVertex < 1)
 		{
 		nextOrder[0] = _RGISAnNetOrderField->Int (cellRec);
-		nextOrder[1] = netIO->CellOrder (cellRec);
+		nextOrder[1] = netIF->CellOrder (cellRec);
 		}
 	else
 		{
-		nextOrder[0] = _RGISAnNetOrderField->Int (netIO->ToCell (cellRec));
-		nextOrder[1] = netIO->CellOrder (netIO->ToCell(cellRec));
+		nextOrder[0] = _RGISAnNetOrderField->Int (netIF->ToCell (cellRec));
+		nextOrder[1] = netIF->CellOrder (netIF->ToCell(cellRec));
 		}
 
-	if ((_RGISAnNetOrderField->Int (cellRec) == nextOrder[0]) && (netIO->CellOrder (cellRec) == nextOrder[1]))
+	if ((_RGISAnNetOrderField->Int (cellRec) == nextOrder[0]) && (netIF->CellOrder (cellRec) == nextOrder[1]))
 		{
 		_RGISAnNetStreamIDFLD->Int (cellRec,_RGISAnNetStreamID);
 		_RGISAnNetworkCellRec = cellRec;
@@ -52,12 +52,12 @@ static int _RGISAnNetworkUpStreamAction (DBNetworkIO *netIO,DBObjRecord *cellRec
 	return (false);
 	}
 
-static int _RGISAnNetworkDownStreamAction (DBNetworkIO *netIO,DBObjRecord *cellRec)
+static int _RGISAnNetworkDownStreamAction (DBNetworkIF *netIF,DBObjRecord *cellRec)
 
 	{
 	if (_RGISAnNetStreamIDFLD->Int (cellRec) != _RGISAnNetStreamID) return (false);
-	_RGISAnNetArea += netIO->CellArea (cellRec);
-	_RGISAnNetCoord [_RGISAnNetVertex++] = netIO->Center (cellRec);
+	_RGISAnNetArea += netIF->CellArea (cellRec);
+	_RGISAnNetCoord [_RGISAnNetVertex++] = netIF->Center (cellRec);
 	return (true);
 	}
 
@@ -69,7 +69,7 @@ void RGISAnNetworkStreamLinesCBK (Widget widget,RGISWorkspace *workspace,XmAnyCa
 	DBObjData *netData = dataset->Data ();
 	DBObjTable *cellTable = netData->Table (DBrNCells);
 	DBObjData *arcData = new DBObjData ("",DBTypeVectorLine);
-	DBNetworkIO *netIO = new DBNetworkIO (netData);
+	DBNetworkIF *netIF = new DBNetworkIF (netData);
 	static Widget fieldSelect = (Widget) NULL;
 
 	widget = widget; callData = callData;
@@ -85,7 +85,7 @@ void RGISAnNetworkStreamLinesCBK (Widget widget,RGISWorkspace *workspace,XmAnyCa
 		{
 		DBInt cellID;
 		char objName [DBStringLength];
-		DBVLineIO *lineIO = new DBVLineIO (arcData);
+		DBVLineIF *lineIF = new DBVLineIF (arcData);
 		DBObjTable *cellTable 	= netData->Table (DBrNCells);
 		DBObjTable *lineTable 	= arcData->Table (DBrNItems);
 		DBObjTableField *basinFLD  = new DBObjTableField (DBrNBasin,DBTableFieldInt,"%8d",sizeof (DBInt));
@@ -115,32 +115,32 @@ void RGISAnNetworkStreamLinesCBK (Widget widget,RGISWorkspace *workspace,XmAnyCa
 
 		_RGISAnNetStreamID = 0;
 		UIPauseDialogOpen ((char *) "Creating Stream Lines");
-		cellID = netIO->CellNum () - 1;
-		cellRec = netIO->Cell (cellID);
-		if (lineIO->NewSymbol ("Default Symbol") == (DBObjRecord *) NULL)
+		cellID = netIF->CellNum () - 1;
+		cellRec = netIF->Cell (cellID);
+		if (lineIF->NewSymbol ("Default Symbol") == (DBObjRecord *) NULL)
 			{ fprintf (stderr,"Symbol Creation Error in: _RGISAnNetworkStreamLines ()\n"); return; }
 
 		for (;cellID >= 0;--cellID)
 			{
-			cellRec = netIO->Cell (cellID);
-			if (((toCellRec = netIO->ToCell (cellRec)) == (DBObjRecord *) NULL) ||
+			cellRec = netIF->Cell (cellID);
+			if (((toCellRec = netIF->ToCell (cellRec)) == (DBObjRecord *) NULL) ||
 			    (_RGISAnNetOrderField->Int (cellRec) != _RGISAnNetOrderField->Int (toCellRec)) ||
-	 		    (netIO->CellOrder (cellRec)          != netIO->CellOrder (toCellRec)))
+	 		    (netIF->CellOrder (cellRec)          != netIF->CellOrder (toCellRec)))
 				{
-				if (UIPause ((netIO->CellNum () - cellRec->RowID ()) * 100 / netIO->CellNum ())) goto Stop;
+				if (UIPause ((netIF->CellNum () - cellRec->RowID ()) * 100 / netIF->CellNum ())) goto Stop;
 				sprintf (objName,"Line: %5d",_RGISAnNetStreamID + 1);
-				if ((lineRec = lineIO->NewItem (objName)) == (DBObjRecord *) NULL)
+				if ((lineRec = lineIF->NewItem (objName)) == (DBObjRecord *) NULL)
 					{ fprintf (stderr,"Line Insertion Error in: _RGISAnNetworkStreamLines ()\n"); return; }
 				nextFLD->Int (lineRec,toCellRec == (DBObjRecord *) NULL ? 0 : _RGISAnNetStreamIDFLD->Int (toCellRec) + 1);
-				basinFLD->Int (lineRec,netIO->CellBasinID (cellRec));
+				basinFLD->Int (lineRec,netIF->CellBasinID (cellRec));
 				fieldFLD->Int (lineRec,_RGISAnNetOrderField->Int (cellRec));
 
 				_RGISAnNetVertex = 0;
-				netIO->UpStreamSearch (_RGISAnNetworkCellRec = cellRec,(DBNetworkACTION) _RGISAnNetworkUpStreamAction);
-				lineIO->FromNode (lineRec,lineIO->Node (netIO->Center (_RGISAnNetworkCellRec),true));
-				lineIO->ToNode (lineRec,lineIO->Node (netIO->Center (cellRec) + netIO->Delta (cellRec),true));
+				netIF->UpStreamSearch (_RGISAnNetworkCellRec = cellRec,(DBNetworkACTION) _RGISAnNetworkUpStreamAction);
+				lineIF->FromNode (lineRec,lineIF->Node (netIF->Center (_RGISAnNetworkCellRec),true));
+				lineIF->ToNode (lineRec,lineIF->Node (netIF->Center (cellRec) + netIF->Delta (cellRec),true));
 
-				_RGISAnNetArea = netIO->CellArea (_RGISAnNetworkCellRec);
+				_RGISAnNetArea = netIF->CellArea (_RGISAnNetworkCellRec);
 				if (_RGISAnNetVertex > 1)
 					{
 					if (_RGISAnNetVertexNum < _RGISAnNetVertex - 1)
@@ -150,24 +150,24 @@ void RGISAnNetworkStreamLinesCBK (Widget widget,RGISWorkspace *workspace,XmAnyCa
 							{ perror ("Memory Allocation Error in: _RGISAnNetworkStreamLines ()"); return; }
 						}
 					_RGISAnNetVertex = 0;
-					netIO->DownStreamSearch (netIO->ToCell (_RGISAnNetworkCellRec),(DBNetworkACTION) _RGISAnNetworkDownStreamAction);
+					netIF->DownStreamSearch (netIF->ToCell (_RGISAnNetworkCellRec),(DBNetworkACTION) _RGISAnNetworkDownStreamAction);
 					}
 				else	_RGISAnNetVertex = 0;
-				lineIO->Vertexes (lineRec,_RGISAnNetCoord,_RGISAnNetVertex);
-				lineIO->ItemSymbol (lineRec,lineIO->Symbol (0));
-				lengthFLD->Float (lineRec,netIO->CellBasinLength (cellRec));
+				lineIF->Vertexes (lineRec,_RGISAnNetCoord,_RGISAnNetVertex);
+				lineIF->ItemSymbol (lineRec,lineIF->Symbol (0));
+				lengthFLD->Float (lineRec,netIF->CellBasinLength (cellRec));
 				areaFLD->Float (lineRec,_RGISAnNetArea);
-				basinAreaFLD->Float (lineRec,netIO->CellBasinArea (cellRec));
+				basinAreaFLD->Float (lineRec,netIF->CellBasinArea (cellRec));
 				_RGISAnNetStreamID += 1;
 				}
 			}
 Stop:	UIPauseDialogClose ();
 		if (_RGISAnNetCoord != (DBCoordinate *) NULL) free (_RGISAnNetCoord);
 
-		delete lineIO;
+		delete lineIF;
 		if (cellID >= 0) delete arcData;
 		else	workspace->CurrentData (arcData);
 		}
 	else delete arcData;
-	delete netIO;
+	delete netIF;
 	}

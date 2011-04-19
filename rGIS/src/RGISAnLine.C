@@ -157,8 +157,8 @@ void RGISAnalyseLineSSampleGridCBK (Widget widget, RGISWorkspace *workspace,XmAn
 		DBInt ret;
 		DBFloat value;
 		DBCoordinate coord;
-		DBGridIO *gridIO = new DBGridIO (grdData);
-		DBVLineIO *linIO = new DBVLineIO (dbData);
+		DBGridIF *gridIF = new DBGridIF (grdData);
+		DBVLineIF *lineIF = new DBVLineIF (dbData);
 		DBObjTableField *fromField;
 		DBObjTableField *toField;
 		DBObjRecord *record;
@@ -186,8 +186,8 @@ void RGISAnalyseLineSSampleGridCBK (Widget widget, RGISWorkspace *workspace,XmAn
 			if (UIPause (record->RowID () * 100 / itemTable->ItemNum ())) goto Stop;
 			if (fromField != (DBObjTableField *) NULL)
 				{
-				coord = linIO->FromCoord (record);
-				ret = gridIO->Value (coord,&value);
+				coord = lineIF->FromCoord (record);
+				ret = gridIF->Value (coord,&value);
 				if (fromField->Type () == DBTableFieldFloat)
 					{
 					if (ret)	fromField->Float (record,value);
@@ -201,8 +201,8 @@ void RGISAnalyseLineSSampleGridCBK (Widget widget, RGISWorkspace *workspace,XmAn
 				}
 			if (toField != (DBObjTableField *) NULL)
 				{
-				coord = linIO->ToCoord (record);
-				ret = gridIO->Value (coord,&value);
+				coord = lineIF->ToCoord (record);
+				ret = gridIF->Value (coord,&value);
 				if (toField->Type () == DBTableFieldFloat)
 					{
 					if (ret)	toField->Float (record,value);
@@ -217,8 +217,8 @@ void RGISAnalyseLineSSampleGridCBK (Widget widget, RGISWorkspace *workspace,XmAn
 			}
 Stop:
 		UIPauseDialogClose ();
-		delete linIO;
-		delete gridIO;
+		delete lineIF;
+		delete gridIF;
 		}
 	}
 
@@ -241,64 +241,64 @@ void RGISAnalyseLineMSampleGridCBK (Widget widget, RGISWorkspace *workspace,XmAn
 	DBObjTableField *layerNameFLD;
 	DBObjTableField *fromValueFLD = (DBObjTableField *) NULL;
 	DBObjTableField *toValueFLD = (DBObjTableField *) NULL;
-	DBVLineIO	*linIO = (DBVLineIO *)	 NULL;
-	DBGridIO *gridIO;
+	DBVLineIF	*lineIF = (DBVLineIF *)	 NULL;
+	DBGridIF *gridIF;
 	DBObjRecord *record, *layerRec, *tblRec;
 	DBObjectLIST<DBObjTableField> *fields;
 
 	widget = widget; callData = callData;
 
-	gridIO = new DBGridIO (grdData);
-	for (layerID = 0;layerID < gridIO->LayerNum ();++layerID)
+	gridIF = new DBGridIF (grdData);
+	for (layerID = 0;layerID < gridIF->LayerNum ();++layerID)
 		{
-		layerRec = gridIO->Layer (layerID);
+		layerRec = gridIF->Layer (layerID);
 		if ((layerRec->Flags () & DBObjectFlagIdle) != DBObjectFlagIdle) ++layerNum;
 		}
 	if (layerNum < 1)
-		{ fprintf (stderr,"No Layer to Process in RGISAnalyseLineMSampleGridCBK ()\n"); delete gridIO; return; }
+		{ fprintf (stderr,"No Layer to Process in RGISAnalyseLineMSampleGridCBK ()\n"); delete gridIF; return; }
 
 
 	tblData  = new DBObjData ("",DBTypeTable);
 	tblData->Document (DBDocGeoDomain,dbData->Document (DBDocGeoDomain));
 	tblData->Document (DBDocSubject,grdData->Document (DBDocSubject));
 
-	if (UIDataHeaderForm (tblData) == false) { delete gridIO; delete tblData; return; }
+	if (UIDataHeaderForm (tblData) == false) { delete gridIF; delete tblData; return; }
 	table = tblData->Table (DBrNItems);
 
-	linIO = new DBVLineIO (dbData);
+	lineIF = new DBVLineIF (dbData);
 
 	table->AddField (lineIDFLD =		new DBObjTableField ("GHAASPointID",DBTableFieldInt,	"%8d",sizeof (DBInt)));
 	table->AddField (layerIDFLD =		new DBObjTableField ("LayerID",		DBTableFieldInt,	"%4d",sizeof (DBShort)));
 	table->AddField (layerNameFLD =	new DBObjTableField ("LayerName",	DBTableFieldString,"%s",DBStringLength));
-	table->AddField (fromValueFLD =	new DBObjTableField (RGISLineFromNodeValue,DBTableFieldFloat,gridIO->ValueFormat (),sizeof (DBFloat4)));
-	table->AddField (toValueFLD =		new DBObjTableField (RGISLineToNodeValue,DBTableFieldFloat,gridIO->ValueFormat (),sizeof (DBFloat4)));
+	table->AddField (fromValueFLD =	new DBObjTableField (RGISLineFromNodeValue,DBTableFieldFloat,gridIF->ValueFormat (),sizeof (DBFloat4)));
+	table->AddField (toValueFLD =		new DBObjTableField (RGISLineToNodeValue,DBTableFieldFloat,gridIF->ValueFormat (),sizeof (DBFloat4)));
 
 	grdData->Flags (DBObjectFlagProcessed,DBSet);
 	UIPauseDialogOpen ((char *) "Sampling Grid(s)");
-	for (layerID = 0;layerID < gridIO->LayerNum ();++layerID)
+	for (layerID = 0;layerID < gridIF->LayerNum ();++layerID)
 		{
-		layerRec = gridIO->Layer (layerID);
+		layerRec = gridIF->Layer (layerID);
 		if ((layerRec->Flags () & DBObjectFlagIdle) == DBObjectFlagIdle) continue;
 		for (record = itemTable->First ();record != (DBObjRecord *) NULL;record = itemTable->Next ())
 			{
-			if (UIPause ((layerRec->RowID () * itemTable->ItemNum () + record->RowID ()) * 100 / (itemTable->ItemNum () * gridIO->LayerNum ()))) goto Stop;
+			if (UIPause ((layerRec->RowID () * itemTable->ItemNum () + record->RowID ()) * 100 / (itemTable->ItemNum () * gridIF->LayerNum ()))) goto Stop;
 			if ((record->Flags () & DBObjectFlagIdle) == DBObjectFlagIdle) continue;
 			tblRec = table->Add (record->Name ());
 			lineIDFLD->Int (tblRec,record->RowID () + 1);
 			layerIDFLD->Int (tblRec,layerRec->RowID ());
 			layerNameFLD->String (tblRec,layerRec->Name ());
-			coord = linIO->FromCoord (record);
-			if (gridIO->Value (layerRec,coord,&realValue))
+			coord = lineIF->FromCoord (record);
+			if (gridIF->Value (layerRec,coord,&realValue))
 				fromValueFLD->Float (tblRec,realValue);
-			coord = linIO->ToCoord (record);
-			if (gridIO->Value (layerRec,coord,&realValue))
+			coord = lineIF->ToCoord (record);
+			if (gridIF->Value (layerRec,coord,&realValue))
 				toValueFLD->Float (tblRec,realValue);
 			}
 		}
 Stop:
 	UIPauseDialogClose ();
-	delete gridIO;
-	delete linIO;
+	delete gridIF;
+	delete lineIF;
 
 	fields = new DBObjectLIST<DBObjTableField> ("Field List");
 	fields->Add (new DBObjTableField (*lineIDFLD));

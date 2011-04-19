@@ -11,7 +11,7 @@ balazs.fekete@unh.edu
 *******************************************************************************/
 
 #include <DB.H>
-#include <DBio.H>
+#include <DBif.H>
 
 DBInt DBNetworkExportASCIIGridDir (DBObjData *netData,char *fileName)
 
@@ -20,27 +20,27 @@ DBInt DBNetworkExportASCIIGridDir (DBObjData *netData,char *fileName)
 	DBPosition pos;
 	DBCoordinate cellSize;
 	DBRegion extent = netData->Extent ();
-	DBNetworkIO *netIO = new DBNetworkIO (netData);
+	DBNetworkIF *netIF = new DBNetworkIF (netData);
 
 	if ((file = fopen (fileName,"w")) == NULL)
 		{ perror ("File Opening Error in: DBNetworkExportASCIIGridDir ()"); return (DBFault); }
-	cellSize = netIO->CellSize ();
+	cellSize = netIF->CellSize ();
 
-	fprintf (file,"ncols         %d\n",netIO->ColNum ());
-	fprintf (file,"nrows         %d\n",netIO->RowNum ());
+	fprintf (file,"ncols         %d\n",netIF->ColNum ());
+	fprintf (file,"nrows         %d\n",netIF->RowNum ());
 	fprintf (file,"xllcorner     %f\n",extent.LowerLeft.X);
 	fprintf (file,"yllcorner     %f\n",extent.LowerLeft.Y);
 	fprintf (file,"cellsize      %f\n",cellSize.X);
 	fprintf (file,"NODATA_value  %d\n",DBFault);
 
-	for (pos.Row = netIO->RowNum () - 1;pos.Row >= 0; --pos.Row)
+	for (pos.Row = netIF->RowNum () - 1;pos.Row >= 0; --pos.Row)
 		{
-		for (pos.Col = 0; pos.Col < netIO->ColNum (); ++pos.Col)
-			fprintf (file," %d",netIO->ToCellDir (netIO->Cell (pos)));
+		for (pos.Col = 0; pos.Col < netIF->ColNum (); ++pos.Col)
+			fprintf (file," %d",netIF->ToCellDir (netIF->Cell (pos)));
 		fprintf (file,"\n");
 		}
 	fclose (file);
-	delete netIO;
+	delete netIF;
 	return (DBSuccess);
 	}
 
@@ -51,27 +51,27 @@ DBInt DBNetworkExportASCIIGridBasin (DBObjData *netData,char *fileName)
 	DBPosition pos;
 	DBCoordinate cellSize;
 	DBRegion extent = netData->Extent ();
-	DBNetworkIO *netIO = new DBNetworkIO (netData);
+	DBNetworkIF *netIF = new DBNetworkIF (netData);
 
 	if ((file = fopen (fileName,"w")) == NULL)
 		{ perror ("File Opening Error in: DBNetworkExportASCIIGridBasin ()"); return (DBFault); }
-	cellSize = netIO->CellSize ();
+	cellSize = netIF->CellSize ();
 
-	fprintf (file,"ncols         %d\n",netIO->ColNum ());
-	fprintf (file,"nrows         %d\n",netIO->RowNum ());
+	fprintf (file,"ncols         %d\n",netIF->ColNum ());
+	fprintf (file,"nrows         %d\n",netIF->RowNum ());
 	fprintf (file,"xllcorner     %f\n",extent.LowerLeft.X);
 	fprintf (file,"yllcorner     %f\n",extent.LowerLeft.Y);
 	fprintf (file,"cellsize      %f\n",cellSize.X);
 	fprintf (file,"NODATA_value  %d\n",DBFault);
 
-	for (pos.Row = netIO->RowNum () - 1;pos.Row >= 0; --pos.Row)
+	for (pos.Row = netIF->RowNum () - 1;pos.Row >= 0; --pos.Row)
 		{
-		for (pos.Col = 0; pos.Col < netIO->ColNum (); ++pos.Col)
-			fprintf (file," %d",netIO->CellBasinID (netIO->Cell (pos)));
+		for (pos.Col = 0; pos.Col < netIF->ColNum (); ++pos.Col)
+			fprintf (file," %d",netIF->CellBasinID (netIF->Cell (pos)));
 		fprintf (file,"\n");
 		}
 	fclose (file);
-	delete netIO;
+	delete netIF;
 	return (DBSuccess);
 	}
 
@@ -82,27 +82,27 @@ DBInt DBNetworkExportASCIIGridOrder (DBObjData *netData,char *fileName)
 	DBPosition pos;
 	DBCoordinate cellSize;
 	DBRegion extent = netData->Extent ();
-	DBNetworkIO *netIO = new DBNetworkIO (netData);
+	DBNetworkIF *netIF = new DBNetworkIF (netData);
 
 	if ((file = fopen (fileName,"w")) == NULL)
 		{ perror ("File Opening Error in: DBNetworkExportASCIIGridOrder ()"); return (DBFault); }
-	cellSize = netIO->CellSize ();
+	cellSize = netIF->CellSize ();
 
-	fprintf (file,"ncols         %d\n",netIO->ColNum ());
-	fprintf (file,"nrows         %d\n",netIO->RowNum ());
+	fprintf (file,"ncols         %d\n",netIF->ColNum ());
+	fprintf (file,"nrows         %d\n",netIF->RowNum ());
 	fprintf (file,"xllcorner     %f\n",extent.LowerLeft.X);
 	fprintf (file,"yllcorner     %f\n",extent.LowerLeft.Y);
 	fprintf (file,"cellsize      %f\n",cellSize.X);
 	fprintf (file,"NODATA_value  %d\n",DBFault);
 
-	for (pos.Row = netIO->RowNum () - 1;pos.Row >= 0; --pos.Row)
+	for (pos.Row = netIF->RowNum () - 1;pos.Row >= 0; --pos.Row)
 		{
-		for (pos.Col = 0; pos.Col < netIO->ColNum (); ++pos.Col)
-			fprintf (file," %d",netIO->CellOrder (netIO->Cell (pos)));
+		for (pos.Col = 0; pos.Col < netIF->ColNum (); ++pos.Col)
+			fprintf (file," %d",netIF->CellOrder (netIF->Cell (pos)));
 		fprintf (file,"\n");
 		}
 	fclose (file);
-	delete netIO;
+	delete netIF;
 	return (DBSuccess);
 	}
 
@@ -113,29 +113,29 @@ DBInt DBNetworkExportASCIIGridArea (DBObjData *netData,char *fileName)
 	DBPosition pos;
 	DBCoordinate cellSize;
 	DBRegion extent = netData->Extent ();
-	DBNetworkIO *netIO = new DBNetworkIO (netData);
+	DBNetworkIF *netIF = new DBNetworkIF (netData);
 	DBObjRecord *cellRec;
 
 	if ((file = fopen (fileName,"w")) == NULL)
 		{ perror ("File Opening Error in: DBNetworkExportASCIIGridArea ()"); return (DBFault); }
-	cellSize = netIO->CellSize ();
+	cellSize = netIF->CellSize ();
 
-	fprintf (file,"ncols         %d\n",netIO->ColNum ());
-	fprintf (file,"nrows         %d\n",netIO->RowNum ());
+	fprintf (file,"ncols         %d\n",netIF->ColNum ());
+	fprintf (file,"nrows         %d\n",netIF->RowNum ());
 	fprintf (file,"xllcorner     %f\n",extent.LowerLeft.X);
 	fprintf (file,"yllcorner     %f\n",extent.LowerLeft.Y);
 	fprintf (file,"cellsize      %f\n",cellSize.X);
 	fprintf (file,"NODATA_value  %f\n",-9999.0);
 
-	for (pos.Row = netIO->RowNum () - 1;pos.Row >= 0; --pos.Row)
+	for (pos.Row = netIF->RowNum () - 1;pos.Row >= 0; --pos.Row)
 		{
-		for (pos.Col = 0; pos.Col < netIO->ColNum (); ++pos.Col)
-			if ((cellRec = netIO->Cell (pos)) == (DBObjRecord *) NULL)	fprintf (file," %f",-9999.0);
-			else	fprintf (file," %f",netIO->CellBasinArea (cellRec));
+		for (pos.Col = 0; pos.Col < netIF->ColNum (); ++pos.Col)
+			if ((cellRec = netIF->Cell (pos)) == (DBObjRecord *) NULL)	fprintf (file," %f",-9999.0);
+			else	fprintf (file," %f",netIF->CellBasinArea (cellRec));
 		fprintf (file,"\n");
 		}
 	fclose (file);
-	delete netIO;
+	delete netIF;
 	return (DBSuccess);
 	}
 
@@ -146,29 +146,29 @@ DBInt DBNetworkExportASCIIGridLength (DBObjData *netData,char *fileName)
 	DBPosition pos;
 	DBCoordinate cellSize;
 	DBRegion extent = netData->Extent ();
-	DBNetworkIO *netIO = new DBNetworkIO (netData);
+	DBNetworkIF *netIF = new DBNetworkIF (netData);
 	DBObjRecord *cellRec;
 
 	if ((file = fopen (fileName,"w")) == NULL)
 		{ perror ("File Opening Error in: DBNetworkExportASCIIGridLength ()"); return (DBFault); }
-	cellSize = netIO->CellSize ();
+	cellSize = netIF->CellSize ();
 
-	fprintf (file,"ncols         %d\n",netIO->ColNum ());
-	fprintf (file,"nrows         %d\n",netIO->RowNum ());
+	fprintf (file,"ncols         %d\n",netIF->ColNum ());
+	fprintf (file,"nrows         %d\n",netIF->RowNum ());
 	fprintf (file,"xllcorner     %f\n",extent.LowerLeft.X);
 	fprintf (file,"yllcorner     %f\n",extent.LowerLeft.Y);
 	fprintf (file,"cellsize      %f\n",cellSize.X);
 	fprintf (file,"NODATA_value  %f\n",-9999.0);
 
-	for (pos.Row = netIO->RowNum () - 1;pos.Row >= 0; --pos.Row)
+	for (pos.Row = netIF->RowNum () - 1;pos.Row >= 0; --pos.Row)
 		{
-		for (pos.Col = 0; pos.Col < netIO->ColNum (); ++pos.Col)
-			if ((cellRec = netIO->Cell (pos)) == (DBObjRecord *) NULL)	fprintf (file," %f",-9999.0);
-			else	fprintf (file," %f",netIO->CellBasinLength (cellRec));
+		for (pos.Col = 0; pos.Col < netIF->ColNum (); ++pos.Col)
+			if ((cellRec = netIF->Cell (pos)) == (DBObjRecord *) NULL)	fprintf (file," %f",-9999.0);
+			else	fprintf (file," %f",netIF->CellBasinLength (cellRec));
 		fprintf (file,"\n");
 		}
 	fclose (file);
-	delete netIO;
+	delete netIF;
 	return (DBSuccess);
 	}
 
@@ -179,30 +179,30 @@ DBInt DBNetworkExportASCIIGridDistToMouth (DBObjData *netData,char *fileName)
 	DBPosition pos;
 	DBCoordinate cellSize;
 	DBRegion extent = netData->Extent ();
-	DBNetworkIO *netIO = new DBNetworkIO (netData);
+	DBNetworkIF *netIF = new DBNetworkIF (netData);
 	DBObjRecord *cellRec;
 
-	if (netIO->DistToMouth () != true) return (DBFault);
+	if (netIF->DistToMouth () != true) return (DBFault);
 	if ((file = fopen (fileName,"w")) == NULL)
 		{ perror ("File Opening Error in: DBNetworkExportASCIIGridLength ()"); return (DBFault); }
-	cellSize = netIO->CellSize ();
+	cellSize = netIF->CellSize ();
 
-	fprintf (file,"ncols         %d\n",netIO->ColNum ());
-	fprintf (file,"nrows         %d\n",netIO->RowNum ());
+	fprintf (file,"ncols         %d\n",netIF->ColNum ());
+	fprintf (file,"nrows         %d\n",netIF->RowNum ());
 	fprintf (file,"xllcorner     %f\n",extent.LowerLeft.X);
 	fprintf (file,"yllcorner     %f\n",extent.LowerLeft.Y);
 	fprintf (file,"cellsize      %f\n",cellSize.X);
 	fprintf (file,"NODATA_value  %f\n",-9999.0);
 
-	for (pos.Row = netIO->RowNum () - 1;pos.Row >= 0; --pos.Row)
+	for (pos.Row = netIF->RowNum () - 1;pos.Row >= 0; --pos.Row)
 		{
-		for (pos.Col = 0; pos.Col < netIO->ColNum (); ++pos.Col)
-			if ((cellRec = netIO->Cell (pos)) == (DBObjRecord *) NULL)	fprintf (file," %f",-9999.0);
-			else	fprintf (file," %f",netIO->CellDistToMouth (cellRec));
+		for (pos.Col = 0; pos.Col < netIF->ColNum (); ++pos.Col)
+			if ((cellRec = netIF->Cell (pos)) == (DBObjRecord *) NULL)	fprintf (file," %f",-9999.0);
+			else	fprintf (file," %f",netIF->CellDistToMouth (cellRec));
 		fprintf (file,"\n");
 		}
 	fclose (file);
-	delete netIO;
+	delete netIF;
 	return (DBSuccess);
 	}
 
@@ -213,30 +213,30 @@ DBInt DBNetworkExportASCIIGridDistToOcean (DBObjData *netData,char *fileName)
 	DBPosition pos;
 	DBCoordinate cellSize;
 	DBRegion extent = netData->Extent ();
-	DBNetworkIO *netIO = new DBNetworkIO (netData);
+	DBNetworkIF *netIF = new DBNetworkIF (netData);
 	DBObjRecord *cellRec;
 
-	if (netIO->DistToOcean () != true) return (DBFault);
+	if (netIF->DistToOcean () != true) return (DBFault);
 	if ((file = fopen (fileName,"w")) == NULL)
 		{ perror ("File Opening Error in: DBNetworkExportASCIIGridLength ()"); return (DBFault); }
-	cellSize = netIO->CellSize ();
+	cellSize = netIF->CellSize ();
 
-	fprintf (file,"ncols         %d\n",netIO->ColNum ());
-	fprintf (file,"nrows         %d\n",netIO->RowNum ());
+	fprintf (file,"ncols         %d\n",netIF->ColNum ());
+	fprintf (file,"nrows         %d\n",netIF->RowNum ());
 	fprintf (file,"xllcorner     %f\n",extent.LowerLeft.X);
 	fprintf (file,"yllcorner     %f\n",extent.LowerLeft.Y);
 	fprintf (file,"cellsize      %f\n",cellSize.X);
 	fprintf (file,"NODATA_value  %f\n",-9999.0);
 
-	for (pos.Row = netIO->RowNum () - 1;pos.Row >= 0; --pos.Row)
+	for (pos.Row = netIF->RowNum () - 1;pos.Row >= 0; --pos.Row)
 		{
-		for (pos.Col = 0; pos.Col < netIO->ColNum (); ++pos.Col)
-			if ((cellRec = netIO->Cell (pos)) == (DBObjRecord *) NULL)	fprintf (file," %f",-9999.0);
-			else	fprintf (file," %f",netIO->CellDistToOcean (cellRec));
+		for (pos.Col = 0; pos.Col < netIF->ColNum (); ++pos.Col)
+			if ((cellRec = netIF->Cell (pos)) == (DBObjRecord *) NULL)	fprintf (file," %f",-9999.0);
+			else	fprintf (file," %f",netIF->CellDistToOcean (cellRec));
 		fprintf (file,"\n");
 		}
 	fclose (file);
-	delete netIO;
+	delete netIF;
 	return (DBSuccess);
 	}
 
@@ -247,20 +247,20 @@ DBInt DBNetworkExportArcGenARC (DBObjData *netData,char *fileName)
 	DBInt cellID;
 	DBFloat length;
 	DBCoordinate coord, delta, cellSize;
-	DBNetworkIO *netIO = new DBNetworkIO (netData);
+	DBNetworkIF *netIF = new DBNetworkIF (netData);
 	DBObjRecord *cellRec;
 
 	if ((file = fopen (fileName,"w")) == NULL)
 		{ perror ("File Opening Error in: DBNetworkExportArcGenARC ()"); return (DBFault); }
-	cellSize = netIO->CellSize ();
+	cellSize = netIF->CellSize ();
 
-	for (cellID = 0;cellID < netIO->CellNum ();++cellID)
+	for (cellID = 0;cellID < netIF->CellNum ();++cellID)
 		{
-		cellRec = netIO->Cell (cellID);
+		cellRec = netIF->Cell (cellID);
 		fprintf (file,"%8d\n", cellRec->RowID ());
-		coord = netIO->Center (cellRec);
+		coord = netIF->Center (cellRec);
 		fprintf (file,"%g %g\n",coord.X,coord.Y);
-		delta = netIO->Delta (cellRec);
+		delta = netIF->Delta (cellRec);
 		length = sqrt (delta.X * delta.X + delta.Y * delta.Y);
 		if (length < pow ((double) 10.0,(double) netData->Precision ()))
 			delta.X = delta.Y = pow ((double) 10.0,(double) netData->Precision ());
@@ -270,7 +270,7 @@ DBInt DBNetworkExportArcGenARC (DBObjData *netData,char *fileName)
 		}
 	fprintf (file,"END\n");
 	fclose (file);
-	delete netIO;
+	delete netIF;
 	return (DBSuccess);
 	}
 
@@ -280,21 +280,21 @@ DBInt DBNetworkExportArcGenNODE (DBObjData *netData,char *fileName)
 	FILE *file;
 	DBInt basinID;
 	DBCoordinate coord;
-	DBNetworkIO *netIO = new DBNetworkIO (netData);
+	DBNetworkIF *netIF = new DBNetworkIF (netData);
 	DBObjRecord *basinRec, *cellRec;
 
 	if ((file = fopen (fileName,"w")) == NULL)
 		{ perror ("File Opening Error in: DBNetworkExportArcGenNODE ()"); return (DBFault); }
 
-	for (basinID = 0;basinID < netIO->BasinNum ();++basinID)
+	for (basinID = 0;basinID < netIF->BasinNum ();++basinID)
 		{
-		basinRec = netIO->Basin (basinID);
-		cellRec = netIO->MouthCell (basinRec);
-		coord = netIO->Center (cellRec) + netIO->Delta (cellRec);
+		basinRec = netIF->Basin (basinID);
+		cellRec = netIF->MouthCell (basinRec);
+		coord = netIF->Center (cellRec) + netIF->Delta (cellRec);
 		fprintf (file,"%8d %g %g\n",basinRec->RowID (),coord.X,coord.Y);
 		}
 	fprintf (file,"END\n");
 	fclose (file);
-	delete netIO;
+	delete netIF;
 	return (DBSuccess);
 	}

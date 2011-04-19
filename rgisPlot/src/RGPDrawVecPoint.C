@@ -12,7 +12,7 @@ balazs.fekete@unh.edu
 
 #include<cm.h>
 #include<rgisPlot.H>
-#include<DBio.H>
+#include<DBif.H>
 
 DBInt RGPDrawVecPoint (DBInt mode, DBInt *entryNum, DBObjData *pntData)
 
@@ -30,7 +30,7 @@ DBInt RGPDrawVecPoint (DBInt mode, DBInt *entryNum, DBObjData *pntData)
 	DBCoordinate coord;
 	DBObjTable  *symbols;
 	DBObjRecord *symRec;
-	DBVPointIO *pntIO = new DBVPointIO (pntData);
+	DBVPointIF *pntIF = new DBVPointIF (pntData);
 	DBObjRecord *record;
 	DBObjTableField *symbolIDFld;
 	DBObjTableField *foregroundFld;
@@ -99,17 +99,17 @@ DBInt RGPDrawVecPoint (DBInt mode, DBInt *entryNum, DBObjData *pntData)
 	cpgqci (&pntColor);
 	cpgqlw (&pntSize);
 
-	if ((xCoord = (float *) calloc (pntIO->ItemNum (),sizeof (float))) == (float *) NULL)
-		{ perror ("Memory Reallocation Error in: RGPDrawLine ()"); delete pntIO; return (DBFault); }
-	if ((yCoord = (float *) calloc (pntIO->ItemNum (),sizeof (float))) == (float *) NULL)
-		{ perror ("Memory Reallocation Error in: RGPDrawLine ()"); free (xCoord); delete pntIO; return (DBFault); }
+	if ((xCoord = (float *) calloc (pntIF->ItemNum (),sizeof (float))) == (float *) NULL)
+		{ perror ("Memory Reallocation Error in: RGPDrawLine ()"); delete pntIF; return (DBFault); }
+	if ((yCoord = (float *) calloc (pntIF->ItemNum (),sizeof (float))) == (float *) NULL)
+		{ perror ("Memory Reallocation Error in: RGPDrawLine ()"); free (xCoord); delete pntIF; return (DBFault); }
 
 	cpgslw (3);
-	for (pntID = 0;pntID < pntIO->ItemNum (); ++pntID)
+	for (pntID = 0;pntID < pntIF->ItemNum (); ++pntID)
 		{
-		record = pntIO->Item (pntID);
-		cpgsci (pntIO->ItemForeground (record));
-		coord = pntIO->Coordinate (record);
+		record = pntIF->Item (pntID);
+		cpgsci (pntIF->ItemForeground (record));
+		coord = pntIF->Coordinate (record);
 		xCoord [pntID] = coord.X;
 		yCoord [pntID] = coord.Y;
 		cpgpt1 (xCoord [pntID],yCoord [pntID],-1);
@@ -159,6 +159,6 @@ Stop:
 	cpgslw (pntSize);
 	if (xCoord != (float *) NULL) free (xCoord);
 	if (yCoord != (float *) NULL) free (yCoord);
-	delete pntIO;
+	delete pntIF;
 	return (ret);
 	}

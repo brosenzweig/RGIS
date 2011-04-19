@@ -12,7 +12,7 @@ balazs.fekete@unh.edu
 
 #include <cm.h>
 #include <DB.H>
-#include <DBio.H>
+#include <DBif.H>
 #include <RG.H>
 
 int main(int argc, char* argv[])

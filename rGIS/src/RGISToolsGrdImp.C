@@ -668,7 +668,7 @@ void RGISToolsImportGridCBK (Widget widget,RGISWorkspace *workspace,XmAnyCallbac
 			DBObjTableField *valueSizeFLD = layerTable->Field (DBrNValueSize);
 			DBObjTableField *layerFLD 		= layerTable->Field (DBrNLayer);
 			DBObjRecord *layerRec, *itemRec, *dataRec;
-			DBGridIO *gridIO;
+			DBGridIF *gridIF;
 
 			coord.X = llXCoord;
 			coord.Y = llYCoord;
@@ -854,12 +854,12 @@ void RGISToolsImportGridCBK (Widget widget,RGISWorkspace *workspace,XmAnyCallbac
 				fclose (inFILE);
 				}
 			if (listFile) fclose (lstFILE);
-			gridIO = new DBGridIO (grdData);
+			gridIF = new DBGridIF (grdData);
 			if (grdData->Type () == DBTypeGridContinuous)
 				{
 				DBObjTableField *missingValueFLD	= itemTable->Field (DBrNMissingValue);
 				missingValueFLD->Float (itemTable->Item (layerRec->Name ()),(DBFloat) missingVal);
-				gridIO->RecalcStats ();
+				gridIF->RecalcStats ();
 				}
 			else
 				{
@@ -889,7 +889,7 @@ void RGISToolsImportGridCBK (Widget widget,RGISWorkspace *workspace,XmAnyCallbac
 							if ((itemRec = itemTable->Add (buffer)) == (DBObjRecord *) NULL)
 								{
 								fprintf (stderr,"Item Object Creation Error in: RGISToolsImportGridCBK ()\n");
-								delete gridIO; delete grdData;
+								delete gridIF; delete grdData;
 								return;
 								}
 							gridValueFLD->Int (itemRec,intVal);
@@ -917,9 +917,9 @@ void RGISToolsImportGridCBK (Widget widget,RGISWorkspace *workspace,XmAnyCallbac
 						}
 					}
 				itemTable->ItemSort ();
-				gridIO->DiscreteStats ();
+				gridIF->DiscreteStats ();
 				}
-			delete gridIO;
+			delete gridIF;
 			workspace->CurrentData (grdData);
 			}
 		else delete grdData;

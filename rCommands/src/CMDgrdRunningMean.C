@@ -12,7 +12,7 @@ balazs.fekete@unh.edu
 
 #include <cm.h>
 #include <DB.H>
-#include <DBio.H>
+#include <DBif.H>
 #include <RG.H>
 
 int main(int argc, char* argv[])
@@ -26,7 +26,7 @@ int main(int argc, char* argv[])
 	int shadeSet = DBDataFlagDispModeContGreyScale;
 	DBFloat value, sum;
 	DBObjData *inData,   *outData;
-	DBGridIO  *inGridIO, *outGridIO;
+	DBGridIF  *inGridIF, *outGridIF;
 	DBObjRecord *inLayerRec, *outLayerRec;
 
 	for (argPos = 1;argPos < argNum; )
@@ -140,50 +140,50 @@ int main(int argc, char* argv[])
 		delete inData;
 		return (CMfailed);
 		}
-	inGridIO = new DBGridIO (inData);
+	inGridIF = new DBGridIF (inData);
 	if ((outData = DBGridToGrid (inData,DBTypeGridContinuous)) == (DBObjData *) NULL) return (CMfailed);
 
 	if (title   != (char *) NULL) outData->Name     (title);
 	if (subject != (char *) NULL) outData->Document (DBDocSubject,   subject);
 	if (domain  != (char *) NULL) outData->Document (DBDocGeoDomain, domain);
 	if (version != (char *) NULL) outData->Document (DBDocVersion,   version);
-	outGridIO = new DBGridIO (outData);
+	outGridIF = new DBGridIF (outData);
 
-	layerNum = inGridIO->LayerNum ();
+	layerNum = inGridIF->LayerNum ();
 	for (layerID = 0;layerID < layerNum;++layerID)
 		{
-		inLayerRec = inGridIO->Layer (layerID);;
+		inLayerRec = inGridIF->Layer (layerID);;
 		if (layerID == 0)
 			{
-			outLayerRec = outGridIO->Layer (layerID);
-			outGridIO->RenameLayer (outLayerRec, inLayerRec->Name ());
+			outLayerRec = outGridIF->Layer (layerID);
+			outGridIF->RenameLayer (outLayerRec, inLayerRec->Name ());
 			}
-		else outLayerRec = outGridIO->AddLayer (inLayerRec->Name ());
+		else outLayerRec = outGridIF->AddLayer (inLayerRec->Name ());
 
 		beginLayerID = layerID >= offset ? layerID - offset : 0;
 		endLayerID   = (layerID - offset + kernel) < layerNum ? (layerID - offset + kernel) : layerNum;
 //		fprintf (stderr, "LayerID: %d Kernel: %d Offset: %d     Begin: %d  End: %d\n", layerID, kernel, offset, beginLayerID, endLayerID);
-		for (pos.Row = 0; pos.Row < inGridIO->RowNum (); pos.Row++)
+		for (pos.Row = 0; pos.Row < inGridIF->RowNum (); pos.Row++)
 			{
-			for (pos.Col = 0; pos.Col < inGridIO->ColNum (); pos.Col++)
+			for (pos.Col = 0; pos.Col < inGridIF->ColNum (); pos.Col++)
 				{
 				num = 0;
 				sum = 0.0;
 				for (i = beginLayerID; i < endLayerID; ++i)
 					{
-					if (inGridIO->Value (i, pos, &value) == false) continue;
+					if (inGridIF->Value (i, pos, &value) == false) continue;
 					sum = sum + value;
 					num++;
 					}
-				outGridIO->Value (outLayerRec,pos,num > 0 ? sum / (DBFloat) num : outGridIO->MissingValue ());
+				outGridIF->Value (outLayerRec,pos,num > 0 ? sum / (DBFloat) num : outGridIF->MissingValue ());
 				}
 			}
-		outGridIO->RecalcStats (outLayerRec);
+		outGridIF->RecalcStats (outLayerRec);
 		}
 	ret = (argNum > 2) && (strcmp (argv [2],"-") != 0) ? outData->Write (argv [2]) : outData->Write (stdout);
 
-	delete inGridIO;
-	delete outGridIO;
+	delete inGridIF;
+	delete outGridIF;
 	delete inData;
 	delete outData;
 	if (verbose) RGlibPauseClose ();

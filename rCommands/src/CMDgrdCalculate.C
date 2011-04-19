@@ -12,21 +12,21 @@ balazs.fekete@unh.edu
 
 #include <cm.h>
 #include <DB.H>
-#include <DBio.H>
+#include <DBif.H>
 #include <RG.H>
 #include <CMDexp.H>
 
 class CMDgrdVariable
 	{
 	private:
-		DBGridIO *GridIO;
+		DBGridIF *GridIF;
 		DBObjTableField *SourceFLD;
 		DBObjTableField *TargetFLD;
 		DBObjRecord *LayerRec;
 	public:
 	CMDgrdVariable (char *varName)
 		{
-		GridIO = (DBGridIO *) NULL;
+		GridIF = (DBGridIF *) NULL;
 		SourceFLD = (DBObjTableField *) NULL;
 		TargetFLD = new DBObjTableField (varName,DBVariableFloat,"%10.3f",sizeof (DBFloat),false);
 		}
@@ -34,10 +34,10 @@ class CMDgrdVariable
 		{
 		DBObjData *data;
 
-		if (GridIO != (DBGridIO *) NULL)
+		if (GridIF != (DBGridIF *) NULL)
 			{
-			data = GridIO->Data ();
-			delete GridIO;
+			data = GridIF->Data ();
+			delete GridIF;
 			delete data;
 			}
 		}
@@ -82,21 +82,21 @@ class CMDgrdVariable
 				{ CMmsgPrint (CMmsgUsrError,"Continuous grid field is referenced!\n"); free (dataName); return (CMfailed); }
 			}
 		table->AddField (TargetFLD);
-		GridIO = new DBGridIO (data, flat);
+		GridIF = new DBGridIF (data, flat);
 		free (dataName);
 		return (DBSuccess);
 		}
-	DBInt    Projection () const { return (GridIO->Data ()->Projection ()); };
-	DBRegion Extent () const { DBObjData *data = GridIO->Data (); return (data->Extent ()); }
-	DBFloat CellWidth  () const { return (GridIO->CellWidth ()); }
-	DBFloat CellHeight () const { return (GridIO->CellWidth ()); }
-	DBInt LayerNum () const { return (GridIO->LayerNum ()); }
+	DBInt    Projection () const { return (GridIF->Data ()->Projection ()); };
+	DBRegion Extent () const { DBObjData *data = GridIF->Data (); return (data->Extent ()); }
+	DBFloat CellWidth  () const { return (GridIF->CellWidth ()); }
+	DBFloat CellHeight () const { return (GridIF->CellWidth ()); }
+	DBInt LayerNum () const { return (GridIF->LayerNum ()); }
 
 	char *CurrentLayer (DBInt layerID)
 		{
-		if (layerID == DBFault) LayerRec = GridIO->Layer (0);
-		else	LayerRec = layerID < GridIO->LayerNum () ? GridIO->Layer (layerID) :
-								GridIO->Layer (layerID % GridIO->LayerNum ());
+		if (layerID == DBFault) LayerRec = GridIF->Layer (0);
+		else	LayerRec = layerID < GridIF->LayerNum () ? GridIF->Layer (layerID) :
+								GridIF->Layer (layerID % GridIF->LayerNum ());
 		return (LayerRec->Name ());
 		}
 
@@ -106,9 +106,9 @@ class CMDgrdVariable
 		DBObjRecord *layerRec;
 		char *name;
 
-		for (layerID = 0;layerID < GridIO->LayerNum ();++layerID)
+		for (layerID = 0;layerID < GridIF->LayerNum ();++layerID)
 			{
-			layerRec = GridIO->Layer (layerID);
+			layerRec = GridIF->Layer (layerID);
 
 			name = layerRec->Name ();
 			if (strncmp (name,"XXXX-",5) == 0)
@@ -121,26 +121,26 @@ class CMDgrdVariable
 		{
 		DBObjRecord *layerRec;
 		DBDate date;
-		layerRec = GridIO->Layer (layerID);
+		layerRec = GridIF->Layer (layerID);
 		date.Set (layerRec->Name ());
 		if (date.Year () != DBDefaultMissingIntVal) return (true);
 		return (date.Month () != DBDefaultMissingIntVal ? true : false);
 		}
 	void GetVariable (DBObjRecord *record,DBCoordinate coord)
 		{
-		switch ((GridIO->Data ())->Type ())
+		switch ((GridIF->Data ())->Type ())
 			{
 			case DBTypeGridContinuous:
 				{
 				DBFloat value;
-				if (GridIO->Value (LayerRec,coord,&value))
+				if (GridIF->Value (LayerRec,coord,&value))
 						TargetFLD->Float (record,value);
 				else	TargetFLD->Float (record,TargetFLD->FloatNoData ());
 				} break;
 			case DBTypeGridDiscrete:
 				{
 				DBObjRecord *grdRec;
-				if ((grdRec = GridIO->GridItem (LayerRec,coord)) != (DBObjRecord *) NULL)
+				if ((grdRec = GridIF->GridItem (LayerRec,coord)) != (DBObjRecord *) NULL)
 					switch (SourceFLD->Type ())
 						{
 						case DBVariableString:
@@ -192,7 +192,7 @@ int main (int argc,char *argv [])
 	DBObject *obj;
 	DBObjData *data;
 	DBObjRecord *record, *layerRec;
-	DBGridIO *gridIO;
+	DBGridIF *gridIF;
 	CMDExpression **expressions = (CMDExpression **) NULL;
 	CMDgrdVariable **grdVar = (CMDgrdVariable **) NULL;
 
@@ -391,7 +391,7 @@ int main (int argc,char *argv [])
 	data->Flags (shadeSet, DBSet);
 	data->Projection(grdVar [0]->Projection ()); // Taking projection from first grid variable
 
-	gridIO = new DBGridIO (data);
+	gridIF = new DBGridIF (data);
 	for (layerID = 0;layerID < layerNum;++layerID)
 		{
 		layerName = grdVar [masterVar]->CurrentLayer (layerID);
@@ -405,18 +405,18 @@ int main (int argc,char *argv [])
 				grdVar [i]->CurrentLayer (dataLayerID);
 				}
 			}
-		if (layerID > 0) gridIO->AddLayer ((char *) "New Layer");
-		layerRec = gridIO->Layer (layerID);
-		gridIO->RenameLayer (layerRec,layerName);
-		for (pos.Row = 0;pos.Row < gridIO->RowNum ();++pos.Row)
-			for (pos.Col = 0;pos.Col < gridIO->ColNum ();++pos.Col)
+		if (layerID > 0) gridIF->AddLayer ((char *) "New Layer");
+		layerRec = gridIF->Layer (layerID);
+		gridIF->RenameLayer (layerRec,layerName);
+		for (pos.Row = 0;pos.Row < gridIF->RowNum ();++pos.Row)
+			for (pos.Col = 0;pos.Col < gridIF->ColNum ();++pos.Col)
 				{
-			 	gridIO->Pos2Coord (pos,coord);
+			 	gridIF->Pos2Coord (pos,coord);
 				for (i = 0;i < varNum;++i) grdVar [i]->GetVariable (record,coord);
 				for (i = 0;i < expNum;++i) expressions [i]->Evaluate (record);
-				gridIO->Value (layerRec,pos,operand->Float (record));
+				gridIF->Value (layerRec,pos,operand->Float (record));
 				}
-		gridIO->RecalcStats (layerRec);
+		gridIF->RecalcStats (layerRec);
 		}
 
 	ret = (argNum > 1) && (strcmp (argv [1],"-") != 0) ? data->Write (argv [1]) : data->Write (stdout);

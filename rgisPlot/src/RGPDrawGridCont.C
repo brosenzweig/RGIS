@@ -12,7 +12,7 @@ balazs.fekete@unh.edu
 
 #include<cm.h>
 #include<rgisPlot.H>
-#include<DBio.H>
+#include<DBif.H>
 
 static RGPColorMapEntry _RGPGreyColors [] = {
 		{ 255, 	255,	255},
@@ -72,14 +72,14 @@ DBInt RGPDrawGridContinuous (DBInt mode, DBInt *entryNum, DBObjData *grdData)
 	float *array, translation [6], min, max, unit = 1.0;
 	DBRegion extent = grdData->Extent ();
 	DBObjRecord *layerRec;
-	DBGridIO *gridIO = new DBGridIO (grdData);
+	DBGridIF *gridIF = new DBGridIF (grdData);
 
 	do {
 		RGPPrintMessage (mode,entryNum,"Grid Layer:");
 		if (fgets (charBuffer,sizeof (charBuffer) - 2,stdin) == (char *) NULL) { ret = DBFault; goto Stop; }
 		if ((strlen (charBuffer) > 0) && (charBuffer [strlen (charBuffer) - 1] == '\n'))
 			charBuffer [strlen (charBuffer) - 1] = '\0';
-		if ((layerRec = gridIO->Layer (charBuffer)) != NULL) break;
+		if ((layerRec = gridIF->Layer (charBuffer)) != NULL) break;
 		sprintf (errorMsg,"Invalid grid layer [%s]",charBuffer);
 		if (RGPPrintError (mode,*entryNum,errorMsg)) { ret = DBFault; goto Stop;}
  		} while (true);
@@ -118,7 +118,7 @@ DBInt RGPDrawGridContinuous (DBInt mode, DBInt *entryNum, DBObjData *grdData)
 		case 6:
 			colorNum = 0;
 			if ((customColors = (RGPColorMapEntry *) calloc (1,sizeof (RGPColorMapEntry))) == (RGPColorMapEntry *) NULL)
-				{ perror ("Memory Allocation Error in: RGPDrawGridContinuous ()"); delete gridIO; return (DBFault); }
+				{ perror ("Memory Allocation Error in: RGPDrawGridContinuous ()"); delete gridIF; return (DBFault); }
 			do	{
 				RGPPrintMessage (mode,entryNum,"Background Shade [red,green,blue]:");
 				if (fgets (charBuffer,sizeof (charBuffer) - 2,stdin) == (char *) NULL) { ret = DBFault; goto Stop; }
@@ -138,7 +138,7 @@ DBInt RGPDrawGridContinuous (DBInt mode, DBInt *entryNum, DBObjData *grdData)
 				if (sscanf (charBuffer,"%d,%d,%d",&r,&g,&b) == 3)
 					{
 					if ((customColors = (RGPColorMapEntry *) realloc (customColors,(colorNum + 1) * sizeof (RGPColorMapEntry))) == (RGPColorMapEntry *) NULL)
-						{ perror ("Memory Allocation Error in: RGPDrawGridContinuous ()"); delete gridIO; return (DBFault); }
+						{ perror ("Memory Allocation Error in: RGPDrawGridContinuous ()"); delete gridIF; return (DBFault); }
 					customColors [colorNum].Red = r;
 					customColors [colorNum].Green = g;
 					customColors [colorNum].Blue = b;
@@ -171,30 +171,30 @@ DBInt RGPDrawGridContinuous (DBInt mode, DBInt *entryNum, DBObjData *grdData)
 		if (sscanf (charBuffer,"%f,%f",&min,&max) == 2)	break;
 		else	if (RGPPrintError (mode,*entryNum,"Value range input error")) { ret = DBFault; goto Stop; }
 		} while (true);
-	if ((array = (float *) calloc (gridIO->RowNum () * gridIO->ColNum (),sizeof (float))) == (float *) NULL)
+	if ((array = (float *) calloc (gridIF->RowNum () * gridIF->ColNum (),sizeof (float))) == (float *) NULL)
 		{ perror ("Memory allocation error in: RGPDrawGridContinuous ()"); ret = DBFault; goto Stop; }
-	for (pos.Row = 0;pos.Row < gridIO->RowNum ();++pos.Row)
-		for (pos.Col = 0;pos.Col < gridIO->ColNum ();++pos.Col)
-			if (gridIO->Value (layerRec,pos,&value))
+	for (pos.Row = 0;pos.Row < gridIF->RowNum ();++pos.Row)
+		for (pos.Col = 0;pos.Col < gridIF->ColNum ();++pos.Col)
+			if (gridIF->Value (layerRec,pos,&value))
 					{
 					value = value > min ? value : min;
 					value = value < max ? value : max;
 					switch (scaleMode)
 						{
 						default:
-						case 0:	array [pos.Row * gridIO->ColNum () + pos.Col] = value; break;
-						case 1:	array [pos.Row * gridIO->ColNum () + pos.Col] = log10 (value); break;
-						case 2:	array [pos.Row * gridIO->ColNum () + pos.Col] = sqrt (value); break;
+						case 0:	array [pos.Row * gridIF->ColNum () + pos.Col] = value; break;
+						case 1:	array [pos.Row * gridIF->ColNum () + pos.Col] = log10 (value); break;
+						case 2:	array [pos.Row * gridIF->ColNum () + pos.Col] = sqrt (value); break;
 						}
 					}
-			else 	array [pos.Row * gridIO->ColNum () + pos.Col] = min - (max - min) / (float) shadeNum;
+			else 	array [pos.Row * gridIF->ColNum () + pos.Col] = min - (max - min) / (float) shadeNum;
 
-	translation [0] = extent.LowerLeft.X - gridIO->CellWidth () / 2.0;
-	translation [1] = gridIO->CellWidth ();
+	translation [0] = extent.LowerLeft.X - gridIF->CellWidth () / 2.0;
+	translation [1] = gridIF->CellWidth ();
 	translation [2] = 0.0;
-	translation [3] = extent.LowerLeft.Y - gridIO->CellHeight () / 2.0;
+	translation [3] = extent.LowerLeft.Y - gridIF->CellHeight () / 2.0;
 	translation [4] = 0.0;
-	translation [5] = gridIO->CellHeight ();
+	translation [5] = gridIF->CellHeight ();
 	RGPPrintMessage (mode,entryNum,"Unit:");
 	if ((fgets (charBuffer,sizeof (charBuffer) - 2,stdin) == (char *) NULL) || (sscanf (charBuffer,"%f",&unit) != 1))
 		{ RGPPrintError (mode,*entryNum,"Unit input error"), ret = DBFault; goto Stop; }
@@ -226,6 +226,6 @@ DBInt RGPDrawGridContinuous (DBInt mode, DBInt *entryNum, DBObjData *grdData)
 		}
 
 Stop:
-	delete gridIO;
+	delete gridIF;
 	return (ret);
 	}

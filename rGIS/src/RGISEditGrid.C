@@ -143,7 +143,7 @@ void RGISEditGridDateLayersCBK (Widget widget, RGISWorkspace *workspace,XmAnyCal
 		{
 		DBInt layerID, year;
 		DBDate stepDate;
-		DBGridIO *gridIO = new DBGridIO (dbData);
+		DBGridIF *gridIF = new DBGridIF (dbData);
 		DBObjRecord *layerRec;
 		DBDate date;
 
@@ -158,11 +158,11 @@ void RGISEditGridDateLayersCBK (Widget widget, RGISWorkspace *workspace,XmAnyCal
 		if (sscanf (yearText,"%d",&year) != 1)
 			{
 			year = DBDefaultMissingIntVal;
-			if (((stepDate.Year () > 0)	&& (gridIO->LayerNum () > 1)) ||
-				 ((stepDate.Month () > 0)	&& (gridIO->LayerNum () > 12)) ||
-				 ((stepDate.Day () > 0)		&& (gridIO->LayerNum () > 365)) ||
-				 ((stepDate.Hour () > 0)	&& (gridIO->LayerNum () > 365 * 24)) ||
-				 ((stepDate.Minute () > 0) && (gridIO->LayerNum () > 365 * 24 * 60)))
+			if (((stepDate.Year () > 0)	&& (gridIF->LayerNum () > 1)) ||
+				 ((stepDate.Month () > 0)	&& (gridIF->LayerNum () > 12)) ||
+				 ((stepDate.Day () > 0)		&& (gridIF->LayerNum () > 365)) ||
+				 ((stepDate.Hour () > 0)	&& (gridIF->LayerNum () > 365 * 24)) ||
+				 ((stepDate.Minute () > 0) && (gridIF->LayerNum () > 365 * 24 * 60)))
 				 {
 				 UIMessage ((char *) "Too Many Layers in Dataset");
 				 }
@@ -174,16 +174,16 @@ void RGISEditGridDateLayersCBK (Widget widget, RGISWorkspace *workspace,XmAnyCal
 		if (stepDate.Hour () > 0) 		date.Set (year,0,0,0);
 		if (stepDate.Minute () > 0) 	date.Set (year,0,0,0,0);
 
-		for (layerID = 0;layerID < gridIO->LayerNum ();++layerID)
+		for (layerID = 0;layerID < gridIF->LayerNum ();++layerID)
 			{
-			layerRec = gridIO->Layer (layerID);
-			if (UIPause (layerRec->RowID () * 100 / gridIO->LayerNum ()))  goto Stop;
-			gridIO->RenameLayer (layerRec,date.Get ());
+			layerRec = gridIF->Layer (layerID);
+			if (UIPause (layerRec->RowID () * 100 / gridIF->LayerNum ()))  goto Stop;
+			gridIF->RenameLayer (layerRec,date.Get ());
 			date = date + stepDate;
 			}
 Stop:
 		UIPauseDialogClose ();
-		delete gridIO;
+		delete gridIF;
 		}
 	}
 
@@ -193,12 +193,12 @@ void RGISEditGridRenameLayerCBK (Widget widget, RGISWorkspace *workspace,XmAnyCa
 	char *layerName;
 	DBDataset *dataset = UIDataset ();
 	DBObjData *dbData = dataset->Data ();
-	DBGridIO *gridIO;
+	DBGridIF *gridIF;
 
 	if ((layerName = UIGetString ((char *) "Layer Name",DBStringLength)) == (char *) NULL) return;
-	gridIO= new DBGridIO (dbData);
-	gridIO->RenameLayer (layerName);
-	delete gridIO;
+	gridIF= new DBGridIF (dbData);
+	gridIF->RenameLayer (layerName);
+	delete gridIF;
 	workspace->CurrentData (dbData);
 	}
 
@@ -207,13 +207,13 @@ void RGISEditGridStatsCBK (Widget widget, RGISWorkspace *workspace,XmAnyCallback
 	{
 	DBDataset *dataset = UIDataset ();
 	DBObjData *dbData = dataset->Data ();
-	DBGridIO *gridIO = new DBGridIO (dbData);
+	DBGridIF *gridIF = new DBGridIF (dbData);
 	UITable *tableCLS = (UITable *) dbData->Display (UITableName (dbData,dbData->Table (DBrNItems)));
 
 	widget = widget; workspace = workspace; callData = callData;
 	if (dbData->Type () == DBTypeGridContinuous)
-			gridIO->RecalcStats ();
-	else	gridIO->DiscreteStats ();
+			gridIF->RecalcStats ();
+	else	gridIF->DiscreteStats ();
 	if (tableCLS != (UITable *) NULL) tableCLS->Draw ();
 	}
 
@@ -237,30 +237,30 @@ void RGISEditGridNetFilterCBK (Widget widget, RGISWorkspace *workspace,XmAnyCall
 	DBDataset *dataset = UIDataset ();
 	DBObjData *grdData = dataset->Data ();
 	DBObjData *netData = grdData->LinkedData ();
-	DBGridIO *gridIO = new DBGridIO (grdData);
-	DBNetworkIO *netIO = new DBNetworkIO (netData);
+	DBGridIF *gridIF = new DBGridIF (grdData);
+	DBNetworkIF *netIF = new DBNetworkIF (netData);
 	DBObjRecord *cellRec, *fromCell, *nextCell, *layerRec;
 
 	UIPauseDialogOpen ((char *) "Network Filtering");
-	maxProgress = netIO->CellNum () * gridIO->LayerNum ();
-	for (layerID = 0;layerID < gridIO->LayerNum (); ++layerID)
+	maxProgress = netIF->CellNum () * gridIF->LayerNum ();
+	for (layerID = 0;layerID < gridIF->LayerNum (); ++layerID)
 		{
-		layerRec = gridIO->Layer (layerID);
+		layerRec = gridIF->Layer (layerID);
 
-		for (cellID = 0;cellID < netIO->CellNum (); ++cellID)
+		for (cellID = 0;cellID < netIF->CellNum (); ++cellID)
 			{
-			if (UIPause (((layerID + 1) * netIO->CellNum () - cellID) * 100 / maxProgress)) goto Stop;
-			fromCell = netIO->Cell (cellID);
-			if (netIO->FromCell (fromCell) != (DBObjRecord *) NULL) continue;
-			while (gridIO->Value (layerRec,netIO->Center (fromCell),&prevElev) == (DBInt) false)
-				if ((fromCell = netIO->ToCell (fromCell)) == (DBObjRecord *) NULL) break;
+			if (UIPause (((layerID + 1) * netIF->CellNum () - cellID) * 100 / maxProgress)) goto Stop;
+			fromCell = netIF->Cell (cellID);
+			if (netIF->FromCell (fromCell) != (DBObjRecord *) NULL) continue;
+			while (gridIF->Value (layerRec,netIF->Center (fromCell),&prevElev) == (DBInt) false)
+				if ((fromCell = netIF->ToCell (fromCell)) == (DBObjRecord *) NULL) break;
 			if (fromCell == (DBObjRecord *) NULL) continue;
 
 			kernelSize = 0;
-			for (cellRec = netIO->ToCell (fromCell); (cellRec != (DBObjRecord *) NULL) && (netIO->FromCell (cellRec) == fromCell); cellRec = netIO->ToCell (cellRec))
+			for (cellRec = netIF->ToCell (fromCell); (cellRec != (DBObjRecord *) NULL) && (netIF->FromCell (cellRec) == fromCell); cellRec = netIF->ToCell (cellRec))
 				{
-				dElev = netIO->CellLength (fromCell) * RGlibMinSLOPE;
-				if ((ret = gridIO->Value (layerRec,netIO->Center (cellRec),&cellElev)) == false) { count = 0; meanElev = 0.0; }
+				dElev = netIF->CellLength (fromCell) * RGlibMinSLOPE;
+				if ((ret = gridIF->Value (layerRec,netIF->Center (cellRec),&cellElev)) == false) { count = 0; meanElev = 0.0; }
 				else { count = 1, meanElev = cellElev; }
 
 				if (kernelSize + 1 < (int) (sizeof (upElev) / sizeof (upElev [0]))) kernelSize++;
@@ -268,32 +268,32 @@ void RGISEditGridNetFilterCBK (Widget widget, RGISWorkspace *workspace,XmAnyCall
 				for (kernel = 0;kernel < kernelSize;++kernel) { meanElev += upElev [kernel]; count++; }
 				minElev = prevElev;
 				for (dir = 0; dir < 8;++dir)
-					if (((fromCell = netIO->FromCell (cellRec,0x01 << dir,true)) != (DBObjRecord *) NULL) &&
-					    (gridIO->Value (layerRec,netIO->Center (fromCell),&elev) == true) && (minElev > elev))
-						{ minElev = elev; dElev = netIO->CellLength (fromCell) * RGlibMinSLOPE; }
+					if (((fromCell = netIF->FromCell (cellRec,0x01 << dir,true)) != (DBObjRecord *) NULL) &&
+					    (gridIF->Value (layerRec,netIF->Center (fromCell),&elev) == true) && (minElev > elev))
+						{ minElev = elev; dElev = netIF->CellLength (fromCell) * RGlibMinSLOPE; }
 
-				nextCell = netIO->ToCell (cellRec);
+				nextCell = netIF->ToCell (cellRec);
 				for (kernel = 0;(kernel < kernelSize) && (nextCell != (DBObjRecord *) NULL);++kernel)
 					{
-					if(gridIO->Value (layerRec,netIO->Center (nextCell),&elev) != (DBInt) false) { meanElev += elev; count++; }
-					nextCell = netIO->ToCell (nextCell);
+					if(gridIF->Value (layerRec,netIF->Center (nextCell),&elev) != (DBInt) false) { meanElev += elev; count++; }
+					nextCell = netIF->ToCell (nextCell);
 					}
 				if (count > 0)
 					{
 					meanElev = meanElev / count;
 
 					if (meanElev > minElev - dElev) meanElev = minElev - dElev;
-					gridIO->Value (layerRec,netIO->Center (cellRec),meanElev);
+					gridIF->Value (layerRec,netIF->Center (cellRec),meanElev);
 					prevElev = meanElev;
 					}
-				else	gridIO->Value (layerRec,netIO->Center (cellRec),gridIO->MissingValue ());
+				else	gridIF->Value (layerRec,netIF->Center (cellRec),gridIF->MissingValue ());
 				fromCell = cellRec;
 				}
 			}
-		gridIO->RecalcStats (layerRec);
+		gridIF->RecalcStats (layerRec);
 		}
 Stop:
 	UIPauseDialogClose ();
-	delete gridIO;
-	delete netIO;
+	delete gridIF;
+	delete netIF;
 	}

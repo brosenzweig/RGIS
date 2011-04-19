@@ -12,7 +12,7 @@ balazs.fekete@unh.edu
 
 #include <cm.h>
 #include <DB.H>
-#include <DBio.H>
+#include <DBif.H>
 #include <RG.H>
 
 int _CMDnetErosion (DBObjData *netData, DBObjData *inData, DBObjData *weightData,
@@ -21,76 +21,76 @@ int _CMDnetErosion (DBObjData *netData, DBObjData *inData, DBObjData *weightData
 	DBInt ret = DBSuccess, layerID, cellID, progress, maxProgress;
 	DBFloat inValue, weight, outValue, *sumWeights;
 	DBPosition pos;
-	DBNetworkIO *netIO = new DBNetworkIO (netData);
-	DBGridIO *inIO  = new DBGridIO (inData);
-	DBGridIO *outIO = new DBGridIO (outData);
-	DBGridIO *weightIO = weightData != (DBObjData *) NULL ? new DBGridIO (weightData) : (DBGridIO *) NULL;
+	DBNetworkIF *netIF = new DBNetworkIF (netData);
+	DBGridIF *inIF  = new DBGridIF (inData);
+	DBGridIF *outIF = new DBGridIF (outData);
+	DBGridIF *weightIF = weightData != (DBObjData *) NULL ? new DBGridIF (weightData) : (DBGridIF *) NULL;
 	DBObjRecord *inLayerRec, *outLayerRec, *weightLayerRec, *cellRec, *toCell;
 
-	if ((sumWeights = (DBFloat *) calloc (netIO->CellNum (),sizeof (DBFloat))) == (DBFloat *) NULL)
+	if ((sumWeights = (DBFloat *) calloc (netIF->CellNum (),sizeof (DBFloat))) == (DBFloat *) NULL)
 		{ perror ("Memory allocation error in:_CMDnetErosion ()"); ret = DBFault; goto Stop; }
 
 	layerID = 0;
-	inLayerRec = inIO->Layer (layerID);
+	inLayerRec = inIF->Layer (layerID);
 
-	outLayerRec = outIO->Layer (layerID);
-	outIO->RenameLayer (outLayerRec,inLayerRec->Name ());
-	outValue = outIO->MissingValue (outLayerRec);
-	for (pos.Row = 0;pos.Row < outIO->RowNum ();pos.Row++)
-		for (pos.Col = 0;pos.Col < outIO->ColNum ();pos.Col++) outIO->Value (outLayerRec,pos,outValue);
+	outLayerRec = outIF->Layer (layerID);
+	outIF->RenameLayer (outLayerRec,inLayerRec->Name ());
+	outValue = outIF->MissingValue (outLayerRec);
+	for (pos.Row = 0;pos.Row < outIF->RowNum ();pos.Row++)
+		for (pos.Col = 0;pos.Col < outIF->ColNum ();pos.Col++) outIF->Value (outLayerRec,pos,outValue);
 
-	for (layerID = 1;layerID < inIO->LayerNum ();++layerID)
+	for (layerID = 1;layerID < inIF->LayerNum ();++layerID)
 		{
-		inLayerRec = inIO->Layer (layerID);
-		if ((outLayerRec = outIO->AddLayer (inLayerRec->Name ())) == (DBObjRecord *) NULL)
+		inLayerRec = inIF->Layer (layerID);
+		if ((outLayerRec = outIF->AddLayer (inLayerRec->Name ())) == (DBObjRecord *) NULL)
 			{ ret = DBFault; goto Stop; }
-		for (pos.Row = 0;pos.Row < outIO->RowNum ();pos.Row++)
-			for (pos.Col = 0;pos.Col < outIO->ColNum ();pos.Col++) outIO->Value (outLayerRec,pos,outValue);
+		for (pos.Row = 0;pos.Row < outIF->RowNum ();pos.Row++)
+			for (pos.Col = 0;pos.Col < outIF->ColNum ();pos.Col++) outIF->Value (outLayerRec,pos,outValue);
 		}
-	maxProgress = inIO->LayerNum () * netIO->CellNum ();
-	for (layerID = 0;layerID < inIO->LayerNum ();++layerID)
+	maxProgress = inIF->LayerNum () * netIF->CellNum ();
+	for (layerID = 0;layerID < inIF->LayerNum ();++layerID)
 		{
-		inLayerRec  = inIO->Layer  (layerID);
-		outLayerRec = outIO->Layer (layerID);
-		if (weightIO != (DBGridIO *) NULL)
-			weightLayerRec = weightIO->Layer (layerID % weightIO->LayerNum ());
-		for (cellID = 0;cellID < netIO->CellNum ();cellID++)
+		inLayerRec  = inIF->Layer  (layerID);
+		outLayerRec = outIF->Layer (layerID);
+		if (weightIF != (DBGridIF *) NULL)
+			weightLayerRec = weightIF->Layer (layerID % weightIF->LayerNum ());
+		for (cellID = 0;cellID < netIF->CellNum ();cellID++)
 			{
 			sumWeights [cellID] = 0.0;
-			cellRec = netIO->Cell (cellID);
-			if (inIO->Value  (inLayerRec, netIO->Center (cellRec),&inValue) == false)
-				outIO->Value (outLayerRec,netIO->CellPosition (cellRec),0.0);
+			cellRec = netIF->Cell (cellID);
+			if (inIF->Value  (inLayerRec, netIF->Center (cellRec),&inValue) == false)
+				outIF->Value (outLayerRec,netIF->CellPosition (cellRec),0.0);
 			else
 				{
-				if (weightIO != (DBGridIO *) NULL)
-					weight = weightIO->Value (weightLayerRec,netIO->Center (cellRec),&weight) == false ?
+				if (weightIF != (DBGridIF *) NULL)
+					weight = weightIF->Value (weightLayerRec,netIF->Center (cellRec),&weight) == false ?
 								0.0 : weight * coeff;
 				else weight = coeff;
-				if (areaMult)	weight = weight * netIO->CellArea (cellRec);
+				if (areaMult)	weight = weight * netIF->CellArea (cellRec);
 				sumWeights [cellID] = weight;
-				outIO->Value (outLayerRec,netIO->CellPosition (cellRec),inValue * weight);
+				outIF->Value (outLayerRec,netIF->CellPosition (cellRec),inValue * weight);
 				}
 			}
 
-		for (cellID = netIO->CellNum () - 1;cellID >= 0;--cellID)
+		for (cellID = netIF->CellNum () - 1;cellID >= 0;--cellID)
 			{
-			progress = layerID * netIO->CellNum () + (netIO->CellNum () - cellID);
+			progress = layerID * netIF->CellNum () + (netIF->CellNum () - cellID);
 			if (DBPause (progress * 100 / maxProgress)) goto Stop;
-			cellRec = netIO->Cell (cellID);
-			if ((toCell = netIO->ToCell (cellRec)) == (DBObjRecord *) NULL) continue;
-			if (outIO->Value (outLayerRec,netIO->CellPosition (cellRec),&inValue)  == false) continue;
-			if (outIO->Value (outLayerRec,netIO->CellPosition (toCell),&outValue) == false) continue;
+			cellRec = netIF->Cell (cellID);
+			if ((toCell = netIF->ToCell (cellRec)) == (DBObjRecord *) NULL) continue;
+			if (outIF->Value (outLayerRec,netIF->CellPosition (cellRec),&inValue)  == false) continue;
+			if (outIF->Value (outLayerRec,netIF->CellPosition (toCell),&outValue) == false) continue;
 
 			sumWeights [toCell->RowID ()] = sumWeights [toCell->RowID ()] + weight;
-			outIO->Value (outLayerRec,netIO->CellPosition (toCell),outValue + inValue);
+			outIF->Value (outLayerRec,netIF->CellPosition (toCell),outValue + inValue);
 			}
-		outIO->RecalcStats (outLayerRec);
+		outIF->RecalcStats (outLayerRec);
 		}
 
 	free (sumWeights);
 Stop:
-	delete netIO; delete inIO; delete outIO;
-	if (weightIO != (DBGridIO *) NULL) delete weightIO;
+	delete netIF; delete inIF; delete outIF;
+	if (weightIF != (DBGridIF *) NULL) delete weightIF;
 	return (ret);
 	}
 

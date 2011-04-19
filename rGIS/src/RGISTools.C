@@ -30,7 +30,7 @@ static void _RGISToolsImportASCIITableCBK (Widget widget,RGISWorkspace *workspac
 		DBObjTable *table = data->Table (DBrNItems);
 		DBObjTableField *field;
 		FILE *inFile;
-		DBTableIO *tableIO;
+		DBTableIF *tableIF;
 		if ((fileName = UIFileSelection (fileSelect,true)) == NULL) { delete data; return; }
 		if ((inFile = fopen (fileName,"r")) == (FILE *) NULL)
 			{ perror ("File Openning Error in: _RGISToolsImportASCIINewCBK ()"); delete data; return; }
@@ -52,11 +52,11 @@ static void _RGISToolsImportASCIITableCBK (Widget widget,RGISWorkspace *workspac
 			} while (buffer + bufferLength > fieldToken );
 		fclose (inFile);
 		if (UITableRedefineFields (table) != true)	{ delete data;  return; }
-		tableIO  = new DBTableIO (data);
-		if (tableIO->AppendASCII (fileName) == DBFault)
+		tableIF  = new DBTableIF (data);
+		if (tableIF->AppendASCII (fileName) == DBFault)
 				delete data;
 		else 	workspace->CurrentData  (data);
-		delete tableIO;
+		delete tableIF;
 		}
 	else delete data;
 	}
@@ -176,7 +176,7 @@ static void _RGISToolsExportNetworkCBK (Widget widget,RGISWorkspace *workspace,X
 	DBObjRecord *cellRec,*toCellRec, *basinRec;
 	DBDataset *dataset = UIDataset ();
 	DBObjData *netData = dataset->Data ();
-	DBNetworkIO *netIO = new DBNetworkIO (netData);
+	DBNetworkIF *netIF = new DBNetworkIF (netData);
 	DBObjTable *cellTable = netData->Table (DBrNCells);
 	DBObjTableField *field, **fields = (DBObjTableField **) NULL;
 	static Widget dirSelect = NULL;
@@ -207,18 +207,18 @@ static void _RGISToolsExportNetworkCBK (Widget widget,RGISWorkspace *workspace,X
 		}
 	fprintf (outFILE,"\n");
 
-	for (cellID = 0;cellID < netIO->CellNum (); cellID++)
+	for (cellID = 0;cellID < netIF->CellNum (); cellID++)
 		{
-		cellRec = netIO->Cell (cellID);
-		coord = netIO->Center (cellRec);
-		basinRec = netIO->Basin (cellRec);
-		toCellRec = netIO->ToCell (cellRec);
+		cellRec = netIF->Cell (cellID);
+		coord = netIF->Center (cellRec);
+		basinRec = netIF->Basin (cellRec);
+		toCellRec = netIF->ToCell (cellRec);
 		fprintf (outFILE,"%d\t%f\t%f\t%d\t%d\t%f\t%f",cellRec->RowID () + 1,
 														  coord.X, coord.Y,
 														  basinRec->RowID () + 1,
 														  toCellRec == (DBObjRecord *) NULL ? DBFault : toCellRec->RowID () + 1,
-														  netIO->CellArea (cellRec),
-														  netIO->CellLength (cellRec));
+														  netIF->CellArea (cellRec),
+														  netIF->CellLength (cellRec));
 		for (fieldID = 0;fieldID < fieldNum; fieldID++)
 			switch	(fields [fieldID]->Type ())
 				{
@@ -260,13 +260,13 @@ static void _RGISToolsNetBasinMouthCBK (Widget widget,RGISWorkspace *workspace,X
 	{
 	DBDataset *dataset = UIDataset ();
 	DBObjData *netData = dataset->Data (), *pntData;
-	DBNetworkIO *netIO;
+	DBNetworkIF *netIF;
 
 	widget = widget; callData = callData;
 
 	if (netData == (DBObjData *) NULL)
 		{ fprintf (stderr,"Null Data in: _RGISToolsNetBasinMouthCBK ()\n"); return; }
-	netIO = new DBNetworkIO (netData);
+	netIF = new DBNetworkIF (netData);
 
 	if (UIDataHeaderForm (pntData = new DBObjData ("",DBTypeVectorPoint)))
 		{
@@ -290,8 +290,8 @@ static void _RGISToolsNetBasinMouthCBK (Widget widget,RGISWorkspace *workspace,X
 		items->AddField (subbasinLengthFLD);
 		items->AddField (subbasinAreaFLD);
 
-		cellRec = netIO->Cell ((DBInt) 0);
-		for (order = 0;order <= netIO->CellOrder (cellRec);++order)
+		cellRec = netIF->Cell ((DBInt) 0);
+		for (order = 0;order <= netIF->CellOrder (cellRec);++order)
 			{
 			sprintf (symName,"Strahler Order:%2d",order);
 			symRec = symbols->Add (symName);
@@ -301,20 +301,20 @@ static void _RGISToolsNetBasinMouthCBK (Widget widget,RGISWorkspace *workspace,X
 			}
 
 		UIPauseDialogOpen ((char *) "Creating Basin Mouth");
-		for (basinID = 0;basinID < netIO->BasinNum ();++basinID)
+		for (basinID = 0;basinID < netIF->BasinNum ();++basinID)
 			{
-			basinRec = netIO->Basin (basinID);
-			if (UIPause (basinID * 100 / netIO->BasinNum ())) goto Stop;
+			basinRec = netIF->Basin (basinID);
+			if (UIPause (basinID * 100 / netIF->BasinNum ())) goto Stop;
 
-			symRec = symbols->Item (netIO->CellOrder (cellRec));
-			cellRec = netIO->MouthCell (basinRec);
+			symRec = symbols->Item (netIF->CellOrder (cellRec));
+			cellRec = netIF->MouthCell (basinRec);
 			pntRec = items->Add (basinRec->Name ());
-			coord = netIO->Center (cellRec);
+			coord = netIF->Center (cellRec);
 			coordField->Coordinate (pntRec,coord);
 			symbolFLD->Record (pntRec,symRec);
-			orderFLD->Int (pntRec,netIO->CellOrder (cellRec));
-			subbasinLengthFLD->Float (pntRec,netIO->CellBasinLength (cellRec));
-			subbasinAreaFLD->Float (pntRec,netIO->CellBasinArea (cellRec));
+			orderFLD->Int (pntRec,netIF->CellOrder (cellRec));
+			subbasinLengthFLD->Float (pntRec,netIF->CellBasinLength (cellRec));
+			subbasinAreaFLD->Float (pntRec,netIF->CellBasinArea (cellRec));
 			dataExtent.Expand (coord);
 			}
 Stop:
@@ -323,7 +323,7 @@ Stop:
 		workspace->CurrentData  (pntData);
 		}
 	else	delete pntData;
-	delete netIO;
+	delete netIF;
 	}
 
 void RGISToolsImportGridCBK (Widget,RGISWorkspace *,XmAnyCallbackStruct *);

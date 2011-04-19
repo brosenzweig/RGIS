@@ -21,19 +21,19 @@ void RGISEditLineDirectionCBK (Widget widget, RGISWorkspace *workspace,XmAnyCall
 	DBDataset *dataset = UIDataset ();
 	DBObjData *lineData = dataset->Data ();
 	DBObjData *gridData = lineData->LinkedData ();
-	DBVLineIO *lineIO = new DBVLineIO (lineData);
-	DBGridIO *gridIO = new DBGridIO (gridData);
+	DBVLineIF *lineIF = new DBVLineIF (lineData);
+	DBGridIF *gridIF = new DBGridIF (gridData);
 
 	widget = widget; workspace = workspace; callData = callData;
 	UIPauseDialogOpen ((char *) "Changing Directionality");
-	for (lineRec = lineIO->FirstItem ();lineRec != (DBObjRecord *) NULL;lineRec = lineIO->NextItem ())
+	for (lineRec = lineIF->FirstItem ();lineRec != (DBObjRecord *) NULL;lineRec = lineIF->NextItem ())
 		{
-		DBPause (lineRec->RowID () * 100 / lineIO->ItemNum ());
-		coord = lineIO->FromCoord (lineRec);
-		if (gridIO->Value (coord,&elev0) == false) continue;
-		coord = lineIO->ToCoord (lineRec);
-		if (gridIO->Value (coord,&elev1) == false) continue;
-		if (elev0 < elev1) lineIO->Flip (lineRec);
+		DBPause (lineRec->RowID () * 100 / lineIF->ItemNum ());
+		coord = lineIF->FromCoord (lineRec);
+		if (gridIF->Value (coord,&elev0) == false) continue;
+		coord = lineIF->ToCoord (lineRec);
+		if (gridIF->Value (coord,&elev1) == false) continue;
+		if (elev0 < elev1) lineIF->Flip (lineRec);
 		}
 	UIPauseDialogClose ();
 	}

@@ -12,7 +12,7 @@ balazs.fekete@unh.edu
 
 #include<cm.h>
 #include<DB.H>
-#include<DBio.H>
+#include<DBif.H>
 #include<RG.H>
 
 int main (int argc,char *argv [])
@@ -24,7 +24,7 @@ int main (int argc,char *argv [])
 	char *firstLayer = (char *) NULL, *lastLayer = (char *) NULL;
 	DBObjData *grdData;
 	DBObjRecord *layerRec;
-	DBGridIO *gridIO;
+	DBGridIF *gridIF;
 
 	for (argPos = 1;argPos < argNum; )
 		{
@@ -108,22 +108,22 @@ int main (int argc,char *argv [])
 	if ((ret == DBFault) || ((grdData->Type () & DBTypeGrid) != DBTypeGrid))
 		{ delete grdData; return (CMfailed); }
 
-	gridIO = new DBGridIO (grdData);
+	gridIF = new DBGridIF (grdData);
 
 	if (firstLayer != (char *) NULL)
-		gridIO->DeleteLayers ((gridIO->Layer (0))->Name (),firstLayer);
+		gridIF->DeleteLayers ((gridIF->Layer (0))->Name (),firstLayer);
 	if (lastLayer  != (char *) NULL)
 		{
-		if ((layerRec = gridIO->Layer (lastLayer)) == (DBObjRecord *) NULL)
-			{ CMmsgPrint (CMmsgUsrError,"Invalid last layer!\n");  delete gridIO; delete grdData; return (CMfailed); }
-		if (layerRec->RowID () < gridIO->LayerNum () - 1)
+		if ((layerRec = gridIF->Layer (lastLayer)) == (DBObjRecord *) NULL)
+			{ CMmsgPrint (CMmsgUsrError,"Invalid last layer!\n");  delete gridIF; delete grdData; return (CMfailed); }
+		if (layerRec->RowID () < gridIF->LayerNum () - 1)
 			{
-			layerRec = gridIO->Layer (layerRec->RowID () + 1);
-			gridIO->DeleteLayers (layerRec->Name (),(gridIO->Layer (gridIO->LayerNum () - 1))->Name ());
-			gridIO->DeleteLayer (gridIO->Layer (gridIO->LayerNum () - 1)->Name ());
+			layerRec = gridIF->Layer (layerRec->RowID () + 1);
+			gridIF->DeleteLayers (layerRec->Name (),(gridIF->Layer (gridIF->LayerNum () - 1))->Name ());
+			gridIF->DeleteLayer (gridIF->Layer (gridIF->LayerNum () - 1)->Name ());
 			}
 		}
-	delete gridIO;
+	delete gridIF;
 
 	if (title   != (char *) NULL) grdData->Name (title);
 	if (subject != (char *) NULL) grdData->Document (DBDocSubject,subject);

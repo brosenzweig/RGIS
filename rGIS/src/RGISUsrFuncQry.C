@@ -41,35 +41,35 @@ void _RGISUserFuncionQuery (DBObjData *dbData,UI2DView *view,XEvent *event)
 				case DBTypeVectorLine:
 				case DBTypeVectorPolygon:
 					{
-					DBVectorIO *vectorIO = new DBVectorIO (data);
-					attribView->Draw (vectorIO->Item (coord));
+					DBVectorIF *vectorIF = new DBVectorIF (data);
+					attribView->Draw (vectorIF->Item (coord));
 					} break;
 				case DBTypeGridDiscrete:
 					{
-					DBGridIO *gridIO = new DBGridIO (data);
-					attribView->Draw (gridIO->GridItem (coord));
-					delete gridIO;
+					DBGridIF *gridIF = new DBGridIF (data);
+					attribView->Draw (gridIF->GridItem (coord));
+					delete gridIF;
 					} break;
 				case DBTypeGridContinuous:
 					{
 					DBPosition pos;
-					DBGridIO *gridIO = new DBGridIO (data);
+					DBGridIF *gridIF = new DBGridIF (data);
 					char nameString [DBStringLength * 2];
 					DBObjRecord *record = new DBObjRecord ("Noname",sizeof (DBCoordinate));
-					gridIO->Coord2Pos (coord,pos);
-					gridIO->Pos2Coord (pos,coord);
+					gridIF->Coord2Pos (coord,pos);
+					gridIF->Pos2Coord (pos,coord);
 					sprintf (nameString,"CellCoordinate %10.2f%10.2f",coord.X,coord.Y);
 					record->Name (nameString);
 					memcpy (record->Data (),(void *) &coord,sizeof (coord));
 					attribView->Draw (record);
 					delete record;
-					delete gridIO;
+					delete gridIF;
 					} break;
 				case DBTypeNetwork:
 					{
-					DBNetworkIO *netIO = new DBNetworkIO (data);
-					attribView->Draw (netIO->Cell (coord));
-					delete netIO;
+					DBNetworkIF *netIF = new DBNetworkIF (data);
+					attribView->Draw (netIF->Cell (coord));
+					delete netIF;
 					} break;
 				default:
 					fprintf (stderr,"Invalid Data Type in: _RGISUserFuncionQuery ()\n"); break;

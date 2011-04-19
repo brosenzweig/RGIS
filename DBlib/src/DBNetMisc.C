@@ -11,11 +11,11 @@ balazs.fekete@unh.edu
 *******************************************************************************/
 
 #include <DB.H>
-#include <DBio.H>
+#include <DBif.H>
 
 #define _DBNetworkOppositeDirection(dir) (((dir >> 0x04) | (dir << 0x04)) & 0xff)
 
-DBNetworkIO::DBNetworkIO (DBObjData *data)
+DBNetworkIF::DBNetworkIF (DBObjData *data)
 	{
 	DBObjTableField *layerFLD;
 
@@ -59,9 +59,9 @@ DBNetworkIO::DBNetworkIO (DBObjData *data)
 	layerFLD			= LayerTable->Field (DBrNLayer);
 
 	if ((LayerRecord = LayerTable->Item (DBrNLookupGrid)) == (DBObjRecord *) NULL)
-		{ fprintf (stderr,"Bailing Out like ARC/INFO in: DBNetworkIO::DBNetworkIO\n"); exit (-1); }
+		{ fprintf (stderr,"Bailing Out like ARC/INFO in: DBNetworkIF::DBNetworkIF\n"); exit (-1); }
 	if((DataRec	= layerFLD->Record (LayerRecord)) == (DBObjRecord *) NULL)
-		{ fprintf (stderr,"Bailing Out in: DBNetworkIO::DBNetworkIO\n"); exit (-1); }
+		{ fprintf (stderr,"Bailing Out in: DBNetworkIF::DBNetworkIF\n"); exit (-1); }
 	if (CellLengthFLD == (DBObjTableField *) NULL)
 		{
 		DBInt cellID;
@@ -80,7 +80,7 @@ DBNetworkIO::DBNetworkIO (DBObjData *data)
 		}
 	}
 
-DBInt DBNetworkIO::Coord2Pos (DBCoordinate coord,DBPosition &pos) const
+DBInt DBNetworkIF::Coord2Pos (DBCoordinate coord,DBPosition &pos) const
 
 	{
 	DBInt ret = DataPTR->Extent ().InRegion (coord) ? DBSuccess : DBFault;
@@ -90,7 +90,7 @@ DBInt DBNetworkIO::Coord2Pos (DBCoordinate coord,DBPosition &pos) const
 	return (ret);
 	}
 
-DBInt DBNetworkIO::Pos2Coord (DBPosition pos,DBCoordinate &coord) const
+DBInt DBNetworkIF::Pos2Coord (DBPosition pos,DBCoordinate &coord) const
 
 	{
 	DBInt ret = DBSuccess;
@@ -104,7 +104,7 @@ DBInt DBNetworkIO::Pos2Coord (DBPosition pos,DBCoordinate &coord) const
 	return (ret);
 	}
 
-DBCoordinate DBNetworkIO::Center (const DBObjRecord *cellRec) const
+DBCoordinate DBNetworkIF::Center (const DBObjRecord *cellRec) const
 	{
 	DBCoordinate coord;
 	DBPosition cellPos = PositionFLD->Position (cellRec);
@@ -114,7 +114,7 @@ DBCoordinate DBNetworkIO::Center (const DBObjRecord *cellRec) const
 	return (coord);
 	}
 
-DBCoordinate DBNetworkIO::Delta (const DBObjRecord *cellRec) const
+DBCoordinate DBNetworkIF::Delta (const DBObjRecord *cellRec) const
 	{
 	DBInt toCell = ToCellFLD->Int (cellRec);
 	DBCoordinate delta (0.0, 0.0);
@@ -126,7 +126,7 @@ DBCoordinate DBNetworkIO::Delta (const DBObjRecord *cellRec) const
 	return (delta);
 	}
 
-DBObjRecord *DBNetworkIO::Cell (DBPosition pos) const
+DBObjRecord *DBNetworkIF::Cell (DBPosition pos) const
 
 	{
 	DBInt cellID;
@@ -139,7 +139,7 @@ DBObjRecord *DBNetworkIO::Cell (DBPosition pos) const
 	return (CellTable->Item (cellID));
 	}
 
-DBObjRecord *DBNetworkIO::Cell (DBPosition pos,DBFloat area) const
+DBObjRecord *DBNetworkIF::Cell (DBPosition pos,DBFloat area) const
 
 	{
 	DBInt dir, i;
@@ -179,7 +179,7 @@ DBObjRecord *DBNetworkIO::Cell (DBPosition pos,DBFloat area) const
 	return (retCellRec);
 	}
 
-DBObjRecord *DBNetworkIO::ToCell (const DBObjRecord *cellRec) const
+DBObjRecord *DBNetworkIF::ToCell (const DBObjRecord *cellRec) const
 
 	{
 	DBInt toCell;
@@ -197,7 +197,7 @@ DBObjRecord *DBNetworkIO::ToCell (const DBObjRecord *cellRec) const
 	return (Cell (pos));
 	}
 
-DBObjRecord *DBNetworkIO::FromCell (const DBObjRecord *cellRec,DBInt dir,DBInt sameBasin) const
+DBObjRecord *DBNetworkIF::FromCell (const DBObjRecord *cellRec,DBInt dir,DBInt sameBasin) const
 
 	{
 	DBInt fromCell;
@@ -217,7 +217,7 @@ DBObjRecord *DBNetworkIO::FromCell (const DBObjRecord *cellRec,DBInt dir,DBInt s
 	return (Cell (pos));
 	}
 
-DBObjRecord *DBNetworkIO::FromCell (const DBObjRecord *cellRec) const
+DBObjRecord *DBNetworkIF::FromCell (const DBObjRecord *cellRec) const
 
 	{
 	DBInt dir, maxDir = DBFault;
@@ -233,7 +233,7 @@ DBObjRecord *DBNetworkIO::FromCell (const DBObjRecord *cellRec) const
 	return (maxDir == DBFault ? (DBObjRecord *) NULL : FromCell (cellRec,0x01 << maxDir));
 	}
 
-DBObjRecord *DBNetworkIO::HeadCell (const DBObjRecord *cellRec) const
+DBObjRecord *DBNetworkIF::HeadCell (const DBObjRecord *cellRec) const
 
 	{
 	DBObjRecord *headCell;
@@ -242,7 +242,7 @@ DBObjRecord *DBNetworkIO::HeadCell (const DBObjRecord *cellRec) const
 	return (headCell);
 	}
 
-void DBNetworkIO::UpStreamSearch (DBObjRecord *cellRec,DBNetworkACTION forAction,DBNetworkACTION backAction,void *data)
+void DBNetworkIF::UpStreamSearch (DBObjRecord *cellRec,DBNetworkACTION forAction,DBNetworkACTION backAction,void *data)
 
 	{
 	DBInt dir;
@@ -257,7 +257,7 @@ void DBNetworkIO::UpStreamSearch (DBObjRecord *cellRec,DBNetworkACTION forAction
 	if (backAction != (DBNetworkACTION) NULL) (*backAction) (this,cellRec,data);
 	}
 
-void DBNetworkIO::DownStreamSearch (DBObjRecord *cellRec,DBNetworkACTION forAction,DBNetworkACTION backAction,void *data)
+void DBNetworkIF::DownStreamSearch (DBObjRecord *cellRec,DBNetworkACTION forAction,DBNetworkACTION backAction,void *data)
 
 	{
 	DBObjRecord *toCell;
@@ -268,23 +268,23 @@ void DBNetworkIO::DownStreamSearch (DBObjRecord *cellRec,DBNetworkACTION forActi
 	if (backAction != (DBNetworkACTION) NULL) (*backAction) (this,cellRec,data);
 	}
 
-DBInt DBNetworkSelect (DBNetworkIO *netIO,DBObjRecord *cellRec)
+DBInt DBNetworkSelect (DBNetworkIF *netIF,DBObjRecord *cellRec)
 
 	{
 	if (cellRec == (DBObjRecord *) NULL) return (false);
-	netIO = netIO; cellRec->Flags (DBObjectFlagSelected,DBSet);
+	netIF = netIF; cellRec->Flags (DBObjectFlagSelected,DBSet);
 	return (true);
 	}
 
-DBInt DBNetworkUnselect (DBNetworkIO *netIO,DBObjRecord *cellRec)
+DBInt DBNetworkUnselect (DBNetworkIF *netIF,DBObjRecord *cellRec)
 
 	{
 	if (cellRec == (DBObjRecord *) NULL) return (false);
-	netIO = netIO; cellRec->Flags (DBObjectFlagSelected,DBClear);
+	netIF = netIF; cellRec->Flags (DBObjectFlagSelected,DBClear);
 	return (true);
 	}
 
-DBObjRecord *DBNetworkIO::CellAdd (DBPosition pos)
+DBObjRecord *DBNetworkIF::CellAdd (DBPosition pos)
 
 	{
 	char nameSTR [DBStringLength];
@@ -326,7 +326,7 @@ DBObjRecord *DBNetworkIO::CellAdd (DBPosition pos)
 	return (cellRec);
 	}
 
-DBInt DBNetworkIO::CellRotate (DBObjRecord *cellRec,DBInt dir)
+DBInt DBNetworkIF::CellRotate (DBObjRecord *cellRec,DBInt dir)
 
 	{
 	DBInt toDir;
@@ -342,7 +342,7 @@ DBInt DBNetworkIO::CellRotate (DBObjRecord *cellRec,DBInt dir)
 	return (DBSuccess);
 	}
 
-DBInt DBNetworkIO::CellDelete (DBObjRecord *cellRec)
+DBInt DBNetworkIF::CellDelete (DBObjRecord *cellRec)
 
 	{
 	DBPosition pos;
@@ -353,7 +353,7 @@ DBInt DBNetworkIO::CellDelete (DBObjRecord *cellRec)
 	return (DBSuccess);
 	}
 
-void DBNetworkIO::Climb (DBObjRecord *cellRec,DBInt level)
+void DBNetworkIF::Climb (DBObjRecord *cellRec,DBInt level)
 
 	{
 	DBInt dir, maxCell = 0, maxDir = 0, cells, maxOrder = 1, orderNo = 0;
@@ -386,7 +386,7 @@ void DBNetworkIO::Climb (DBObjRecord *cellRec,DBInt level)
 		}
 	}
 
-void DBNetworkIO::SetBasin (DBObjRecord *cellRec,DBInt basin)
+void DBNetworkIF::SetBasin (DBObjRecord *cellRec,DBInt basin)
 
 	{
 	DBInt dir;
@@ -400,7 +400,7 @@ void DBNetworkIO::SetBasin (DBObjRecord *cellRec,DBInt basin)
 			SetBasin (fromCell,basin);
 	}
 
-static DBNetworkIO *_DBnetworkIO;
+static DBNetworkIF *_DBnetIF;
 
 static int _DBGNetworkCellCompare (const DBObjRecord **cellRec0,const DBObjRecord **cellRec1)
 
@@ -408,18 +408,18 @@ static int _DBGNetworkCellCompare (const DBObjRecord **cellRec0,const DBObjRecor
 	int ret;
 	DBPosition pos0, pos1;
 
-	if ((ret = _DBnetworkIO->CellBasinID (*cellRec0) - _DBnetworkIO->CellBasinID (*cellRec1)) != 0) return (ret);
-	if (_DBnetworkIO->CellBasinArea (*cellRec1) != _DBnetworkIO->CellBasinArea (*cellRec0))
-		return (_DBnetworkIO->CellBasinArea (*cellRec1) > _DBnetworkIO->CellBasinArea (*cellRec0) ? 1 : -1);
-	if (_DBnetworkIO->CellBasinLength (*cellRec1) != _DBnetworkIO->CellBasinLength (*cellRec0))
-		return (_DBnetworkIO->CellBasinLength (*cellRec1) > _DBnetworkIO->CellBasinLength (*cellRec0) ? 1 : -1);
-	pos0 = _DBnetworkIO->CellPosition (*cellRec0);
-	pos1 = _DBnetworkIO->CellPosition (*cellRec1);
+	if ((ret = _DBnetIF->CellBasinID (*cellRec0) - _DBnetIF->CellBasinID (*cellRec1)) != 0) return (ret);
+	if (_DBnetIF->CellBasinArea (*cellRec1) != _DBnetIF->CellBasinArea (*cellRec0))
+		return (_DBnetIF->CellBasinArea (*cellRec1) > _DBnetIF->CellBasinArea (*cellRec0) ? 1 : -1);
+	if (_DBnetIF->CellBasinLength (*cellRec1) != _DBnetIF->CellBasinLength (*cellRec0))
+		return (_DBnetIF->CellBasinLength (*cellRec1) > _DBnetIF->CellBasinLength (*cellRec0) ? 1 : -1);
+	pos0 = _DBnetIF->CellPosition (*cellRec0);
+	pos1 = _DBnetIF->CellPosition (*cellRec1);
 	if ((ret = pos1.Row -  pos0.Row) != 0) return (ret);
 	return (pos1.Col - pos0.Col);
 	}
 
-DBInt DBNetworkIO::Build ()
+DBInt DBNetworkIF::Build ()
 
 	{
 	DBInt i, j, row, col, basin, dir, projection = DataPTR->Projection ();
@@ -428,7 +428,7 @@ DBInt DBNetworkIO::Build ()
 	DBPosition pos;
 	DBObjRecord *cellRec, *toCell, *fromCell, *basinRec, *symbolRec;
 
-	_DBnetworkIO = this;
+	_DBnetIF = this;
 
 	for (j = 0;j  < BasinTable->ItemNum ();++j)
 		{
@@ -608,7 +608,7 @@ DBInt DBNetworkIO::Build ()
 	return (DBSuccess);
 	}
 
-int DBNetworkIO::Trim ()
+int DBNetworkIF::Trim ()
 
 	{
 	DBInt i, row, col;
@@ -669,7 +669,7 @@ int DBNetworkIO::Trim ()
 	return (DBSuccess);
 	}
 
-void DBNetworkIO::SetDistToMouth ()
+void DBNetworkIF::SetDistToMouth ()
 
 	{
 	DBInt cellID;
@@ -696,7 +696,7 @@ void DBNetworkIO::SetDistToMouth ()
 		}
 	}
 
-void DBNetworkIO::SetDistToOcean ()
+void DBNetworkIF::SetDistToOcean ()
 
 	{
 	DBInt cellID, dir;
@@ -724,7 +724,7 @@ void DBNetworkIO::SetDistToOcean ()
 		}
 	}
 
-void DBNetworkIO::SetMagnitude ()
+void DBNetworkIF::SetMagnitude ()
 
 	{
 	DBInt cellID;

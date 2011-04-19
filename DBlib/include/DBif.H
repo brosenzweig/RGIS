@@ -4,13 +4,13 @@ GHAAS Database library V2.1
 Global Hydrologic Archive and Analysis System
 Copyright 1994-2010, UNH - CCNY/CUNY
 
-DBio.H
+DBif.H
 
 balazs.fekete@unh.edu
 
 *******************************************************************************/
 
-class DBVectorIO
+class DBVectorIF
 
 	{
 	protected:
@@ -25,8 +25,8 @@ class DBVectorIO
 		DBObjTableField *BackgroundFLD;
 		DBObjTableField *StyleFLD;
 	public:
-		DBVectorIO () { DataPTR = (DBObjData *) NULL; ItemTable = SymbolTable = (DBObjTable *) NULL; }
-		DBVectorIO (DBObjData *);
+		DBVectorIF () { DataPTR = (DBObjData *) NULL; ItemTable = SymbolTable = (DBObjTable *) NULL; }
+		DBVectorIF (DBObjData *);
 		DBObjData *Data () const { return (DataPTR); }
 		DBObjRecord *Item (DBCoordinate) const;
 		DBObjRecord *Item (DBInt id)	const { return (ItemTable->Item (id)); }
@@ -71,19 +71,19 @@ class DBVectorIO
 			{ DBObjRecord *symRec = SymbolFLD->Record (itemRec); return (BackgroundFLD->Int (symRec)); }
 	};
 
-class DBVPointIO : public DBVectorIO
+class DBVPointIF : public DBVectorIF
 
 	{
 	private:
 		DBObjTableField *CoordFLD;
 	public:
-		DBVPointIO (DBObjData *data) : DBVectorIO (data)
+		DBVPointIF (DBObjData *data) : DBVectorIF (data)
 			{ DBObjTable *points = data->Table (DBrNItems); CoordFLD  = points->Field (DBrNCoord); }
 		DBCoordinate Coordinate (const DBObjRecord *pntRec) const { return (CoordFLD->Coordinate (pntRec)); }
 		void  Coordinate (DBObjRecord *pntRec,DBCoordinate coord) { CoordFLD->Coordinate (pntRec,coord); }
 	};
 
-class DBVLineIO : public DBVectorIO
+class DBVLineIF : public DBVectorIF
 	{
 	private:
 		DBObjTableField *FromNodeFLD;
@@ -98,8 +98,8 @@ class DBVLineIO : public DBVectorIO
 		DBObjTableField *NodeCoordFLD;
 		void Initialize (DBObjData *,DBObjTable *);
 	public:
-		DBVLineIO (DBObjData *data,DBObjTable *items) : DBVectorIO (data) { Initialize (data,items); }
-		DBVLineIO (DBObjData *data) : DBVectorIO (data) { Initialize (data,data->Table (DBrNItems)); }
+		DBVLineIF (DBObjData *data,DBObjTable *items) : DBVectorIF (data) { Initialize (data,items); }
+		DBVLineIF (DBObjData *data) : DBVectorIF (data) { Initialize (data,data->Table (DBrNItems)); }
 		DBCoordinate NodeCoord (const DBObjRecord *nodeRec) const
 			{ return (NodeCoordFLD->Coordinate (nodeRec)); }
 		DBCoordinate FromCoord (const DBObjRecord *lineRec) const
@@ -121,7 +121,7 @@ class DBVLineIO : public DBVectorIO
 		void Flip (DBObjRecord *);
 	};
 
-class DBVPolyIO : public DBVLineIO
+class DBVPolyIF : public DBVLineIF
 
 	{
 	private:
@@ -142,8 +142,8 @@ class DBVPolyIO : public DBVLineIO
 		DBInt MaxVertexNumVAR;
 		DBCoordinate *CoordsPTR;
 	public:
-		DBVPolyIO (DBObjData *);
-		~DBVPolyIO () { if (CoordsPTR != (DBCoordinate *) NULL) free (CoordsPTR); }
+		DBVPolyIF (DBObjData *);
+		~DBVPolyIF () { if (CoordsPTR != (DBCoordinate *) NULL) free (CoordsPTR); }
 		DBRegion Extent (const DBObjRecord *polyRec) const { return (ExtentFLD->Region (polyRec)); }
 		DBInt LineNum (const DBObjRecord *polyRec) const {return (LineNumFLD->Int (polyRec)); }
 		DBCoordinate *Vertexes (const DBObjRecord *) const;
@@ -154,7 +154,7 @@ class DBVPolyIO : public DBVLineIO
 		void FourColoring ();
 	};
 
-class DBGridIO
+class DBGridIF
 	{
 	private:
 		DBObjData *DataPTR;
@@ -182,8 +182,8 @@ class DBGridIO
 		DBInt ValueSizeVAR;
 		bool Flat;
 	public:
-		DBGridIO (DBObjData *data,bool flat) { Initialize (data, flat);  }
-		DBGridIO (DBObjData *data)           { Initialize (data, false); }
+		DBGridIF (DBObjData *data,bool flat) { Initialize (data, flat);  }
+		DBGridIF (DBObjData *data)           { Initialize (data, false); }
 		void Initialize (DBObjData *, bool);
 		void RenameLayer (DBObjRecord *,char *);
 		void RenameLayer (char *name) { RenameLayer (LayerTable->Item (),name); }
@@ -383,13 +383,13 @@ class DBGridIO
 		DBObjRecord *Layer (const char *name) { return (LayerTable->Item (name)); }
 	};
 
-class DBNetworkIO;
+class DBNetworkIF;
 
-typedef DBInt (*DBNetworkACTION) (DBNetworkIO *,DBObjRecord *,void *);
-DBInt DBNetworkSelect   (DBNetworkIO *,DBObjRecord *);
-DBInt DBNetworkUnselect (DBNetworkIO *,DBObjRecord *);
+typedef DBInt (*DBNetworkACTION) (DBNetworkIF *,DBObjRecord *,void *);
+DBInt DBNetworkSelect   (DBNetworkIF *,DBObjRecord *);
+DBInt DBNetworkUnselect (DBNetworkIF *,DBObjRecord *);
 
-class DBNetworkIO
+class DBNetworkIF
 	{
 	private:
 		DBObjData *DataPTR;
@@ -435,7 +435,7 @@ class DBNetworkIO
 		void Climb (DBObjRecord *,DBInt);
 		void SetBasin (DBObjRecord *,DBInt);
 	public:
-		DBNetworkIO (DBObjData *);
+		DBNetworkIF (DBObjData *);
 		DBObjData *Data () const { return (DataPTR); }
 		DBFloat CellWidth ()  const { return (CellWidthFLD->Float  (LayerRecord)); }
 		DBFloat CellHeight () const { return (CellHeightFLD->Float (LayerRecord)); }
@@ -568,13 +568,13 @@ class DBNetworkIO
 			{ DBObjRecord *symRec = SymbolFLD->Record (itemRec); return (BackgroundFLD->Int (symRec)); }
 		};
 
-class DBTableIO
+class DBTableIF
 
 	{
 	private:
 		DBObjData  *DataPTR;
 		DBObjTable *ItemTablePTR;
 	public:
-		DBTableIO (DBObjData *);
+		DBTableIF (DBObjData *);
 		DBInt AppendASCII (char *);
 	};

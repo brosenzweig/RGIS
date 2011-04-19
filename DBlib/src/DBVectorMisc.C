@@ -11,9 +11,9 @@ balazs.fekete@unh.edu
 *******************************************************************************/
 
 #include <DB.H>
-#include <DBio.H>
+#include <DBif.H>
 
-DBVectorIO::DBVectorIO (DBObjData *data)
+DBVectorIF::DBVectorIF (DBObjData *data)
 
 	{
 	DataPTR       = data;
@@ -28,7 +28,7 @@ DBVectorIO::DBVectorIO (DBObjData *data)
 	StyleFLD      = SymbolTable->Field (DBrNStyle);
 	}
 
-DBObjRecord *DBVectorIO::Item (DBCoordinate coord) const
+DBObjRecord *DBVectorIF::Item (DBCoordinate coord) const
 
 	{
 	DBObjRecord *record, *retRecord = (DBObjRecord *) NULL;

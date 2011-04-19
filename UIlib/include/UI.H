@@ -11,7 +11,7 @@ balazs.fekete@unh.edu
 *******************************************************************************/
 
 #include <DB.H>
-#include <DBio.H>
+#include <DBif.H>
 #include <Xm/Xm.h>
 
 #define UICharSetNormal ((char *) "normal")
@@ -277,16 +277,16 @@ class UI2DView : public DBObject
 		double	MultipU, MultipV, TransU, TransV;
 		void SetExtent (DBRegion);
 		void DrawPoints		(DBObjData *,GC);
-		void DrawPointObject(DBVPointIO *,DBObjRecord *,GC);
+		void DrawPointObject(DBVPointIF *,DBObjRecord *,GC);
 		void DrawLines		(DBObjData *,GC);
-		void DrawLineObject(DBVLineIO *,DBObjRecord *,GC);
+		void DrawLineObject(DBVLineIF *,DBObjRecord *,GC);
 		void DrawPolygons	(DBObjData *,GC);
-		void DrawPolyObject(DBVPolyIO *,DBObjRecord *,GC);
+		void DrawPolyObject(DBVPolyIF *,DBObjRecord *,GC);
 		void DrawVectorAnnotations (DBObjData *,GC);
-		void DrawVectorAnnotation  (DBVectorIO *,DBObjRecord *,GC);
+		void DrawVectorAnnotation  (DBVectorIF *,DBObjRecord *,GC);
 		void DrawNetwork	(DBObjData *,GC);
-		void DrawNetworkCell(DBNetworkIO *,DBObjRecord *,DBUnsigned,DBUnsigned,GC);
-		void DrawNetworkCellBox(DBNetworkIO *,DBObjRecord *,GC);
+		void DrawNetworkCell(DBNetworkIF *,DBObjRecord *,DBUnsigned,DBUnsigned,GC);
+		void DrawNetworkCellBox(DBNetworkIF *,DBObjRecord *,GC);
 		void DrawGrid		(DBObjData *,GC);
 		DBInt MaxVertexNumVAR;
 		XPoint *PointARR;

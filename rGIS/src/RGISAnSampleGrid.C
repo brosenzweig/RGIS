@@ -30,9 +30,9 @@ void RGISAnalyseSingleSampleGridCBK (Widget widget, RGISWorkspace *workspace,XmA
 
 		DBInt recID, fieldID, progress = 0, maxProgress;
 		DBCoordinate coord;
-		DBGridIO *gridIO = new DBGridIO (grdData);
-		DBVPointIO  *pntIO = dbData->Type () == DBTypeVectorPoint ? new DBVPointIO (dbData)	 : (DBVPointIO *) NULL;
-		DBNetworkIO *netIO = dbData->Type () == DBTypeNetwork		 ? new DBNetworkIO (dbData) : (DBNetworkIO *) NULL;
+		DBGridIF *gridIF = new DBGridIF (grdData);
+		DBVPointIF  *pntIF = dbData->Type () == DBTypeVectorPoint ? new DBVPointIF (dbData)	 : (DBVPointIF *) NULL;
+		DBNetworkIF *netIF = dbData->Type () == DBTypeNetwork		 ? new DBNetworkIF (dbData) : (DBNetworkIF *) NULL;
 		DBObjTableField *newField;
 		DBObjRecord *record;
 
@@ -42,9 +42,9 @@ void RGISAnalyseSingleSampleGridCBK (Widget widget, RGISWorkspace *workspace,XmA
 			case DBTypeGridContinuous:
 				{
 				DBFloat value;
-				if ((newField = itemTable->Field ((gridIO->Layer ())->Name ())) == (DBObjTableField *) NULL)
+				if ((newField = itemTable->Field ((gridIF->Layer ())->Name ())) == (DBObjTableField *) NULL)
 					{
-					newField = new DBObjTableField ((gridIO->Layer ())->Name (),DBTableFieldFloat,"%10.3f",sizeof (DBFloat4));
+					newField = new DBObjTableField ((gridIF->Layer ())->Name (),DBTableFieldFloat,"%10.3f",sizeof (DBFloat4));
 					itemTable->AddField (newField);
 					}
 				maxProgress = itemTable->ItemNum ();
@@ -53,11 +53,11 @@ void RGISAnalyseSingleSampleGridCBK (Widget widget, RGISWorkspace *workspace,XmA
 					record = itemTable->Item (recID);
 					UIPause (progress * 100 / maxProgress); progress++;
 					if ((record->Flags () & DBObjectFlagIdle) == DBObjectFlagIdle) continue;
-					if (pntIO != (DBVPointIO *) NULL)
-							coord = pntIO->Coordinate (record);
-					else	coord = netIO->Center (netIO->MouthCell (record));
+					if (pntIF != (DBVPointIF *) NULL)
+							coord = pntIF->Coordinate (record);
+					else	coord = netIF->Center (netIF->MouthCell (record));
 
-					if (gridIO->Value (coord,&value))
+					if (gridIF->Value (coord,&value))
 							newField->Float (record,value);
 					else	newField->Float (record,newField->FloatNoData ());
 					}
@@ -69,9 +69,9 @@ void RGISAnalyseSingleSampleGridCBK (Widget widget, RGISWorkspace *workspace,XmA
 				DBObjTableField *field;
 				DBObjRecord *grdRec;
 
-				if ((newField = itemTable->Field ((gridIO->Layer ())->Name ())) == (DBObjTableField *) NULL)
+				if ((newField = itemTable->Field ((gridIF->Layer ())->Name ())) == (DBObjTableField *) NULL)
 					{
-					newField = new DBObjTableField ((gridIO->Layer ())->Name (),DBTableFieldString,"%s",DBStringLength);
+					newField = new DBObjTableField ((gridIF->Layer ())->Name (),DBTableFieldString,"%s",DBStringLength);
 					itemTable->AddField (newField);
 					}
 				maxProgress = ((fields->ItemNum () + 1) * itemTable->ItemNum ());
@@ -80,10 +80,10 @@ void RGISAnalyseSingleSampleGridCBK (Widget widget, RGISWorkspace *workspace,XmA
 					record = itemTable->Item (recID);
 					UIPause (progress * 100 / maxProgress); progress++;
 					if ((record->Flags () & DBObjectFlagIdle) == DBObjectFlagIdle) continue;
-					if (pntIO != (DBVPointIO *) NULL)
-						coord = pntIO->Coordinate (record);
-					else	coord = netIO->Center (netIO->MouthCell (record));
-					if ((grdRec = gridIO->GridItem (coord)) != (DBObjRecord *) NULL)
+					if (pntIF != (DBVPointIF *) NULL)
+						coord = pntIF->Coordinate (record);
+					else	coord = netIF->Center (netIF->MouthCell (record));
+					if ((grdRec = gridIF->GridItem (coord)) != (DBObjRecord *) NULL)
 						newField->String (record,grdRec->Name ());
 					}
 				for (fieldID = 0;fieldID < fields->ItemNum ();fieldID++)
@@ -99,11 +99,11 @@ void RGISAnalyseSingleSampleGridCBK (Widget widget, RGISWorkspace *workspace,XmA
 							{
 							record = itemTable->Item (recID);
 							UIPause (progress * 100 / maxProgress); progress++;
-							if (pntIO != (DBVPointIO *) NULL)
-									coord = pntIO->Coordinate (record);
-							else	coord = netIO->Center (netIO->MouthCell (record));
+							if (pntIF != (DBVPointIF *) NULL)
+									coord = pntIF->Coordinate (record);
+							else	coord = netIF->Center (netIF->MouthCell (record));
 
-							if ((grdRec = gridIO->GridItem (coord)) != (DBObjRecord *) NULL)
+							if ((grdRec = gridIF->GridItem (coord)) != (DBObjRecord *) NULL)
 								switch (field->Type ())
 									{
 									case DBTableFieldString:	newField->String (record,field->String (grdRec));	break;
@@ -115,9 +115,9 @@ void RGISAnalyseSingleSampleGridCBK (Widget widget, RGISWorkspace *workspace,XmA
 						}
 				} break;
 			}
-		if (pntIO != (DBVPointIO *) NULL)  delete pntIO;
-		if (netIO != (DBNetworkIO *) NULL) delete netIO;
-		delete gridIO;
+		if (pntIF != (DBVPointIF *) NULL)  delete pntIF;
+		if (netIF != (DBNetworkIF *) NULL) delete netIF;
+		delete gridIF;
 		UIPauseDialogClose ();
 		}
 	}

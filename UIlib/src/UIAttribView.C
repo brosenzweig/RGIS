@@ -154,11 +154,11 @@ UIAttribView::UIAttribView (DBObjData *data) : DBObject (data->Name (),sizeof (U
 		case DBTypeGridContinuous:
 			{
 			DBObjRecord *record;
-			DBGridIO *gridIO = new DBGridIO (DataPTR);
+			DBGridIF *gridIF = new DBGridIF (DataPTR);
 			ItemTable = DataPTR->Table (DBrNLayers);
 			for (record = ItemTable->First ();record != (DBObjRecord *) NULL;record = ItemTable->Next ())
-				NewField (record->Name (),gridIO->ValueFormat ());
-			delete gridIO;
+				NewField (record->Name (),gridIF->ValueFormat ());
+			delete gridIF;
 			} break;
 		case DBTypeNetwork:
 			{
@@ -224,10 +224,10 @@ void UIAttribView::Draw (DBObjRecord *record)
 		case DBTypeGridContinuous:
 			{
 			DBCoordinate coord = *((DBCoordinate *) (record->Data ()));
-			DBGridIO *gridIO = new DBGridIO (DataPTR);
+			DBGridIF *gridIF = new DBGridIF (DataPTR);
 			for (record = ItemTable->First ();record != (DBObjRecord *) NULL;record = ItemTable->Next ())
-				DrawField (record->Name (),gridIO->ValueString (record,coord));
-			delete gridIO;
+				DrawField (record->Name (),gridIF->ValueString (record,coord));
+			delete gridIF;
 			} break;
 		case DBTypeNetwork:
 			{

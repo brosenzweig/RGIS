@@ -11,9 +11,9 @@ balazs.fekete@unh.edu
 *******************************************************************************/
 
 #include <DB.H>
-#include <DBio.H>
+#include <DBif.H>
 
-void DBVLineIO::Initialize (DBObjData *data,DBObjTable *items)
+void DBVLineIF::Initialize (DBObjData *data,DBObjTable *items)
 
 	{
 	NodeTable = data->Table (DBrNNodes);
@@ -26,7 +26,7 @@ void DBVLineIO::Initialize (DBObjData *data,DBObjTable *items)
 	NodeCoordFLD	= NodeTable->Field (DBrNCoord);
 	}
 
-DBObjRecord *DBVLineIO::Node (DBCoordinate coord,DBInt create)
+DBObjRecord *DBVLineIF::Node (DBCoordinate coord,DBInt create)
 
 	{
 	DBFloat precision = pow ((double) 10.0,(double) Data ()->Precision ());
@@ -46,7 +46,7 @@ DBObjRecord *DBVLineIO::Node (DBCoordinate coord,DBInt create)
 	return ((DBObjRecord *) NULL);
 	}
 
-void DBVLineIO::Vertexes (DBObjRecord *lineRec,DBCoordinate *coord,DBInt vertexNum)
+void DBVLineIF::Vertexes (DBObjRecord *lineRec,DBCoordinate *coord,DBInt vertexNum)
 
 	{
 	DBInt vertex;
@@ -68,7 +68,7 @@ void DBVLineIO::Vertexes (DBObjRecord *lineRec,DBCoordinate *coord,DBInt vertexN
 			}
 		else	dataRec->Realloc (vertexNum * sizeof (DBCoordinate));
 		if ((vertexes = (DBCoordinate *) dataRec->Data ()) == NULL)
-			{ perror ("Memory Allocation Error in:  DBVLineIO::Vertexes ()"); return; }
+			{ perror ("Memory Allocation Error in:  DBVLineIF::Vertexes ()"); return; }
 		for (vertex = 0;vertex < vertexNum;vertex++)
 			{
 			lineExtent.Expand (vertexes [vertex] = coord [vertex]);
@@ -86,7 +86,7 @@ void DBVLineIO::Vertexes (DBObjRecord *lineRec,DBCoordinate *coord,DBInt vertexN
 	Data ()->Extent (dataExtent);
 	}
 
-void DBVLineIO::Flip (DBObjRecord *lineRec)
+void DBVLineIF::Flip (DBObjRecord *lineRec)
 
 	{
 	DBInt vertexNum = VertexNum (lineRec);

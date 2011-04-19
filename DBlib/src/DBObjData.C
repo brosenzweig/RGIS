@@ -11,7 +11,7 @@ balazs.fekete@unh.edu
 *******************************************************************************/
 
 #include <DB.H>
-#include <DBio.H>
+#include <DBif.H>
 
 DBDataHeader::DBDataHeader ()
 
@@ -271,17 +271,17 @@ DBRegion DBObjData::Extent (DBObjRecord *record)
 			{
 			DBInt cellID, cellNum;
 			DBObjRecord *cellRec;
-			DBNetworkIO *netIO = new DBNetworkIO (this);
+			DBNetworkIF *netIF = new DBNetworkIF (this);
 
-			cellRec = netIO->MouthCell (record);
-			cellNum = netIO->CellBasinCells (cellRec) + cellRec->RowID ();
+			cellRec = netIF->MouthCell (record);
+			cellNum = netIF->CellBasinCells (cellRec) + cellRec->RowID ();
 			for (cellID = cellRec->RowID ();cellID < cellNum;++cellID)
 				{
-				cellRec = netIO->Cell (cellID);
-				extent.Expand (netIO->Center (cellRec) + (netIO->CellSize () / 2.0));
-				extent.Expand (netIO->Center (cellRec) - (netIO->CellSize () / 2.0));
+				cellRec = netIF->Cell (cellID);
+				extent.Expand (netIF->Center (cellRec) + (netIF->CellSize () / 2.0));
+				extent.Expand (netIF->Center (cellRec) - (netIF->CellSize () / 2.0));
 				}
-			delete netIO;
+			delete netIF;
 			} return (extent);
 		case DBTypeTable:
 		default:	return (extent);
@@ -298,30 +298,30 @@ void DBObjData::RecalcExtent ()
 		case DBTypeVectorLine:
 		case DBTypeVectorPolygon:
 			{
-			DBVectorIO *vectorIO = new DBVectorIO (this);
+			DBVectorIF *vectorIF = new DBVectorIF (this);
 			DBInt recordID;
-			for (recordID = 0;recordID < vectorIO->ItemNum ();++recordID)
-				extent.Expand (Extent (vectorIO->Item (recordID)));
-			delete vectorIO;
+			for (recordID = 0;recordID < vectorIF->ItemNum ();++recordID)
+				extent.Expand (Extent (vectorIF->Item (recordID)));
+			delete vectorIF;
 			}
 			break;
 		case DBTypeGridDiscrete:
 		case DBTypeGridContinuous:
 			{
-			DBGridIO *gridIO = new DBGridIO (this);
+			DBGridIF *gridIF = new DBGridIF (this);
 			extent.LowerLeft = Extent ().LowerLeft;
-			extent.UpperRight.X = extent.LowerLeft.X + gridIO->ColNum () * gridIO->CellWidth ();
-			extent.UpperRight.Y = extent.LowerLeft.Y + gridIO->RowNum () * gridIO->CellHeight ();
-			delete gridIO;
+			extent.UpperRight.X = extent.LowerLeft.X + gridIF->ColNum () * gridIF->CellWidth ();
+			extent.UpperRight.Y = extent.LowerLeft.Y + gridIF->RowNum () * gridIF->CellHeight ();
+			delete gridIF;
 			}
 			break;
 		case DBTypeNetwork:
 			{
-			DBNetworkIO *netIO = new DBNetworkIO (this);
+			DBNetworkIF *netIF = new DBNetworkIF (this);
 			extent.LowerLeft = Extent ().LowerLeft;
-			extent.UpperRight.X = extent.LowerLeft.X + netIO->ColNum () * netIO->CellWidth ();
-			extent.UpperRight.Y = extent.LowerLeft.Y + netIO->RowNum () * netIO->CellHeight ();
-			delete netIO;
+			extent.UpperRight.X = extent.LowerLeft.X + netIF->ColNum () * netIF->CellWidth ();
+			extent.UpperRight.Y = extent.LowerLeft.Y + netIF->RowNum () * netIF->CellHeight ();
+			delete netIF;
 			}
 			break;
 		case DBTypeTable:
@@ -343,15 +343,15 @@ DBInt DBObjData::SelectObject (DBObjRecord *record,DBInt select)
 		{
 		DBInt cellID;
 		DBObjRecord *cellRec;
-		DBNetworkIO *netIO = new DBNetworkIO (this);
+		DBNetworkIF *netIF = new DBNetworkIF (this);
 
-		for (cellID = 0;cellID < netIO->CellNum ();++cellID)
+		for (cellID = 0;cellID < netIF->CellNum ();++cellID)
 			{
-			cellRec = netIO->Cell (cellID);
-			if (netIO->CellBasinID (cellRec) == record->RowID () + 1)
+			cellRec = netIF->Cell (cellID);
+			if (netIF->CellBasinID (cellRec) == record->RowID () + 1)
 				cellRec->Flags (DBObjectFlagSelected,select);
 			}
-		delete netIO;
+		delete netIF;
 		}
 	return (DBSuccess);
 	}

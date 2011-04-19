@@ -12,7 +12,7 @@ balazs.fekete@unh.edu
 
 #include <ctype.h>
 #include <DB.H>
-#include <DBio.H>
+#include <DBif.H>
 
 #define NCOLS     "ncols"
 #define NROWS     "nrows"
@@ -64,7 +64,7 @@ int DBImportASCIINet (DBObjData *netData,const char *fileName)
 	DBObjTableField *layerFLD = layerTable->Field (DBrNLayer);
 
 	DBObjRecord *layerRec, *dataRec, *cellRec, *basinRec;
-	DBNetworkIO *netIO;
+	DBNetworkIF *netIF;
 
 	if ((file = fopen (fileName,"r")) == NULL)
 		{ perror ("File Opening Error in: DBImportASCIINet ()"); return (DBFault); }
@@ -151,9 +151,9 @@ Stop:
 	netData->Extent (extent);
 	netData->Projection (DBMathGuessProjection (extent));
 	netData->Precision  (DBMathGuessPrecision  (extent));
-	netIO = new DBNetworkIO (netData);
-	netIO->Build ();
-	delete netIO;
+	netIF = new DBNetworkIF (netData);
+	netIF->Build ();
+	delete netIF;
 	fclose (file);
 	return (DBSuccess);
 	}

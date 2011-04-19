@@ -12,7 +12,7 @@ balazs.fekete@unh.edu
 
 #include <cm.h>
 #include <DB.H>
-#include <DBio.H>
+#include <DBif.H>
 #include <RG.H>
 
 int main (int argc,char *argv [])
@@ -25,7 +25,7 @@ int main (int argc,char *argv [])
 	DBInt layerID;
 	DBObjData *data;
 	DBObjRecord *layerRec;
-	DBGridIO *gridIO;
+	DBGridIF *gridIF;
 
 	for (argPos = 1;argPos < argNum; )
 		{
@@ -77,33 +77,33 @@ int main (int argc,char *argv [])
 	if ((ret == DBFault) || ((data->Type () & DBTypeGrid) != DBTypeGrid))
 		{ delete data; return (CMfailed); }
 
-	gridIO = new DBGridIO (data);
+	gridIF = new DBGridIF (data);
 	if ((out = argNum > 2 ? fopen (argv [2],"w") : stdout) == (FILE *) NULL)
 		{ CMmsgPrint (CMmsgUsrError,"Output file opening error!\n"); return (CMfailed); }
 
-	if (doNum) fprintf (out,"%d\n",gridIO->LayerNum ());
+	if (doNum) fprintf (out,"%d\n",gridIF->LayerNum ());
 	if (doList)
-		for (layerID = 0;layerID < gridIO->LayerNum ();++layerID)
+		for (layerID = 0;layerID < gridIF->LayerNum ();++layerID)
 			{
-			layerRec = gridIO->Layer (layerID);
+			layerRec = gridIF->Layer (layerID);
 			fprintf (out,"%s\n",layerRec->Name ());
 			}
 	if (doAll)
-		for (layerID = 0;layerID < gridIO->LayerNum ();++layerID)
+		for (layerID = 0;layerID < gridIF->LayerNum ();++layerID)
 			{
-			layerRec = gridIO->Layer (layerID);
+			layerRec = gridIF->Layer (layerID);
 			DBExportARCGridLayer (data,layerRec,out);
 			}
 	else if (layerName != (char *) NULL)
 		{
-		if ((layerRec = gridIO->Layer (layerName)) == (DBObjRecord *) NULL)
+		if ((layerRec = gridIF->Layer (layerName)) == (DBObjRecord *) NULL)
 			{ CMmsgPrint (CMmsgUsrError,"Wrong layername\n"); }
 		else	DBExportARCGridLayer (data,layerRec,out);
 		}
 
 	if (argNum > 2) fclose (out);
 
-	delete gridIO;
+	delete gridIF;
 	delete data;
 	if (verbose) RGlibPauseClose ();
 	return (ret);

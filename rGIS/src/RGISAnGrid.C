@@ -247,8 +247,8 @@ void RGISAnGContPitsCBK (Widget widget,RGISWorkspace *workspace,XmAnyCallbackStr
 	DBObjTableField *pourElevFLD;
 	DBDataset *dataset = UIDataset ();
 	DBObjData *gridData = dataset->Data (), *netData, *pntData;
-	DBNetworkIO *netIO;
-	DBGridIO *gridIO;
+	DBNetworkIF *netIF;
+	DBGridIF *gridIF;
 
 	widget = widget; callData = callData;
 
@@ -286,13 +286,13 @@ void RGISAnGContPitsCBK (Widget widget,RGISWorkspace *workspace,XmAnyCallbackStr
 		cellTable->AddField (pourElevFLD);
 		}
 
-	gridIO = new DBGridIO (gridData);
-	netIO = new DBNetworkIO (netData);
+	gridIF = new DBGridIF (gridData);
+	netIF = new DBNetworkIF (netData);
 
-	for (cellID = 0;cellID < netIO->CellNum ();++cellID)
+	for (cellID = 0;cellID < netIF->CellNum ();++cellID)
 		{
-		cellRec = netIO->Cell (cellID);
-		if (gridIO->Value (netIO->Center (cellRec),&cellElev) == false) cellElev = 0.0;
+		cellRec = netIF->Cell (cellID);
+		if (gridIF->Value (netIF->Center (cellRec),&cellElev) == false) cellElev = 0.0;
 		pourIDFLD->Int (cellRec,cellRec->RowID ());
 		pitAreaFLD->Float (cellRec,0.0);
 		pitVolumeFLD->Float (cellRec,0.0);
@@ -300,21 +300,21 @@ void RGISAnGContPitsCBK (Widget widget,RGISWorkspace *workspace,XmAnyCallbackStr
 		pourElevFLD->Float (cellRec,cellElev);
 		}
 
-	for (cellID = 0;cellID < netIO->CellNum ();++cellID)
+	for (cellID = 0;cellID < netIF->CellNum ();++cellID)
 		{
-		cellRec = netIO->Cell (cellID);
-		if ((toCellRec = netIO->ToCell (cellRec)) == (DBObjRecord *) NULL) continue;
+		cellRec = netIF->Cell (cellID);
+		if ((toCellRec = netIF->ToCell (cellRec)) == (DBObjRecord *) NULL) continue;
 
-		pourCellRec =  netIO->Cell (pourIDFLD->Int (toCellRec));
+		pourCellRec =  netIF->Cell (pourIDFLD->Int (toCellRec));
 
-		if (gridIO->Value (netIO->Center (pourCellRec),&pourElev) == false)	pourElev = 0.0;
-		if (gridIO->Value (netIO->Center (cellRec),    &cellElev) == false)  cellElev = pourElev;
+		if (gridIF->Value (netIF->Center (pourCellRec),&pourElev) == false)	pourElev = 0.0;
+		if (gridIF->Value (netIF->Center (cellRec),    &cellElev) == false)  cellElev = pourElev;
 		if (pourElev > cellElev)
 			{
-			volume = netIO->CellArea (cellRec) * (pourElev - cellElev);
+			volume = netIF->CellArea (cellRec) * (pourElev - cellElev);
 			pourIDFLD->Int (cellRec,pourCellRec->RowID ());
 			pourElevFLD->Float (cellRec,pourElev);
-			pitAreaFLD->Float (pourCellRec,pitAreaFLD->Float (pourCellRec) + netIO->CellArea (cellRec));
+			pitAreaFLD->Float (pourCellRec,pitAreaFLD->Float (pourCellRec) + netIF->CellArea (cellRec));
 			pitVolumeFLD->Float (pourCellRec,pitVolumeFLD->Float (pourCellRec) + volume);
 			pitDepthFLD->Float (pourCellRec,	pitDepthFLD->Float (pourCellRec) > pourElev - cellElev ?
 														pitDepthFLD->Float (pourCellRec) : pourElev - cellElev);
@@ -355,12 +355,12 @@ void RGISAnGContPitsCBK (Widget widget,RGISWorkspace *workspace,XmAnyCallbackStr
 		backgroundFLD->Int (symRec,0);
 		styleFLD->Int (symRec,0);
 
-		for (cellID = 0;cellID < netIO->CellNum ();++cellID)
+		for (cellID = 0;cellID < netIF->CellNum ();++cellID)
 			{
-			cellRec = netIO->Cell (cellID);
+			cellRec = netIF->Cell (cellID);
 			if (pourIDFLD->Int (cellRec) != cellRec->RowID ())
 				{
-				pourCellRec =  netIO->Cell (pourIDFLD->Int (cellRec));
+				pourCellRec =  netIF->Cell (pourIDFLD->Int (cellRec));
 				pourIDFLD->Int (cellRec,pourIDFLD->Int (pourCellRec));
 				}
 			else
@@ -369,14 +369,14 @@ void RGISAnGContPitsCBK (Widget widget,RGISWorkspace *workspace,XmAnyCallbackStr
 					{
 					sprintf (name,"STN Pit:%04d",items->ItemNum ());
 					pntRec = items->Add (name);
-					coord = netIO->Center (cellRec);
+					coord = netIF->Center (cellRec);
 					coordField->Coordinate (pntRec,coord);
 					symbolFLD->Record (pntRec,symRec);
 					areaFLD->Float (pntRec,pitAreaFLD->Float (cellRec));
 					volumeFLD->Float (pntRec,pitVolumeFLD->Float (cellRec) / 1000.0);
 					depthFLD->Float (pntRec,pitDepthFLD->Float (cellRec));
 					elevFLD->Float (pntRec,pourElevFLD->Float (cellRec));
-					subbasinAreaFLD->Float (pntRec,netIO->CellBasinArea (cellRec));
+					subbasinAreaFLD->Float (pntRec,netIF->CellBasinArea (cellRec));
 					dataExtent.Expand (coord);
 					pourIDFLD->Int (cellRec,pntRec->RowID () + 1);
 					}
@@ -394,24 +394,24 @@ void RGISAnGContPitsCBK (Widget widget,RGISWorkspace *workspace,XmAnyCallbackStr
 	cellTable->DeleteField (pitAreaFLD);
 	cellTable->DeleteField (pitVolumeFLD);
 	cellTable->DeleteField (pitDepthFLD);
-	delete netIO;
-	delete gridIO;
+	delete netIF;
+	delete gridIF;
 	}
 
 static DBInt 	_RGISAnGContPourCellID;
 static DBFloat _RGISAnGContPourElev;
-static DBGridIO *_RGISAnnGContPourGridIO;
+static DBGridIF *_RGISAnnGContPourGridIF;
 
 
 static DBInt _RGISAnnGContFindBasinMinCrest (void *ptr,DBObjRecord *cellRec)
 
 	{
 	DBFloat elev;
-	DBNetworkIO *netIO = (DBNetworkIO *) ptr;
+	DBNetworkIF *netIF = (DBNetworkIF *) ptr;
 
-	if (netIO->CellBasinCells (cellRec) > 1) return (false);
-	printf ("Itt Jartam: %d %d\n",cellRec->RowID (),netIO->CellBasinCells (cellRec));
-	if (_RGISAnnGContPourGridIO->Value (netIO->Center (cellRec),&elev))
+	if (netIF->CellBasinCells (cellRec) > 1) return (false);
+	printf ("Itt Jartam: %d %d\n",cellRec->RowID (),netIF->CellBasinCells (cellRec));
+	if (_RGISAnnGContPourGridIF->Value (netIF->Center (cellRec),&elev))
 		if (_RGISAnGContPourElev > elev)
 			{
 			_RGISAnGContPourElev = elev;
@@ -428,7 +428,7 @@ void RGISAnGContPourCBK (Widget widget,RGISWorkspace *workspace,XmAnyCallbackStr
 	DBObjRecord *basinRec;
 	DBDataset *dataset = UIDataset ();
 	DBObjData *gridData = dataset->Data (), *netData;
-	DBNetworkIO *netIO;
+	DBNetworkIF *netIF;
 
 	widget = widget; workspace = workspace; callData = callData;
 
@@ -437,25 +437,25 @@ void RGISAnGContPourCBK (Widget widget,RGISWorkspace *workspace,XmAnyCallbackStr
 	if ((netData = gridData->LinkedData ()) == (DBObjData *) NULL)
 		{ fprintf (stderr,"Null Linked Data in: _RGISAnGContPourPointsCBK ()\n"); return; }
 
-	_RGISAnnGContPourGridIO = new DBGridIO (gridData);
-	netIO = new DBNetworkIO (netData);
+	_RGISAnnGContPourGridIF = new DBGridIF (gridData);
+	netIF = new DBNetworkIF (netData);
 
-	for (basinID = 0;basinID < netIO->BasinNum ();++basinID)
+	for (basinID = 0;basinID < netIF->BasinNum ();++basinID)
 		{
-		basinRec = netIO->Basin (basinID);
+		basinRec = netIF->Basin (basinID);
 		_RGISAnGContPourCellID = DBFault;
 		_RGISAnGContPourElev = DBHugeVal;
-		netIO->UpStreamSearch (netIO->MouthCell (basinRec),(DBNetworkACTION) _RGISAnnGContFindBasinMinCrest);
+		netIF->UpStreamSearch (netIF->MouthCell (basinRec),(DBNetworkACTION) _RGISAnnGContFindBasinMinCrest);
 		if (_RGISAnGContPourCellID != DBFault)
 			{
-			coord = netIO->Center (netIO->Cell(_RGISAnGContPourCellID));
-			delta = netIO->Delta (netIO->Cell(_RGISAnGContPourCellID));
+			coord = netIF->Center (netIF->Cell(_RGISAnGContPourCellID));
+			delta = netIF->Delta (netIF->Cell(_RGISAnGContPourCellID));
 			printf ("%d,%f,%f,%f\n", _RGISAnGContPourCellID,coord.X + delta.X,coord.Y + delta.Y,_RGISAnGContPourElev);
 			}
 		}
 
-	delete netIO;
-	delete _RGISAnnGContPourGridIO;
+	delete netIF;
+	delete _RGISAnnGContPourGridIF;
 	}
 
 void RGISAnGContCreateNetworkCBK (Widget widget,RGISWorkspace *workspace,XmAnyCallbackStruct *callData)
@@ -507,8 +507,8 @@ void RGISAnGContMergeCBK (Widget widget,RGISWorkspace *workspace,XmAnyCallbackSt
 		DBCoordinate coord;
 		DBInt layerID;
 		DBFloat value;
-		DBGridIO *gridIO = new DBGridIO (mGridData);
-		DBGridIO *nGridIO;
+		DBGridIF *gridIF = new DBGridIF (mGridData);
+		DBGridIF *nGridIF;
 		DBObjRecord *layerRec, *nLayerRec, *dataRec;
 		DBObjTable *layerTable = nGridData->Table (DBrNLayers);
 		DBObjTable *itemTable  = nGridData->Table (DBrNItems);
@@ -522,39 +522,39 @@ void RGISAnGContMergeCBK (Widget widget,RGISWorkspace *workspace,XmAnyCallbackSt
 		DBObjTableField *missingValueFLD	= itemTable->Field (DBrNMissingValue);
 
 		UIPauseDialogOpen ((char *) "Merging Continuous Grids");
-		pos.Col = (int) (ceil ((extent.UpperRight.X - extent.LowerLeft.X) / gridIO->CellWidth  ()));
-		pos.Row = (int) (ceil ((extent.UpperRight.Y - extent.LowerLeft.Y) / gridIO->CellHeight ()));
-		for (layerID = 0;layerID < gridIO->LayerNum ();++layerID)
+		pos.Col = (int) (ceil ((extent.UpperRight.X - extent.LowerLeft.X) / gridIF->CellWidth  ()));
+		pos.Row = (int) (ceil ((extent.UpperRight.Y - extent.LowerLeft.Y) / gridIF->CellHeight ()));
+		for (layerID = 0;layerID < gridIF->LayerNum ();++layerID)
 			{
-			layerRec = gridIO->Layer (layerID);
+			layerRec = gridIF->Layer (layerID);
 			if ((layerRec->Flags () & DBObjectFlagIdle) == DBObjectFlagIdle) continue;
 			if ((nLayerRec = layerTable->Add (layerRec->Name ())) == (DBObjRecord *) NULL)
-				{ delete gridIO; delete nGridData; return; }
+				{ delete gridIF; delete nGridData; return; }
 
-			cellWidthFLD->Float  (nLayerRec,gridIO->CellWidth ());
-			cellHeightFLD->Float (nLayerRec,gridIO->CellHeight ());
+			cellWidthFLD->Float  (nLayerRec,gridIF->CellWidth ());
+			cellHeightFLD->Float (nLayerRec,gridIF->CellHeight ());
 			rowNumFLD->Int (nLayerRec,pos.Row);
 			colNumFLD->Int (nLayerRec,pos.Col);
-			valueTypeFLD->Int (nLayerRec,gridIO->ValueType ());
-			valueSizeFLD->Int (nLayerRec,gridIO->ValueSize ());
+			valueTypeFLD->Int (nLayerRec,gridIF->ValueType ());
+			valueSizeFLD->Int (nLayerRec,gridIF->ValueSize ());
 			if ((dataRec = new DBObjRecord (nLayerRec->Name (), pos.Col * pos.Row * valueSizeFLD->Int (nLayerRec),valueSizeFLD->Int (nLayerRec))) == (DBObjRecord *) NULL)
-				{ delete gridIO; delete nGridData; return; }
+				{ delete gridIF; delete nGridData; return; }
 			(nGridData->Arrays ())->Add (dataRec);
 			layerFLD->Record (nLayerRec,dataRec);
 			itemTable->Add (nLayerRec->Name ());
-			missingValueFLD->Float (itemTable->Item (nLayerRec->Name ()),gridIO->MissingValue ());
+			missingValueFLD->Float (itemTable->Item (nLayerRec->Name ()),gridIF->MissingValue ());
 			}
-		delete gridIO;
-		nGridIO = new DBGridIO (nGridData);
+		delete gridIF;
+		nGridIF = new DBGridIF (nGridData);
 
-		for (layerID = 0;layerID < nGridIO->LayerNum ();++layerID)
+		for (layerID = 0;layerID < nGridIF->LayerNum ();++layerID)
 			{
-			nLayerRec = nGridIO->Layer (layerID);
-			for (pos.Row = 0;pos.Row < nGridIO->RowNum ();pos.Row++)
+			nLayerRec = nGridIF->Layer (layerID);
+			for (pos.Row = 0;pos.Row < nGridIF->RowNum ();pos.Row++)
 				{
-				DBPause (20 * nLayerRec->RowID () * pos.Row / (nGridIO->LayerNum () * nGridIO->RowNum ()));
-				for (pos.Col = 0;pos.Col < nGridIO->ColNum ();pos.Col++)
-					nGridIO->Value (nLayerRec,pos,nGridIO->MissingValue (nLayerRec));
+				DBPause (20 * nLayerRec->RowID () * pos.Row / (nGridIF->LayerNum () * nGridIF->RowNum ()));
+				for (pos.Col = 0;pos.Col < nGridIF->ColNum ();pos.Col++)
+					nGridIF->Value (nLayerRec,pos,nGridIF->MissingValue (nLayerRec));
 				}
 			}
 		dataNum = 0;
@@ -562,30 +562,30 @@ void RGISAnGContMergeCBK (Widget widget,RGISWorkspace *workspace,XmAnyCallbackSt
 			if ((lGridData->Flags () & DBObjectFlagProcessed) == DBObjectFlagProcessed)	break;
 			else	if (lGridData->Type () == DBTypeGridContinuous)
 				{
-				gridIO = new DBGridIO (lGridData);
-				for (layerID = 0;layerID < nGridIO->LayerNum ();++layerID)
+				gridIF = new DBGridIF (lGridData);
+				for (layerID = 0;layerID < nGridIF->LayerNum ();++layerID)
 					{
-					nLayerRec = nGridIO->Layer (layerID);
-					if ((layerRec = gridIO->Layer (nLayerRec->Name ())) != (DBObjRecord *) NULL)
-						for (pos.Row = 0;pos.Row < gridIO->RowNum ();pos.Row++)
+					nLayerRec = nGridIF->Layer (layerID);
+					if ((layerRec = gridIF->Layer (nLayerRec->Name ())) != (DBObjRecord *) NULL)
+						for (pos.Row = 0;pos.Row < gridIF->RowNum ();pos.Row++)
 							{
-							DBPause (20 + dataNum * incr + incr * layerID * pos.Row / (nGridIO->LayerNum () * nGridIO->RowNum ()));
-							for (pos.Col = 0;pos.Col < gridIO->ColNum ();pos.Col++)
-								if (gridIO->Value (layerRec,pos,&value))
+							DBPause (20 + dataNum * incr + incr * layerID * pos.Row / (nGridIF->LayerNum () * nGridIF->RowNum ()));
+							for (pos.Col = 0;pos.Col < gridIF->ColNum ();pos.Col++)
+								if (gridIF->Value (layerRec,pos,&value))
 									{
-									gridIO->Pos2Coord (pos,coord);
-									nGridIO->Value (nLayerRec,coord,value);
+									gridIF->Pos2Coord (pos,coord);
+									nGridIF->Value (nLayerRec,coord,value);
 									}
 							}
 					}
 				lGridData->Flags (DBObjectFlagProcessed,DBSet);
-				delete gridIO;
+				delete gridIF;
 				++dataNum;
 				}
-		nGridIO->RecalcStats ();
+		nGridIF->RecalcStats ();
 		UIPauseDialogClose ();
 		workspace->CurrentData (nGridData);
-		delete nGridIO;
+		delete nGridIF;
 
 		for (lGridData = dataset->FirstData ();lGridData != (DBObjData *) NULL;lGridData = dataset->NextData ())
 			lGridData->Flags (DBObjectFlagProcessed,DBClear);

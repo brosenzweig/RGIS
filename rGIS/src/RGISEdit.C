@@ -323,17 +323,17 @@ static void _RGISEditDeleteSelectionCBK (Widget widget,void *data,XmAnyCallbackS
 		}
 	else
 		{
-		DBNetworkIO *netIO = new DBNetworkIO (dbData);
+		DBNetworkIF *netIF = new DBNetworkIF (dbData);
 		for (recID = 0;recID < table->ItemNum ();++recID)
 			{
 			record = table->Item (recID);
 			if ((record->Flags () & DBObjectFlagSelected) == DBObjectFlagSelected)
-				netIO->CellDelete (table->Item (recID));
+				netIF->CellDelete (table->Item (recID));
 			}
 		UIPauseDialogOpen ((char *) "Re-building Network");
-		netIO->Build ();
+		netIF->Build ();
 		UIPauseDialogClose ();
-		delete netIO;
+		delete netIF;
 		}
 	}
 

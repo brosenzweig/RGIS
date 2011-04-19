@@ -24,7 +24,7 @@ void RGISEditPointAddXYCBK (Widget widget, RGISWorkspace *workspace,XmAnyCallbac
 	{
 	DBDataset *dataset = UIDataset ();
 	DBObjData *dbData =dataset->Data ();
-	DBVPointIO *pointIO = new DBVPointIO (dbData);
+	DBVPointIF *pntIF = new DBVPointIF (dbData);
 	DBObjTable *pointTable = dbData->Table (DBrNItems);
 	DBObjTableField *xCoordFLD	= pointTable->Field (RGISEditPointXCoord);
 	DBObjTableField *yCoordFLD = pointTable->Field (RGISEditPointYCoord);
@@ -48,10 +48,10 @@ void RGISEditPointAddXYCBK (Widget widget, RGISWorkspace *workspace,XmAnyCallbac
 		if (tableCLS != (UITable *) NULL) tableCLS->AddField (yCoordFLD);
 		UIPause (80);
 		}
-	for (pointRec = pointIO->FirstItem (); pointRec != (DBObjRecord *) NULL; pointRec = pointIO->NextItem ())
+	for (pointRec = pntIF->FirstItem (); pointRec != (DBObjRecord *) NULL; pointRec = pntIF->NextItem ())
 		{
-		if (UIPause (80 + pointRec->RowID () * 20 / pointIO->ItemNum ())) goto Stop;
-		coord = pointIO->Coordinate  (pointRec);
+		if (UIPause (80 + pointRec->RowID () * 20 / pntIF->ItemNum ())) goto Stop;
+		coord = pntIF->Coordinate  (pointRec);
 		xCoordFLD->Float (pointRec,coord.X);
 		yCoordFLD->Float (pointRec,coord.Y);
 		}

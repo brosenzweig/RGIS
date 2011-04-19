@@ -11,7 +11,7 @@ balazs.fekete@unh.edu
 *******************************************************************************/
 
 #include<DB.H>
-#include<DBio.H>
+#include<DBif.H>
 #include<cm.h>
 #include<MF.h>
 
@@ -24,12 +24,12 @@ DBInt RGlibRGIS2DataStream (DBObjData *grdData,DBObjData *tmplData,char *fieldNa
 	MFVarHeader_t varHeader;
 	DBObjRecord *layerRec, *gridRec;
 	DBObjTableField *fieldPTR = (DBObjTableField *) NULL;
-	DBGridIO *gridIO;
-	DBVPointIO  *tmplPntIO = (DBVPointIO *)  NULL;
-	DBGridIO    *tmplGrdIO = (DBGridIO *)    NULL;
-	DBNetworkIO *tmplNetIO = (DBNetworkIO *) NULL;
+	DBGridIF *gridIF;
+	DBVPointIF  *tmplPntIF = (DBVPointIF *)  NULL;
+	DBGridIF    *tmplGrdIF = (DBGridIF *)    NULL;
+	DBNetworkIF *tmplNetIF = (DBNetworkIF *) NULL;
 
-	gridIO = new DBGridIO (grdData);
+	gridIF = new DBGridIF (grdData);
 
 	varHeader.Swap = 1;
 	if (grdData->Type () == DBTypeGridDiscrete)
@@ -66,8 +66,8 @@ DBInt RGlibRGIS2DataStream (DBObjData *grdData,DBObjData *tmplData,char *fieldNa
 	else
 		{
 		if (fieldName != (char *) NULL) fprintf (stderr,"Warning: Fieldname ignored for continuous grid!\n");
-		itemSize = gridIO->ValueSize ();
-		switch (gridIO->ValueType ())
+		itemSize = gridIF->ValueSize ();
+		switch (gridIF->ValueType ())
 			{
 			case DBVariableInt:
 				switch (itemSize)
@@ -76,7 +76,7 @@ DBInt RGlibRGIS2DataStream (DBObjData *grdData,DBObjData *tmplData,char *fieldNa
 					case 2:	varHeader.DataType = MFShort; 	break;
 					case 4:	varHeader.DataType = MFInt;	 	break;
 					}
-				varHeader.Missing.Int = (int) gridIO->MissingValue ();
+				varHeader.Missing.Int = (int) gridIF->MissingValue ();
 				break;
 			case DBVariableFloat:
 				switch (itemSize)
@@ -84,34 +84,34 @@ DBInt RGlibRGIS2DataStream (DBObjData *grdData,DBObjData *tmplData,char *fieldNa
 					case 4:	varHeader.DataType = MFFloat;	 	break;
 					case 8:	varHeader.DataType = MFDouble; 	break;
 					}
-				varHeader.Missing.Float = gridIO->MissingValue ();
+				varHeader.Missing.Float = gridIF->MissingValue ();
 				break;
 			}
 		}
 
 	if (tmplData == (DBObjData *) NULL)
 		{
-		tmplGrdIO = gridIO;
-		varHeader.ItemNum = gridIO->RowNum () * gridIO->ColNum ();
+		tmplGrdIF = gridIF;
+		varHeader.ItemNum = gridIF->RowNum () * gridIF->ColNum ();
 		}
 	else
 		{
 		switch (tmplData->Type ())
 			{
 			case DBTypeVectorPoint:
-				tmplPntIO = new DBVPointIO (tmplData);
-				varHeader.ItemNum = tmplPntIO->ItemNum ();
+				tmplPntIF = new DBVPointIF (tmplData);
+				varHeader.ItemNum = tmplPntIF->ItemNum ();
 				break;
 			case DBTypeGridContinuous:
 			case DBTypeGridDiscrete:
-				tmplGrdIO = new DBGridIO (tmplData);
-				varHeader.ItemNum = gridIO->RowNum () * gridIO->ColNum ();
+				tmplGrdIF = new DBGridIF (tmplData);
+				varHeader.ItemNum = gridIF->RowNum () * gridIF->ColNum ();
 				break;
 			case DBTypeNetwork:
-				tmplNetIO = new DBNetworkIO (tmplData);
-				varHeader.ItemNum = tmplNetIO->CellNum ();
+				tmplNetIF = new DBNetworkIF (tmplData);
+				varHeader.ItemNum = tmplNetIF->CellNum ();
 				break;
-			default:	delete gridIO; return (DBFault);
+			default:	delete gridIF; return (DBFault);
 			}
 		}
 	if ((data = (void *) calloc (varHeader.ItemNum,itemSize)) == (void *) NULL)
@@ -126,22 +126,22 @@ DBInt RGlibRGIS2DataStream (DBObjData *grdData,DBObjData *tmplData,char *fieldNa
 *                                                             *
 **************************************************************/
 
-	if (tmplPntIO != (DBVPointIO *) NULL)
+	if (tmplPntIF != (DBVPointIF *) NULL)
 		{
 		DBObjRecord *pntRec;
 
 		if (fieldPTR == (DBObjTableField *) NULL)
 			{
-			for (layerID = 0;layerID < gridIO->LayerNum ();++layerID)
+			for (layerID = 0;layerID < gridIF->LayerNum ();++layerID)
 				{
-				layerRec = gridIO->Layer (layerID);
+				layerRec = gridIF->Layer (layerID);
 				strncpy (varHeader.Date,layerRec->Name (),MFDateStringLength - 1);
 				for (itemID = 0;itemID < varHeader.ItemNum;++itemID)
 					{
-					pntRec = tmplPntIO->Item (itemID);
+					pntRec = tmplPntIF->Item (itemID);
 					if ((varHeader.DataType == MFByte) || (varHeader.DataType == MFShort) || (varHeader.DataType == MFInt))
 						{
-						if (gridIO->Value (layerRec,tmplPntIO->Coordinate (pntRec),&intValue) == false) intValue = varHeader.Missing.Int;
+						if (gridIF->Value (layerRec,tmplPntIF->Coordinate (pntRec),&intValue) == false) intValue = varHeader.Missing.Int;
 						switch (varHeader.DataType)
 							{
 							case MFByte:  ((char *)  data) [itemID] = (char)  intValue;	break;
@@ -151,7 +151,7 @@ DBInt RGlibRGIS2DataStream (DBObjData *grdData,DBObjData *tmplData,char *fieldNa
 						}
 					else
 						{
-						if (gridIO->Value (layerRec,tmplPntIO->Coordinate (pntRec),&floatValue) == false) floatValue = varHeader.Missing.Float;
+						if (gridIF->Value (layerRec,tmplPntIF->Coordinate (pntRec),&floatValue) == false) floatValue = varHeader.Missing.Float;
 						switch (varHeader.DataType)
 							{
 							case MFFloat:  ((float *)  data) [itemID] = (float)  floatValue;	break;
@@ -167,14 +167,14 @@ DBInt RGlibRGIS2DataStream (DBObjData *grdData,DBObjData *tmplData,char *fieldNa
 			}
 		else
 			{
-			for (layerID = 0;layerID < gridIO->LayerNum ();++layerID)
+			for (layerID = 0;layerID < gridIF->LayerNum ();++layerID)
 				{
-				layerRec = gridIO->Layer (layerID);
+				layerRec = gridIF->Layer (layerID);
 				strncpy (varHeader.Date,layerRec->Name (),MFDateStringLength - 1);
 				for (itemID = 0;itemID < varHeader.ItemNum;++itemID)
 					{
-					pntRec = tmplPntIO->Item (itemID);
-					gridRec = gridIO->GridItem (layerRec,tmplPntIO->Coordinate (pntRec));
+					pntRec = tmplPntIF->Item (itemID);
+					gridRec = gridIF->GridItem (layerRec,tmplPntIF->Coordinate (pntRec));
 					switch (varHeader.DataType)
 						{
 						case MFByte:
@@ -200,7 +200,7 @@ DBInt RGlibRGIS2DataStream (DBObjData *grdData,DBObjData *tmplData,char *fieldNa
 					{ perror ("Error: Writing data in: RGlibRGIS2DataStream ()\n");				ret = DBFault; break; }
 				}
 			}
-		delete tmplPntIO;
+		delete tmplPntIF;
 		}
 
 /**************************************************************
@@ -208,31 +208,31 @@ DBInt RGlibRGIS2DataStream (DBObjData *grdData,DBObjData *tmplData,char *fieldNa
 * Grid Template (default when no template coverage is given.  *
 *                                                             *
 **************************************************************/
-	else if (tmplGrdIO != (DBGridIO *) NULL)
+	else if (tmplGrdIF != (DBGridIF *) NULL)
 		{
 		DBPosition pos;
 		DBCoordinate coord;
 
 		if (fieldPTR == (DBObjTableField *) NULL)
 			{
-			for (layerID = 0;layerID < gridIO->LayerNum ();++layerID)
+			for (layerID = 0;layerID < gridIF->LayerNum ();++layerID)
 				{
-				layerRec = gridIO->Layer (layerID);
+				layerRec = gridIF->Layer (layerID);
 				strncpy (varHeader.Date,layerRec->Name (),MFDateStringLength - 1);
-				for (pos.Row = 0;pos.Row < tmplGrdIO->RowNum ();++pos.Row)
-					for (pos.Col = 0;pos.Col < tmplGrdIO->ColNum ();++pos.Col)
+				for (pos.Row = 0;pos.Row < tmplGrdIF->RowNum ();++pos.Row)
+					for (pos.Col = 0;pos.Col < tmplGrdIF->ColNum ();++pos.Col)
 						{
-						itemID = pos.Row * tmplGrdIO->ColNum () + pos.Col;
+						itemID = pos.Row * tmplGrdIF->ColNum () + pos.Col;
 						if ((varHeader.DataType == MFByte) || (varHeader.DataType == MFShort) || (varHeader.DataType == MFInt))
 							{
-							if (tmplGrdIO != gridIO)
+							if (tmplGrdIF != gridIF)
 								{
-								tmplGrdIO->Pos2Coord (pos,coord);
-								if (gridIO->Value (layerRec,coord,&intValue) == false) intValue = varHeader.Missing.Int;
+								tmplGrdIF->Pos2Coord (pos,coord);
+								if (gridIF->Value (layerRec,coord,&intValue) == false) intValue = varHeader.Missing.Int;
 								}
 							else
 								{
-								if (gridIO->Value (layerRec,pos,&intValue) == false) intValue = varHeader.Missing.Int;
+								if (gridIF->Value (layerRec,pos,&intValue) == false) intValue = varHeader.Missing.Int;
 								}
 							switch (varHeader.DataType)
 								{
@@ -243,14 +243,14 @@ DBInt RGlibRGIS2DataStream (DBObjData *grdData,DBObjData *tmplData,char *fieldNa
 							}
 						else
 							{
-							if (tmplGrdIO != gridIO)
+							if (tmplGrdIF != gridIF)
 								{
-								tmplGrdIO->Pos2Coord (pos,coord);
-								if (gridIO->Value (layerRec,coord,&floatValue) == false) floatValue = varHeader.Missing.Float;
+								tmplGrdIF->Pos2Coord (pos,coord);
+								if (gridIF->Value (layerRec,coord,&floatValue) == false) floatValue = varHeader.Missing.Float;
 								}
 							else
 								{
-								if (gridIO->Value (layerRec,pos,&floatValue) == false) floatValue = varHeader.Missing.Float;
+								if (gridIF->Value (layerRec,pos,&floatValue) == false) floatValue = varHeader.Missing.Float;
 								}
 							switch (varHeader.DataType)
 								{
@@ -267,20 +267,20 @@ DBInt RGlibRGIS2DataStream (DBObjData *grdData,DBObjData *tmplData,char *fieldNa
 			}
 		else
 			{
-			for (layerID = 0;layerID < gridIO->LayerNum ();++layerID)
+			for (layerID = 0;layerID < gridIF->LayerNum ();++layerID)
 				{
-				layerRec = gridIO->Layer (layerID);
+				layerRec = gridIF->Layer (layerID);
 				strncpy (varHeader.Date,layerRec->Name (),MFDateStringLength - 1);
-				for (pos.Row = 0;pos.Row < tmplGrdIO->RowNum ();++pos.Row)
-					for (pos.Col = 0;pos.Col < tmplGrdIO->ColNum ();++pos.Col)
+				for (pos.Row = 0;pos.Row < tmplGrdIF->RowNum ();++pos.Row)
+					for (pos.Col = 0;pos.Col < tmplGrdIF->ColNum ();++pos.Col)
 						{
-						itemID = pos.Row * tmplGrdIO->ColNum () + pos.Col;
-						if (tmplGrdIO != gridIO)
+						itemID = pos.Row * tmplGrdIF->ColNum () + pos.Col;
+						if (tmplGrdIF != gridIF)
 							{
-							tmplGrdIO->Pos2Coord (pos,coord);
-							gridRec = gridIO->GridItem (layerRec,coord);
+							tmplGrdIF->Pos2Coord (pos,coord);
+							gridRec = gridIF->GridItem (layerRec,coord);
 							}
-						else gridRec = gridIO->GridItem (layerRec,pos);
+						else gridRec = gridIF->GridItem (layerRec,pos);
 						switch (varHeader.DataType)
 							{
 							case MFByte:
@@ -306,7 +306,7 @@ DBInt RGlibRGIS2DataStream (DBObjData *grdData,DBObjData *tmplData,char *fieldNa
 					{ perror ("Error: Writing data in: RGlibRGIS2DataStream ()\n");				ret = DBFault; break; }
 				}
 			}
-		if (tmplGrdIO != gridIO) delete tmplGrdIO;
+		if (tmplGrdIF != gridIF) delete tmplGrdIF;
 		}
 
 /**************************************************************
@@ -314,22 +314,22 @@ DBInt RGlibRGIS2DataStream (DBObjData *grdData,DBObjData *tmplData,char *fieldNa
 * Network Template                                            *
 *                                                             *
 **************************************************************/
-	else if (tmplNetIO != (DBNetworkIO *) NULL)
+	else if (tmplNetIF != (DBNetworkIF *) NULL)
 		{
 		DBObjRecord *cellRec;
 
 		if (fieldPTR == (DBObjTableField *) NULL)
 			{
-			for (layerID = 0;layerID < gridIO->LayerNum ();++layerID)
+			for (layerID = 0;layerID < gridIF->LayerNum ();++layerID)
 				{
-				layerRec = gridIO->Layer (layerID);
+				layerRec = gridIF->Layer (layerID);
 				strncpy (varHeader.Date,layerRec->Name (),MFDateStringLength - 1);
 				for (itemID = 0;itemID < varHeader.ItemNum;++itemID)
 					{
-					cellRec = tmplNetIO->Cell (itemID);
+					cellRec = tmplNetIF->Cell (itemID);
 					if ((varHeader.DataType == MFByte) || (varHeader.DataType == MFShort) || (varHeader.DataType == MFInt))
 						{
-						if (gridIO->Value (layerRec,tmplNetIO->Center (cellRec),&intValue) == false) intValue = varHeader.Missing.Int;
+						if (gridIF->Value (layerRec,tmplNetIF->Center (cellRec),&intValue) == false) intValue = varHeader.Missing.Int;
 						switch (varHeader.DataType)
 							{
 							case MFByte:  ((char *)  data) [itemID] = (char)  intValue;	break;
@@ -339,7 +339,7 @@ DBInt RGlibRGIS2DataStream (DBObjData *grdData,DBObjData *tmplData,char *fieldNa
 						}
 					else
 						{
-						if (gridIO->Value (layerRec,tmplNetIO->Center (cellRec),&floatValue) == false) floatValue = varHeader.Missing.Float;
+						if (gridIF->Value (layerRec,tmplNetIF->Center (cellRec),&floatValue) == false) floatValue = varHeader.Missing.Float;
 						switch (varHeader.DataType)
 							{
 							case MFFloat:  ((float *)  data) [itemID] = (float)  floatValue;	break;
@@ -355,14 +355,14 @@ DBInt RGlibRGIS2DataStream (DBObjData *grdData,DBObjData *tmplData,char *fieldNa
 			}
 		else
 			{
-			for (layerID = 0;layerID < gridIO->LayerNum ();++layerID)
+			for (layerID = 0;layerID < gridIF->LayerNum ();++layerID)
 				{
-				layerRec = gridIO->Layer (layerID);
+				layerRec = gridIF->Layer (layerID);
 				strncpy (varHeader.Date,layerRec->Name (),MFDateStringLength - 1);
 				for (itemID = 0;itemID < varHeader.ItemNum;++itemID)
 					{
-					cellRec = tmplNetIO->Cell (itemID);
-					gridRec = gridIO->GridItem (layerRec,tmplNetIO->Center (cellRec));
+					cellRec = tmplNetIF->Cell (itemID);
+					gridRec = gridIF->GridItem (layerRec,tmplNetIF->Center (cellRec));
 					switch (varHeader.DataType)
 						{
 						case MFByte:
@@ -388,11 +388,11 @@ DBInt RGlibRGIS2DataStream (DBObjData *grdData,DBObjData *tmplData,char *fieldNa
 					{ perror ("Error: Writing data in: RGlibRGIS2DataStream ()\n");				ret = DBFault; break; }
 				}
 			}
-		delete tmplNetIO;
+		delete tmplNetIF;
 		}
 
 	free (data);
-	delete gridIO;
+	delete gridIF;
 	return (ret);
 	}
 
@@ -415,15 +415,15 @@ DBInt RGlibDataStream2RGIS (DBObjData *outData,DBObjData *tmplData, FILE *inFile
 			DBObjTableField *idField      = new DBObjTableField ("ItemID",      DBTableFieldInt,  "%6d",  sizeof (DBInt),  false);
 			DBObjTableField *dateField    = new DBObjTableField ("Date",        DBTableFieldDate, "%s",   sizeof (DBDate), false);
 			DBObjTableField *valField;
-			DBVPointIO *pntIO = new DBVPointIO (tmplData);
+			DBVPointIF *pntIF = new DBVPointIF (tmplData);
 
 			itemTable->AddField (idField);
 			itemTable->AddField (dateField);
 
 			while (MFVarReadHeader (&header,inFile))
 				{
-				if (header.ItemNum != pntIO->ItemNum ())
-					{ fprintf (stderr,"Error: Datastream inconsistency %d %d!\n",header.ItemNum,pntIO->ItemNum ()); return (DBFault); }
+				if (header.ItemNum != pntIF->ItemNum ())
+					{ fprintf (stderr,"Error: Datastream inconsistency %d %d!\n",header.ItemNum,pntIF->ItemNum ()); return (DBFault); }
 				if (data == (void *) NULL)
 					{
 					itemSize = MFVarItemSize (header.DataType);
@@ -458,84 +458,84 @@ DBInt RGlibDataStream2RGIS (DBObjData *outData,DBObjData *tmplData, FILE *inFile
 						}
 					}
 				}
-			delete pntIO;
+			delete pntIF;
 			} break;
 		case DBTypeGridContinuous:
 		case DBTypeGridDiscrete:
 			{
-			DBGridIO *gridIO = new DBGridIO (outData);
+			DBGridIF *gridIF = new DBGridIF (outData);
 
 			while (MFVarReadHeader (&header,inFile))
 				{
-				if (header.ItemNum != gridIO->RowNum () * gridIO->ColNum ())
+				if (header.ItemNum != gridIF->RowNum () * gridIF->ColNum ())
 					{ fprintf (stderr,"Error: Datastream inconsistency!\n"); return (DBFault); }
 				if (layerID == 0)
 					{
 					itemSize = MFVarItemSize (header.DataType);
 					if ((data = (void *) realloc (data,header.ItemNum * itemSize)) == (void *) NULL)
 						{ perror ("Memory allocation error in: RGlibDataStream2RGIS ()"); return (DBFault); }
-					record = gridIO->Layer (layerID);
-					gridIO->RenameLayer (header.Date);
+					record = gridIF->Layer (layerID);
+					gridIF->RenameLayer (header.Date);
 					}
-				else record = gridIO->AddLayer (header.Date);
+				else record = gridIF->AddLayer (header.Date);
 
 				switch (header.DataType)
 					{
 					case MFByte:
 					case MFShort:
-					case MFInt:		gridIO->MissingValue (record,header.Missing.Int); break;
+					case MFInt:		gridIF->MissingValue (record,header.Missing.Int); break;
 					case MFFloat:
-					case MFDouble:	gridIO->MissingValue (record,header.Missing.Float); break;
+					case MFDouble:	gridIF->MissingValue (record,header.Missing.Float); break;
 					}
 				if ((int) fread (data,itemSize,header.ItemNum,inFile) != header.ItemNum)
 					{ fprintf (stderr,"Error: Data stream read in: RGlibDataStream2rgis ()"); return (DBFault); }
 
-				for (pos.Row = 0;pos.Row < gridIO->RowNum ();++pos.Row)
-					for (pos.Col = 0;pos.Col < gridIO->ColNum ();++pos.Col)
+				for (pos.Row = 0;pos.Row < gridIF->RowNum ();++pos.Row)
+					for (pos.Col = 0;pos.Col < gridIF->ColNum ();++pos.Col)
 						{
 						switch (header.DataType)
 							{
-							case MFByte:	val = (DBFloat) (((char *)   data) [pos.Row * gridIO->ColNum () + pos.Col]); break;
-							case MFShort:	val = (DBFloat) (((short *)  data) [pos.Row * gridIO->ColNum () + pos.Col]); break;
-							case MFInt:		val = (DBFloat) (((int *)    data) [pos.Row * gridIO->ColNum () + pos.Col]); break;
-							case MFFloat:	val = (DBFloat) (((float *)  data) [pos.Row * gridIO->ColNum () + pos.Col]); break;
-							case MFDouble:	val = (DBFloat) (((double *) data) [pos.Row * gridIO->ColNum () + pos.Col]); break;
+							case MFByte:	val = (DBFloat) (((char *)   data) [pos.Row * gridIF->ColNum () + pos.Col]); break;
+							case MFShort:	val = (DBFloat) (((short *)  data) [pos.Row * gridIF->ColNum () + pos.Col]); break;
+							case MFInt:		val = (DBFloat) (((int *)    data) [pos.Row * gridIF->ColNum () + pos.Col]); break;
+							case MFFloat:	val = (DBFloat) (((float *)  data) [pos.Row * gridIF->ColNum () + pos.Col]); break;
+							case MFDouble:	val = (DBFloat) (((double *) data) [pos.Row * gridIF->ColNum () + pos.Col]); break;
 							}
-						gridIO->Value (record,pos,val);
+						gridIF->Value (record,pos,val);
 						}
 				layerID++;
 				}
-			gridIO->RecalcStats ();
+			gridIF->RecalcStats ();
 			} break;
 		case DBTypeNetwork:
 			{
 			DBInt cellID;
-			DBGridIO *gridIO   = new DBGridIO (outData);
-			DBNetworkIO *netIO = new DBNetworkIO (tmplData);
+			DBGridIF *gridIF   = new DBGridIF (outData);
+			DBNetworkIF *netIF = new DBNetworkIF (tmplData);
 
 			while (MFVarReadHeader (&header,inFile))
 				{
-				if (header.ItemNum != netIO->CellNum ())
+				if (header.ItemNum != netIF->CellNum ())
 					{ fprintf (stderr,"Error: Datastream inconsistency!\n"); return (DBFault); }
 				if (layerID == 0)
 					{
 					itemSize = MFVarItemSize (header.DataType);
 					if ((data = (void *) realloc (data,header.ItemNum * itemSize)) == (void *) NULL)
 						{ perror ("Memory allocation error in: RGlibDataStream2RGIS ()"); return (DBFault); }
-					record = gridIO->Layer (layerID);
-					gridIO->RenameLayer (header.Date);
+					record = gridIF->Layer (layerID);
+					gridIF->RenameLayer (header.Date);
 					}
-				else record = gridIO->AddLayer (header.Date);
+				else record = gridIF->AddLayer (header.Date);
 				if ((int) fread (data,itemSize,header.ItemNum,inFile) != header.ItemNum)
-					{ fprintf (stderr,"Error: Data stream read in: RGlibDataStream2rgis ()"); delete netIO; return (DBFault); }
+					{ fprintf (stderr,"Error: Data stream read in: RGlibDataStream2rgis ()"); delete netIF; return (DBFault); }
 
-				for (pos.Row = 0;pos.Row < gridIO->RowNum ();++pos.Row)
-					for (pos.Col = 0;pos.Col < gridIO->ColNum ();++pos.Col)
-						gridIO->Value (record,pos,gridIO->MissingValue ());
+				for (pos.Row = 0;pos.Row < gridIF->RowNum ();++pos.Row)
+					for (pos.Col = 0;pos.Col < gridIF->ColNum ();++pos.Col)
+						gridIF->Value (record,pos,gridIF->MissingValue ());
 
-				for (cellID = 0;cellID < netIO->CellNum ();++cellID)
+				for (cellID = 0;cellID < netIF->CellNum ();++cellID)
 					{
-					pos = netIO->CellPosition (netIO->Cell (cellID));
+					pos = netIF->CellPosition (netIF->Cell (cellID));
 
 					switch (header.DataType)
 						{
@@ -545,11 +545,11 @@ DBInt RGlibDataStream2RGIS (DBObjData *outData,DBObjData *tmplData, FILE *inFile
 						case MFFloat:	val = (DBFloat) (((float *)  data) [cellID]); break;
 						case MFDouble:	val = (DBFloat) (((double *) data) [cellID]); break;
 						}
-					gridIO->Value (record,pos,val);
+					gridIF->Value (record,pos,val);
 					}
 				layerID++;
 				}
-			gridIO->RecalcStats ();
+			gridIF->RecalcStats ();
 			} break;
 		}
 	return (DBSuccess);

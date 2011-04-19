@@ -17,7 +17,7 @@ balazs.fekete@unh.edu
 
 #include <cm.h>
 #include <DB.H>
-#include <DBio.H>
+#include <DBif.H>
 #include <RG.H>
 
 static DBInt modifyDate (DBObjData *dbData, int timeStep,
@@ -26,7 +26,7 @@ static DBInt modifyDate (DBObjData *dbData, int timeStep,
 	{
 	DBInt layerID;
 	DBDate stepDate;
-	DBGridIO *gridIO = new DBGridIO (dbData);
+	DBGridIF *gridIF = new DBGridIF (dbData);
 	DBObjRecord *layerRec;
 	DBDate date;
 	//change this!
@@ -41,16 +41,16 @@ static DBInt modifyDate (DBObjData *dbData, int timeStep,
 		}
 	if (year == DBDefaultMissingIntVal) //if the user hasnt entered a specific year
 		{
-		if (((stepDate.Year   () > 0) && (gridIO->LayerNum () > 1)) ||
-		    ((stepDate.Month  () > 0) && (gridIO->LayerNum () > (12 / interval))) ||
-		    ((stepDate.Day    () > 0) && (gridIO->LayerNum () > (365 / interval))) ||
-		    ((stepDate.Hour   () > 0) && (gridIO->LayerNum () > (365 * 24 / interval))) ||
-		    ((stepDate.Minute () > 0) && (gridIO->LayerNum () > 365 * 24 * 60 / interval)))
+		if (((stepDate.Year   () > 0) && (gridIF->LayerNum () > 1)) ||
+		    ((stepDate.Month  () > 0) && (gridIF->LayerNum () > (12 / interval))) ||
+		    ((stepDate.Day    () > 0) && (gridIF->LayerNum () > (365 / interval))) ||
+		    ((stepDate.Hour   () > 0) && (gridIF->LayerNum () > (365 * 24 / interval))) ||
+		    ((stepDate.Minute () > 0) && (gridIF->LayerNum () > 365 * 24 * 60 / interval)))
 			{
 			//todo: handle this better!
 			printf("(Climatology)There seems to be more than a year's worth of layers!\n");
 			printf("(Climatology)I suggest you define the year, or change the step interval\n");
-			delete gridIO;
+			delete gridIF;
 			return (CMfailed);
 			}
 		}
@@ -62,13 +62,13 @@ static DBInt modifyDate (DBObjData *dbData, int timeStep,
 
 	date.Set (year,month,day,hour,minute);
 
-	for (layerID = 0;layerID < gridIO->LayerNum ();++layerID)
+	for (layerID = 0;layerID < gridIF->LayerNum ();++layerID)
 		{
-		layerRec = gridIO->Layer (layerID);
-		gridIO->RenameLayer (layerRec,date.Get ());
+		layerRec = gridIF->Layer (layerID);
+		gridIF->RenameLayer (layerRec,date.Get ());
 		date = date + (stepDate);
 		}
-	delete gridIO;
+	delete gridIF;
 	return (DBSuccess);
 	}
 

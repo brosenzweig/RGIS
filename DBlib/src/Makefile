@@ -6,7 +6,7 @@ LIB    = ../lib
 CPP    = $(UNIXCPP) $(UNIXCPPOPS) -I$(INC) -I../../CMlib/include
 TARGET = $(LIB)/libDB21.a
 
-INCLUDES = $(INC)/DB.H $(INC)/DBio.H
+INCLUDES = $(INC)/DB.H $(INC)/DBif.H
 
 OBJS = $(OBJ)/DBDataset.o\
        $(OBJ)/DBObjData.o\

@@ -17,15 +17,15 @@ void RGISEditNetBuildCBK (Widget widget,RGISWorkspace *workspace,XmAnyCallbackSt
 	{
 	DBDataset *dataset = UIDataset ();
 	DBObjData *netData = dataset->Data ();
-	DBNetworkIO *netIO = new DBNetworkIO (netData);
+	DBNetworkIF *netIF = new DBNetworkIF (netData);
 
 	widget = widget; workspace = workspace; callData = callData;
 
 	UIPauseDialogOpen ((char *) "Building Topological Networks");
-	netIO->Build ();
+	netIF->Build ();
 	UIPauseDialogClose ();
 
-	delete netIO;
+	delete netIF;
 	}
 
 void RGISEditNetTrimCBK (Widget widget,RGISWorkspace *workspace,XmAnyCallbackStruct *callData)
@@ -33,16 +33,16 @@ void RGISEditNetTrimCBK (Widget widget,RGISWorkspace *workspace,XmAnyCallbackStr
 	{
 	DBDataset *dataset = UIDataset ();
 	DBObjData *netData = dataset->Data ();
-	DBNetworkIO *netIO = new DBNetworkIO (netData);
+	DBNetworkIF *netIF = new DBNetworkIF (netData);
 
 	widget = widget; callData = callData;
 
 	UIPauseDialogOpen ((char *) "Building Topological Networks");
-	netIO->Trim ();
+	netIF->Trim ();
 	workspace->CurrentData (netData);
 	UIPauseDialogClose ();
 
-	delete netIO;
+	delete netIF;
 	}
 
 #define RGISNetCellXCoord ((char *) "CellXCoord")
@@ -54,7 +54,7 @@ void RGISEditNetAddCellXYCBK (Widget widget, RGISWorkspace *workspace,XmAnyCallb
 	DBInt cellID;
 	DBDataset *dataset = UIDataset ();
 	DBObjData *dbData =dataset->Data ();
-	DBNetworkIO *netIO = new DBNetworkIO (dbData);
+	DBNetworkIF *netIF = new DBNetworkIF (dbData);
 	DBObjTable *cellTable = dbData->Table (DBrNCells);
 	DBObjTableField *xCoordFLD	= cellTable->Field (RGISNetCellXCoord);
 	DBObjTableField *yCoordFLD = cellTable->Field (RGISNetCellYCoord);
@@ -78,11 +78,11 @@ void RGISEditNetAddCellXYCBK (Widget widget, RGISWorkspace *workspace,XmAnyCallb
 		if (tableCLS != (UITable *) NULL) tableCLS->AddField (yCoordFLD);
 		UIPause (80);
 		}
-	for (cellID = 0;cellID < netIO->CellNum ();++cellID)
+	for (cellID = 0;cellID < netIF->CellNum ();++cellID)
 		{
-		cellRec = netIO->Cell (cellID);
-		if (UIPause (80 + cellID * 20 / netIO->CellNum ())) goto Stop;
-		coord = netIO->Center  (cellRec);
+		cellRec = netIF->Cell (cellID);
+		if (UIPause (80 + cellID * 20 / netIF->CellNum ())) goto Stop;
+		coord = netIF->Center  (cellRec);
 		xCoordFLD->Float (cellRec,coord.X);
 		yCoordFLD->Float (cellRec,coord.Y);
 		}
@@ -100,7 +100,7 @@ void RGISEditNetAddBasinXYCBK (Widget widget, RGISWorkspace *workspace,XmAnyCall
 	DBInt basinID;
 	DBDataset *dataset = UIDataset ();
 	DBObjData *dbData =dataset->Data ();
-	DBNetworkIO *netIO = new DBNetworkIO (dbData);
+	DBNetworkIF *netIF = new DBNetworkIF (dbData);
 	DBObjTable *itemTable = dbData->Table (DBrNItems);
 	DBObjTableField *xCoordFLD	= itemTable->Field (RGISNetMouthXCoord);
 	DBObjTableField *yCoordFLD = itemTable->Field (RGISNetMouthYCoord);
@@ -124,11 +124,11 @@ void RGISEditNetAddBasinXYCBK (Widget widget, RGISWorkspace *workspace,XmAnyCall
 		if (tableCLS != (UITable *) NULL) tableCLS->AddField (yCoordFLD);
 		UIPause (80);
 		}
-	for (basinID = 0;basinID < netIO->BasinNum ();++basinID)
+	for (basinID = 0;basinID < netIF->BasinNum ();++basinID)
 		{
-		basinRec = netIO->Basin (basinID);
-		if (UIPause (80 + basinID * 20 / netIO->BasinNum ())) goto Stop;
-		coord = netIO->Center  (netIO->MouthCell (basinRec));
+		basinRec = netIF->Basin (basinID);
+		if (UIPause (80 + basinID * 20 / netIF->BasinNum ())) goto Stop;
+		coord = netIF->Center  (netIF->MouthCell (basinRec));
 		xCoordFLD->Float (basinRec,coord.X);
 		yCoordFLD->Float (basinRec,coord.Y);
 		}
@@ -152,13 +152,13 @@ void RGISEditNetMagnitudeCBK (Widget widget, RGISWorkspace *workspace,XmAnyCallb
 	{
 	DBDataset *dataset = UIDataset ();
 	DBObjData *netData = dataset->Data ();
-	DBNetworkIO *netIO = new DBNetworkIO (netData);
+	DBNetworkIF *netIF = new DBNetworkIF (netData);
 
 	widget = widget; workspace = workspace; callData = callData;
 	UIPauseDialogOpen ((char *) "Calculate Shreve Magnitude");
-	netIO->SetMagnitude ();
+	netIF->SetMagnitude ();
 	UIPauseDialogClose ();
-	delete netIO;
+	delete netIF;
 	}
 
 void RGISEditNetDistToMouthCBK (Widget widget, RGISWorkspace *workspace,XmAnyCallbackStruct *callData)
@@ -166,13 +166,13 @@ void RGISEditNetDistToMouthCBK (Widget widget, RGISWorkspace *workspace,XmAnyCal
 	{
 	DBDataset *dataset = UIDataset ();
 	DBObjData *netData = dataset->Data ();
-	DBNetworkIO *netIO = new DBNetworkIO (netData);
+	DBNetworkIF *netIF = new DBNetworkIF (netData);
 
 	widget = widget; workspace = workspace; callData = callData;
 	UIPauseDialogOpen ((char *) "Calculate Distance from Ocean");
-	netIO->SetDistToMouth ();
+	netIF->SetDistToMouth ();
 	UIPauseDialogClose ();
-	delete netIO;
+	delete netIF;
 	}
 
 void RGISEditNetDistToOceanCBK (Widget widget, RGISWorkspace *workspace,XmAnyCallbackStruct *callData)
@@ -180,13 +180,13 @@ void RGISEditNetDistToOceanCBK (Widget widget, RGISWorkspace *workspace,XmAnyCal
 	{
 	DBDataset *dataset = UIDataset ();
 	DBObjData *netData = dataset->Data ();
-	DBNetworkIO *netIO = new DBNetworkIO (netData);
+	DBNetworkIF *netIF = new DBNetworkIF (netData);
 
 	widget = widget; workspace = workspace; callData = callData;
 	UIPauseDialogOpen ((char *) "Calculate Distance to Ocean");
-	netIO->SetDistToOcean ();
+	netIF->SetDistToOcean ();
 	UIPauseDialogClose ();
-	delete netIO;
+	delete netIF;
 	}
 
 void RGISEditAdjustNetworkCBK (Widget widget, RGISWorkspace *workspace,XmAnyCallbackStruct *callData)
@@ -199,34 +199,34 @@ void RGISEditAdjustNetworkCBK (Widget widget, RGISWorkspace *workspace,XmAnyCall
 	DBDataset *dataset = UIDataset ();
 	DBObjData *netData = dataset->Data ();
 	DBObjData *lineData = netData->LinkedData ();
-	DBNetworkIO *netIO = new DBNetworkIO (netData);
-	DBVLineIO *lineIO = new DBVLineIO (lineData);
+	DBNetworkIF *netIF = new DBNetworkIF (netData);
+	DBVLineIF *lineIF = new DBVLineIF (lineData);
 
 	widget = widget; workspace = workspace; callData = callData;
 	UIPauseDialogOpen ((char *) "Adjusting Networks");
 	cellNum = 0;
-	for (lineRec = lineIO->FirstItem ();lineRec != (DBObjRecord *) NULL; lineRec = lineIO->NextItem ())
+	for (lineRec = lineIF->FirstItem ();lineRec != (DBObjRecord *) NULL; lineRec = lineIF->NextItem ())
 		{
-		UIPause (lineRec->RowID () * 100 / lineIO->ItemNum ());
-		if (lineIO->ToNode (lineRec) == lineIO->FromNode (lineRec)) continue;
+		UIPause (lineRec->RowID () * 100 / lineIF->ItemNum ());
+		if (lineIF->ToNode (lineRec) == lineIF->FromNode (lineRec)) continue;
 		if ((cellList = _RGISReallocCellList (cellList,maxCellNum,cellNum + 1)) == (DBObjRecord **) NULL) return;
-		if ((cellList [cellNum] = netIO->Cell (lineIO->FromCoord (lineRec))) == (DBObjRecord *) NULL)
-			if((cellList [cellNum] = netIO->CellAdd (lineIO->FromCoord (lineRec))) != (DBObjRecord *) NULL) cellNum++;
-		if ((vertexNum = lineIO->VertexNum (lineRec)) > 0)
+		if ((cellList [cellNum] = netIF->Cell (lineIF->FromCoord (lineRec))) == (DBObjRecord *) NULL)
+			if((cellList [cellNum] = netIF->CellAdd (lineIF->FromCoord (lineRec))) != (DBObjRecord *) NULL) cellNum++;
+		if ((vertexNum = lineIF->VertexNum (lineRec)) > 0)
 			{
-			vertexes = lineIO->Vertexes (lineRec);
+			vertexes = lineIF->Vertexes (lineRec);
 			for (vertex = 0; vertex < vertexNum; ++vertex)
 				{
 				if ((cellList = _RGISReallocCellList (cellList,maxCellNum,cellNum + 1)) == (DBObjRecord **) NULL) return;
-				if ((cellList [cellNum] = netIO->Cell (vertexes [vertex])) == (DBObjRecord *) NULL)
-					if((cellList [cellNum] = netIO->CellAdd (vertexes [vertex])) == (DBObjRecord *) NULL) continue;
+				if ((cellList [cellNum] = netIF->Cell (vertexes [vertex])) == (DBObjRecord *) NULL)
+					if((cellList [cellNum] = netIF->CellAdd (vertexes [vertex])) == (DBObjRecord *) NULL) continue;
 				for (cell = 0;cell < cellNum;++cell) if (cellList [cell] == cellList [cellNum]) break;
 				if (cell != cellNum) continue;
 				cellNum++;
 /*				if (cellNum > 1)
 					{
-					pos0 = netIO->CellPosition (cellList [cellNum - 2]);
-					pos1 = netIO->CellPosition (cellList [cellNum - 1]);
+					pos0 = netIF->CellPosition (cellList [cellNum - 2]);
+					pos1 = netIF->CellPosition (cellList [cellNum - 1]);
 					printf ("%5d   %3d %3d  %3d %3d\n",lineRec->RowID (),pos0.Col, pos0.Row, pos1.Col, pos1.Row);
 					if ((abs (pos0.Row - pos1.Row) <= 1) && (abs (pos0.Col - pos1.Col) <= 1)) continue;
 					if (abs (pos0.Row - pos1.Row) > abs (pos0.Col - pos1.Col))
@@ -235,7 +235,7 @@ void RGISEditAdjustNetworkCBK (Widget widget, RGISWorkspace *workspace,XmAnyCall
 							{
 							pos.Col = pos0.Col + (DBUShort) ((((DBInt) pos.Row - (DBInt) pos0.Row) * ((DBInt) pos1.Col - (DBInt) pos0.Col)) / ((DBInt) pos1.Row - (DBInt) pos0.Row));
 							if ((cellList = _RGISReallocCellList (cellList,maxCellNum,cellNum + 1)) == (DBObjRecord **) NULL) return;
-							if ((cellRec = netIO->Cell (pos)) != (DBObjRecord *) NULL)
+							if ((cellRec = netIF->Cell (pos)) != (DBObjRecord *) NULL)
 								{
 								cellList [cellNum] = cellList [cellNum - 1];
 								cellList [cellNum - 1] = cellRec;
@@ -248,7 +248,7 @@ void RGISEditAdjustNetworkCBK (Widget widget, RGISWorkspace *workspace,XmAnyCall
 							{
 							pos.Row = pos0.Row + (DBUShort) ((((DBInt) pos.Col - (DBInt) pos0.Col) * ((DBInt) pos1.Row - (DBInt) pos0.Row)) / ((DBInt) pos1.Col - (DBInt) pos0.Col));
 							if ((cellList = _RGISReallocCellList (cellList,maxCellNum,cellNum + 1)) == (DBObjRecord **) NULL) return;
-							if ((cellRec = netIO->Cell (pos)) != (DBObjRecord *) NULL)
+							if ((cellRec = netIF->Cell (pos)) != (DBObjRecord *) NULL)
 								{
 								cellList [cellNum] = cellList [cellNum - 1];
 								cellList [cellNum - 1] = cellRec;
@@ -260,8 +260,8 @@ void RGISEditAdjustNetworkCBK (Widget widget, RGISWorkspace *workspace,XmAnyCall
 			}
  		for (cell = 0;cell < cellNum - 1;++cell)
  			{
-			pos0 = netIO->CellPosition (cellList [cell]);
-			pos1 = netIO->CellPosition (cellList [cell + 1]);
+			pos0 = netIF->CellPosition (cellList [cell]);
+			pos1 = netIF->CellPosition (cellList [cell + 1]);
 			if ((pos0.Col <  pos1.Col) && (pos0.Row == pos1.Row))	dir = DBNetDirE;
 			else if ((pos0.Col <  pos1.Col) && (pos0.Row >  pos1.Row))	dir = DBNetDirSE;
 			else if ((pos0.Col == pos1.Col) && (pos0.Row >  pos1.Row))	dir = DBNetDirS;
@@ -271,12 +271,12 @@ void RGISEditAdjustNetworkCBK (Widget widget, RGISWorkspace *workspace,XmAnyCall
 			else if ((pos0.Col == pos1.Col) && (pos0.Row <  pos1.Row))	dir = DBNetDirN;
 			else if ((pos0.Col <  pos1.Col) && (pos0.Row <  pos1.Row))	dir = DBNetDirNE;
 //			printf ("%5d   %3d %3d  %3d %3d  %2x\n",lineRec->RowID (),pos0.Col, pos0.Row, pos1.Col, pos1.Row,dir);
-			netIO->CellDirection (cellList [cell],dir);
+			netIF->CellDirection (cellList [cell],dir);
 			}
 		}
 	if (maxCellNum > 0) free (cellList);
 	UIPauseDialogClose ();
 	UIPauseDialogOpen ((char *) "Building Networks");
-//	netIO->Build ();
+//	netIF->Build ();
 	UIPauseDialogClose ();
 	}

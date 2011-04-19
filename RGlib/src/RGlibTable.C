@@ -11,7 +11,7 @@ balazs.fekete@unh.edu
 *******************************************************************************/
 
 #include <DB.H>
-#include <DBio.H>
+#include <DBif.H>
 #include <RG.H>
 
 DBInt RGLibTableJoin (DBObjTable *itemTable, DBObjTableField *relateField,

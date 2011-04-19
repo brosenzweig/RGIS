@@ -11,7 +11,7 @@ balazs.fekete@unh.edu
 *******************************************************************************/
 
 #include <DB.H>
-#include <DBio.H>
+#include <DBif.H>
 
 #define DMFloat	0
 #define DMInt		1
@@ -173,7 +173,7 @@ class DMDataset : public DMFileHeader
 			DBObjTableField *valueTypeFLD = layerTable->Field (DBrNValueType);
 			DBObjTableField *valueSizeFLD = layerTable->Field (DBrNValueSize);
 			DBObjTableField *layerFLD = layerTable->Field (DBrNLayer);
-			DBGridIO *gridIO;
+			DBGridIF *gridIF;
 
 			if ((swap = DMFileHeader::Read (file)) == DBFault) return (DBFault);
          data->Extent (Extent ());
@@ -315,9 +315,9 @@ class DMDataset : public DMFileHeader
 							}
 						}
 					itemTable->ItemSort ();
-					gridIO = new DBGridIO (data);
-					gridIO->DiscreteStats ();
-					delete gridIO;
+					gridIF = new DBGridIF (data);
+					gridIF->DiscreteStats ();
+					delete gridIF;
 					} break;
 				case DBTypeGridContinuous:
 					{
@@ -328,9 +328,9 @@ class DMDataset : public DMFileHeader
 						itemTable->Add (dataRec->Name ());
 						missingValueFLD->Float (itemTable->Item (),MissingValue ());
 						}
-					gridIO = new DBGridIO (data);
-					gridIO->RecalcStats ();
-					delete gridIO;
+					gridIF = new DBGridIF (data);
+					gridIF->RecalcStats ();
+					delete gridIF;
                data->Flags (DBDataFlagDispModeContBlueRed,DBSet);
 					break;
 					}
@@ -345,30 +345,30 @@ class DMDataset : public DMFileHeader
 			DBFloat floatVal;
 			DBPosition pos;
 			DBObjRecord *layerRec;
-			DBGridIO *gridIO = new DBGridIO (data);
+			DBGridIF *gridIF = new DBGridIF (data);
 			DMLayerHeader dmLayerHeader;
 
-			dbType = gridIO->ValueType ();
+			dbType = gridIF->ValueType ();
 			switch (dbType)
 				{
 				case DBTableFieldFloat: DataType (DMFloat);	break;
 				case DBTableFieldInt:
-					DataType (gridIO->ValueSize () > 1 ? DMInt : DMByte); 	break;
+					DataType (gridIF->ValueSize () > 1 ? DMInt : DMByte); 	break;
 				}
-			CellWidth (gridIO->CellWidth ());
-			CellHeight (gridIO->CellHeight ());
+			CellWidth (gridIF->CellWidth ());
+			CellHeight (gridIF->CellHeight ());
 			Extent (data->Extent ());
-			LayerNum (gridIO->LayerNum ());
-			RowNum (gridIO->RowNum ());
-			ColNum (gridIO->ColNum ());
+			LayerNum (gridIF->LayerNum ());
+			RowNum (gridIF->RowNum ());
+			ColNum (gridIF->ColNum ());
 			dmRecord = (char *) calloc (RowNum () * ColNum (),DataType () != DMByte ? sizeof (int) : sizeof (char));
 			if (dmRecord == (char *) NULL)
 				{ perror ("Memory Allocation Error in: DMDataset::Write ()"); return (DBFault); }
 
 			DMFileHeader::Write (file);
-			for (layerID = 0;layerID < gridIO->LayerNum ();++layerID)
+			for (layerID = 0;layerID < gridIF->LayerNum ();++layerID)
 				{
-				layerRec = gridIO->Layer (layerID);
+				layerRec = gridIF->Layer (layerID);
 				dmLayerHeader.Description (layerRec->Name ());
 				dmLayerHeader.Write (file);
 				}
@@ -380,18 +380,18 @@ class DMDataset : public DMFileHeader
 				if (fwrite (data->Document (DBDocComment),docLen,1,file) != 1)
 					{ perror ("File Writiing Error in: DMDataset::Write ()"); return (DBFault); }
 				}
-			for (layerID = 0;layerID < gridIO->LayerNum ();++layerID)
+			for (layerID = 0;layerID < gridIF->LayerNum ();++layerID)
 				{
-				layerRec = gridIO->Layer (layerID);
+				layerRec = gridIF->Layer (layerID);
 				switch (data->Type ())
 					{
 					case DBTypeGridContinuous:
-						layerRec = gridIO->Layer (layerID);
+						layerRec = gridIF->Layer (layerID);
 						if (dbType == DBTableFieldFloat)
 							{
 							for (pos.Row = 0;pos.Row < RowNum ();pos.Row++)
 								for (pos.Col = 0;pos.Col < ColNum ();pos.Col++)
-									if (gridIO->Value (layerRec,pos,&floatVal))
+									if (gridIF->Value (layerRec,pos,&floatVal))
 										((float *) dmRecord) [(RowNum () - pos.Row - 1) * ColNum () + pos.Col] = (float) floatVal;
 									else
 										((float *) dmRecord) [(RowNum () - pos.Row - 1) * ColNum () + pos.Col] = MissingValue ();
@@ -400,7 +400,7 @@ class DMDataset : public DMFileHeader
 							{
 							for (pos.Row = 0;pos.Row < RowNum ();pos.Row++)
 								for (pos.Col = 0;pos.Col < ColNum ();pos.Col++)
-									if (gridIO->Value (layerRec,pos,&intVal))
+									if (gridIF->Value (layerRec,pos,&intVal))
 										{
 										if (DataType () == DMInt)
 											((int *) dmRecord) [(RowNum () - pos.Row - 1) * ColNum () + pos.Col] = (int) intVal;
@@ -421,7 +421,7 @@ class DMDataset : public DMFileHeader
 						for (pos.Row = 0;pos.Row < RowNum ();pos.Row++)
 							for (pos.Col = 0;pos.Col < ColNum ();pos.Col++)
 								{
-								intVal = gridIO->GridValue (layerRec,pos);
+								intVal = gridIF->GridValue (layerRec,pos);
 								if (DataType () == DMInt)
 									((int *) dmRecord) [(RowNum () - pos.Row - 1) * ColNum () + pos.Col] = intVal;
 								else
@@ -432,14 +432,14 @@ class DMDataset : public DMFileHeader
 					default:
 						fprintf (stderr,"Invalid Data Type in: DMDataset::Write ()\n");
 						free (dmRecord);
-						delete gridIO;
+						delete gridIF;
 						return (DBFault);
 					}
 				if ((DBInt) fwrite (dmRecord,DataType () == DMByte ? sizeof (char) : sizeof (int),DataPointNum (),file) != DataPointNum ())
 					{ perror ("File Writing Error in: DMDataset::Write ()"); return (DBFault); }
 				}
 			free (dmRecord);
-			delete gridIO;
+			delete gridIF;
 			return (DBSuccess);
 			}
    };

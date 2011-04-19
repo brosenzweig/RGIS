@@ -11,7 +11,7 @@ balazs.fekete@unh.edu
 *******************************************************************************/
 
 #include <DB.H>
-#include <DBio.H>
+#include <DBif.H>
 
 DBInt DBGridCont2Network (DBObjData *gridData,DBObjData *netData, bool downhill)
 
@@ -50,64 +50,64 @@ DBInt DBGridCont2Network (DBObjData *gridData,DBObjData *netData, bool downhill)
 	DBObjTableField *valueSizeFLD = layerTable->Field (DBrNValueSize);
 	DBObjTableField *layerFLD = layerTable->Field (DBrNLayer);
 	DBObjData *zGridData = gridData->LinkedData ();
-	DBGridIO *gridIO = new DBGridIO (gridData), *zGridIO;
-	DBNetworkIO *networkIO;
+	DBGridIF *gridIF = new DBGridIF (gridData), *zGridIF;
+	DBNetworkIF *netIF;
 
 	if ((zGridData != (DBObjData *) NULL) && ((zGridData->Type () == DBTypeGridDiscrete) || (zGridData->Type () == DBTypeGridContinuous)))
 		{
-		zGridIO = new DBGridIO (zGridData);
-		zLayerNum = zGridIO->LayerNum () + 1;
+		zGridIF = new DBGridIF (zGridData);
+		zLayerNum = zGridIF->LayerNum () + 1;
 		}
-	else { zGridIO = (DBGridIO *) NULL; zLayerNum = 1; }
+	else { zGridIF = (DBGridIF *) NULL; zLayerNum = 1; }
 
 	if ((zones = (DBInt *) calloc (9 * zLayerNum,sizeof (DBInt))) == (DBInt *) NULL)
 		{
 		perror ("Memory Allocation Error in: DBGridCont2Network ()");
-		if (zGridIO != (DBGridIO *) NULL) delete zGridIO;
-		delete gridIO;
+		if (zGridIF != (DBGridIF *) NULL) delete zGridIF;
+		delete gridIF;
 		return (DBFault);
 		}
 	layerTable->Add (DBrNLookupGrid);
 	if ((layerRec = layerTable->Item (DBrNLookupGrid)) == (DBObjRecord *) NULL)
 		{
 		free (zones);
-		if (zGridIO != (DBGridIO *) NULL) delete zGridIO;
-		delete gridIO;
+		if (zGridIF != (DBGridIF *) NULL) delete zGridIF;
+		delete gridIF;
 		return (DBFault);
 		}
 
 	netData->Projection (projection);
 	netData->Extent (gridData->Extent ());
-	cellWidthFLD->Float  (layerRec,gridIO->CellWidth ());
-	cellHeightFLD->Float (layerRec,gridIO->CellHeight ());
+	cellWidthFLD->Float  (layerRec,gridIF->CellWidth ());
+	cellHeightFLD->Float (layerRec,gridIF->CellHeight ());
 	valueTypeFLD->Int (layerRec,DBTableFieldInt);
 	valueSizeFLD->Int (layerRec,sizeof (DBInt));
-	rowNumFLD->Int (layerRec,gridIO->RowNum ());
-	colNumFLD->Int (layerRec,gridIO->ColNum ());
+	rowNumFLD->Int (layerRec,gridIF->RowNum ());
+	colNumFLD->Int (layerRec,gridIF->ColNum ());
 
-	dataRec = new DBObjRecord ("NetLookupGridRecord",gridIO->RowNum () * gridIO->ColNum () * sizeof (DBInt),sizeof (DBInt));
+	dataRec = new DBObjRecord ("NetLookupGridRecord",gridIF->RowNum () * gridIF->ColNum () * sizeof (DBInt),sizeof (DBInt));
 	if (dataRec == (DBObjRecord *) NULL)
 		{
-		if (zGridIO != (DBGridIO *) NULL) delete zGridIO;
+		if (zGridIF != (DBGridIF *) NULL) delete zGridIF;
 		return (DBFault);
 		}
 	layerFLD->Record (layerRec,dataRec);
 	(netData->Arrays ())->Add (dataRec);
-	for (pos.Row = 0;pos.Row < gridIO->RowNum ();pos.Row++)
-		for (pos.Col = 0;pos.Col < gridIO->ColNum ();pos.Col++)
-			((DBInt *) dataRec->Data ()) [pos.Row * gridIO->ColNum () + pos.Col] = DBFault;
+	for (pos.Row = 0;pos.Row < gridIF->RowNum ();pos.Row++)
+		for (pos.Col = 0;pos.Col < gridIF->ColNum ();pos.Col++)
+			((DBInt *) dataRec->Data ()) [pos.Row * gridIF->ColNum () + pos.Col] = DBFault;
 
-	for (pos.Row = 0;pos.Row < gridIO->RowNum ();pos.Row++)
+	for (pos.Row = 0;pos.Row < gridIF->RowNum ();pos.Row++)
 		{
-		if (DBPause (10 * pos.Row / gridIO->RowNum ())) goto PauseStop;
-		for (pos.Col = 0;pos.Col < gridIO->ColNum ();pos.Col++)
+		if (DBPause (10 * pos.Row / gridIF->RowNum ())) goto PauseStop;
+		for (pos.Col = 0;pos.Col < gridIF->ColNum ();pos.Col++)
 			{
-			gridIO->Pos2Coord (pos,coord0);
+			gridIF->Pos2Coord (pos,coord0);
 			zLayerID = 0;
-			if (zGridIO != (DBGridIO *) NULL)
-				for ( ; zLayerID < zGridIO->LayerNum (); zLayerID++)
+			if (zGridIF != (DBGridIF *) NULL)
+				for ( ; zLayerID < zGridIF->LayerNum (); zLayerID++)
 					{
-					layerRec = zGridIO->Layer (zLayerID);
+					layerRec = zGridIF->Layer (zLayerID);
 					if ((layerRec->Flags () & DBObjectFlagIdle) == DBObjectFlagIdle) continue;
 					for (dir = 0;dir < 8;++dir)
 						{
@@ -119,33 +119,33 @@ DBInt DBGridCont2Network (DBObjData *gridData,DBObjData *netData, bool downhill)
 						if (((0x01 << dir) == DBNetDirNW) || ((0x01 << dir) == DBNetDirW) || ((0x01 << dir) == DBNetDirSW)) col--;
 						if (row < 0) continue;
 						if (col < 0) continue;
-						if (row >= gridIO->RowNum ()) continue;
-						if (col >= gridIO->ColNum ()) continue;
+						if (row >= gridIF->RowNum ()) continue;
+						if (col >= gridIF->ColNum ()) continue;
 						auxPos.Row = row;
 						auxPos.Col = col;
-						gridIO->Pos2Coord (auxPos,coord1);
+						gridIF->Pos2Coord (auxPos,coord1);
 						switch (zGridData->Type ())
 							{
-							case DBTypeGridDiscrete:	basinID = zGridIO->GridValue (layerRec,coord1);	break;
-							case DBTypeGridContinuous:	zGridIO->Value (layerRec,coord1,&basinID);		break;
+							case DBTypeGridDiscrete:	basinID = zGridIF->GridValue (layerRec,coord1);	break;
+							case DBTypeGridContinuous:	zGridIF->Value (layerRec,coord1,&basinID);		break;
 							}
 						zones [zLayerID * 9 + dir] = basinID;
 						}
 					switch (zGridData->Type ())
 						{
-						case DBTypeGridDiscrete:	basinID = zGridIO->GridValue (layerRec,coord0);	break;
-						case DBTypeGridContinuous: zGridIO->Value (layerRec,coord0,&basinID);		break;
+						case DBTypeGridDiscrete:	basinID = zGridIF->GridValue (layerRec,coord0);	break;
+						case DBTypeGridContinuous: zGridIF->Value (layerRec,coord0,&basinID);		break;
 						}
 					zones [zLayerID * 9 + 8] = basinID;
 					}
 			for (dir = 0;dir < 9;++dir) zones [zLayerID * 9 + dir] = 0;
 
 			maxDir = DBFault;
-			for (layerID = 0;layerID < gridIO->LayerNum ();++layerID)
+			for (layerID = 0;layerID < gridIF->LayerNum ();++layerID)
 				{
-				layerRec = gridIO->Layer (layerID);
+				layerRec = gridIF->Layer (layerID);
 				if ((layerRec->Flags () & DBObjectFlagIdle) == DBObjectFlagIdle) continue;
-				if (gridIO->Value (layerRec,pos,&elev0))
+				if (gridIF->Value (layerRec,pos,&elev0))
 					{
 					maxDelta = (DBFloat) 0.0;
 					maxDir   = 0;
@@ -162,13 +162,13 @@ DBInt DBGridCont2Network (DBObjData *gridData,DBObjData *netData, bool downhill)
 							if (((0x01 << dir) == DBNetDirNW) || ((0x01 << dir) == DBNetDirW) || ((0x01 << dir) == DBNetDirSW)) col--;
 							if (col < 0) continue;
 							if (row < 0) continue;
-							if (col >= gridIO->ColNum ()) continue;
-							if (row >= gridIO->RowNum ()) continue;
+							if (col >= gridIF->ColNum ()) continue;
+							if (row >= gridIF->RowNum ()) continue;
 							auxPos.Row = row;
 							auxPos.Col = col;
-							gridIO->Pos2Coord (auxPos,coord1);
+							gridIF->Pos2Coord (auxPos,coord1);
 							distance = DBMathCoordinateDistance (projection,coord0,coord1);
-							if ((zones [zLayerID * 9 + dir] == zones [zLayerID * 9 + 8]) && (gridIO->Value (layerRec,auxPos,&elev1)))
+							if ((zones [zLayerID * 9 + dir] == zones [zLayerID * 9 + 8]) && (gridIF->Value (layerRec,auxPos,&elev1)))
 								{
 								delta = (downhill ? (elev1 - elev0) : (elev0 - elev1)) / distance;
 								if (maxDelta > delta) { maxDelta = delta; maxDir = (0x01 << dir); }
@@ -194,24 +194,24 @@ SlopeStop:
 				cellAreaFLD->Float	(cellRec,(DBFloat) 0.0);
 				subbasinLengthFLD->Float(cellRec,(DBFloat) 0.0);
 				subbasinAreaFLD->Float	(cellRec,(DBFloat) 0.0);
-				((DBInt *) dataRec->Data ()) [pos.Row * gridIO->ColNum () + pos.Col] = cellRec->RowID ();
+				((DBInt *) dataRec->Data ()) [pos.Row * gridIF->ColNum () + pos.Col] = cellRec->RowID ();
 				}
 			}
 		}
 PauseStop:
-	if (pos.Row < gridIO->RowNum ())	return (DBFault);
+	if (pos.Row < gridIF->RowNum ())	return (DBFault);
 	sprintf (nameSTR,"GHAASBasin%d",(DBInt) 0);
 	basinRec = basinTable->Add (nameSTR);
 	mouthPosFLD->Position	(basinRec,positionFLD->Position (cellTable->Item (0)));
 	colorFLD->Int				(basinRec,0);
 
 	free (zones);
-	delete gridIO;
-	if (zGridIO != (DBGridIO *) NULL) delete zGridIO;
+	delete gridIF;
+	if (zGridIF != (DBGridIF *) NULL) delete zGridIF;
 
-	netData->Precision (DBMathMin (gridIO->CellWidth (),gridIO->CellHeight ()) / 25.0);
-	networkIO = new DBNetworkIO (netData);
-	networkIO->Build ();
-	delete networkIO;
+	netData->Precision (DBMathMin (gridIF->CellWidth (),gridIF->CellHeight ()) / 25.0);
+	netIF = new DBNetworkIF (netData);
+	netIF->Build ();
+	delete netIF;
 	return (DBSuccess);
 	}

@@ -12,7 +12,7 @@ balazs.fekete@unh.edu
 
 #include<cm.h>
 #include<rgisPlot.H>
-#include<DBio.H>
+#include<DBif.H>
 
 #define RGPWidthConstant 15.0
 
@@ -35,7 +35,7 @@ DBInt RGPDrawNetwork (DBInt mode, DBInt *entryNum, DBObjData *netData)
 	DBObjRecord *cellRec, *basinRec;
 	DBObjTable *cellTable = netData->Table (DBrNCells);
 	DBObjTableField *widthFLD;
-	DBNetworkIO *netIO = new DBNetworkIO (netData);
+	DBNetworkIF *netIF = new DBNetworkIF (netData);
 
 	cpgqls (&lineStyle);
 	cpgqlw (&lineWidth);
@@ -145,9 +145,9 @@ DBInt RGPDrawNetwork (DBInt mode, DBInt *entryNum, DBObjData *netData)
 	cpgsls (1);
 	basinID = DBFault;
 	width = DBFault;
-	for (recID = 0;recID < netIO->CellNum ();++recID)
+	for (recID = 0;recID < netIF->CellNum ();++recID)
 		{
-		cellRec = netIO->Cell (recID);
+		cellRec = netIF->Cell (recID);
 		wValue = widthFLD->Float (cellRec);
 		if (CMmathEqualValues (wValue,widthFLD->FloatNoData ())) continue;
 		if (wValue <= minValue) continue;
@@ -165,22 +165,22 @@ DBInt RGPDrawNetwork (DBInt mode, DBInt *entryNum, DBObjData *netData)
 		if (width < 1) width = 1;
 		cpgslw (width);
 
-		if (basinID != netIO->CellBasinID (cellRec))
+		if (basinID != netIF->CellBasinID (cellRec))
 			{
-			basinRec = netIO->Basin (cellRec);
+			basinRec = netIF->Basin (cellRec);
 			basinID = basinRec->RowID ();
 			switch (symbolMode)
 				{
 				default:
-				case 1: foreground = netIO->Color(basinRec); break;
-				case 2: foreground = netIO->ItemForeground (basinRec); break;
+				case 1: foreground = netIF->Color(basinRec); break;
+				case 2: foreground = netIF->ItemForeground (basinRec); break;
 				case 3: foreground = 1; break;
 				}
 			cpgsci (foreground);
 			}
 
-		fromCoord = netIO->Center (cellRec);
-		toCoord = fromCoord + netIO->Delta (cellRec);
+		fromCoord = netIF->Center (cellRec);
+		toCoord = fromCoord + netIF->Delta (cellRec);
 		xCoord [0] = fromCoord.X;
 		yCoord [0] = fromCoord.Y;
 		xCoord [1] = toCoord.X;
@@ -238,6 +238,6 @@ Stop:
 	cpgslw (lineWidth);
 	cpgsci (lineColor);
 	if (legendNum > 0) free (lValues);
-	delete netIO;
+	delete netIF;
 	return (ret);
 	}

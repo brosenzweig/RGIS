@@ -11,7 +11,7 @@ balazs.fekete@unh.edu
 *******************************************************************************/
 
 #include <DB.H>
-#include <DBio.H>
+#include <DBif.H>
 #include <RG.H>
 
 DBInt RGlibNetworkToGrid (DBObjData *netData,DBObjTableField *field, DBObjData *grdData)
@@ -21,44 +21,44 @@ DBInt RGlibNetworkToGrid (DBObjData *netData,DBObjTableField *field, DBObjData *
 	DBFloat floatVal;
 	DBPosition pos;
 	DBObjRecord *cellRec, *layerRec;
-	DBGridIO *grdIO;
-	DBNetworkIO *netIO;
+	DBGridIF *gridIF;
+	DBNetworkIF *netIF;
 
 	if (field == (DBObjTableField *) NULL) return (DBFault);
 
-	netIO = new DBNetworkIO (netData);
-	grdIO = new DBGridIO (grdData);
-	layerRec = grdIO->Layer (0);
-	grdIO->RenameLayer (layerRec,field->Name ());
+	netIF = new DBNetworkIF (netData);
+	gridIF = new DBGridIF (grdData);
+	layerRec = gridIF->Layer (0);
+	gridIF->RenameLayer (layerRec,field->Name ());
 	switch (grdData->Type ())
 		{
 		case DBTypeGridContinuous:
-			for (pos.Row = 0;pos.Row < grdIO->RowNum ();++pos.Row)
-				for (pos.Col = 0;pos.Col < grdIO->ColNum ();++pos.Col)
-					grdIO->Value (layerRec,pos,grdIO->MissingValue ());
+			for (pos.Row = 0;pos.Row < gridIF->RowNum ();++pos.Row)
+				for (pos.Col = 0;pos.Col < gridIF->ColNum ();++pos.Col)
+					gridIF->Value (layerRec,pos,gridIF->MissingValue ());
 
-			for (cellID = 0;cellID < netIO->CellNum ();++cellID)
+			for (cellID = 0;cellID < netIF->CellNum ();++cellID)
 				{
-				if (DBPause (cellID * 100 / netIO->CellNum ())) goto Stop;
-				cellRec = netIO->Cell (cellID);
+				if (DBPause (cellID * 100 / netIF->CellNum ())) goto Stop;
+				cellRec = netIF->Cell (cellID);
 				if ((cellRec->Flags () & DBObjectFlagIdle) == DBObjectFlagIdle) continue;
 
 				if (field->Type () == DBTableFieldInt)
 					{
 					intVal = field->Int (cellRec);
 					if (intVal == field->IntNoData ())
-							grdIO->Value (layerRec,netIO->CellPosition (cellRec),grdIO->MissingValue ());
-					else	grdIO->Value (layerRec,netIO->CellPosition (cellRec),(DBFloat) intVal);
+							gridIF->Value (layerRec,netIF->CellPosition (cellRec),gridIF->MissingValue ());
+					else	gridIF->Value (layerRec,netIF->CellPosition (cellRec),(DBFloat) intVal);
 					}
 				else
 					{
 					floatVal = field->Float (cellRec);
 					if (CMmathEqualValues (floatVal,field->FloatNoData ()))
-						grdIO->Value (layerRec,netIO->CellPosition (cellRec),grdIO->MissingValue ());
-					else	grdIO->Value (layerRec,netIO->CellPosition (cellRec),floatVal);
+						gridIF->Value (layerRec,netIF->CellPosition (cellRec),gridIF->MissingValue ());
+					else	gridIF->Value (layerRec,netIF->CellPosition (cellRec),floatVal);
 					}
 				}
-			grdIO->RecalcStats ();
+			gridIF->RecalcStats ();
 			break;
 		case DBTypeGridDiscrete:
 			{
@@ -78,17 +78,17 @@ DBInt RGlibNetworkToGrid (DBObjData *netData,DBObjTableField *field, DBObjData *
 			backgroundFLD->Int (symRec,0);
 			styleFLD->Int (symRec,0);
 
-			for (pos.Row = 0;pos.Row < grdIO->RowNum ();++pos.Row)
-				for (pos.Col = 0;pos.Col < grdIO->ColNum ();++pos.Col)
-					grdIO->Value (layerRec,pos,DBFault);
+			for (pos.Row = 0;pos.Row < gridIF->RowNum ();++pos.Row)
+				for (pos.Col = 0;pos.Col < gridIF->ColNum ();++pos.Col)
+					gridIF->Value (layerRec,pos,DBFault);
 
-			for (cellID = 0;cellID < netIO->CellNum ();++cellID)
+			for (cellID = 0;cellID < netIF->CellNum ();++cellID)
 				{
-				if (DBPause (cellID * 100 / netIO->CellNum ())) goto Stop;
-				cellRec = netIO->Cell (cellID);
+				if (DBPause (cellID * 100 / netIF->CellNum ())) goto Stop;
+				cellRec = netIF->Cell (cellID);
 				if ((cellRec->Flags () & DBObjectFlagIdle) == DBObjectFlagIdle) continue;
 				if ((intVal = field->Int (cellRec)) == field->IntNoData ())
-					grdIO->Value (netIO->CellPosition (cellRec),DBFault);
+					gridIF->Value (netIF->CellPosition (cellRec),DBFault);
 				else
 					{
 					sprintf (nameStr,"Category%04d",intVal);
@@ -99,21 +99,21 @@ DBInt RGlibNetworkToGrid (DBObjData *netData,DBObjTableField *field, DBObjData *
 						gridValueFLD->Int (itemRec,intVal);
 						gridSymbolFLD->Record (itemRec,symRec);
 						}
-					grdIO->Value (netIO->CellPosition (cellRec),itemRec->RowID ());
+					gridIF->Value (netIF->CellPosition (cellRec),itemRec->RowID ());
 					}
 				}
 			itemTable->ListSort (gridValueFLD);
 			itemTable->ItemSort ();
-			grdIO->DiscreteStats ();
+			gridIF->DiscreteStats ();
 			} break;
 		default:
 			perror ("Invalid data type in: RGlibNetworkToGrid ()!\n");
 			break;
 		}
 Stop:
-	delete netIO;
-	if (cellID == netIO->CellNum ()) { delete grdIO; return (DBSuccess); }
-	delete grdIO;
+	delete netIF;
+	if (cellID == netIF->CellNum ()) { delete gridIF; return (DBSuccess); }
+	delete gridIF;
 	return (DBFault);
 	}
 
@@ -136,13 +136,13 @@ DBInt RGlibNetworkBasinGrid (DBObjData *netData, DBObjData *grdData)
 	DBObjTableField *colorFLD 	= basinTable->Field (DBrNColor);
 	DBObjTableField *basinFLD 	= cellTable->Field (DBrNBasin);
 	DBObjTableField *inFLD, *outFLD;
-	DBGridIO *grdIO;
-	DBNetworkIO *netIO;
+	DBGridIF *gridIF;
+	DBNetworkIF *netIF;
 
-	netIO = new DBNetworkIO (netData);
-	grdIO = new DBGridIO (grdData);
+	netIF = new DBNetworkIF (netData);
+	gridIF = new DBGridIF (grdData);
 
-	grdIO->RenameLayer (grdIO->Layer (0),(char *) "Basin Grid");
+	gridIF->RenameLayer (gridIF->Layer (0),(char *) "Basin Grid");
 
 	for (inFieldID = 0;inFieldID < basinTable->FieldNum ();++inFieldID)
 		{
@@ -153,7 +153,7 @@ DBInt RGlibNetworkBasinGrid (DBObjData *netData, DBObjData *grdData)
 			if (inFLD->Required ()) outFLD->Required (false);
 			}
 		}
-	for (basinID = 0;basinID < netIO->BasinNum ();++basinID)
+	for (basinID = 0;basinID < netIF->BasinNum ();++basinID)
 		{
 		basinRec = basinTable->Item (basinID);
 		itemRec	= grdTable->Add (basinRec->Name ());
@@ -186,7 +186,7 @@ DBInt RGlibNetworkBasinGrid (DBObjData *netData, DBObjData *grdData)
 		gBGSymFLD->Int (symRec,symbol);
 		gStSymFLD->Int (symRec,0);
 		}
-	for (basinID = 0;basinID < netIO->BasinNum ();++basinID)
+	for (basinID = 0;basinID < netIF->BasinNum ();++basinID)
 		{
 		basinRec = basinTable->Item (basinID);
 		itemRec	= grdTable->Item (basinID);
@@ -194,20 +194,20 @@ DBInt RGlibNetworkBasinGrid (DBObjData *netData, DBObjData *grdData)
 		gSymFLD->Record (itemRec,symTable->Item (symbol));
 		}
 
-	for (pos.Row = 0;pos.Row < netIO->RowNum (); pos.Row++)
-		for (pos.Col = 0;pos.Col < netIO->ColNum (); pos.Col++) grdIO->Value (pos,DBFault);
-	for (cellID = 0;cellID < netIO->CellNum ();++cellID)
+	for (pos.Row = 0;pos.Row < netIF->RowNum (); pos.Row++)
+		for (pos.Col = 0;pos.Col < netIF->ColNum (); pos.Col++) gridIF->Value (pos,DBFault);
+	for (cellID = 0;cellID < netIF->CellNum ();++cellID)
 		{
-		if (DBPause (cellID * 100 / netIO->CellNum ())) goto Stop;
-		cellRec = netIO->Cell (cellID);
+		if (DBPause (cellID * 100 / netIF->CellNum ())) goto Stop;
+		cellRec = netIF->Cell (cellID);
 		if ((cellRec->Flags () & DBObjectFlagIdle) == DBObjectFlagIdle) continue;
-		grdIO->Value (netIO->CellPosition (cellRec),basinFLD->Int (cellRec) - 1);
+		gridIF->Value (netIF->CellPosition (cellRec),basinFLD->Int (cellRec) - 1);
 		}
 Stop:
-	delete netIO;
-	if (cellID == netIO->CellNum ())
-		{ grdIO->DiscreteStats (); delete grdIO; return (DBSuccess); }
-	delete grdIO;
+	delete netIF;
+	if (cellID == netIF->CellNum ())
+		{ gridIF->DiscreteStats (); delete gridIF; return (DBSuccess); }
+	delete gridIF;
 	return (DBFault);
 	}
 
@@ -218,7 +218,7 @@ DBInt RGlibNetworkStations (DBObjData *netData,DBFloat area, DBFloat tolerance,D
 	DBInt cellID;
 	DBFloat *areaARR;
 	DBObjRecord *cellRec, *toCell;
-	DBNetworkIO *netIO = new DBNetworkIO (netData);
+	DBNetworkIF *netIF = new DBNetworkIF (netData);
 	DBCoordinate coord;
 	DBObjTable *items 	= pntData->Table (DBrNItems);
 	DBObjTable *symbols	= pntData->Table (DBrNSymbols);
@@ -235,29 +235,29 @@ DBInt RGlibNetworkStations (DBObjData *netData,DBFloat area, DBFloat tolerance,D
 	backgroundFLD->Int (symRec,2);
 	styleFLD->Int (symRec,0);
 
-	if ((areaARR = (DBFloat *) calloc (netIO->CellNum (),sizeof (DBFloat))) == (DBFloat *) NULL)
+	if ((areaARR = (DBFloat *) calloc (netIF->CellNum (),sizeof (DBFloat))) == (DBFloat *) NULL)
 		{
 		perror ("Memory Allocation Error in: RGlibNetworkStations ()");
-		delete netIO;
+		delete netIF;
 		return (DBFault);
 		}
-	for (cellID = 0;cellID < netIO->CellNum ();++cellID)
-		areaARR [cellID] = netIO->CellBasinArea (netIO->Cell (cellID));
+	for (cellID = 0;cellID < netIF->CellNum ();++cellID)
+		areaARR [cellID] = netIF->CellBasinArea (netIF->Cell (cellID));
 
-	for (cellID = netIO->CellNum () - 1;cellID >= 0;--cellID)
+	for (cellID = netIF->CellNum () - 1;cellID >= 0;--cellID)
 		{
-		if (DBPause ((netIO->CellNum () - cellID) * 100 / netIO->CellNum ())) goto Stop;
+		if (DBPause ((netIF->CellNum () - cellID) * 100 / netIF->CellNum ())) goto Stop;
 
-		if (areaARR [cellID] > area)	toCell = netIO->ToCell (cellRec = netIO->Cell (cellID));
+		if (areaARR [cellID] > area)	toCell = netIF->ToCell (cellRec = netIF->Cell (cellID));
 		else	if (areaARR [cellID] > area * (1.0 - tolerance / 100.0))
 			{
-			if ((toCell = netIO->ToCell (netIO->Cell (cellID))) != (DBObjRecord *) NULL)
+			if ((toCell = netIF->ToCell (netIF->Cell (cellID))) != (DBObjRecord *) NULL)
 				{
 				if (areaARR [toCell->RowID ()] < area * (1.0 + tolerance / 100.0))
 					cellRec = areaARR [toCell->RowID ()] / area > area / areaARR [cellID] ?
-								 netIO->Cell (cellID) : (DBObjRecord *) NULL;
+								 netIF->Cell (cellID) : (DBObjRecord *) NULL;
 				}
-			else	cellRec = netIO->Cell (cellID);
+			else	cellRec = netIF->Cell (cellID);
 			}
 		else	cellRec = (DBObjRecord *) NULL;
 
@@ -265,18 +265,18 @@ DBInt RGlibNetworkStations (DBObjData *netData,DBFloat area, DBFloat tolerance,D
 			{
 			if (toCell != (DBObjRecord *) NULL)
 				do	areaARR [toCell->RowID ()] -= areaARR [cellID];
-				while ((toCell = netIO->ToCell (toCell)) != (DBObjRecord *) NULL);
+				while ((toCell = netIF->ToCell (toCell)) != (DBObjRecord *) NULL);
 
 			sprintf (name,"Point: %d",items->ItemNum ());
 			items->Add (name); pntRec = items->Item ();
-			coord = netIO->Center (netIO->Cell (cellID));
+			coord = netIF->Center (netIF->Cell (cellID));
 			coordField->Coordinate (pntRec,coord);
 			symbolFLD->Record (pntRec,symRec);
 			dataExtent.Expand (coord);
 			}
 		}
 Stop:
-	delete netIO;
+	delete netIF;
 	free (areaARR);
 	pntData->Extent (dataExtent);
 	return (cellID >= 0 ? DBFault : DBSuccess);
@@ -296,40 +296,40 @@ class RGlibNetAccum
 		DBObjTableField *StnIDFLD;
 		DBObjTableField *AreaFLD;
 		DBObjTableField *DischFLD;
-		DBGridIO *GridIO;
+		DBGridIF *GridIF;
 		DBObjRecord *LayerRec;
 	};
 
-static DBInt _RGlibUpStreamACTION (DBNetworkIO *netIO,DBObjRecord *cellRec,RGlibNetAccum *netAccum)
+static DBInt _RGlibUpStreamACTION (DBNetworkIF *netIF,DBObjRecord *cellRec,RGlibNetAccum *netAccum)
 
 	{
 	DBFloat value, obsVal;
 	if ((cellRec->Flags () & DBObjectFlagProcessed) == DBObjectFlagProcessed) return (true);
 	if (netAccum->StnIDFLD->Int (cellRec) != DBFault) return (false);
-	if (netAccum->GridIO->Value (netAccum->LayerRec,netIO->CellPosition (cellRec),&value))
+	if (netAccum->GridIF->Value (netAccum->LayerRec,netIF->CellPosition (cellRec),&value))
 		{
 		obsVal = netAccum->DischFLD->Float (cellRec);
 		value = (value - obsVal) * netAccum->Correction + obsVal;
-		netAccum->GridIO->Value (netAccum->LayerRec,netIO->CellPosition (cellRec),value);
+		netAccum->GridIF->Value (netAccum->LayerRec,netIF->CellPosition (cellRec),value);
 		}
 	return (true);
 	}
 
-static DBInt _RGlibUniformACTION (DBNetworkIO *netIO,DBObjRecord *cellRec,RGlibNetAccum *netAccum)
+static DBInt _RGlibUniformACTION (DBNetworkIF *netIF,DBObjRecord *cellRec,RGlibNetAccum *netAccum)
 
 	{
 	DBFloat value;
 	if ((cellRec->Flags () & DBObjectFlagProcessed) == DBObjectFlagProcessed) return (true);
 	if (netAccum->StnIDFLD->Int (cellRec) != DBFault) return (false);
-	if (netAccum->GridIO->Value (netAccum->LayerRec,netIO->CellPosition (cellRec),&value))
+	if (netAccum->GridIF->Value (netAccum->LayerRec,netIF->CellPosition (cellRec),&value))
 		{
 		value = value + netAccum->AreaFLD->Float (cellRec) * netAccum->Correction;
-		netAccum->GridIO->Value (netAccum->LayerRec,netIO->CellPosition (cellRec),value);
+		netAccum->GridIF->Value (netAccum->LayerRec,netIF->CellPosition (cellRec),value);
 		}
 	return (true);
 	}
 
-static DBInt _RGlibMainstemACTION (DBNetworkIO *netIO,DBObjRecord *cellRec,RGlibNetAccum *netAccum)
+static DBInt _RGlibMainstemACTION (DBNetworkIF *netIF,DBObjRecord *cellRec,RGlibNetAccum *netAccum)
 
 	{
 	DBFloat value;
@@ -339,7 +339,7 @@ static DBInt _RGlibMainstemACTION (DBNetworkIO *netIO,DBObjRecord *cellRec,RGlib
 
 	value = netAccum->DischFLD->Float (cellRec);
 	value = value + netAccum->AreaFLD->Float (cellRec) * netAccum->Correction;
-	netAccum->GridIO->Value (netAccum->LayerRec,netIO->CellPosition (cellRec),value);
+	netAccum->GridIF->Value (netAccum->LayerRec,netIF->CellPosition (cellRec),value);
 	return (true);
 	}
 
@@ -362,9 +362,9 @@ DBInt RGlibNetworkAccumulate (DBObjData *netData,
 	DBCoordinate coord;
 	DBDate date;
 	DBObjRecord *outLayerRec, *cellRec, *toCellRec, *nextCellRec, *layerRec, *pointRec, *dischRec;
-	DBGridIO *inGridIO;
-	DBVPointIO *stnIO = (DBVPointIO *) NULL;
-	DBNetworkIO *netIO;
+	DBGridIF *inGridIF;
+	DBVPointIF *stnIF = (DBVPointIF *) NULL;
+	DBNetworkIF *netIF;
 	DBObjTable *stnTable, *disTable, *cellTable = netData->Table (DBrNCells);
 	DBObjTableField *relateFLD    = (DBObjTableField *) NULL;
 	DBObjTableField *nextStnFLD   = (DBObjTableField *) NULL;
@@ -441,7 +441,7 @@ DBInt RGlibNetworkAccumulate (DBObjData *netData,
 			if (fieldID == disTable->FieldNum ())
 				{ fprintf (stderr,"No discharge field in time series!\n"); return (DBFault); }
 			}
-		stnIO = new DBVPointIO (stnData);
+		stnIF = new DBVPointIF (stnData);
 
 		tmpDischFLD  = new DBObjTableField ("_tempDisch_", DBVariableFloat,"%8.2f",sizeof(DBFloat4),false);
 		stnTable->AddField (tmpDischFLD);
@@ -455,52 +455,52 @@ DBInt RGlibNetworkAccumulate (DBObjData *netData,
 		dischRec = disTable->First ();
 		}
 
-	inGridIO = new DBGridIO (inGridData);
-	for (layerID = 0;layerID < inGridIO->LayerNum ();++layerID)
+	inGridIF = new DBGridIF (inGridData);
+	for (layerID = 0;layerID < inGridIF->LayerNum ();++layerID)
 		{
-		layerRec = inGridIO->Layer (layerID);
+		layerRec = inGridIF->Layer (layerID);
 		if ((layerRec->Flags () & DBObjectFlagIdle) != DBObjectFlagIdle) ++layerNum;
 		}
 	if (layerNum < 1)
 		{
 		fprintf (stderr,"No Layer to Process in RGlibNetworkAccumulate ()\n");
-		delete inGridIO; return (DBFault);
+		delete inGridIF; return (DBFault);
 		}
 
-	netIO 	= new DBNetworkIO (netData);
-	netAccum.GridIO = new DBGridIO (outGridData);
+	netIF 	= new DBNetworkIF (netData);
+	netAccum.GridIF = new DBGridIF (outGridData);
 
-	outLayerRec = netAccum.GridIO->Layer ((DBInt) 0);
-	maxProgress = layerNum * netIO->RowNum ();
+	outLayerRec = netAccum.GridIF->Layer ((DBInt) 0);
+	maxProgress = layerNum * netIF->RowNum ();
 
-	for (layerID = 0;layerID < inGridIO->LayerNum ();++layerID)
+	for (layerID = 0;layerID < inGridIF->LayerNum ();++layerID)
 		{
-		layerRec = inGridIO->Layer (layerID);
+		layerRec = inGridIF->Layer (layerID);
 		if ((layerRec->Flags () & DBObjectFlagIdle) == DBObjectFlagIdle) continue;
-		netAccum.GridIO->RenameLayer (outLayerRec,layerRec->Name ());
-		for (pos.Row = 0;pos.Row < netIO->RowNum ();pos.Row++)
+		netAccum.GridIF->RenameLayer (outLayerRec,layerRec->Name ());
+		for (pos.Row = 0;pos.Row < netIF->RowNum ();pos.Row++)
 			{
 			if (DBPause (progress * 100 / maxProgress)) goto Stop;
 			progress++;
-			for (pos.Col = 0;pos.Col < netIO->ColNum ();pos.Col++)
-				if ((cellRec = netIO->Cell (pos)) == (DBObjRecord *) NULL)
-					netAccum.GridIO->Value (outLayerRec,pos,DBDefaultMissingFloatVal);
+			for (pos.Col = 0;pos.Col < netIF->ColNum ();pos.Col++)
+				if ((cellRec = netIF->Cell (pos)) == (DBObjRecord *) NULL)
+					netAccum.GridIF->Value (outLayerRec,pos,DBDefaultMissingFloatVal);
 				else
 					{
-					if (inGridIO->Value (layerRec,netIO->Center (cellRec),&value))
+					if (inGridIF->Value (layerRec,netIF->Center (cellRec),&value))
 						{
-						value = (areaMult ? value * netIO->CellArea (cellRec) : value) * coeff;
-						netAccum.GridIO->Value (outLayerRec,pos,value);
+						value = (areaMult ? value * netIF->CellArea (cellRec) : value) * coeff;
+						netAccum.GridIF->Value (outLayerRec,pos,value);
 						}
-					else netAccum.GridIO->Value (outLayerRec,pos,0.0);
+					else netAccum.GridIF->Value (outLayerRec,pos,0.0);
 					}
 			}
-		if (stnIO != (DBVPointIO *) NULL)
+		if (stnIF != (DBVPointIF *) NULL)
 			{
 			date.Set (layerRec->Name ());
-			for (cellID = 0;cellID < netIO->CellNum ();++cellID)
+			for (cellID = 0;cellID < netIF->CellNum ();++cellID)
 				{
-				cellRec = netIO->Cell (cellID);
+				cellRec = netIF->Cell (cellID);
 				cellRec->Flags (DBObjectFlagLocked,   DBClear);
 				cellRec->Flags (DBObjectFlagProcessed,DBClear);
 				netAccum.StnIDFLD->Int (cellRec,DBFault);
@@ -524,24 +524,24 @@ DBInt RGlibNetworkAccumulate (DBObjData *netData,
 				}
 			if (dischRec != (DBObjRecord *) NULL)
 				{
-				for (pointID = 0;pointID < stnIO->ItemNum ();++pointID)
+				for (pointID = 0;pointID < stnIF->ItemNum ();++pointID)
 					{
-					pointRec = stnIO->Item (pointID);
+					pointRec = stnIF->Item (pointID);
 					tmpDischFLD->Float  (pointRec,tmpDischFLD->FloatNoData ());
 					}
 				for ( ;dischRec != (DBObjRecord *) NULL;dischRec = disTable->Next ())
 					{
 					if (date != dateFLD->Date (dischRec)) break;
 
-					for (pointID = 0;pointID < stnIO->ItemNum ();++pointID)
+					for (pointID = 0;pointID < stnIF->ItemNum ();++pointID)
 						{
-						pointRec = stnIO->Item (pointID);
+						pointRec = stnIF->Item (pointID);
 						if (DBTableFieldMatch (relateFLD,pointRec,joinFLD,dischRec)) break;
 						}
-					if (pointID == stnIO->ItemNum ()) continue;
+					if (pointID == stnIF->ItemNum ()) continue;
 
-					coord = stnIO->Coordinate (pointRec);
-					if ((cellRec = netIO->Cell (coord)) == (DBObjRecord *) NULL) continue;
+					coord = stnIF->Coordinate (pointRec);
+					if ((cellRec = netIF->Cell (coord)) == (DBObjRecord *) NULL) continue;
 					value = dischargeFLD->Float (dischRec);
 					if (CMmathEqualValues (value,dischargeFLD->FloatNoData ()) == false)
 						{
@@ -550,13 +550,13 @@ DBInt RGlibNetworkAccumulate (DBObjData *netData,
 						}
 					}
 				}
-			for (cellID = netIO->CellNum () - 1;cellID >= 0;--cellID)
+			for (cellID = netIF->CellNum () - 1;cellID >= 0;--cellID)
 				{
-				cellRec = netIO->Cell (cellID);
-				obsVal  = netIO->CellArea (cellRec);
+				cellRec = netIF->Cell (cellID);
+				obsVal  = netIF->CellArea (cellRec);
 				for (nextCellRec = cellRec;
 					  nextCellRec != (DBObjRecord *) NULL;
-					  nextCellRec = netIO->ToCell (nextCellRec))
+					  nextCellRec = netIF->ToCell (nextCellRec))
 					{
 					netAccum.AreaFLD->Float (nextCellRec,netAccum.AreaFLD->Float (nextCellRec) + obsVal);
 					if (netAccum.StnIDFLD->Int (nextCellRec) != DBFault) break;
@@ -564,28 +564,28 @@ DBInt RGlibNetworkAccumulate (DBObjData *netData,
 				}
 			}
 
-		for (cellID = netIO->CellNum () - 1;cellID >= 0;--cellID)
+		for (cellID = netIF->CellNum () - 1;cellID >= 0;--cellID)
 			{
-			cellRec = netIO->Cell (cellID);
+			cellRec = netIF->Cell (cellID);
 			if ((cellRec->Flags () & DBObjectFlagIdle) == DBObjectFlagIdle) continue;
-			if ((netAccum.GridIO->Value (outLayerRec,netIO->CellPosition (cellRec),&value) == false) ||
+			if ((netAccum.GridIF->Value (outLayerRec,netIF->CellPosition (cellRec),&value) == false) ||
 				 ((allowNegative == false) && (value < 0.0)))
 				{
 				value = 0.0;
-				netAccum.GridIO->Value (outLayerRec,netIO->CellPosition (cellRec),value);
+				netAccum.GridIF->Value (outLayerRec,netIF->CellPosition (cellRec),value);
 				}
-			if ((toCellRec = netIO->ToCell (cellRec)) == (DBObjRecord *) NULL) continue;
-			if (netAccum.GridIO->Value (outLayerRec,netIO->CellPosition (toCellRec),&accumVal) == false)
+			if ((toCellRec = netIF->ToCell (cellRec)) == (DBObjRecord *) NULL) continue;
+			if (netAccum.GridIF->Value (outLayerRec,netIF->CellPosition (toCellRec),&accumVal) == false)
 				accumVal = 0.0;
-			if ((stnIO != (DBVPointIO *) NULL) && ((pointID = netAccum.StnIDFLD->Int (cellRec)) != DBFault))
+			if ((stnIF != (DBVPointIF *) NULL) && ((pointID = netAccum.StnIDFLD->Int (cellRec)) != DBFault))
 				{
-				pointRec = stnIO->Item (pointID);
+				pointRec = stnIF->Item (pointID);
 				obsVal = tmpDischFLD->Float (pointRec);
 				if (correction)
 					{
-					for (nextCellRec = netIO->ToCell (cellRec);
+					for (nextCellRec = netIF->ToCell (cellRec);
 						  nextCellRec != (DBObjRecord *) NULL;
-						  nextCellRec = netIO->ToCell (nextCellRec))
+						  nextCellRec = netIF->ToCell (nextCellRec))
 						{
 						nextCellRec->Flags (DBObjectFlagLocked,DBSet);
 						netAccum.DischFLD->Float (nextCellRec,netAccum.DischFLD->Float (nextCellRec) + obsVal);
@@ -599,48 +599,48 @@ DBInt RGlibNetworkAccumulate (DBObjData *netData,
 						if (value > upObsVal)
 							{
 							netAccum.Correction = (obsVal - upObsVal) / (value - upObsVal);
-							netIO->UpStreamSearch (cellRec,(DBNetworkACTION) _RGlibUpStreamACTION,
+							netIF->UpStreamSearch (cellRec,(DBNetworkACTION) _RGlibUpStreamACTION,
 														 	(void *) &netAccum);
 							}
 						else
 							{
 							netAccum.Correction = (obsVal - value) / netAccum.AreaFLD->Float (cellRec);
-							netIO->UpStreamSearch (cellRec,(DBNetworkACTION) _RGlibUniformACTION,
+							netIF->UpStreamSearch (cellRec,(DBNetworkACTION) _RGlibUniformACTION,
 															(void *) &netAccum);
 							}
 						}
 					else
 						{
 						netAccum.Correction = (obsVal - upObsVal) / netAccum.AreaFLD->Float (cellRec);
-						netIO->UpStreamSearch (cellRec,(DBNetworkACTION)_RGlibMainstemACTION,(void*) &netAccum);
+						netIF->UpStreamSearch (cellRec,(DBNetworkACTION)_RGlibMainstemACTION,(void*) &netAccum);
 						}
 					cellRec->Flags (DBObjectFlagProcessed,DBClear);
 					}
 				value = obsVal;
-				netAccum.GridIO->Value (outLayerRec,netIO->CellPosition (cellRec),value);
+				netAccum.GridIF->Value (outLayerRec,netIF->CellPosition (cellRec),value);
 				}
 			accumVal = accumVal + value;
-			netAccum.GridIO->Value (outLayerRec,netIO->CellPosition (toCellRec),accumVal);
+			netAccum.GridIF->Value (outLayerRec,netIF->CellPosition (toCellRec),accumVal);
 			}
-		netAccum.GridIO->RecalcStats (outLayerRec);
-		if (netAccum.GridIO->LayerNum () < layerNum) outLayerRec = netAccum.GridIO->AddLayer ((char *) "Next Layer");
+		netAccum.GridIF->RecalcStats (outLayerRec);
+		if (netAccum.GridIF->LayerNum () < layerNum) outLayerRec = netAccum.GridIF->AddLayer ((char *) "Next Layer");
 		}
 Stop:
 	outGridData->Flags (DBDataFlagDispModeContShadeSets,DBClear);
 	outGridData->Flags (DBDataFlagDispModeContBlueScale,DBSet);
-	if (stnIO != (DBVPointIO *) NULL)
+	if (stnIF != (DBVPointIF *) NULL)
 		{
-		for (cellID = 0;cellID < netIO->CellNum ();++cellID)
-			{ cellRec = netIO->Cell (cellID); cellRec->Flags (DBObjectFlagLocked,DBClear); }
+		for (cellID = 0;cellID < netIF->CellNum ();++cellID)
+			{ cellRec = netIF->Cell (cellID); cellRec->Flags (DBObjectFlagLocked,DBClear); }
 		cellTable->DeleteField (netAccum.StnIDFLD);
 		cellTable->DeleteField (netAccum.AreaFLD);
 		cellTable->DeleteField (netAccum.DischFLD);
 		stnTable->DeleteField (tmpDischFLD);
-		delete stnIO;
+		delete stnIF;
 		}
-	delete netIO;
-	delete inGridIO;
-	delete netAccum.GridIO;
+	delete netIF;
+	delete inGridIF;
+	delete netAccum.GridIF;
 	return (progress == maxProgress ? DBSuccess : DBFault);
 	}
 
@@ -652,59 +652,59 @@ DBInt RGlibNetworkUnaccumulate (DBObjData *netData, DBObjData *inGridData, DBFlo
 	DBFloat value, unAccum;
 	DBPosition pos;
 	DBObjRecord *cellRec, *toCell, *inLayerRec, *outLayerRec;
-	DBGridIO *inGridIO  = new DBGridIO (inGridData);
-	DBGridIO *outGridIO = new DBGridIO (outGridData);
-	DBNetworkIO *netIO = new DBNetworkIO (netData);
+	DBGridIF *inGridIF  = new DBGridIF (inGridData);
+	DBGridIF *outGridIF = new DBGridIF (outGridData);
+	DBNetworkIF *netIF = new DBNetworkIF (netData);
 
-	maxProgress = inGridIO->LayerNum () * netIO->CellNum ();
-	for (layerID = 0;layerID < inGridIO->LayerNum ();++layerID)
+	maxProgress = inGridIF->LayerNum () * netIF->CellNum ();
+	for (layerID = 0;layerID < inGridIF->LayerNum ();++layerID)
 		{
-		inLayerRec = inGridIO->Layer (layerID);
+		inLayerRec = inGridIF->Layer (layerID);
 		if (layerID == 0)
 			{
-			outLayerRec = outGridIO->Layer (layerID);
-			outGridIO->RenameLayer (outLayerRec,inLayerRec->Name ());
+			outLayerRec = outGridIF->Layer (layerID);
+			outGridIF->RenameLayer (outLayerRec,inLayerRec->Name ());
 			}
 		else
-			outLayerRec = outGridIO->AddLayer (inLayerRec->Name ());
+			outLayerRec = outGridIF->AddLayer (inLayerRec->Name ());
 
-		value = outGridIO->MissingValue ();
-		for (pos.Col = 0;pos.Col < netIO->ColNum ();++pos.Col)
-			for (pos.Row = 0;pos.Row < netIO->RowNum ();++pos.Row) outGridIO->Value (outLayerRec,pos,value);
+		value = outGridIF->MissingValue ();
+		for (pos.Col = 0;pos.Col < netIF->ColNum ();++pos.Col)
+			for (pos.Row = 0;pos.Row < netIF->RowNum ();++pos.Row) outGridIF->Value (outLayerRec,pos,value);
 
-		for (cellID = 0;cellID < netIO->CellNum ();++cellID)
+		for (cellID = 0;cellID < netIF->CellNum ();++cellID)
 			{
-			progress = layerID * netIO->CellNum () + cellID;
+			progress = layerID * netIF->CellNum () + cellID;
 			if (DBPause (progress * 100 / maxProgress)) goto Stop;
 
-			cellRec = netIO->Cell (cellID);
-			if (inGridIO->Value (inLayerRec,netIO->Center (cellRec),&value) == false) continue;
-			outGridIO->Value (outLayerRec,netIO->CellPosition (cellRec),value);
+			cellRec = netIF->Cell (cellID);
+			if (inGridIF->Value (inLayerRec,netIF->Center (cellRec),&value) == false) continue;
+			outGridIF->Value (outLayerRec,netIF->CellPosition (cellRec),value);
 
-			if (((toCell = netIO->ToCell (cellRec)) == (DBObjRecord *) NULL) ||
-				 (outGridIO->Value (outLayerRec,netIO->CellPosition (toCell),&unAccum) == false))  continue;
+			if (((toCell = netIF->ToCell (cellRec)) == (DBObjRecord *) NULL) ||
+				 (outGridIF->Value (outLayerRec,netIF->CellPosition (toCell),&unAccum) == false))  continue;
 			unAccum = unAccum - value;
-			outGridIO->Value (outLayerRec,netIO->CellPosition (toCell),unAccum);
+			outGridIF->Value (outLayerRec,netIF->CellPosition (toCell),unAccum);
 			}
 		if (areaDiv)
-			for (cellID = 0;cellID < netIO->CellNum ();++cellID)
+			for (cellID = 0;cellID < netIF->CellNum ();++cellID)
 				{
-				cellRec = netIO->Cell (cellID);
-				outGridIO->Value (outLayerRec,netIO->CellPosition (cellRec),&value);
-				value = coeff * value / netIO->CellArea (cellRec);
-				outGridIO->Value (outLayerRec,netIO->CellPosition (cellRec),value);
+				cellRec = netIF->Cell (cellID);
+				outGridIF->Value (outLayerRec,netIF->CellPosition (cellRec),&value);
+				value = coeff * value / netIF->CellArea (cellRec);
+				outGridIF->Value (outLayerRec,netIF->CellPosition (cellRec),value);
 				}
 		else
-			for (cellID = 0;cellID < netIO->CellNum ();++cellID)
+			for (cellID = 0;cellID < netIF->CellNum ();++cellID)
 				{
-				cellRec = netIO->Cell (cellID);
-				outGridIO->Value (outLayerRec,netIO->CellPosition (cellRec),&value);
+				cellRec = netIF->Cell (cellID);
+				outGridIF->Value (outLayerRec,netIF->CellPosition (cellRec),&value);
 				value = coeff * value;
-				outGridIO->Value (outLayerRec,netIO->CellPosition (cellRec),value);
+				outGridIF->Value (outLayerRec,netIF->CellPosition (cellRec),value);
 				}
 
 		}
-	outGridIO->RecalcStats ();
+	outGridIF->RecalcStats ();
 Stop:
 	return (progress + 1 == maxProgress ? DBSuccess : DBFault);
 	}
@@ -717,42 +717,42 @@ DBInt RGlibNetworkInvAccumulate (DBObjData *netData, DBObjData *inGridData, DBOb
 	DBFloat value, accumVal;
 	DBPosition pos;
 	DBObjRecord *cellRec, *toCell, *inLayerRec, *outLayerRec;
-	DBGridIO *inGridIO  = new DBGridIO (inGridData);
-	DBGridIO *outGridIO = new DBGridIO (outGridData);
-	DBNetworkIO *netIO = new DBNetworkIO (netData);
+	DBGridIF *inGridIF  = new DBGridIF (inGridData);
+	DBGridIF *outGridIF = new DBGridIF (outGridData);
+	DBNetworkIF *netIF = new DBNetworkIF (netData);
 
-	maxProgress = inGridIO->LayerNum () * netIO->CellNum ();
-	for (layerID = 0;layerID < inGridIO->LayerNum ();++layerID)
+	maxProgress = inGridIF->LayerNum () * netIF->CellNum ();
+	for (layerID = 0;layerID < inGridIF->LayerNum ();++layerID)
 		{
-		inLayerRec = inGridIO->Layer (layerID);
+		inLayerRec = inGridIF->Layer (layerID);
 		if (layerID == 0)
 			{
-			outLayerRec = outGridIO->Layer (layerID);
-			outGridIO->RenameLayer (outLayerRec,inLayerRec->Name ());
+			outLayerRec = outGridIF->Layer (layerID);
+			outGridIF->RenameLayer (outLayerRec,inLayerRec->Name ());
 			}
 		else
-			outLayerRec = outGridIO->AddLayer (inLayerRec->Name ());
+			outLayerRec = outGridIF->AddLayer (inLayerRec->Name ());
 
-		accumVal = outGridIO->MissingValue ();
-		for (pos.Col = 0;pos.Col < netIO->ColNum ();++pos.Col)
-			for (pos.Row = 0;pos.Row < netIO->RowNum ();++pos.Row) outGridIO->Value (outLayerRec,pos,accumVal);
+		accumVal = outGridIF->MissingValue ();
+		for (pos.Col = 0;pos.Col < netIF->ColNum ();++pos.Col)
+			for (pos.Row = 0;pos.Row < netIF->RowNum ();++pos.Row) outGridIF->Value (outLayerRec,pos,accumVal);
 
-		for (cellID = 0;cellID < netIO->CellNum ();++cellID)
+		for (cellID = 0;cellID < netIF->CellNum ();++cellID)
 			{
-			progress = layerID * netIO->CellNum () + cellID;
+			progress = layerID * netIF->CellNum () + cellID;
 			if (DBPause (progress * 100 / maxProgress)) goto Stop;
 
-			cellRec = netIO->Cell (cellID);
+			cellRec = netIF->Cell (cellID);
 			accumVal = 0.0;
-			for (toCell = cellRec;toCell != (DBObjRecord *) NULL;toCell = netIO->ToCell (toCell))
+			for (toCell = cellRec;toCell != (DBObjRecord *) NULL;toCell = netIF->ToCell (toCell))
 				{
-				if (inGridIO->Value (inLayerRec,netIO->Center (toCell),&value) == false) continue;
+				if (inGridIF->Value (inLayerRec,netIF->Center (toCell),&value) == false) continue;
 				else	accumVal = accumVal + value * coeff;
 				}
-			outGridIO->Value (outLayerRec,netIO->CellPosition (cellRec),accumVal);
+			outGridIF->Value (outLayerRec,netIF->CellPosition (cellRec),accumVal);
 			}
 		}
-	outGridIO->RecalcStats ();
+	outGridIF->RecalcStats ();
 Stop:
 	return (progress + 1 == maxProgress ? DBSuccess : DBFault);
 	}
@@ -764,86 +764,86 @@ DBInt RGlibNetworkUpStreamAvg (DBObjData *netData,DBObjData *inGridData,DBObjDat
 	DBFloat value, accumVal, *upstreamArea;
 	DBPosition pos;
 	DBObjRecord *outLayerRec, *cellRec, *toCellRec, *layerRec;
-	DBGridIO *inGridIO, *outGridIO;
-	DBNetworkIO *netIO;
+	DBGridIF *inGridIF, *outGridIF;
+	DBNetworkIF *netIF;
 
-	inGridIO = new DBGridIO (inGridData);
-	for (layerID = 0;layerID < inGridIO->LayerNum ();++layerID)
+	inGridIF = new DBGridIF (inGridData);
+	for (layerID = 0;layerID < inGridIF->LayerNum ();++layerID)
 		{
-		layerRec = inGridIO->Layer (layerID);
+		layerRec = inGridIF->Layer (layerID);
 		if ((layerRec->Flags () & DBObjectFlagIdle) != DBObjectFlagIdle) ++layerNum;
 		}
 	if (layerNum < 1)
-		{ fprintf (stderr,"No Layer to Process in RGlibNetworkUpStreamAvg ()\n"); delete inGridIO; return (DBFault); }
-	netIO 	= new DBNetworkIO (netData);
-	outGridIO = new DBGridIO (outGridData);
-	outGridIO->MissingValue (inGridIO->MissingValue ());
+		{ fprintf (stderr,"No Layer to Process in RGlibNetworkUpStreamAvg ()\n"); delete inGridIF; return (DBFault); }
+	netIF 	= new DBNetworkIF (netData);
+	outGridIF = new DBGridIF (outGridData);
+	outGridIF->MissingValue (inGridIF->MissingValue ());
 
-	outLayerRec = outGridIO->Layer ((DBInt) 0);
-	maxProgress = layerNum * netIO->RowNum ();
-	if ((upstreamArea = (DBFloat *) calloc (netIO->CellNum (),sizeof (DBFloat))) == (DBFloat *) NULL)
+	outLayerRec = outGridIF->Layer ((DBInt) 0);
+	maxProgress = layerNum * netIF->RowNum ();
+	if ((upstreamArea = (DBFloat *) calloc (netIF->CellNum (),sizeof (DBFloat))) == (DBFloat *) NULL)
 		{
 		perror ("Memory Allocation Error in: RGlibNetworkUpStreamAvg ()");
-		delete netIO;
-		delete outGridIO;
-		delete inGridIO;
+		delete netIF;
+		delete outGridIF;
+		delete inGridIF;
 		return (DBFault);
 		}
 
-	for (layerID = 0;layerID < inGridIO->LayerNum ();++layerID)
+	for (layerID = 0;layerID < inGridIF->LayerNum ();++layerID)
 		{
-		layerRec = inGridIO->Layer (layerID);
+		layerRec = inGridIF->Layer (layerID);
 		if ((layerRec->Flags () & DBObjectFlagIdle) == DBObjectFlagIdle) continue;
 
-		outGridIO->RenameLayer (outLayerRec,layerRec->Name ());
-		for (cellID = 0;cellID < netIO->CellNum ();cellID++) upstreamArea [cellID] = 0.0;
-		for (pos.Row = 0;pos.Row < netIO->RowNum ();pos.Row++)
+		outGridIF->RenameLayer (outLayerRec,layerRec->Name ());
+		for (cellID = 0;cellID < netIF->CellNum ();cellID++) upstreamArea [cellID] = 0.0;
+		for (pos.Row = 0;pos.Row < netIF->RowNum ();pos.Row++)
 			{
 			if (DBPause (progress * 100 / maxProgress)) goto Stop;
 			progress++;
-			for (pos.Col = 0;pos.Col < netIO->ColNum ();pos.Col++)
-				if ((cellRec = netIO->Cell (pos)) == (DBObjRecord *) NULL)
-					outGridIO->Value (outLayerRec,pos,outGridIO->MissingValue ());
+			for (pos.Col = 0;pos.Col < netIF->ColNum ();pos.Col++)
+				if ((cellRec = netIF->Cell (pos)) == (DBObjRecord *) NULL)
+					outGridIF->Value (outLayerRec,pos,outGridIF->MissingValue ());
 				else
 					{
-					if (inGridIO->Value (layerRec,netIO->Center (cellRec),&value))
+					if (inGridIF->Value (layerRec,netIF->Center (cellRec),&value))
 						{
-						outGridIO->Value (outLayerRec,pos,value * netIO->CellArea (cellRec));
-						upstreamArea [cellRec->RowID ()] = netIO->CellArea (cellRec);
+						outGridIF->Value (outLayerRec,pos,value * netIF->CellArea (cellRec));
+						upstreamArea [cellRec->RowID ()] = netIF->CellArea (cellRec);
 						}
 					else
 						{
-						outGridIO->Value (outLayerRec,pos,0.0);
+						outGridIF->Value (outLayerRec,pos,0.0);
 						upstreamArea [cellRec->RowID ()] = 0.0;
 						}
 					}
 			}
-		for (cellID = netIO->CellNum () - 1;cellID >= 0;--cellID)
+		for (cellID = netIF->CellNum () - 1;cellID >= 0;--cellID)
 			{
-			cellRec = netIO->Cell (cellID);
+			cellRec = netIF->Cell (cellID);
 			if ((cellRec->Flags () & DBObjectFlagIdle) == DBObjectFlagIdle) continue;
-			if (outGridIO->Value (outLayerRec,netIO->CellPosition (cellRec),&value) == false)
+			if (outGridIF->Value (outLayerRec,netIF->CellPosition (cellRec),&value) == false)
 				{ fprintf (stderr,"Total metal Gebasz in: RGlibNetworkUpStreamAvg ()\n"); value = 0.0; }
-			if ((toCellRec = netIO->ToCell (cellRec)) != (DBObjRecord *) NULL)
+			if ((toCellRec = netIF->ToCell (cellRec)) != (DBObjRecord *) NULL)
 				{
-				if (outGridIO->Value (outLayerRec,netIO->CellPosition (toCellRec),&accumVal) == false) accumVal = 0.0;
-				outGridIO->Value (outLayerRec,netIO->CellPosition (toCellRec),accumVal + value);
+				if (outGridIF->Value (outLayerRec,netIF->CellPosition (toCellRec),&accumVal) == false) accumVal = 0.0;
+				outGridIF->Value (outLayerRec,netIF->CellPosition (toCellRec),accumVal + value);
 				upstreamArea [toCellRec->RowID ()] += upstreamArea [cellID];
 				}
 			if (upstreamArea [cellID] > 0.0)
-					outGridIO->Value (outLayerRec,netIO->CellPosition (cellRec),value / upstreamArea [cellID]);
-			else	outGridIO->Value (outLayerRec,netIO->CellPosition (cellRec),DBDefaultMissingFloatVal);
+					outGridIF->Value (outLayerRec,netIF->CellPosition (cellRec),value / upstreamArea [cellID]);
+			else	outGridIF->Value (outLayerRec,netIF->CellPosition (cellRec),DBDefaultMissingFloatVal);
 			}
-		outGridIO->RecalcStats (outLayerRec);
-		if (outGridIO->LayerNum () < layerNum) outLayerRec = outGridIO->AddLayer ((char *) "Next Layer");
+		outGridIF->RecalcStats (outLayerRec);
+		if (outGridIF->LayerNum () < layerNum) outLayerRec = outGridIF->AddLayer ((char *) "Next Layer");
 		}
 Stop:
 	outGridData->Flags (DBDataFlagDispModeContShadeSets,DBClear);
 	outGridData->Flags (DBDataFlagDispModeContBlueScale,DBSet);
 	free (upstreamArea);
-	delete netIO;
-	delete outGridIO;
-	delete inGridIO;
+	delete netIF;
+	delete outGridIF;
+	delete inGridIF;
 	return (progress == maxProgress ? DBSuccess : DBFault);
 	}
 
@@ -855,69 +855,69 @@ DBInt RGlibNetworkCellSlopes (DBObjData *netData,DBObjData *inGridData,DBObjData
 	DBPosition pos;
 	DBCoordinate coord0, coord1;
 	DBObjRecord *outLayerRec, *cellRec, *layerRec;
-	DBGridIO *inGridIO, *outGridIO;
-	DBNetworkIO *netIO;
+	DBGridIF *inGridIF, *outGridIF;
+	DBNetworkIF *netIF;
 	DBMathDistanceFunction distFunc = DBMathGetDistanceFunction (netData);
 
-	inGridIO = new DBGridIO (inGridData);
-	for (layerID = 0;layerID < inGridIO->LayerNum ();++layerID)
+	inGridIF = new DBGridIF (inGridData);
+	for (layerID = 0;layerID < inGridIF->LayerNum ();++layerID)
 		{
-		layerRec = inGridIO->Layer (layerID);
+		layerRec = inGridIF->Layer (layerID);
 		if ((layerRec->Flags () & DBObjectFlagIdle) != DBObjectFlagIdle) ++layerNum;
 		}
 	if (layerNum < 1)
-		{ fprintf (stderr,"No Layer to Process in RGlibNetworkCellSlopes ()\n"); delete inGridIO; return (DBFault); }
+		{ fprintf (stderr,"No Layer to Process in RGlibNetworkCellSlopes ()\n"); delete inGridIF; return (DBFault); }
 
-	netIO 	= new DBNetworkIO (netData);
-	outGridIO = new DBGridIO (outGridData);
+	netIF 	= new DBNetworkIF (netData);
+	outGridIF = new DBGridIF (outGridData);
 
-	outLayerRec = outGridIO->Layer ((DBInt) 0);
+	outLayerRec = outGridIF->Layer ((DBInt) 0);
 
-	maxProgress = layerNum * netIO->RowNum ();
+	maxProgress = layerNum * netIF->RowNum ();
 
-	for (layerID = 0;layerID < inGridIO->LayerNum ();++layerID)
+	for (layerID = 0;layerID < inGridIF->LayerNum ();++layerID)
 		{
-		layerRec = inGridIO->Layer (layerID);
+		layerRec = inGridIF->Layer (layerID);
 		if ((layerRec->Flags () & DBObjectFlagIdle) == DBObjectFlagIdle) continue;
 
-		outGridIO->RenameLayer (outLayerRec,layerRec->Name ());
-		for (pos.Row = 0;pos.Row < netIO->RowNum ();pos.Row++)
+		outGridIF->RenameLayer (outLayerRec,layerRec->Name ());
+		for (pos.Row = 0;pos.Row < netIF->RowNum ();pos.Row++)
 			{
 			if (DBPause (progress * 100 / maxProgress)) goto Stop;
 			progress++;
-			for (pos.Col = 0;pos.Col < netIO->ColNum ();pos.Col++)
-				if ((cellRec = netIO->Cell (pos)) == (DBObjRecord *) NULL)
-					outGridIO->Value (outLayerRec,pos,DBDefaultMissingFloatVal);
+			for (pos.Col = 0;pos.Col < netIF->ColNum ();pos.Col++)
+				if ((cellRec = netIF->Cell (pos)) == (DBObjRecord *) NULL)
+					outGridIF->Value (outLayerRec,pos,DBDefaultMissingFloatVal);
 				else
 					{
-					coord0 = netIO->Center (cellRec);
-					if (inGridIO->Value (layerRec,coord0,&slope))
+					coord0 = netIF->Center (cellRec);
+					if (inGridIF->Value (layerRec,coord0,&slope))
 						{
-						coord1 = coord0 + netIO->Delta (cellRec);
+						coord1 = coord0 + netIF->Delta (cellRec);
 						if ((coord0.X == coord1.X) && (coord0.Y == coord1.Y))
-							outGridIO->Value (outLayerRec,pos,(DBFloat) RGlibMinSLOPE);
+							outGridIF->Value (outLayerRec,pos,(DBFloat) RGlibMinSLOPE);
 						else
 							{
-							if (inGridIO->Value (layerRec,coord1,&value))
+							if (inGridIF->Value (layerRec,coord1,&value))
 								{
 								slope = (slope - value) / DBMathCoordinateDistance (distFunc,coord0,coord1);
-								outGridIO->Value (outLayerRec,pos,slope);
+								outGridIF->Value (outLayerRec,pos,slope);
 								}
-							else	outGridIO->Value (outLayerRec,pos,(DBFloat) RGlibMinSLOPE);
+							else	outGridIF->Value (outLayerRec,pos,(DBFloat) RGlibMinSLOPE);
 							}
 						}
-					else	outGridIO->Value (outLayerRec,pos,DBDefaultMissingFloatVal);
+					else	outGridIF->Value (outLayerRec,pos,DBDefaultMissingFloatVal);
 					}
 			}
-		outGridIO->RecalcStats (outLayerRec);
-		if (outGridIO->LayerNum () < layerNum) outLayerRec = outGridIO->AddLayer ((char *) "Next Layer");
+		outGridIF->RecalcStats (outLayerRec);
+		if (outGridIF->LayerNum () < layerNum) outLayerRec = outGridIF->AddLayer ((char *) "Next Layer");
 		}
 Stop:
 	outGridData->Flags (DBDataFlagDispModeContShadeSets,DBClear);
 	outGridData->Flags (DBDataFlagDispModeContGreyScale,DBSet);
-	delete netIO;
-	delete outGridIO;
-	delete inGridIO;
+	delete netIF;
+	delete outGridIF;
+	delete inGridIF;
 	return (progress == maxProgress ? DBSuccess : DBFault);
 	}
 
@@ -927,34 +927,34 @@ DBInt RGlibNetworkConfluences (DBObjData *netData,DBObjData *outPntData)
 	char recordName [DBStringLength];
 	DBInt cellId, pntId = 0, cellOrder, maxOrder = 0;
 	DBCoordinate coord;
-	DBNetworkIO *netIO = new DBNetworkIO (netData);
-	DBVPointIO  *pntIO = new DBVPointIO  (outPntData);
+	DBNetworkIF *netIF = new DBNetworkIF (netData);
+	DBVPointIF  *pntIF = new DBVPointIF  (outPntData);
 	DBObjRecord *cellRec, *toCellRec, *pntRec;
 	DBObjTable *itemTable = outPntData->Table(DBrNItems);
 	DBObjTableField *orderFLD    = new DBObjTableField ("Order",    DBTableFieldInt, "%2d", sizeof (DBByte));
 
 	itemTable->AddField (orderFLD);
 
-	for (cellId = 0; cellId < netIO->CellNum(); ++cellId)
+	for (cellId = 0; cellId < netIF->CellNum(); ++cellId)
 		{
-		cellOrder = netIO->CellOrder (cellId);
+		cellOrder = netIF->CellOrder (cellId);
 		maxOrder = maxOrder > cellOrder ? maxOrder : cellOrder;
 		}
 	for (cellOrder = 0; cellOrder < maxOrder; ++cellOrder)
 		{
 		sprintf (recordName,"Order: %2d", cellOrder + 1);
-		pntIO->NewSymbol(recordName);
+		pntIF->NewSymbol(recordName);
 		}
-	for (cellId = 0; cellId < netIO->CellNum (); ++cellId)
+	for (cellId = 0; cellId < netIF->CellNum (); ++cellId)
 		{
-		cellRec    = netIO->Cell       (cellId);
-		cellOrder  = netIO->CellOrder  (cellRec);
-		if (((toCellRec = netIO->ToCell(cellRec)) != (DBObjRecord *) NULL) && (netIO->CellOrder (toCellRec) == cellOrder)) continue;
+		cellRec    = netIF->Cell       (cellId);
+		cellOrder  = netIF->CellOrder  (cellRec);
+		if (((toCellRec = netIF->ToCell(cellRec)) != (DBObjRecord *) NULL) && (netIF->CellOrder (toCellRec) == cellOrder)) continue;
 
 		sprintf (recordName,"Confluence%010d", pntId++);
-		pntRec = pntIO->NewItem (recordName);
-		pntIO->Coordinate (pntRec, netIO->Center (cellRec));
-		pntIO->ItemSymbol (pntRec, pntIO->Symbol (cellOrder - 1));
+		pntRec = pntIF->NewItem (recordName);
+		pntIF->Coordinate (pntRec, netIF->Center (cellRec));
+		pntIF->ItemSymbol (pntRec, pntIF->Symbol (cellOrder - 1));
 		orderFLD->Int     (pntRec, cellOrder);
 		}
 
@@ -967,8 +967,8 @@ DBInt RGlibNetworkBasinProf (DBObjData *netData,DBObjData *gridData,DBObjData *t
 	DBInt layerID, layerNum = 0, basinID, ret;
 	DBFloat dist, value;
 	DBCoordinate coord;
-	DBNetworkIO *netIO;
-	DBGridIO *gridIO;
+	DBNetworkIF *netIF;
+	DBGridIF *gridIF;
 	DBObjTable *table;
 	DBObjTableField *basinFLD;
 	DBObjTableField *xCoordFLD;
@@ -978,63 +978,63 @@ DBInt RGlibNetworkBasinProf (DBObjData *netData,DBObjData *gridData,DBObjData *t
 	DBObjectLIST<DBObjTableField> *fields;
 	DBObjRecord *basinRec, *cellRec, *layerRec, *tblRec;
 
-	gridIO = new DBGridIO (gridData);
-	for (layerID = 0;layerID < gridIO->LayerNum ();++layerID)
+	gridIF = new DBGridIF (gridData);
+	for (layerID = 0;layerID < gridIF->LayerNum ();++layerID)
 		{
-		layerRec = gridIO->Layer (layerID);
+		layerRec = gridIF->Layer (layerID);
 		if ((layerRec->Flags () & DBObjectFlagIdle) != DBObjectFlagIdle) ++layerNum;
 		}
 	if (layerNum < 1)
-		{ fprintf (stderr,"No Layer to Process in RGlibNetworkBasinProf ()\n"); delete gridIO; return (DBFault); }
+		{ fprintf (stderr,"No Layer to Process in RGlibNetworkBasinProf ()\n"); delete gridIF; return (DBFault); }
 
 	table = tblData->Table (DBrNItems);
 	fields = table->Fields ();
-	netIO = new DBNetworkIO (netData);
+	netIF = new DBNetworkIF (netData);
 	table->AddField (basinFLD = new DBObjTableField (DBrNBasin,DBTableFieldInt,"%8d",sizeof (DBInt)));
 	table->AddField (xCoordFLD = new DBObjTableField ("XCoord",DBTableFieldFloat,"%8.3f",sizeof (DBFloat)));
 	table->AddField (yCoordFLD = new DBObjTableField ("YCoord",DBTableFieldFloat,"%8.3f",sizeof (DBFloat)));
 	table->AddField (distFLD = new DBObjTableField ("Distance",DBTableFieldFloat,"%8.0f",sizeof (DBFloat)));
 
-	for (layerID = 0;layerID < gridIO->LayerNum ();++layerID)
+	for (layerID = 0;layerID < gridIF->LayerNum ();++layerID)
 		{
-		layerRec = gridIO->Layer (layerID);
+		layerRec = gridIF->Layer (layerID);
 		if ((layerRec->Flags () & DBObjectFlagIdle) == DBObjectFlagIdle) continue;
 		table->AddField (valueFLD = new DBObjTableField (layerRec->Name (),DBTableFieldFloat,"%8.3f",sizeof (DBFloat)));
-		valueFLD->FloatNoData (gridIO->MissingValue (layerRec));
+		valueFLD->FloatNoData (gridIF->MissingValue (layerRec));
 		}
 
-	for (basinID = 0;basinID < netIO->BasinNum ();++basinID)
+	for (basinID = 0;basinID < netIF->BasinNum ();++basinID)
 		{
-		basinRec = netIO->Basin (basinID);
+		basinRec = netIF->Basin (basinID);
 		dist = 0.0;
-		if (DBPause (basinID * 100 / netIO->BasinNum ())) goto Stop;
-		for (cellRec = netIO->MouthCell (basinRec);cellRec != (DBObjRecord *) NULL;cellRec = netIO->FromCell (cellRec))
+		if (DBPause (basinID * 100 / netIF->BasinNum ())) goto Stop;
+		for (cellRec = netIF->MouthCell (basinRec);cellRec != (DBObjRecord *) NULL;cellRec = netIF->FromCell (cellRec))
 			{
-			coord = netIO->Center (cellRec);
+			coord = netIF->Center (cellRec);
 			tblRec = table->Add (basinRec->Name ());
 			basinFLD->Int (tblRec,basinRec->RowID () + 1);
 			xCoordFLD->Float (tblRec,coord.X);
 			yCoordFLD->Float (tblRec,coord.Y);
-			dist += netIO->CellLength (cellRec);
+			dist += netIF->CellLength (cellRec);
 			distFLD->Float (tblRec,dist);
 			valueFLD = fields->First ();
 			valueFLD = fields->Next ();
 			valueFLD = fields->Next ();
 			valueFLD = fields->Next ();
-			for (layerID = 0;layerID < gridIO->LayerNum ();++layerID)
+			for (layerID = 0;layerID < gridIF->LayerNum ();++layerID)
 				{
-				layerRec = gridIO->Layer (layerID);
+				layerRec = gridIF->Layer (layerID);
 				if ((layerRec->Flags () & DBObjectFlagIdle) == DBObjectFlagIdle) continue;
 				valueFLD = fields->Next ();
-				if (gridIO->Value (layerRec,coord,&value)) valueFLD->Float (tblRec,value);
+				if (gridIF->Value (layerRec,coord,&value)) valueFLD->Float (tblRec,value);
 				else valueFLD->Float (tblRec,valueFLD->FloatNoData ());
 				}
 			}
 		}
 Stop:
-	ret = basinID == netIO->BasinNum () ? DBSuccess : DBFault;
-	delete netIO;
-	delete gridIO;
+	ret = basinID == netIF->BasinNum () ? DBSuccess : DBFault;
+	delete netIF;
+	delete gridIF;
 	return (ret);
 	}
 
@@ -1058,44 +1058,44 @@ DBInt RGlibNetworkBasinStats (DBObjData *netData, DBObjData *grdData, DBObjData 
 	DBObjTableField *averageFLD;
 	DBObjTableField *stdDevFLD;
 	DBObjTableField *areaFLD;
-	DBNetworkIO *netIO;
-	DBGridIO 	*gridIO;
+	DBNetworkIF *netIF;
+	DBGridIF 	*gridIF;
 	DBObjRecord *layerRec, *cellRec, *basinRec, *tblRec;
 	DBObjectLIST<DBObjTableField> *fields;
 
-	gridIO = new DBGridIO (grdData);
-	for (layerID = 0;layerID < gridIO->LayerNum ();++layerID)
+	gridIF = new DBGridIF (grdData);
+	for (layerID = 0;layerID < gridIF->LayerNum ();++layerID)
 		{
-		layerRec = gridIO->Layer (layerID);
+		layerRec = gridIF->Layer (layerID);
 		if ((layerRec->Flags () & DBObjectFlagIdle) != DBObjectFlagIdle) ++layerNum;
 		}
 	if (layerNum < 1)
-		{ fprintf (stderr,"No Layer to Process in RGlibNetworkBasinStats ()\n"); delete gridIO; return (DBFault); }
+		{ fprintf (stderr,"No Layer to Process in RGlibNetworkBasinStats ()\n"); delete gridIF; return (DBFault); }
 
 	table = tblData->Table (DBrNItems);
-	netIO = new DBNetworkIO (netData);
+	netIF = new DBNetworkIF (netData);
 	table->AddField (basinIDFLD	= new DBObjTableField (DBrNBasin,		DBTableFieldInt,		"%8d",						sizeof (DBInt)));
 	table->AddField (layerIDFLD	= new DBObjTableField ("LayerID",		DBTableFieldInt,		"%4d",						sizeof (DBShort)));
 	table->AddField (layerNameFLD	= new DBObjTableField ("LayerName",		DBTableFieldString,	"%s",							DBStringLength));
-	table->AddField (averageFLD	= new DBObjTableField (RGISStatMean,	DBTableFieldFloat,	gridIO->ValueFormat (),	sizeof (DBFloat4)));
-	table->AddField (minimumFLD	= new DBObjTableField (RGISStatMin,		DBTableFieldFloat,	gridIO->ValueFormat (),	sizeof (DBFloat4)));
-	table->AddField (maximumFLD	= new DBObjTableField (RGISStatMax,		DBTableFieldFloat,	gridIO->ValueFormat (),	sizeof (DBFloat4)));
-	table->AddField (stdDevFLD		= new DBObjTableField (RGISStatStdDev,	DBTableFieldFloat,	gridIO->ValueFormat (),	sizeof (DBFloat4)));
-	table->AddField (areaFLD		= new DBObjTableField (RGISStatArea,	DBTableFieldFloat,	gridIO->ValueFormat (),	sizeof (DBFloat4)));
+	table->AddField (averageFLD	= new DBObjTableField (RGISStatMean,	DBTableFieldFloat,	gridIF->ValueFormat (),	sizeof (DBFloat4)));
+	table->AddField (minimumFLD	= new DBObjTableField (RGISStatMin,		DBTableFieldFloat,	gridIF->ValueFormat (),	sizeof (DBFloat4)));
+	table->AddField (maximumFLD	= new DBObjTableField (RGISStatMax,		DBTableFieldFloat,	gridIF->ValueFormat (),	sizeof (DBFloat4)));
+	table->AddField (stdDevFLD		= new DBObjTableField (RGISStatStdDev,	DBTableFieldFloat,	gridIF->ValueFormat (),	sizeof (DBFloat4)));
+	table->AddField (areaFLD		= new DBObjTableField (RGISStatArea,	DBTableFieldFloat,	gridIF->ValueFormat (),	sizeof (DBFloat4)));
 
-	maxProgress = netIO->CellNum () * layerNum;
-	for (layerID = 0;layerID < gridIO->LayerNum ();++layerID)
+	maxProgress = netIF->CellNum () * layerNum;
+	for (layerID = 0;layerID < gridIF->LayerNum ();++layerID)
 		{
-		layerRec = gridIO->Layer (layerID);
+		layerRec = gridIF->Layer (layerID);
 		if ((layerRec->Flags () & DBObjectFlagIdle) == DBObjectFlagIdle) continue;
 		basinID = DBFault;
-		for (cellID = 0;cellID < netIO->CellNum ();++cellID)
+		for (cellID = 0;cellID < netIF->CellNum ();++cellID)
 			{
-			cellRec = netIO->Cell (cellID);
+			cellRec = netIF->Cell (cellID);
 			if (DBPause (progress * 100 / maxProgress)) goto Stop;
 			progress++;
 			if ((cellRec->Flags () & DBObjectFlagIdle) == DBObjectFlagIdle) continue;
-			if (basinID != netIO->CellBasinID (cellRec))
+			if (basinID != netIF->CellBasinID (cellRec))
 				{
 				if (basinID != DBFault)
 					{
@@ -1109,8 +1109,8 @@ DBInt RGlibNetworkBasinStats (DBObjData *netData, DBObjData *grdData, DBObjData 
 					stdDevFLD->Float  (tblRec,stdDev);
 					areaFLD->Float		(tblRec,area);
 					}
-				basinID = netIO->CellBasinID (cellRec);
-				basinRec = netIO->Basin (cellRec);
+				basinID = netIF->CellBasinID (cellRec);
+				basinRec = netIF->Basin (cellRec);
 				tblRec = table->Add (basinRec->Name ());
 				basinIDFLD->Int (tblRec,basinID);
 				layerIDFLD->Int (tblRec,layerRec->RowID ());
@@ -1121,13 +1121,13 @@ DBInt RGlibNetworkBasinStats (DBObjData *netData, DBObjData *grdData, DBObjData 
 				average = 0.0;
 				stdDev = 0.0;
 				}
-			if (gridIO->Value (layerRec,netIO->Center (cellRec),&value) == true)
+			if (gridIF->Value (layerRec,netIF->Center (cellRec),&value) == true)
 				{
-				average = average + value * netIO->CellArea (cellRec);
+				average = average + value * netIF->CellArea (cellRec);
 				minimum = minimum < value ? minimum : value;
 				maximum = maximum > value ? maximum : value;
-				stdDev = stdDev + value * value * netIO->CellArea (cellRec);
-				area = area + netIO->CellArea (cellRec);
+				stdDev = stdDev + value * value * netIF->CellArea (cellRec);
+				area = area + netIF->CellArea (cellRec);
 				}
 			}
 		average = average / area;
@@ -1146,8 +1146,8 @@ Stop:
 	fields->Add (new DBObjTableField (*layerIDFLD));
 	table->ListSort (fields);
 	delete fields;
-	delete netIO;
-	delete gridIO;
+	delete netIF;
+	delete gridIF;
 	return (progress == maxProgress ? DBSuccess : DBFault);
 	}
 
@@ -1174,43 +1174,43 @@ DBInt RGlibNetworkHeadStats (DBObjData *netData, DBObjData *grdData, DBObjData *
 	DBObjTableField *maximumFLD;
 	DBObjTableField *averageFLD;
 	DBObjTableField *stdDevFLD;
-	DBNetworkIO *netIO;
-	DBGridIO *gridIO;
+	DBNetworkIF *netIF;
+	DBGridIF *gridIF;
 	DBObjRecord *layerRec, *cellRec, *fromCell, *basinRec, *tblRec;
 	DBObjectLIST<DBObjTableField> *fields;
 
-	gridIO = new DBGridIO (grdData);
-	for (layerID = 0;layerID < gridIO->LayerNum ();++layerID)
+	gridIF = new DBGridIF (grdData);
+	for (layerID = 0;layerID < gridIF->LayerNum ();++layerID)
 		{
-		layerRec = gridIO->Layer (layerID);
+		layerRec = gridIF->Layer (layerID);
 		if ((layerRec->Flags () & DBObjectFlagIdle) != DBObjectFlagIdle) ++layerNum;
 		}
 	if (layerNum < 1)
-		{ fprintf (stderr,"No Layer to Process in RGlibNetworkHeadStats ()\n"); delete gridIO; return (DBFault); }
+		{ fprintf (stderr,"No Layer to Process in RGlibNetworkHeadStats ()\n"); delete gridIF; return (DBFault); }
 
 	table = tblData->Table (DBrNItems);
-	netIO = new DBNetworkIO (netData);
+	netIF = new DBNetworkIF (netData);
 	table->AddField (basinIDFLD = new DBObjTableField (DBrNBasin,DBTableFieldInt,"%8d",sizeof (DBInt)));
 	table->AddField (layerIDFLD = new DBObjTableField ("LayerID",DBTableFieldInt,"%4d",sizeof (DBShort)));
 	table->AddField (layerNameFLD = new DBObjTableField ("LayerName",DBTableFieldString,"%s",DBStringLength));
-	table->AddField (averageFLD = new DBObjTableField (divideOnly ? RGISDivideMean	: RGISHeadMean,	DBTableFieldFloat,gridIO->ValueFormat (),sizeof (DBFloat4)));
-	table->AddField (minimumFLD = new DBObjTableField (divideOnly ? RGISDivideMin		: RGISHeadMin,		DBTableFieldFloat,gridIO->ValueFormat (),sizeof (DBFloat4)));
-	table->AddField (maximumFLD = new DBObjTableField (divideOnly ? RGISDivideMax		: RGISHeadMax,		DBTableFieldFloat,gridIO->ValueFormat (),sizeof (DBFloat4)));
-	table->AddField (stdDevFLD  = new DBObjTableField (divideOnly ? RGISDivideStdDev : RGISHeadStdDev,	DBTableFieldFloat,gridIO->ValueFormat (),sizeof (DBFloat4)));
+	table->AddField (averageFLD = new DBObjTableField (divideOnly ? RGISDivideMean	: RGISHeadMean,	DBTableFieldFloat,gridIF->ValueFormat (),sizeof (DBFloat4)));
+	table->AddField (minimumFLD = new DBObjTableField (divideOnly ? RGISDivideMin		: RGISHeadMin,		DBTableFieldFloat,gridIF->ValueFormat (),sizeof (DBFloat4)));
+	table->AddField (maximumFLD = new DBObjTableField (divideOnly ? RGISDivideMax		: RGISHeadMax,		DBTableFieldFloat,gridIF->ValueFormat (),sizeof (DBFloat4)));
+	table->AddField (stdDevFLD  = new DBObjTableField (divideOnly ? RGISDivideStdDev : RGISHeadStdDev,	DBTableFieldFloat,gridIF->ValueFormat (),sizeof (DBFloat4)));
 
-	maxProgress = netIO->CellNum () * layerNum;
-	for (layerID = 0;layerID < gridIO->LayerNum ();++layerID)
+	maxProgress = netIF->CellNum () * layerNum;
+	for (layerID = 0;layerID < gridIF->LayerNum ();++layerID)
 		{
-		layerRec = gridIO->Layer (layerID);
+		layerRec = gridIF->Layer (layerID);
 		if ((layerRec->Flags () & DBObjectFlagIdle) == DBObjectFlagIdle) continue;
 		basinID = DBFault;
-		for (cellID = 0;cellID < netIO->CellNum ();++cellID)
+		for (cellID = 0;cellID < netIF->CellNum ();++cellID)
 			{
-			cellRec = netIO->Cell (cellID);
+			cellRec = netIF->Cell (cellID);
 			if (DBPause (progress * 100 / maxProgress)) goto Stop;
 			progress++;
 			if ((cellRec->Flags () & DBObjectFlagIdle) == DBObjectFlagIdle) continue;
-			if (basinID != netIO->CellBasinID (cellRec))
+			if (basinID != netIF->CellBasinID (cellRec))
 				{
 				if (basinID != DBFault)
 					{
@@ -1223,8 +1223,8 @@ DBInt RGlibNetworkHeadStats (DBObjData *netData, DBObjData *grdData, DBObjData *
 					averageFLD->Float (tblRec,average);
 					stdDevFLD->Float  (tblRec,stdDev);
 					}
-				basinID = netIO->CellBasinID (cellRec);
-				basinRec = netIO->Basin (cellRec);
+				basinID = netIF->CellBasinID (cellRec);
+				basinRec = netIF->Basin (cellRec);
 				tblRec = table->Add (basinRec->Name ());
 				basinIDFLD->Int (tblRec,basinID);
 				layerIDFLD->Int (tblRec,layerRec->RowID ());
@@ -1235,25 +1235,25 @@ DBInt RGlibNetworkHeadStats (DBObjData *netData, DBObjData *grdData, DBObjData *
 				average = 0.0;
 				stdDev = 0.0;
 				}
-			if ((netIO->CellBasinCells (cellRec) == 1)  && (gridIO->Value (layerRec,netIO->Center (cellRec),&value) == true))
+			if ((netIF->CellBasinCells (cellRec) == 1)  && (gridIF->Value (layerRec,netIF->Center (cellRec),&value) == true))
 				{
 				if (divideOnly)
 					{
 					divide = false;
 					for (dir = 0;dir < 8;++dir)
-						if ((fromCell = netIO->FromCell (cellRec,0x01 << dir,false)) == (DBObjRecord *) NULL)
+						if ((fromCell = netIF->FromCell (cellRec,0x01 << dir,false)) == (DBObjRecord *) NULL)
 							{ divide = true; break; }
 						else
-							if (netIO->CellBasinID (fromCell) != basinID) { divide = true; break; }
+							if (netIF->CellBasinID (fromCell) != basinID) { divide = true; break; }
 					}
 				else	divide = true;
 				if (divide)
 					{
-					average = average + value * netIO->CellArea (cellRec);
+					average = average + value * netIF->CellArea (cellRec);
 					minimum = minimum < value ? minimum : value;
 					maximum = maximum > value ? maximum : value;
-					stdDev = stdDev + value * value * netIO->CellArea (cellRec);
-					area = area + netIO->CellArea (cellRec);
+					stdDev = stdDev + value * value * netIF->CellArea (cellRec);
+					area = area + netIF->CellArea (cellRec);
 					}
 				}
 			}
@@ -1272,8 +1272,8 @@ Stop:
 	fields->Add (new DBObjTableField (*layerIDFLD));
 	table->ListSort (fields);
 	delete fields;
-	delete netIO;
-	delete gridIO;
+	delete netIF;
+	delete gridIF;
 	return (progress == maxProgress ? DBSuccess : DBFault);
 	}
 
@@ -1288,8 +1288,8 @@ DBInt RGlibNetworkHistogram (DBObjData *netData,DBObjData *grdData, DBObjData *t
 	DBObjTableField *areaFLD;
 	DBObjTableField *elevationFLD;
 	DBObjTableField *percentFLD;
-	DBNetworkIO *netIO;
-	DBGridIO 	*gridIO;
+	DBNetworkIF *netIF;
+	DBGridIF 	*gridIF;
 	DBObjRecord *cellRec, *tblRec;
 	DBObjectLIST<DBObjTableField> *fields;
 
@@ -1297,18 +1297,18 @@ DBInt RGlibNetworkHistogram (DBObjData *netData,DBObjData *grdData, DBObjData *t
 	itemTable->AddField (areaFLD = new DBObjTableField ("Area",DBTableFieldFloat,"%10.1f",sizeof (DBFloat4)));
 	itemTable->AddField (elevationFLD = new DBObjTableField ("Elevation",DBTableFieldFloat,"%8.1f",sizeof (DBFloat4)));
 	itemTable->AddField (percentFLD = new DBObjTableField ("Percent",DBTableFieldFloat,"%6.2f",sizeof (DBFloat4)));
-	netIO = new DBNetworkIO (netData);
-	gridIO = new DBGridIO (grdData);
+	netIF = new DBNetworkIF (netData);
+	gridIF = new DBGridIF (grdData);
 
-	for (cellID = 0;cellID < netIO->CellNum ();++cellID)
+	for (cellID = 0;cellID < netIF->CellNum ();++cellID)
 		{
-		cellRec = netIO->Cell (cellID);
-		if (DBPause (cellID * 33 / netIO->CellNum ())) { ret = DBFault; goto Stop; }
-		if (gridIO->Value (netIO->Center (cellRec),&elev))
+		cellRec = netIF->Cell (cellID);
+		if (DBPause (cellID * 33 / netIF->CellNum ())) { ret = DBFault; goto Stop; }
+		if (gridIF->Value (netIF->Center (cellRec),&elev))
 			{
 			tblRec = itemTable->Add ();
-			basinIDFLD->Int (tblRec,netIO->CellBasinID (cellRec));
-			areaFLD->Float (tblRec,netIO->CellArea (cellRec));
+			basinIDFLD->Int (tblRec,netIF->CellBasinID (cellRec));
+			areaFLD->Float (tblRec,netIF->CellArea (cellRec));
 			elevationFLD->Float (tblRec,elev);
 			}
 		}
@@ -1337,8 +1337,8 @@ DBInt RGlibNetworkHistogram (DBObjData *netData,DBObjData *grdData, DBObjData *t
 		percentFLD->Float (tblRec,100.0 * areaFLD->Float (tblRec) / area);
 		}
 Stop:
-	delete netIO;
-	delete gridIO;
+	delete netIF;
+	delete gridIF;
 	return (ret);
 	}
 
@@ -1357,8 +1357,8 @@ DBInt RGlibNetworkBasinDistrib (DBObjData *netData,DBObjData *grdData, DBObjData
 	DBObjTableField *percentFLD;
 	DBObjTableField *areaFLD;
 	DBObjTableField *cellNumFLD;
-	DBNetworkIO *netIO;
-	DBGridIO 	*gridIO;
+	DBNetworkIF *netIF;
+	DBGridIF 	*gridIF;
 	DBObjRecord *layerRec, *gridRec, *cellRec, *basinRec, *tblRec;
 	DBObjectLIST<DBObjTableField> *fields;
 	class Histogram {
@@ -1368,17 +1368,17 @@ DBInt RGlibNetworkBasinDistrib (DBObjData *netData,DBObjData *grdData, DBObjData
 			void Initialize () { cellNum = 0; area = 0.0; }
 		} *histogram = (Histogram *) NULL;
 
-	gridIO = new DBGridIO (grdData);
-	for (layerID = 0;layerID < gridIO->LayerNum ();++layerID)
+	gridIF = new DBGridIF (grdData);
+	for (layerID = 0;layerID < gridIF->LayerNum ();++layerID)
 		{
-		layerRec = gridIO->Layer (layerID);
+		layerRec = gridIF->Layer (layerID);
 		if ((layerRec->Flags () & DBObjectFlagIdle) != DBObjectFlagIdle) ++layerNum;
 		}
 	if (layerNum < 1)
-		{ fprintf (stderr,"No Layer to Process in RGlibNetworkBasinDistrib ()\n"); delete gridIO; return (DBFault); }
+		{ fprintf (stderr,"No Layer to Process in RGlibNetworkBasinDistrib ()\n"); delete gridIF; return (DBFault); }
 
 	table = tblData->Table (DBrNItems);
-	netIO = new DBNetworkIO (netData);
+	netIF = new DBNetworkIF (netData);
 	table->AddField (basinIDFLD	= new DBObjTableField (DBrNBasin,	DBTableFieldInt,	"%8d",	sizeof (DBInt)));
 	table->AddField (layerIDFLD	= new DBObjTableField ("LayerID",	DBTableFieldInt,	"%4d",	sizeof (DBShort)));
 	table->AddField (layerNameFLD	= new DBObjTableField ("LayerName",	DBTableFieldString,"%s",	DBStringLength));
@@ -1395,21 +1395,21 @@ DBInt RGlibNetworkBasinDistrib (DBObjData *netData,DBObjData *grdData, DBObjData
 	else histogram = (Histogram *) realloc (histogram,gridTable->ItemNum () * sizeof (Histogram));
 	if (histogram == (Histogram *) NULL)
 		{ perror ("Memory Allocation Error in: _RGISAnNetworkBasinDistribCBK ()"); return (DBFault); }
-	maxProgress = netIO->CellNum () * layerNum;
-	for (layerID = 0;layerID < gridIO->LayerNum ();++layerID)
+	maxProgress = netIF->CellNum () * layerNum;
+	for (layerID = 0;layerID < gridIF->LayerNum ();++layerID)
 		{
-		layerRec = gridIO->Layer (layerID);
+		layerRec = gridIF->Layer (layerID);
 		if ((layerRec->Flags () & DBObjectFlagIdle) == DBObjectFlagIdle) continue;
 
 		basinID = DBFault;
 		if ((layerRec->Flags () & DBObjectFlagIdle) == DBObjectFlagIdle) continue;
-		for (cellID = 0;cellID < netIO->CellNum ();++cellID)
+		for (cellID = 0;cellID < netIF->CellNum ();++cellID)
 			{
-			cellRec = netIO->Cell (cellID);
+			cellRec = netIF->Cell (cellID);
 			if (DBPause (progress * 100 / maxProgress)) goto Stop;
 			progress++;
 			if ((cellRec->Flags () & DBObjectFlagIdle) == DBObjectFlagIdle) continue;
-			if (basinID != netIO->CellBasinID (cellRec))
+			if (basinID != netIF->CellBasinID (cellRec))
 				{
 				if (basinID != DBFault)
 					for (gridRec = gridTable->First ();gridRec != (DBObjRecord *) NULL;gridRec = gridTable->Next ())
@@ -1422,18 +1422,18 @@ DBInt RGlibNetworkBasinDistrib (DBObjData *netData,DBObjData *grdData, DBObjData
 						categoryIDFLD->Int (tblRec,gridValueFLD->Int (gridRec));
 						categoryFLD->String (tblRec,gridRec->Name ());
 						areaFLD->Float (tblRec,histogram [gridRec->RowID ()].area);
-						percentFLD->Float (tblRec,histogram [gridRec->RowID ()].area / netIO->BasinArea (basinRec) * 100.0);
+						percentFLD->Float (tblRec,histogram [gridRec->RowID ()].area / netIF->BasinArea (basinRec) * 100.0);
 						cellNumFLD->Int (tblRec,histogram [gridRec->RowID ()].cellNum);
 						}
 				for (gridRec = gridTable->First ();gridRec != (DBObjRecord *) NULL;gridRec = gridTable->Next ())
 					histogram [gridRec->RowID ()].Initialize ();
-				basinID = netIO->CellBasinID (cellRec);
-				basinRec = netIO->Basin (cellRec);
+				basinID = netIF->CellBasinID (cellRec);
+				basinRec = netIF->Basin (cellRec);
 				}
-			if (gridIO->Value (layerRec,netIO->Center (cellRec),&value) == true)
+			if (gridIF->Value (layerRec,netIF->Center (cellRec),&value) == true)
 				{
 				histogram [value].cellNum++;
-				histogram [value].area += netIO->CellArea (cellRec);
+				histogram [value].area += netIF->CellArea (cellRec);
 				}
 			}
 		for (gridRec = gridTable->First ();gridRec != (DBObjRecord *) NULL;gridRec = gridTable->Next ())
@@ -1446,7 +1446,7 @@ DBInt RGlibNetworkBasinDistrib (DBObjData *netData,DBObjData *grdData, DBObjData
 				categoryIDFLD->Int (tblRec,gridValueFLD->Int (gridRec));
 				categoryFLD->String (tblRec,gridRec->Name ());
 				areaFLD->Float (tblRec,histogram [gridRec->RowID ()].area);
-				percentFLD->Float (tblRec,histogram [gridRec->RowID ()].area / netIO->BasinArea (basinRec) * 100.0);
+				percentFLD->Float (tblRec,histogram [gridRec->RowID ()].area / netIF->BasinArea (basinRec) * 100.0);
 				cellNumFLD->Int (tblRec,histogram [gridRec->RowID ()].cellNum);
 				}
 		}
@@ -1458,8 +1458,8 @@ Stop:
 	areaFLD->Flags (DBObjectFlagSortReversed,DBSet);
 	table->ListSort (fields);
 	delete fields;
-	delete netIO;
-	delete gridIO;
+	delete netIF;
+	delete gridIF;
 	return (progress == maxProgress ? DBSuccess : DBFault);
 	}
 
@@ -1475,63 +1475,63 @@ DBInt RGlibNetworkPsmRouting (DBObjData *netData,
 	DBFloat inValue, outValue, velocity, time, tau, tFactor, cellLength;
 	DBPosition pos;
 	DBCoordinate coord;
-	DBNetworkIO *netIO = new DBNetworkIO (netData);
-	DBGridIO *inIO  = new DBGridIO (inData);
-	DBGridIO *velIO = new DBGridIO (velData);
-	DBGridIO *outIO = new DBGridIO (outData);
+	DBNetworkIF *netIF = new DBNetworkIF (netData);
+	DBGridIF *inIF  = new DBGridIF (inData);
+	DBGridIF *velIF = new DBGridIF (velData);
+	DBGridIF *outIF = new DBGridIF (outData);
 	DBObjRecord *inLayerRec, *outLayerRec, *cellRec, *toCell;
 
 	tFactor = 3600.0 * 24.0;
 	if (timeStep == DBTimeStepMonth) tFactor = tFactor * 30.0;
 
 	layerID = 0;
-	inLayerRec = inIO->Layer (layerID);
-	outLayerRec = outIO->Layer (layerID);
-	outIO->RenameLayer (outLayerRec,inLayerRec->Name ());
-	inValue = outIO->MissingValue (outLayerRec);
-	for (pos.Row = 0;pos.Row < outIO->RowNum ();pos.Row++)
-		for (pos.Col = 0;pos.Col < outIO->ColNum ();pos.Col++)
-			outIO->Value (outLayerRec,pos,inValue);
-	for (layerID = 1;layerID < inIO->LayerNum ();++layerID)
+	inLayerRec = inIF->Layer (layerID);
+	outLayerRec = outIF->Layer (layerID);
+	outIF->RenameLayer (outLayerRec,inLayerRec->Name ());
+	inValue = outIF->MissingValue (outLayerRec);
+	for (pos.Row = 0;pos.Row < outIF->RowNum ();pos.Row++)
+		for (pos.Col = 0;pos.Col < outIF->ColNum ();pos.Col++)
+			outIF->Value (outLayerRec,pos,inValue);
+	for (layerID = 1;layerID < inIF->LayerNum ();++layerID)
 		{
-		inLayerRec = inIO->Layer (layerID);
-		if ((outLayerRec = outIO->AddLayer (inLayerRec->Name ())) == (DBObjRecord *) NULL)
+		inLayerRec = inIF->Layer (layerID);
+		if ((outLayerRec = outIF->AddLayer (inLayerRec->Name ())) == (DBObjRecord *) NULL)
 			{ ret = DBFault; goto Stop; }
-		for (pos.Row = 0;pos.Row < outIO->RowNum ();pos.Row++)
-			for (pos.Col = 0;pos.Col < outIO->ColNum ();pos.Col++) outIO->Value (outLayerRec,pos,inValue);
+		for (pos.Row = 0;pos.Row < outIF->RowNum ();pos.Row++)
+			for (pos.Col = 0;pos.Col < outIF->ColNum ();pos.Col++) outIF->Value (outLayerRec,pos,inValue);
 		}
-	maxProgress = inIO->LayerNum () * netIO->CellNum ();
-	for (layerID = 0;layerID < inIO->LayerNum ();++layerID)
+	maxProgress = inIF->LayerNum () * netIF->CellNum ();
+	for (layerID = 0;layerID < inIF->LayerNum ();++layerID)
 		{
-		inLayerRec  = inIO->Layer (layerID);
+		inLayerRec  = inIF->Layer (layerID);
 
-		for (cellID = 0;cellID < netIO->CellNum ();cellID++)
+		for (cellID = 0;cellID < netIF->CellNum ();cellID++)
 			{
-			progress = layerID * netIO->CellNum () + cellID;
+			progress = layerID * netIF->CellNum () + cellID;
 			if (DBPause (progress * 100 / maxProgress)) goto Stop;
-			cellRec = netIO->Cell (cellID);
-			if (inIO->Value (inLayerRec,netIO->Center (cellRec),&inValue) == false) continue;
-			inValue = inValue * netIO->CellArea (cellRec) * coeff / tFactor;
+			cellRec = netIF->Cell (cellID);
+			if (inIF->Value (inLayerRec,netIF->Center (cellRec),&inValue) == false) continue;
+			inValue = inValue * netIF->CellArea (cellRec) * coeff / tFactor;
 			time = 0.0;
-			for (toCell = cellRec;toCell != (DBObjRecord *) NULL;toCell = netIO->ToCell (toCell))
-				if ((cellLength = netIO->CellLength (toCell)) > 0.0)
+			for (toCell = cellRec;toCell != (DBObjRecord *) NULL;toCell = netIF->ToCell (toCell))
+				if ((cellLength = netIF->CellLength (toCell)) > 0.0)
 					{
-					coord = netIO->Center (toCell);
-					if ((velIO->Value (coord,&velocity) == false) || (velocity <= 0.0)) continue;
-					netIO->Coord2Pos (coord,pos);
+					coord = netIF->Center (toCell);
+					if ((velIF->Value (coord,&velocity) == false) || (velocity <= 0.0)) continue;
+					netIF->Coord2Pos (coord,pos);
 					tau = cellLength * 1000.0 / velocity;
 					time = time + tau;
 					tStep = (DBInt) floor (time / tFactor);
 
-					outLayerRec = outIO->Layer ((layerID + tStep) % outIO->LayerNum ());
-					if (outIO->Value (outLayerRec,pos,&outValue) == false) outValue = 0.0;
-					outIO->Value (outLayerRec,pos,outValue + inValue);
+					outLayerRec = outIF->Layer ((layerID + tStep) % outIF->LayerNum ());
+					if (outIF->Value (outLayerRec,pos,&outValue) == false) outValue = 0.0;
+					outIF->Value (outLayerRec,pos,outValue + inValue);
 					}
 			}
 		}
-	outIO->RecalcStats ();
+	outIF->RecalcStats ();
 
 Stop:
-	delete netIO; delete inIO; delete velIO; delete outIO;
+	delete netIF; delete inIF; delete velIF; delete outIF;
 	return (ret);
 	}

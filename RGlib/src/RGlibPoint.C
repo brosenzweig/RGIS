@@ -11,7 +11,7 @@ balazs.fekete@unh.edu
 *******************************************************************************/
 
 #include <DB.H>
-#include <DBio.H>
+#include <DBif.H>
 #include <RG.H>
 
 
@@ -22,45 +22,45 @@ DBInt RGlibPointSTNCoordinates (DBObjData *dbData,DBObjTableField *field)
 	DBCoordinate coord;
 	DBPosition pos;
 	DBObjData *linkedData = dbData->LinkedData ();
-	DBVPointIO *pointIO;
-	DBNetworkIO *netIO;
+	DBVPointIF *pntIF;
+	DBNetworkIF *netIF;
 	DBObjRecord *pntRec, *cellRec;
 
 	if (linkedData == (DBObjData *) NULL) return (DBFault);
-	pointIO = new DBVPointIO (dbData);
-	netIO = new DBNetworkIO (linkedData);
-	for (pointID = 0;pointID < pointIO->ItemNum (); ++pointID)
+	pntIF = new DBVPointIF (dbData);
+	netIF = new DBNetworkIF (linkedData);
+	for (pointID = 0;pointID < pntIF->ItemNum (); ++pointID)
 		{
-		pntRec = pointIO->Item (pointID);
-		if (DBPause (pointID * 100 / pointIO->ItemNum ())) goto Stop;
-		coord = pointIO->Coordinate (pntRec);
-		if (netIO->Coord2Pos (coord,pos) == DBFault) continue;
-		netIO->Pos2Coord (pos,coord);
+		pntRec = pntIF->Item (pointID);
+		if (DBPause (pointID * 100 / pntIF->ItemNum ())) goto Stop;
+		coord = pntIF->Coordinate (pntRec);
+		if (netIF->Coord2Pos (coord,pos) == DBFault) continue;
+		netIF->Pos2Coord (pos,coord);
 		if ((field != (DBObjTableField *) NULL) &&
 			 (!CMmathEqualValues (field->Float (pntRec),field->FloatNoData ())) &&
-			 ((cellRec = netIO->Cell (coord,field->Float (pntRec))) != (DBObjRecord *) NULL))
-			coord = netIO->Center (cellRec);
-		pointIO->Coordinate (pntRec,coord);
+			 ((cellRec = netIF->Cell (coord,field->Float (pntRec))) != (DBObjRecord *) NULL))
+			coord = netIF->Center (cellRec);
+		pntIF->Coordinate (pntRec,coord);
 		}
 	ret = DBSuccess;
 Stop:
-	delete netIO;
-	delete pointIO;
+	delete netIF;
+	delete pntIF;
 	return (ret);
 	}
 
 #define RGlibTEMPPointID "TEMPPointID"
 static DBObjTableField *_RGlibTEMPPointIDFLD;
 
-static DBInt _RGlibSetPointID (DBNetworkIO *netIO,DBObjRecord *cellRec,DBInt pointID)
+static DBInt _RGlibSetPointID (DBNetworkIF *netIF,DBObjRecord *cellRec,DBInt pointID)
 
-	{ netIO = netIO; _RGlibTEMPPointIDFLD->Int (cellRec,pointID); return (true); }
+	{ netIF = netIF; _RGlibTEMPPointIDFLD->Int (cellRec,pointID); return (true); }
 
 DBInt RGlibPointSTNCharacteristics (DBObjData *dbData)
 
 	{
 	DBInt i, pointID, dPointID, cellID, mouthID, basinID, color, ret = DBFault, dir;
-	DBVPointIO *pointIO;
+	DBVPointIF *pntIF;
 	DBObjTable *pointTable, *cellTable;
 	DBObjTableField *cellIDFLD;
 	DBObjTableField *basinFLD;
@@ -73,13 +73,13 @@ DBInt RGlibPointSTNCharacteristics (DBObjData *dbData)
 	DBObjTableField *interAreaFLD;
 	DBObjTableField *nextStationFLD;
 	DBObjData *netData;
-	DBNetworkIO *netIO;
+	DBNetworkIF *netIF;
 	DBObjRecord *pointRec, *dPointRec, *cellRec, *fromCell, *basinRec;
 
 	if ((netData = dbData->LinkedData ()) == (DBObjData *) NULL) return (DBFault);
 	pointTable = dbData->Table (DBrNItems);
-	pointIO = new DBVPointIO (dbData);
-	netIO = new DBNetworkIO (netData);
+	pntIF = new DBVPointIF (dbData);
+	netIF = new DBNetworkIF (netData);
 	cellTable = netData->Table (DBrNCells);
 	if ((cellIDFLD = pointTable->Field (RGlibCellID)) == NULL)
 		{
@@ -162,7 +162,7 @@ DBInt RGlibPointSTNCharacteristics (DBObjData *dbData)
 			interAreaFLD->Float (pointRec,interAreaFLD->FloatNoData ());
 			continue;
 			}
-		if ((cellRec = netIO->Cell (pointIO->Coordinate  (pointRec))) == (DBObjRecord *) NULL)
+		if ((cellRec = netIF->Cell (pntIF->Coordinate  (pointRec))) == (DBObjRecord *) NULL)
 			{
 			cellIDFLD->Int (pointRec,0);
 			basinFLD->Int (pointRec,0);
@@ -176,15 +176,15 @@ DBInt RGlibPointSTNCharacteristics (DBObjData *dbData)
 		else
 			{
 			cellIDFLD->Int (pointRec,cellRec->RowID () + 1);
-			basinRec = netIO->Basin (cellRec);
+			basinRec = netIF->Basin (cellRec);
 			basinFLD->Int (pointRec,basinRec->RowID () + 1);
 			basinNameFLD->String (pointRec,basinRec->Name ());
-			orderFLD->Int (pointRec,netIO->CellOrder (cellRec));
+			orderFLD->Int (pointRec,netIF->CellOrder (cellRec));
 			colorFLD->Int (pointRec,0);
-			basinCellsFLD->Int (pointRec,netIO->CellBasinCells (cellRec));
-			basinLengthFLD->Float (pointRec,netIO->CellBasinLength (cellRec));
-			basinAreaFLD->Float (pointRec,netIO->CellBasinArea (cellRec));
-			interAreaFLD->Float (pointRec,netIO->CellBasinArea (cellRec));
+			basinCellsFLD->Int (pointRec,netIF->CellBasinCells (cellRec));
+			basinLengthFLD->Float (pointRec,netIF->CellBasinLength (cellRec));
+			basinAreaFLD->Float (pointRec,netIF->CellBasinArea (cellRec));
+			interAreaFLD->Float (pointRec,netIF->CellBasinArea (cellRec));
 			}
 		nextStationFLD->Int (pointRec,0);
 		}
@@ -199,17 +199,17 @@ DBInt RGlibPointSTNCharacteristics (DBObjData *dbData)
 		{
 		if ((pointRec->Flags () & DBObjectFlagIdle) == DBObjectFlagIdle) continue;
 		if (DBPause (40 + pointID * 20 / pointTable->ItemNum ())) goto Stop;
-		cellRec = netIO->Cell (pointIO->Coordinate  (pointRec));
-		netIO->UpStreamSearch (cellRec,(DBNetworkACTION) _RGlibSetPointID,(void *) pointRec->RowID ());
+		cellRec = netIF->Cell (pntIF->Coordinate  (pointRec));
+		netIF->UpStreamSearch (cellRec,(DBNetworkACTION) _RGlibSetPointID,(void *) pointRec->RowID ());
 		}
 	for (pointID = 0; pointID < pointTable->ItemNum (); pointID++)
 		{
 		pointRec = pointTable->Item (pointID);
 		if ((pointRec->Flags () & DBObjectFlagIdle) == DBObjectFlagIdle) continue;
 		if (DBPause (60 + pointID * 20 / pointTable->ItemNum ())) goto Stop;
-		if ((cellRec = netIO->Cell (pointIO->Coordinate  (pointRec))) != (DBObjRecord *) NULL)
+		if ((cellRec = netIF->Cell (pntIF->Coordinate  (pointRec))) != (DBObjRecord *) NULL)
 			{
-			if ((cellRec = netIO->ToCell (cellRec)) == (DBObjRecord *) NULL) continue;
+			if ((cellRec = netIF->ToCell (cellRec)) == (DBObjRecord *) NULL) continue;
 			if ((dPointID = _RGlibTEMPPointIDFLD->Int (cellRec)) != DBFault)
 				{
 				dPointRec = pointTable->Item (dPointID);
@@ -228,19 +228,19 @@ DBInt RGlibPointSTNCharacteristics (DBObjData *dbData)
 		if ((pointRec->Flags () & DBObjectFlagIdle) == DBObjectFlagIdle) continue;
 
 		if ((basinID = basinFLD->Int (pointRec)) == 0) continue;
-		cellRec = netIO->Cell (pointIO->Coordinate  (pointRec));
+		cellRec = netIF->Cell (pntIF->Coordinate  (pointRec));
 		mouthID = cellRec->RowID ();
 		color = 1;
 Start:
 		for (cellID = mouthID;cellID < cellTable->ItemNum ();++cellID)
 			{
 			cellRec = cellTable->Item (cellID);
-			if (netIO->CellBasinID (cellRec) != basinID) break;
+			if (netIF->CellBasinID (cellRec) != basinID) break;
 			if (_RGlibTEMPPointIDFLD->Int (cellRec) != pointID) continue;
 
 			for (dir = 0;dir < 8;++dir)
 				{
-				if ((fromCell = netIO->FromCell (cellRec,0x01 << dir,false)) == (DBObjRecord *) NULL) continue;
+				if ((fromCell = netIF->FromCell (cellRec,0x01 << dir,false)) == (DBObjRecord *) NULL) continue;
 				if ((dPointID = _RGlibTEMPPointIDFLD->Int (fromCell)) == pointID) continue;
 				if	(dPointID == DBFault) continue;
 
@@ -254,15 +254,15 @@ Start:
 Stop:
 	pointTable->ListSort ();
 	cellTable->DeleteField (_RGlibTEMPPointIDFLD);
-	delete pointIO;
-	delete netIO;
+	delete pntIF;
+	delete netIF;
 	return (ret);
 	}
 
-static DBInt _RGlibSubbasinCenterAction (DBNetworkIO *netIO,DBObjRecord *cellRec,DBCoordinate *massCoord)
+static DBInt _RGlibSubbasinCenterAction (DBNetworkIF *netIF,DBObjRecord *cellRec,DBCoordinate *massCoord)
 
 	{
-	DBCoordinate coord = netIO->Center (cellRec);
+	DBCoordinate coord = netIF->Center (cellRec);
 	massCoord->X += coord.X;
 	massCoord->Y += coord.Y;
 	return (true);
@@ -272,11 +272,11 @@ DBInt RGlibPointSubbasinCenter (DBObjData *pntData, DBObjData *netData)
 
 	{
 	DBCoordinate massCoord;
-	DBVPointIO *pointIO = new DBVPointIO (pntData);
+	DBVPointIF *pntIF = new DBVPointIF (pntData);
 	DBObjTable *pointTable = pntData->Table (DBrNItems);
 	DBObjTableField *massCoordXFLD = pointTable->Field (RGlibMassCoordX);
 	DBObjTableField *massCoordYFLD = pointTable->Field (RGlibMassCoordY);
-	DBNetworkIO *netIO = new DBNetworkIO (netData);
+	DBNetworkIF *netIF = new DBNetworkIF (netData);
 	DBObjRecord *pointRec, *cellRec;
 
 	if (massCoordXFLD == NULL)
@@ -290,7 +290,7 @@ DBInt RGlibPointSubbasinCenter (DBObjData *pntData, DBObjData *netData)
 		pointTable->AddField (massCoordYFLD);
 		}
 
-	for (pointRec = pointIO->FirstItem (); pointRec != (DBObjRecord *) NULL; pointRec = pointIO->NextItem ())
+	for (pointRec = pntIF->FirstItem (); pointRec != (DBObjRecord *) NULL; pointRec = pntIF->NextItem ())
 		{
 		if ((pointRec->Flags () & DBObjectFlagIdle) == DBObjectFlagIdle)
 			{
@@ -298,19 +298,19 @@ DBInt RGlibPointSubbasinCenter (DBObjData *pntData, DBObjData *netData)
 			massCoordYFLD->Float (pointRec,massCoordYFLD->FloatNoData ());
 			continue;
 			}
-		if (DBPause (pointRec->RowID () * 100 / pointIO->ItemNum ())) goto Stop;
-		if ((cellRec = netIO->Cell (pointIO->Coordinate (pointRec))) == (DBObjRecord *) NULL)
-			massCoord = pointIO->Coordinate  (pointRec);
+		if (DBPause (pointRec->RowID () * 100 / pntIF->ItemNum ())) goto Stop;
+		if ((cellRec = netIF->Cell (pntIF->Coordinate (pointRec))) == (DBObjRecord *) NULL)
+			massCoord = pntIF->Coordinate  (pointRec);
 		else
 			{
-			if (netIO->CellBasinCells (cellRec) > 1)
+			if (netIF->CellBasinCells (cellRec) > 1)
 				{
 				massCoord.X = 0.0; massCoord.Y = 0.0;
-				netIO->UpStreamSearch (cellRec,(DBNetworkACTION) _RGlibSubbasinCenterAction,&massCoord);
-				massCoord.X = massCoord.X / (DBFloat) netIO->CellBasinCells (cellRec);
-				massCoord.Y = massCoord.Y / (DBFloat) netIO->CellBasinCells (cellRec);
+				netIF->UpStreamSearch (cellRec,(DBNetworkACTION) _RGlibSubbasinCenterAction,&massCoord);
+				massCoord.X = massCoord.X / (DBFloat) netIF->CellBasinCells (cellRec);
+				massCoord.Y = massCoord.Y / (DBFloat) netIF->CellBasinCells (cellRec);
 				}
-			else massCoord = netIO->Center (cellRec);
+			else massCoord = netIF->Center (cellRec);
 			}
 		massCoordXFLD->Float (pointRec,massCoord.X);
 		massCoordYFLD->Float (pointRec,massCoord.Y);
@@ -474,21 +474,21 @@ static DBFloat _RGlibSubbasinMean;
 static DBFloat _RGlibSubbasinMin;
 static DBFloat _RGlibSubbasinMax;
 static DBFloat _RGlibSubbasinStdDev;
-static DBGridIO *_RGlibPointGrdIO;
+static DBGridIF *_RGlibPointGrdIF;
 static DBObjRecord *_RGlibPointGrdLayerRec;
 
 static DBInt _RGlibSubbasinStatistics (void *io,DBObjRecord *cellRec)
 
 	{
 	DBFloat value;
-	DBNetworkIO *netIO = (DBNetworkIO *) io;
+	DBNetworkIF *netIF = (DBNetworkIF *) io;
 	if (cellRec == (DBObjRecord *) NULL) return (false);
-	if (_RGlibPointGrdIO->Value (_RGlibPointGrdLayerRec,netIO->Center (cellRec),&value) == false) return (true);
-	_RGlibSubbasinArea = _RGlibSubbasinArea + netIO->CellArea (cellRec);
-	_RGlibSubbasinMean = _RGlibSubbasinMean + value * netIO->CellArea (cellRec);
+	if (_RGlibPointGrdIF->Value (_RGlibPointGrdLayerRec,netIF->Center (cellRec),&value) == false) return (true);
+	_RGlibSubbasinArea = _RGlibSubbasinArea + netIF->CellArea (cellRec);
+	_RGlibSubbasinMean = _RGlibSubbasinMean + value * netIF->CellArea (cellRec);
 	_RGlibSubbasinMin  = _RGlibSubbasinMin < value ? _RGlibSubbasinMin : value;
 	_RGlibSubbasinMax  = _RGlibSubbasinMax > value ? _RGlibSubbasinMax : value;
-	_RGlibSubbasinStdDev = _RGlibSubbasinStdDev + value * value * netIO->CellArea (cellRec);
+	_RGlibSubbasinStdDev = _RGlibSubbasinStdDev + value * value * netIF->CellArea (cellRec);
 	return (true);
 	}
 
@@ -505,44 +505,44 @@ DBInt RGlibPointSubbasinStats (DBObjData *pntData, DBObjData *netData, DBObjData
 	DBObjTableField *averageFLD;
 	DBObjTableField *stdDevFLD;
 	DBObjTableField *areaFLD;
-	DBVPointIO *pointIO;
-	DBNetworkIO *netIO;
+	DBVPointIF *pntIF;
+	DBNetworkIF *netIF;
 	DBObjRecord *pntRec, *tblRec;
 	DBObjectLIST<DBObjTableField> *fields;
 
-	_RGlibPointGrdIO = new DBGridIO (grdData);
-	for (layerID = 0;layerID < _RGlibPointGrdIO->LayerNum ();++layerID)
+	_RGlibPointGrdIF = new DBGridIF (grdData);
+	for (layerID = 0;layerID < _RGlibPointGrdIF->LayerNum ();++layerID)
 		{
-		_RGlibPointGrdLayerRec = _RGlibPointGrdIO->Layer (layerID);
+		_RGlibPointGrdLayerRec = _RGlibPointGrdIF->Layer (layerID);
 		if ((_RGlibPointGrdLayerRec->Flags () & DBObjectFlagIdle) != DBObjectFlagIdle) ++layerNum;
 		}
 	if (layerNum < 1)
 		{
 		fprintf (stderr,"No Layer to Process in RGlibPointSubbasinStats ()\n");
-		delete _RGlibPointGrdIO;
+		delete _RGlibPointGrdIF;
 		return (DBFault);
 		}
 
 	table = tblData->Table (DBrNItems);
-	pointIO =new DBVPointIO (pntData);
-	netIO = new DBNetworkIO (netData);
+	pntIF =new DBVPointIF (pntData);
+	netIF = new DBNetworkIF (netData);
 
 	table->AddField (pointIDFLD =		new DBObjTableField ("GHAASPointID",	DBTableFieldInt,"%8d",sizeof (DBInt)));
 	table->AddField (layerIDFLD = 	new DBObjTableField ("LayerID",			DBTableFieldInt,"%4d",sizeof (DBShort)));
 	table->AddField (layerNameFLD = 	new DBObjTableField ("LayerName",		DBTableFieldString,"%s",DBStringLength));
-	table->AddField (averageFLD = 	new DBObjTableField (RGlibPointMean,	DBTableFieldFloat,_RGlibPointGrdIO->ValueFormat (),sizeof (DBFloat4)));
-	table->AddField (minimumFLD = 	new DBObjTableField (RGlibPointMin,		DBTableFieldFloat,_RGlibPointGrdIO->ValueFormat (),sizeof (DBFloat4)));
-	table->AddField (maximumFLD = 	new DBObjTableField (RGlibPointMax,		DBTableFieldFloat,_RGlibPointGrdIO->ValueFormat (),sizeof (DBFloat4)));
-	table->AddField (stdDevFLD  = 	new DBObjTableField (RGlibPointStdDev,	DBTableFieldFloat,_RGlibPointGrdIO->ValueFormat (),sizeof (DBFloat4)));
-	table->AddField (areaFLD 	 = 	new DBObjTableField (RGlibPointArea,	DBTableFieldFloat,_RGlibPointGrdIO->ValueFormat (),sizeof (DBFloat4)));
+	table->AddField (averageFLD = 	new DBObjTableField (RGlibPointMean,	DBTableFieldFloat,_RGlibPointGrdIF->ValueFormat (),sizeof (DBFloat4)));
+	table->AddField (minimumFLD = 	new DBObjTableField (RGlibPointMin,		DBTableFieldFloat,_RGlibPointGrdIF->ValueFormat (),sizeof (DBFloat4)));
+	table->AddField (maximumFLD = 	new DBObjTableField (RGlibPointMax,		DBTableFieldFloat,_RGlibPointGrdIF->ValueFormat (),sizeof (DBFloat4)));
+	table->AddField (stdDevFLD  = 	new DBObjTableField (RGlibPointStdDev,	DBTableFieldFloat,_RGlibPointGrdIF->ValueFormat (),sizeof (DBFloat4)));
+	table->AddField (areaFLD 	 = 	new DBObjTableField (RGlibPointArea,	DBTableFieldFloat,_RGlibPointGrdIF->ValueFormat (),sizeof (DBFloat4)));
 
 	grdData->Flags (DBObjectFlagProcessed,DBSet);
-	maxProgress = pointIO->ItemNum () * _RGlibPointGrdIO->LayerNum ();
-	for (layerID = 0;layerID < _RGlibPointGrdIO->LayerNum ();++layerID)
+	maxProgress = pntIF->ItemNum () * _RGlibPointGrdIF->LayerNum ();
+	for (layerID = 0;layerID < _RGlibPointGrdIF->LayerNum ();++layerID)
 		{
-		_RGlibPointGrdLayerRec = _RGlibPointGrdIO->Layer (layerID);
+		_RGlibPointGrdLayerRec = _RGlibPointGrdIF->Layer (layerID);
 		if ((_RGlibPointGrdLayerRec->Flags () & DBObjectFlagIdle) == DBObjectFlagIdle) continue;
-		for (pntRec = pointIO->FirstItem ();pntRec != (DBObjRecord *) NULL;pntRec = pointIO->NextItem ())
+		for (pntRec = pntIF->FirstItem ();pntRec != (DBObjRecord *) NULL;pntRec = pntIF->NextItem ())
 			{
 			if (DBPause (progress * 100 / maxProgress)) goto Stop;
 			progress++;
@@ -556,7 +556,7 @@ DBInt RGlibPointSubbasinStats (DBObjData *pntData, DBObjData *netData, DBObjData
 			_RGlibSubbasinMax = -DBHugeVal;
 			_RGlibSubbasinMean = 0.0;
 			_RGlibSubbasinStdDev = 0.0;
-			netIO->UpStreamSearch (netIO->Cell (pointIO->Coordinate (pntRec)),(DBNetworkACTION) _RGlibSubbasinStatistics);
+			netIF->UpStreamSearch (netIF->Cell (pntIF->Coordinate (pntRec)),(DBNetworkACTION) _RGlibSubbasinStatistics);
 			_RGlibSubbasinMean = _RGlibSubbasinMean / _RGlibSubbasinArea;
 			_RGlibSubbasinStdDev = _RGlibSubbasinStdDev / _RGlibSubbasinArea;
 			_RGlibSubbasinStdDev = _RGlibSubbasinStdDev - _RGlibSubbasinMean * _RGlibSubbasinMean;
@@ -569,9 +569,9 @@ DBInt RGlibPointSubbasinStats (DBObjData *pntData, DBObjData *netData, DBObjData
 			}
 		}
 Stop:
-	delete _RGlibPointGrdIO;
-	delete netIO;
-	delete pointIO;
+	delete _RGlibPointGrdIF;
+	delete netIF;
+	delete pntIF;
 
 	if (progress == maxProgress)
 		{
@@ -598,12 +598,12 @@ static DBInt _RGlibSubbasinCategories (void *io,DBObjRecord *cellRec)
 
 	{
 	DBObjRecord *grdRec;
-	DBNetworkIO *netIO = (DBNetworkIO *) io;
+	DBNetworkIF *netIF = (DBNetworkIF *) io;
 	if (cellRec == (DBObjRecord *) NULL) return (false);
-	grdRec = _RGlibPointGrdIO->GridItem (_RGlibPointGrdLayerRec,netIO->Center (cellRec));
+	grdRec = _RGlibPointGrdIF->GridItem (_RGlibPointGrdLayerRec,netIF->Center (cellRec));
 	if (grdRec == (DBObjRecord *) NULL) return (true);
 	_RGlibHistogram [grdRec->RowID ()].cellNum++;
-	_RGlibHistogram [grdRec->RowID ()].area += netIO->CellArea (cellRec);
+	_RGlibHistogram [grdRec->RowID ()].area += netIF->CellArea (cellRec);
 	return (true);
 	}
 
@@ -621,31 +621,31 @@ DBInt RGlibPointSubbasinHist (DBObjData *pntData, DBObjData *netData, DBObjData 
 	DBObjTableField *percentFLD;
 	DBObjTableField *areaFLD;
 	DBObjTableField *cellNumFLD;
-	DBVPointIO *pointIO;
-	DBNetworkIO *netIO;
+	DBVPointIF *pntIF;
+	DBNetworkIF *netIF;
 	DBObjRecord *pntRec, *itemRec, *tblRec;
 	DBObjectLIST<DBObjTableField> *fields;
 
-	_RGlibPointGrdIO = new DBGridIO (grdData);
-	for (layerID = 0;layerID < _RGlibPointGrdIO->LayerNum ();++layerID)
+	_RGlibPointGrdIF = new DBGridIF (grdData);
+	for (layerID = 0;layerID < _RGlibPointGrdIF->LayerNum ();++layerID)
 		{
-		_RGlibPointGrdLayerRec = _RGlibPointGrdIO->Layer (layerID);
+		_RGlibPointGrdLayerRec = _RGlibPointGrdIF->Layer (layerID);
 		if ((_RGlibPointGrdLayerRec->Flags () & DBObjectFlagIdle) != DBObjectFlagIdle) ++layerNum;
 		}
 	if (layerNum < 1)
 		{
 		fprintf (stderr,"No Layer to Process in RGlibPointSubbasinHist ()\n");
-		delete _RGlibPointGrdIO;
+		delete _RGlibPointGrdIF;
 		return (DBFault);
 		}
-	pointIO = new DBVPointIO (pntData);
-	netIO = new DBNetworkIO (netData);
+	pntIF = new DBVPointIF (pntData);
+	netIF = new DBNetworkIF (netData);
 
 	table->AddField (pointIDFLD	= new DBObjTableField ("GHAASPointID",	DBTableFieldInt,		"%8d",sizeof (DBInt)));
 	table->AddField (layerIDFLD	= new DBObjTableField ("LayerID",		DBTableFieldInt,		"%4d",sizeof (DBShort)));
 	table->AddField (layerNameFLD	= new DBObjTableField ("LayerName",		DBTableFieldString,	"%s",DBStringLength));
 	table->AddField (categoryIDFLD= new DBObjTableField (DBrNCategoryID,	DBTableFieldInt,		"%2d",sizeof (DBShort)));
-	table->AddField (categoryFLD	= new DBObjTableField (DBrNCategory,	DBTableFieldString,	_RGlibPointGrdIO->ValueFormat (),DBStringLength));
+	table->AddField (categoryFLD	= new DBObjTableField (DBrNCategory,	DBTableFieldString,	_RGlibPointGrdIF->ValueFormat (),DBStringLength));
 	table->AddField (cellNumFLD	= new DBObjTableField ("CellNum",		DBTableFieldInt,		"%8d",sizeof (DBInt)));
 	table->AddField (areaFLD 		= new DBObjTableField (DBrNArea,			DBTableFieldFloat,	"%10.1f",sizeof (DBFloat4)));
 	table->AddField (percentFLD	= new DBObjTableField (DBrNPercent,		DBTableFieldFloat,	"%6.2f",sizeof (DBFloat4)));
@@ -653,19 +653,19 @@ DBInt RGlibPointSubbasinHist (DBObjData *pntData, DBObjData *netData, DBObjData 
 	_RGlibHistogram = (Histogram *) malloc (itemTable->ItemNum () * sizeof (Histogram));
 	if (_RGlibHistogram == (Histogram *) NULL)
 		{ perror ("Memory Allocation Error in: RGlibPointSubbasinHist ()"); return (DBFault); }
-	maxProgress = pointIO->ItemNum () * _RGlibPointGrdIO->LayerNum ();
-	for (layerID = 0;layerID < _RGlibPointGrdIO->LayerNum ();++layerID)
+	maxProgress = pntIF->ItemNum () * _RGlibPointGrdIF->LayerNum ();
+	for (layerID = 0;layerID < _RGlibPointGrdIF->LayerNum ();++layerID)
 		{
-		_RGlibPointGrdLayerRec = _RGlibPointGrdIO->Layer (layerID);
+		_RGlibPointGrdLayerRec = _RGlibPointGrdIF->Layer (layerID);
 		if ((_RGlibPointGrdLayerRec->Flags () & DBObjectFlagIdle) == DBObjectFlagIdle) continue;
-		for (pntRec = pointIO->FirstItem ();pntRec != (DBObjRecord *) NULL;pntRec = pointIO->NextItem ())
+		for (pntRec = pntIF->FirstItem ();pntRec != (DBObjRecord *) NULL;pntRec = pntIF->NextItem ())
 			{
 			if (DBPause (progress * 100 / maxProgress)) goto Stop;
 			progress++;
 			if ((pntRec->Flags () & DBObjectFlagIdle) == DBObjectFlagIdle) continue;
 			for (itemRec = itemTable->First ();itemRec != (DBObjRecord *) NULL;itemRec = itemTable->Next ())
 				_RGlibHistogram [itemRec->RowID ()].Initialize ();
-			netIO->UpStreamSearch (netIO->Cell (pointIO->Coordinate (pntRec)),(DBNetworkACTION) _RGlibSubbasinCategories);
+			netIF->UpStreamSearch (netIF->Cell (pntIF->Coordinate (pntRec)),(DBNetworkACTION) _RGlibSubbasinCategories);
 			for (itemRec = itemTable->First ();itemRec != (DBObjRecord *) NULL;itemRec = itemTable->Next ())
 				if (_RGlibHistogram [itemRec->RowID ()].cellNum > 0)
 					{
@@ -676,15 +676,15 @@ DBInt RGlibPointSubbasinHist (DBObjData *pntData, DBObjData *netData, DBObjData 
 					categoryIDFLD->Int (tblRec,itemRec->RowID () + 1);
 					categoryFLD->String (tblRec,itemRec->Name ());
 					areaFLD->Float (tblRec,_RGlibHistogram [itemRec->RowID ()].area);
-					percentFLD->Float (tblRec,_RGlibHistogram [itemRec->RowID ()].area / netIO->CellBasinArea (netIO->Cell (pointIO->Coordinate (pntRec))) * 100.0);
+					percentFLD->Float (tblRec,_RGlibHistogram [itemRec->RowID ()].area / netIF->CellBasinArea (netIF->Cell (pntIF->Coordinate (pntRec))) * 100.0);
 					cellNumFLD->Int (tblRec,_RGlibHistogram [itemRec->RowID ()].cellNum);
 					}
 			}
 		}
 Stop:
-	delete _RGlibPointGrdIO;
-	delete netIO;
-	delete pointIO;
+	delete _RGlibPointGrdIF;
+	delete netIF;
+	delete pntIF;
 	free (_RGlibHistogram);
 
 	if (progress == maxProgress)
