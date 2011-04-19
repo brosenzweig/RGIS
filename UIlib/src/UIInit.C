@@ -82,7 +82,7 @@ Widget UIInitialize (char *title,char *icon,char *helpFile, UIMenuItem mainMenu 
 	int i, foreground, background;
 	Dimension lWidth;
 	char applicationTitle [256];
-	Widget mainForm, menuBar, helpButton, unhLogo, ghaasLogo, globeWidget, subForm;
+	Widget mainForm, menuBar, helpButton, ccnyLogo, unhLogo, ghaasLogo, globeWidget, subForm;
 	Pixmap pixmap;
 	XmString string;
 	void _UIColorInitialize (Widget);
@@ -138,67 +138,79 @@ Widget UIInitialize (char *title,char *icon,char *helpFile, UIMenuItem mainMenu 
 	XtRealizeWidget (_UITopLevel);
 	_UIColorInitialize (_UITopLevel);
 
-	pixmap	= XmGetPixmap(XtScreen(UITopLevel()),(char *) "UNHLogo",foreground,background);
+	pixmap	= XmGetPixmap(XtScreen(UITopLevel()),(char *) "GHAASccny.xpm",foreground,background);
+	ccnyLogo = XtVaCreateManagedWidget ("GHAASMainUNHLogo",xmLabelWidgetClass,mainForm,
+	                                    XmNlabelType,        XmPIXMAP,
+	                                    XmNlabelPixmap,      pixmap,
+	                                    XmNmarginWidth,      0,
+	                                    XmNmarginHeight,     0,
+	                                    XmNleftAttachment,   XmATTACH_FORM,
+	                                    XmNleftOffset,       5,
+	                                    XmNbottomAttachment, XmATTACH_FORM,
+	                                    XmNbottomOffset,     5,
+	                                    NULL);
+	pixmap	= XmGetPixmap(XtScreen(UITopLevel()),(char *) "GHAASunh.xpm",foreground,background);
 	unhLogo = XtVaCreateManagedWidget ("GHAASMainUNHLogo",xmLabelWidgetClass,mainForm,
-													XmNlabelType,				XmPIXMAP,
-													XmNlabelPixmap,			pixmap,
-													XmNmarginWidth,			0,
-													XmNmarginHeight,			0,
-													XmNleftAttachment,		XmATTACH_FORM,
-													XmNleftOffset,				5,
-													XmNbottomAttachment,		XmATTACH_FORM,
-													XmNbottomOffset,			5,
-													NULL);
-	pixmap = XmGetPixmap(XtScreen(UITopLevel()),(char *) "UNHghaas",foreground,background);
+	                                    XmNlabelType,        XmPIXMAP,
+	                                    XmNlabelPixmap,      pixmap,
+	                                    XmNmarginWidth,      0,
+	                                    XmNmarginHeight,     0,
+	                                    XmNleftAttachment,   XmATTACH_FORM,
+	                                    XmNleftOffset,       5,
+	                                    XmNbottomAttachment, XmATTACH_WIDGET,
+	                                    XmNbottomWidget,     ccnyLogo,
+	                                    XmNbottomOffset,     5,
+	                                    NULL);
+	pixmap = XmGetPixmap(XtScreen(UITopLevel()),(char *) "GHAASlogo.xpm",foreground,background);
 	ghaasLogo = XtVaCreateManagedWidget ("GHAASMainUNHLogo",xmLabelWidgetClass,mainForm,
-													XmNlabelType,				XmPIXMAP,
-													XmNlabelPixmap,			pixmap,
-													XmNrightAttachment,		XmATTACH_FORM,
-													XmNrightOffset,			5,
-													XmNbottomAttachment,	XmATTACH_FORM,
-													XmNbottomOffset,			5,
-													NULL);
+	                                    XmNlabelType,        XmPIXMAP,
+	                                    XmNlabelPixmap,      pixmap,
+	                                    XmNrightAttachment,  XmATTACH_FORM,
+	                                    XmNrightOffset,      5,
+	                                    XmNbottomAttachment, XmATTACH_FORM,
+	                                    XmNbottomOffset,     5,
+	                                    NULL);
 	string = XmStringCreate ((char *) "Global Hydrological Archive and Analysis System",UICharSetNormal);
 	XtVaCreateManagedWidget ("GHAASLabel",xmLabelWidgetClass,mainForm,
-									XmNlabelString,		string,
-									XmNtopAttachment,		XmATTACH_OPPOSITE_WIDGET,
-									XmNtopWidget,			ghaasLogo,
-									XmNleftAttachment,	XmATTACH_WIDGET,
-									XmNleftWidget,			unhLogo,
-									XmNrightAttachment,	XmATTACH_WIDGET,
-									XmNrightWidget,		ghaasLogo,
-									XmNbottomAttachment,	XmATTACH_OPPOSITE_WIDGET,
-									XmNbottomWidget,		ghaasLogo,
-									NULL);
+	                                    XmNlabelString,      string,
+	                                    XmNtopAttachment,    XmATTACH_OPPOSITE_WIDGET,
+	                                    XmNtopWidget,        ghaasLogo,
+	                                    XmNleftAttachment,   XmATTACH_WIDGET,
+	                                    XmNleftWidget,       ccnyLogo,
+	                                    XmNrightAttachment,  XmATTACH_WIDGET,
+	                                    XmNrightWidget,      ghaasLogo,
+	                                    XmNbottomAttachment, XmATTACH_OPPOSITE_WIDGET,
+	                                    XmNbottomWidget,     ghaasLogo,
+	                                    NULL);
 	XmStringFree (string);
 	subForm = XtVaCreateManagedWidget ("GHAASMainForm",xmFormWidgetClass,mainForm,
-													XmNtopAttachment,		XmATTACH_WIDGET,
-													XmNtopWidget,			menuBar,
-													XmNtopOffset,			5,
-													XmNleftAttachment,	XmATTACH_WIDGET,
-													XmNleftWidget,			unhLogo,
-													XmNleftOffset,			5,
-													XmNrightAttachment,	XmATTACH_FORM,
-													XmNrightOffset,		10,
-													XmNbottomAttachment,	XmATTACH_WIDGET,
-													XmNbottomWidget,		ghaasLogo,
-													XmNbottomOffset,		5,
-													XmNshadowType,			XmSHADOW_IN,
-													XmNshadowThickness,	1,
-													NULL);
-	XtVaGetValues (unhLogo,XmNwidth, &lWidth, NULL);
+	                                    XmNtopAttachment,    XmATTACH_WIDGET,
+	                                    XmNtopWidget,        menuBar,
+	                                    XmNtopOffset,        5,
+	                                    XmNleftAttachment,   XmATTACH_WIDGET,
+	                                    XmNleftWidget,       ccnyLogo,
+	                                    XmNleftOffset,       5,
+	                                    XmNrightAttachment,  XmATTACH_FORM,
+	                                    XmNrightOffset,      10,
+	                                    XmNbottomAttachment, XmATTACH_WIDGET,
+	                                    XmNbottomWidget,     ghaasLogo,
+	                                    XmNbottomOffset,     5,
+	                                    XmNshadowType,       XmSHADOW_IN,
+	                                    XmNshadowThickness,  1,
+	                                    NULL);
+	XtVaGetValues (ccnyLogo,XmNwidth, &lWidth, NULL);
 	globeWidget = XtVaCreateManagedWidget ("UIMainGlobeWidget",xmDrawingAreaWidgetClass,mainForm,
-													XmNtopAttachment,		XmATTACH_WIDGET,
-													XmNtopOffset,			5,
-													XmNtopWidget,			menuBar,
-													XmNleftAttachment,	XmATTACH_FORM,
-													XmNleftOffset,			5,
-													XmNrightAttachment,	XmATTACH_WIDGET,
-													XmNrightWidget,		subForm,
-													XmNrightOffset,		5,
-													XmNheight,				lWidth,
-													XmNwidth,				lWidth,
-													NULL);
+	                                    XmNtopAttachment,    XmATTACH_WIDGET,
+	                                    XmNtopOffset,        5,
+	                                    XmNtopWidget,        menuBar,
+	                                    XmNleftAttachment,   XmATTACH_FORM,
+	                                    XmNleftOffset,       5,
+	                                    XmNrightAttachment,  XmATTACH_WIDGET,
+	                                    XmNrightWidget,      subForm,
+	                                    XmNrightOffset,      5,
+	                                    XmNheight,           lWidth,
+	                                    XmNwidth,            lWidth,
+	                                    NULL);
 	_UIGlobeInitialize (globeWidget,lWidth, background,spin);
 
 	UILoop ();

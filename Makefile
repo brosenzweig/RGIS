@@ -12,6 +12,19 @@ install: $(INSTALLDIR)/bin $(INSTALLDIR)/XResources/bitmaps $(INSTALLDIR)/Messag
 	cp Messages/*.*         $(INSTALLDIR)/Messages/
 	cp Scripts/*.sh         $(INSTALLDIR)/Scripts/
 	cp f/*                  $(INSTALLDIR)/f/
+	ln -s $(INSTALLDIR)/Scripts/rgis.sh $(INSTALLDIR)/bin/rgis
+
+reinstall: $(INSTALLDIR)/bin $(INSTALLDIR)/XResources/bitmaps $(INSTALLDIR)/Messages $(INSTALLDIR)/html $(INSTALLDIR)/Scripts $(INSTALLDIR)/f
+	$(UNIXMAKE) -C rGIS       install
+	$(UNIXMAKE) -C rCommands  install
+	$(UNIXMAKE) -C rgisPlot   install
+	$(UNIXMAKE) -C tfCommands install
+	cp XResources/bitmaps/* $(INSTALLDIR)/XResources/bitmaps/
+	cp XResources/ghaas     $(INSTALLDIR)/XResources/
+	cp -rp html/*.*         $(INSTALLDIR)/html/
+	cp Messages/*.*         $(INSTALLDIR)/Messages/
+	cp Scripts/*.sh         $(INSTALLDIR)/Scripts/
+	cp f/*                  $(INSTALLDIR)/f/
 
 uninstall:
 	$(UNIXMAKE) -C rGIS       uninstall

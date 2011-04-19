@@ -984,7 +984,7 @@ UITable::UITable (DBObjData *dbData, DBObjTable *table) : DBObjectLIST<UITableRe
 	XtOverrideTranslations (mainForm,XtParseTranslationTable ("<Configure>: resize()"));
 	XtVaGetValues (mainForm,XmNforeground,	&foreground,XmNbackground,	&background,NULL);
 	iconPixmap = iconPixmap != (Pixmap) NULL ? iconPixmap :
-					 XmGetPixmap(XtScreen (UITopLevel()),(char *) "UNHTable",foreground,background);
+					 XmGetPixmap(XtScreen (UITopLevel()),(char *) "GHAAStable",foreground,background);
 	XtVaSetValues (DShellWGT,XmNiconPixmap, iconPixmap,NULL);
 	menuBar = XtVaCreateManagedWidget ("UITableMenuBar",xmRowColumnWidgetClass,mainForm,
 												XmNtopAttachment,				XmATTACH_FORM,
@@ -1000,17 +1000,17 @@ UITable::UITable (DBObjData *dbData, DBObjTable *table) : DBObjectLIST<UITableRe
 												NULL);
 
 	loadPixmap = loadPixmap == (Pixmap) NULL ?
-					XmGetPixmap(XtScreen(UITopLevel()),(char *) "UNHLoad",  foreground,background) : loadPixmap;
+					XmGetPixmap(XtScreen(UITopLevel()),(char *) "GHAASload.bmp",  foreground,background) : loadPixmap;
 	savePixmap = savePixmap == (Pixmap) NULL ?
-					XmGetPixmap(XtScreen(UITopLevel()),(char *) "UNHSave",  foreground,background) : savePixmap;
+					XmGetPixmap(XtScreen(UITopLevel()),(char *) "GHAASsave.bmp",  foreground,background) : savePixmap;
 	clearPixmap = clearPixmap == (Pixmap) NULL ?
-					XmGetPixmap(XtScreen(UITopLevel()),(char *) "UNHClear", foreground,background) : clearPixmap;
+					XmGetPixmap(XtScreen(UITopLevel()),(char *) "GHAASclear.bmp", foreground,background) : clearPixmap;
 	invertPixmap = invertPixmap == (Pixmap) NULL ?
-					XmGetPixmap(XtScreen(UITopLevel()),(char *) "UNHInvert", foreground,background) : invertPixmap;
+					XmGetPixmap(XtScreen(UITopLevel()),(char *) "GHAASinvert.bmp", foreground,background) : invertPixmap;
 	setIdlePixmap = setIdlePixmap == (Pixmap) NULL ?
-					XmGetPixmap(XtScreen(UITopLevel()),(char *) "UNHSetIdle", foreground,background) : setIdlePixmap;
+					XmGetPixmap(XtScreen(UITopLevel()),(char *) "GHAASsetIdle.bmp", foreground,background) : setIdlePixmap;
 	getIdlePixmap = getIdlePixmap == (Pixmap) NULL ?
-					XmGetPixmap(XtScreen(UITopLevel()),(char *) "UNHGetIdle", foreground,background) : getIdlePixmap;
+					XmGetPixmap(XtScreen(UITopLevel()),(char *) "GHAASsetIdle.bmp", foreground,background) : getIdlePixmap;
 
 	button = XtVaCreateManagedWidget ("UILoadSelectionButton",xmPushButtonWidgetClass,menuBar,
 												XmNlabelType,					XmPIXMAP,

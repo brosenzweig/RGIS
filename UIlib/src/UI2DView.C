@@ -372,25 +372,25 @@ UI2DView::UI2DView () : DBObject ("Noname 2DView",sizeof (UI2DView))
 	XtVaGetValues (MainFormW,XmNforeground,	&foreground,XmNbackground,	&background,NULL);
 
 	iconPixmap = iconPixmap == (Pixmap) NULL ?
-					XmGetPixmap(XtScreen (UITopLevel()),(char *) "UNH2Dview",foreground,background): iconPixmap;
+					XmGetPixmap(XtScreen (UITopLevel()),(char *) "GHAAS2Dview.bmp",foreground,background): iconPixmap;
 	XtVaSetValues (DShell,XmNiconPixmap, iconPixmap,NULL);
 
 	fullPixmap = fullPixmap == (Pixmap) NULL ?
-					XmGetPixmap(XtScreen(UITopLevel()),(char *) "UNHFull",  foreground,background) : fullPixmap;
+					XmGetPixmap(XtScreen(UITopLevel()),(char *) "GHAASfull.bmp",  foreground,background) : fullPixmap;
 	extentPixmap = extentPixmap  == (Pixmap) NULL ?
-					XmGetPixmap(XtScreen(UITopLevel()),(char *) "UNHExtent",foreground,background) : extentPixmap;
+					XmGetPixmap(XtScreen(UITopLevel()),(char *) "GHAASextent.bmp",foreground,background) : extentPixmap;
 	capturePixmap= capturePixmap == (Pixmap) NULL ?
-					XmGetPixmap(XtScreen(UITopLevel()),(char *) "UNHCapture",foreground,background):capturePixmap;
+					XmGetPixmap(XtScreen(UITopLevel()),(char *) "GHAAScapture.bmp",foreground,background):capturePixmap;
 	redrawPixmap = redrawPixmap == (Pixmap) NULL ?
-					XmGetPixmap(XtScreen(UITopLevel()),(char *) "UNHRedraw", foreground,background) : redrawPixmap;
+					XmGetPixmap(XtScreen(UITopLevel()),(char *) "GHAASredraw.bmp", foreground,background) : redrawPixmap;
 	zoomPixmap = zoomPixmap == (Pixmap) NULL ?
-					XmGetPixmap(XtScreen(UITopLevel()),(char *) "UNHZoom",  foreground,background) : zoomPixmap;
+					XmGetPixmap(XtScreen(UITopLevel()),(char *) "GHAASzoom.bmp",  foreground,background) : zoomPixmap;
 	panePixmap = panePixmap == (Pixmap) NULL ?
-					XmGetPixmap(XtScreen(UITopLevel()),(char *) "UNHPane",  foreground,background) : panePixmap;
+					XmGetPixmap(XtScreen(UITopLevel()),(char *) "GHAASpane.bmp",  foreground,background) : panePixmap;
 	userPixmap = userPixmap == (Pixmap) NULL ?
-					XmGetPixmap(XtScreen(UITopLevel()),(char *) "UNHUser",  foreground,background) : userPixmap;
+					XmGetPixmap(XtScreen(UITopLevel()),(char *) "GHAASuser.bmp",  foreground,background) : userPixmap;
 	meshPixmap = meshPixmap == (Pixmap) NULL ?
-					XmGetPixmap(XtScreen(UITopLevel()),(char *) "UNHMesh",  foreground,background) : meshPixmap;
+					XmGetPixmap(XtScreen(UITopLevel()),(char *) "GHAASmesh.bmp",  foreground,background) : meshPixmap;
 
 	button = XtVaCreateManagedWidget ("UI2DViewRedrawButton",xmPushButtonGadgetClass,menuBar,
 												XmNlabelType,					XmPIXMAP,
