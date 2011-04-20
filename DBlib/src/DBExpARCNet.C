@@ -23,7 +23,7 @@ DBInt DBNetworkExportASCIIGridDir (DBObjData *netData,char *fileName)
 	DBNetworkIF *netIF = new DBNetworkIF (netData);
 
 	if ((file = fopen (fileName,"w")) == NULL)
-		{ perror ("File Opening Error in: DBNetworkExportASCIIGridDir ()"); return (DBFault); }
+		{ CMmsgPrint (CMmsgSysError, "File Opening Error in: %s %d",__FILE__,__LINE__); return (DBFault); }
 	cellSize = netIF->CellSize ();
 
 	fprintf (file,"ncols         %d\n",netIF->ColNum ());

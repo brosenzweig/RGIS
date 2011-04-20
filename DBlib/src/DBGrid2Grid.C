@@ -292,3 +292,99 @@ DBInt DBGridAppend (DBObjData *grdData, DBObjData *appData)
 	delete appIF;
 	return (DBSuccess);
 	}
+
+DBObjData *DBGridMerge (DBObjData *grdData, DBObjData *mergeData)
+
+	{
+	DBInt layerID, layerNum;
+	DBFloat gridValue;
+	DBPosition pos;
+	DBCoordinate coord;
+	DBRegion extent;
+	DBObjTable *grdTable, *mergeTable;
+	DBGridIF *gridIF, *mergeIF;
+	DBObjRecord *grdLayerRec, *appLayerRec;
+
+	if (((grdData->Type () != DBTypeGridDiscrete) && (grdData->Type () != DBTypeGridContinuous)) ||
+		((appData->Type () != DBTypeGridDiscrete) && (appData->Type () != DBTypeGridContinuous)) ||
+		(grdData->Type () != mergeData->Type ()))
+		return (DBFault);
+
+	grdTable   = grdData->Table(DBrNLayers);
+	mergeTable = mergeData->Table(DBrNLayers);
+
+	if (grdTable->ItemNum () != mergeTable->ItemNum ())
+		{
+		CMmsgPrint (CMmsgUsrError,"")
+		}
+	for (layerID = 0; layerID < grdData->Table(DBrNItems)->ItemNum(); ++layerID)
+		{
+
+		}
+	extent->Expand (grdData->Extent ());
+	if (!extent->InRegion (mergeData->Extent ()))
+		{
+		extent->Expand (mergeData->Extent ());
+
+		}
+
+	gridIF = new DBGridIF (grdData);
+	appIF = new DBGridIF (appData);
+
+	for (appLayerID = 0;appLayerID < appIF->LayerNum ();++appLayerID)
+		{
+		appLayerRec = appIF->Layer (appLayerID);
+		grdLayerRec = gridIF->AddLayer (appLayerRec->Name ());
+		switch (grdData->Type ())
+			{
+			case DBTypeGridContinuous:
+				for (pos.Row = 0;pos.Row < gridIF->RowNum ();++pos.Row)
+					for (pos.Col = 0;pos.Col < gridIF->ColNum ();++pos.Col)
+						{
+					 	gridIF->Pos2Coord (pos,coord);
+						if (appIF->Value (appLayerRec,coord,&gridValue))
+								gridIF->Value (grdLayerRec,pos,gridValue);
+						else	gridIF->Value (grdLayerRec,pos,gridIF->MissingValue());
+						}
+				gridIF->RecalcStats (grdLayerRec);
+				break;
+			case DBTypeGridDiscrete:
+				{
+				DBInt tblRecID;
+				DBObjTable *grdTable = grdData->Table (DBrNItems);
+				DBObjTable *appTable = appData->Table (DBrNItems);
+				DBObjTableField *grdValueFLD  = grdTable->Field (DBrNGridValue);
+				DBObjTableField *grdSymbolFLD = grdTable->Field (DBrNSymbol);
+				DBObjTableField *appValueFLD = appTable->Field (DBrNGridValue);
+				DBObjRecord *symRec = (grdData->Table (DBrNSymbols))->Item ();
+				DBObjRecord *appRec, *grdRec;
+
+				for (pos.Row = 0;pos.Row < gridIF->RowNum ();++pos.Row)
+					for (pos.Col = 0;pos.Col < gridIF->ColNum ();++pos.Col)
+						{
+						gridIF->Pos2Coord (pos,coord);
+						if ((appRec = appIF->GridItem (appLayerRec,coord)) != (DBObjRecord *) NULL)
+							{
+							for (tblRecID = 0;tblRecID  < grdTable->ItemNum ();++tblRecID)
+								{
+								grdRec = grdTable->Item (tblRecID);
+								if (grdValueFLD->Int (grdRec) == appValueFLD->Int (appRec)) break;
+								}
+							if (tblRecID >= grdTable->ItemNum ())
+								{
+								grdRec = grdTable->Add (appRec->Name ());
+								grdValueFLD->Int (grdRec,appValueFLD->Int (appRec));
+								grdSymbolFLD->Record (grdRec,symRec);
+								}
+							gridIF->Value (grdLayerRec,pos,grdRec->RowID ());
+							}
+						else	gridIF->Value (grdLayerRec,pos, DBFault);
+						}
+				gridIF->DiscreteStats ();
+				} break;
+			}
+		}
+	delete gridIF;
+	delete appIF;
+	return (DBSuccess);
+	}

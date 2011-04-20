@@ -18,24 +18,21 @@ balazs.fekete@unh.edu
 int main (int argc,char *argv [])
 
 	{
-	int argPos, argNum = argc, ret, verbose = false;
+	int argPos, argNum = argc, ret, data, dataNum = 0, verbose = false;
 	char *title  = (char *) NULL, *subject = (char *) NULL;
 	char *domain = (char *) NULL, *version = (char *) NULL;
-	DBInt doMin = true;
-	DBObjData *tsData, *data;
+	char **dataList = (char **) NULL;
+	DBObjData *grdData, *mergeData, *retData;
 
 	for (argPos = 1;argPos < argNum; )
 		{
-		if (CMargTest (argv [argPos],"-m","--mode"))
+		if (CMargTest (argv [argPos],"-a","--append"))
 			{
-			int codes  [] = { false, true	};
-			const char *strs [] = { "min", "max", (char *) NULL };
-
 			if ((argNum = CMargShiftLeft (argPos,argv,argNum)) <= argPos)
-				{ CMmsgPrint (CMmsgUsrError,"Missing min-max method!\n"); return (CMfailed); }
-			if ((doMin = CMoptLookup (strs,argv [argPos],true)) == DBFault)
-				{ CMmsgPrint (CMmsgUsrError,"Invalid min-max method!\n"); return (CMfailed); }
-			doMin = codes [doMin];
+				{ CMmsgPrint (CMmsgUsrError,"Missing append grid!\n");  return (CMfailed); }
+			if ((dataList = (char **) realloc (dataList,(dataNum + 1) * sizeof (char *))) == (char **) NULL)
+				{ perror ("Memory allocation error"); return (DBFault); }
+			dataList [dataNum++] = argv [argPos];
 			if ((argNum = CMargShiftLeft (argPos,argv,argNum)) <= argPos) break;
 			continue;
 			}
@@ -80,7 +77,7 @@ int main (int argc,char *argv [])
 		if (CMargTest (argv [argPos],"-h","--help"))
 			{
 			CMmsgPrint (CMmsgInfo,"%s [options] <input grid> <output grid>\n",CMprgName(argv[0]));
-			CMmsgPrint (CMmsgInfo,"     -m,--mode      [min|max]\n");
+			CMmsgPrint (CMmsgInfo,"     -m,--merge     [merge grid]\n");
 			CMmsgPrint (CMmsgInfo,"     -t,--title     [dataset title]\n");
 			CMmsgPrint (CMmsgInfo,"     -u,--subject   [subject]\n");
 			CMmsgPrint (CMmsgInfo,"     -d,--domain    [domain]\n");
@@ -97,28 +94,28 @@ int main (int argc,char *argv [])
 	if (argNum > 3) { CMmsgPrint (CMmsgUsrError,"Extra arguments!\n"); return (CMfailed); }
 	if (verbose) RGlibPauseOpen (argv[0]);
 
-	tsData = new DBObjData ();
-	ret = (argNum > 1) && (strcmp (argv [1],"-") != 0) ? tsData->Read (argv [1]) : tsData->Read (stdin);
-	if ((ret == DBFault) || (tsData->Type () != DBTypeGridContinuous))
-		{ delete tsData; return (CMfailed); }
+	grdData = new DBObjData ();
+	ret = (argNum > 1) && (strcmp (argv [1],"-") != 0) ? grdData->Read (argv [1]) : grdData->Read (stdin);
+	if ((ret == DBFault) || ((grdData->Type () & DBTypeGrid) != DBTypeGrid))
+		{ delete grdData; return (CMfailed); }
 
-	if (title	== (char *) NULL)	title   = tsData->Name ();
-	if (subject == (char *) NULL)	subject = tsData->Document (DBDocSubject);
-	if (domain	== (char *) NULL)	domain  = tsData->Document (DBDocGeoDomain);
-	if (version == (char *) NULL) version = tsData->Document (DBDocVersion);
+	if (title   != (char *) NULL) grdData->Name (title);
+	if (subject != (char *) NULL) grdData->Document (DBDocSubject,subject);
+	if (domain  != (char *) NULL) grdData->Document (DBDocGeoDomain,domain);
+	if (version != (char *) NULL) grdData->Document (DBDocVersion,version);
 
-	data = DBGridToGrid (tsData,DBTypeGridContinuous,DBTableFieldInt,sizeof(DBInt));
-	data->Name (title);
-	data->Document (DBDocSubject,subject);
-	data->Document (DBDocGeoDomain,domain);
-	data->Document (DBDocVersion,version);
+	for (data = 0;data < dataNum;++data)
+		{
+		mergeData = new DBObjData ();
+		if (mergeData->Read (dataList [data]) == DBFault)                     { delete grdData; delete mergeData; return (CMfailed); }
+		if ((retData = DBGridMerge (grdData,mergeData))  == (DBObjData) NULL) { delete grdData; delete mergeData; return (CMfailed); }
+		delete mergeData;
+		if (retData != grdData) { delete grdData; grdData = retData; }
+		}
 
-	if ((ret = RGlibMinMax (tsData, data, doMin == 0 ? true : false)) == DBSuccess)
-		ret = (argNum > 2) && (strcmp (argv [2],"-") != 0) ? data->Write (argv [2]) : data->Write (stdout);
+	ret = (argNum > 2) && (strcmp (argv [2],"-") != 0) ? grdData->Write (argv [2]) : grdData->Write (stdout);
 
-	delete tsData;
-	delete data;
+	delete grdData;
 	if (verbose) RGlibPauseClose ();
 	return (ret);
 	}
-

@@ -20,7 +20,7 @@ int DBExportARCGridLayer (DBObjData *data,DBObjRecord *layerRec,const char *file
 	DBInt ret;
 
 	if ((file = fopen (fileName,"w")) == (FILE *) NULL)
-		{ perror ("File Opening Error in: DBExportARCGridLayer ()"); return (DBFault); }
+		{ CMmsgPrint (CMmsgSysError, "File Opening Error in: %s %d",__FILE__,__LINE__); return (DBFault); }
 	ret = DBExportARCGridLayer (data,layerRec,file);
 	fclose (file);
 	return (ret);

@@ -1637,6 +1637,7 @@ DBObjData *DBGridToGrid (DBObjData *);
 DBObjData *DBGridCreate (char *,DBRegion,DBCoordinate,DBInt);
 DBObjData *DBGridCreate (char *,DBRegion,DBCoordinate);
 DBInt      DBGridAppend (DBObjData *,DBObjData *);
+DBObjData *DBGridMerge  (DBObjData *,DBObjData *);
 DBInt      DBPointToGrid (DBObjData *,DBObjData *, DBFloat);
 DBInt      DBPointToGrid (DBObjData *,DBObjData *,DBObjData *);
 

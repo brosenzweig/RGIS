@@ -17,7 +17,7 @@ int DBObjMetaEntry::Read (FILE *file,DBInt swap)
 	{
 	if (DBObject::Read (file,swap) != DBSuccess) return (DBFault);
 	if (fread ((char *) this + sizeof (DBObject),sizeof (DBObjMetaEntry) - sizeof (DBObject),1,file) != 1)
-		{ perror ("File Reading Error in: DBObjMetaEntry::Read ()"); return (DBFault); }
+		{ CMmsgPrint (CMmsgSysError, "File Reading Error in: %s %d",__FILE__,__LINE__); return (DBFault); }
 	if (swap) Swap ();
 	return (DBSuccess);
 	}
@@ -27,7 +27,7 @@ int DBObjMetaEntry::Write (FILE *file)
 	{
 	if (DBObject::Write (file) != DBSuccess) return (DBFault);
 	if (fwrite ((char *) this + sizeof (DBObject),sizeof (DBObjMetaEntry) - sizeof (DBObject),1,file) != 1)
-		{ perror ("File Reading Error in: DBObjMetaEntry::Write ()"); return (DBFault); }
+		{ CMmsgPrint (CMmsgSysError, "File Reading Error in: %s %d",__FILE__,__LINE__); return (DBFault); }
 	return (DBSuccess);
 	}
 	
@@ -36,7 +36,7 @@ int DBObjSubject::Read (FILE *file,DBInt swap)
 	{
 	if (DBObject::Read (file,swap) != DBSuccess) return (DBFault);
 	if (fread ((char *) this + sizeof (DBObject),sizeof (DBObjSubject) - sizeof (DBObject),1,file) != 1)
-		{ perror ("File Reading Error in: DBObjSubject::Read ()"); return (DBFault); }
+		{ CMmsgPrint (CMmsgSysError, "File Reading Error in:%s %d",__FILE__,__LINE__); return (DBFault); }
 	if (swap) Swap ();
 	return (DBSuccess);
 	}
@@ -46,7 +46,7 @@ int DBObjSubject::Write (FILE *file)
 	{
 	if (DBObject::Write (file) != DBSuccess) return (DBFault);
 	if (fwrite ((char *) this + sizeof (DBObject),sizeof (DBObjSubject) - sizeof (DBObject),1,file) != 1)
-		{ perror ("File Reading Error in: DBObjSubject::Write ()"); return (DBFault); }
+		{ CMmsgPrint (CMmsgSysError, "File Reading Error in: %s %d",__FILE__,__LINE__); return (DBFault); }
 	return (DBSuccess);
 	}
 	
@@ -55,7 +55,7 @@ int DBObjGeoDomain::Read (FILE *file,DBInt swap)
 	{
 	if (DBObject::Read (file,swap) != DBSuccess) return (DBFault);
 	if (fread ((char *) this + sizeof (DBObject),sizeof (DBObjGeoDomain) - sizeof (DBObject),1,file) != 1)
-		{ perror ("File Reading Error in: DBObjGeoDomain::Read ()"); return (DBFault); }
+		{ CMmsgPrint (CMmsgSysError, "File Reading Error in: %s %d",__FILE__,__LINE__); return (DBFault); }
 	if (swap) Swap ();
 	return (DBSuccess);
 	}
@@ -65,7 +65,7 @@ int DBObjGeoDomain::Write (FILE *file)
 	{
 	if (DBObject::Write (file) != DBSuccess) return (DBFault);
 	if (fwrite ((char *) this + sizeof (DBObject),sizeof (DBObjGeoDomain) - sizeof (DBObject),1,file) != 1)
-		{ perror ("File Reading Error in: DBObjGeoDomain::Write ()"); return (DBFault); }
+		{ CMmsgPrint (CMmsgSysError, "File Reading Error in: %s %d",__FILE__,__LINE__); return (DBFault); }
 	return (DBSuccess);
 	}
 	
@@ -74,7 +74,7 @@ int DBObjProject::Read (FILE *file,DBInt swap)
 	{
 	if (DBObject::Read (file,swap) != DBSuccess) return (DBFault);
 	if (fread ((char *) this + sizeof (DBObject),sizeof (DBObjProject) - sizeof (DBObject),1,file) != 1)
-		{ perror ("File Reading Error in: DBObjProject::Read ()"); return (DBFault); }
+		{ CMmsgPrint (CMmsgSysError, "File Reading Error in:%s %d",__FILE__,__LINE__); return (DBFault); }
 	return (DBSuccess);
 	}
 	
@@ -83,7 +83,7 @@ int DBObjProject::Write (FILE *file)
 	{
 	if (DBObject::Write (file) != DBSuccess) return (DBFault);
 	if (fwrite ((char *) this + sizeof (DBObject),sizeof (DBObjProject) - sizeof (DBObject),1,file) != 1)
-		{ perror ("File Reading Error in: DBObjProject::Write ()"); return (DBFault); }
+		{ CMmsgPrint (CMmsgSysError, "File Reading Error in: %s %d",__FILE__,__LINE__); return (DBFault); }
 	return (DBSuccess);
 	}
 
@@ -158,10 +158,10 @@ int DBDataset::Write (const char *fileName)
 	DBInt byteOrder = 1,id;
 
 	if ((file = fopen (fileName,"w")) == NULL)
-		{ perror ("File Opening Error in: DBDataset::SaveChanges ()"); return (DBFault); }
+		{ CMmsgPrint (CMmsgSysError, "File Opening Error in: %s %d",__FILE__,__LINE__); return (DBFault); }
 	if (fwrite (&byteOrder,sizeof (DBInt),1,file) != 1)
 		{
-		perror ("File Writiing Error in: DBDataset::Write (const char *fileName)");
+		CMmsgPrint (CMmsgSysError, "File Writiing Error in: %s %d",__FILE__,__LINE__);
 		fclose (file);
 		return (DBFault);
 		}
