@@ -161,7 +161,7 @@ Widget UIInitialize (char *title,char *icon,char *helpFile, UIMenuItem mainMenu 
 	                                    XmNbottomWidget,     ccnyLogo,
 	                                    XmNbottomOffset,     5,
 	                                    NULL);
-	pixmap = XmGetPixmap(XtScreen(UITopLevel()),(char *) "GHAASlogo.bmp",foreground,background);
+	pixmap = XmGetPixmap(XtScreen(UITopLevel()),(char *) "GHAASlogo.xpm",foreground,background);
 	ghaasLogo = XtVaCreateManagedWidget ("GHAASMainUNHLogo",xmLabelWidgetClass,mainForm,
 	                                    XmNlabelType,        XmPIXMAP,
 	                                    XmNlabelPixmap,      pixmap,
