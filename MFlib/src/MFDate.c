@@ -28,7 +28,7 @@ char *MFDateTimeStepString (int tStep) {
 		case MFTimeStepYear:  return ("year");
 		case MFTimeStepMonth: return ("month");
 		case MFTimeStepDay:   return ("day");
-		default: fprintf (stderr,"Warning: Invalid time step [%d] in: MFDateTimeStepString ()\n",tStep); break;
+		default: CMmsgPrint (CMmsgAppError, "Warning: Invalid time step [%d] in: %s %d",tStep,__FILE__,__LINE__); break;
 	}
 	return ("");
 }
