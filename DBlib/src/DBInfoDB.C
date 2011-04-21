@@ -173,7 +173,7 @@ char *DBInfoFileName (const char *workSpace,const  char *infoName)
 	sprintf (fileName,"%s/info/arcdr9",workSpace);
 	if (access (fileName,R_OK) == DBFault) sprintf (fileName,"%s/info/arc.dir",workSpace);
 	if ((inFile = fopen (fileName,"r")) == (FILE *) NULL)
-		{ perror ("File Opening Error in: DBInfoFileName ()"); return (NULL); }
+		{ CMmsgPrint (CMmsgSysError, "File Opening Error in: %s %d",__FILE__,__LINE__); return (NULL); }
 	
 	while (arcDirRecord.Read (inFile,swap) == DBSuccess)
 		if ((strcmp (arcDirRecord.GetInternalName (),infoName) == 0) &&
@@ -201,7 +201,7 @@ char *DBInfoFileName (const char *coverage,DBInt type)
 		case DBTypeVectorLine:		sprintf (infoName,"%s.aat",coverage + i + 1); break;
 		case DBTypeVectorPolygon:	sprintf (infoName,"%s.pat",coverage + i + 1); break;
 		case DBTypeGridDiscrete:	sprintf (infoName,"%s.vat",coverage + i + 1); break;
-		default: fprintf (stderr,"Wrong Data Type in: DBInfoFileName ()\n"); return (NULL);
+		default: CMmsgPrint (CMmsgAppError, "Wrong Data Type in: %s %d",__FILE__,__LINE__); return (NULL);
 		}
 	return (DBInfoFileName (workSpace,infoName));
 	}
@@ -221,7 +221,7 @@ DBInt DBInfoGetFields (DBObjTable *table,const char *infoName)
 	if (access (fileName,R_OK) == DBFault) sprintf (fileName,"%s.nit",infoName);
 
 	if ((inFile = fopen (fileName,"r")) == (FILE *) NULL)
-		{ perror ("File Opening Error in: DBInfoGetFields ()"); return (DBFault); }
+		{ CMmsgPrint (CMmsgSysError, "File Opening Error in: %s %d",__FILE__,__LINE__); return (DBFault); }
 
 	while ((field = arcNitRecord.MakeField (inFile,swap)) != (DBObjTableField *) NULL)
 		if (table->Field (field->Name ()) == (DBObjTableField *) NULL) table->AddField (field);
@@ -263,10 +263,10 @@ static void _DBInfoGetField (DBObjTableField *field,DBObjRecord *record,ARCNitRe
 							break;
 							}
 						default:
-							fprintf (stderr,"Invalid Item Width in: _DBInfoGetField ()\n");	break;
+							CMmsgPrint (CMmsgAppError, "Invalid Item Width in: %s %d",__FILE__,__LINE__);	break;
 						}
 					break;
-				default: fprintf (stderr,"Invalid Info Field in: _DBInfoGetField ()\n");	break;
+				default: CMmsgPrint (CMmsgAppError, "Invalid Info Field in: %s %d",__FILE__,__LINE__);	break;
 				}
 			field->Int (record,intVAR);
 			break;
@@ -295,11 +295,11 @@ static void _DBInfoGetField (DBObjTableField *field,DBObjRecord *record,ARCNitRe
 							floatVAR = float4VAR;
 							break;
 							}
-						default: fprintf (stderr,"Invalid Item Width in: _DBInfoGetField ()\n");	break;
+						default: CMmsgPrint (CMmsgAppError, "Invalid Item Width in: %s %d",__FILE__,__LINE__);	break;
 						}
 					break;
 				default:
-					fprintf (stderr,"Invalid Info Field in: _DBInfoGetField ()\n");	break;
+					CMmsgPrint (CMmsgAppError, "Invalid Info Field in: %s %d",__FILE__,__LINE__);	break;
 				}
 			field->Float (record,floatVAR);	
 			break;
@@ -326,7 +326,7 @@ DBInt DBInfoGetTable (DBObjTable *table,const char *infoName)
 	sprintf (fileName,"%snit",infoName);
 	if (access (fileName,R_OK) == DBFault) sprintf (fileName,"%s.nit",infoName);
 	if ((inFile = fopen (fileName,"r")) == (FILE *) NULL)
-		{ perror ("File Opening Error in:  DBInfoGetTable (const char *,DBObjTable *)"); return (DBFault); }
+		{ CMmsgPrint (CMmsgSysError, "File Opening Error in:  %s %d",__FILE__,__LINE__); return (DBFault); }
 
 	fieldNum = 0;
 	for (arcNitRecord = (ARCNitRecord *) malloc (sizeof (ARCNitRecord));
@@ -334,7 +334,7 @@ DBInt DBInfoGetTable (DBObjTable *table,const char *infoName)
 			arcNitRecord = (ARCNitRecord *) realloc (arcNitRecord,(fieldNum + 1) * sizeof (ARCNitRecord)))
 			{
 			if (arcNitRecord == (ARCNitRecord *) NULL)
-				{ perror ("Memory (Re)allocation Error in: DBInt DBInfoGetTable (const char *,DBObjTable *)"); return (DBFault); }
+				{ CMmsgPrint (CMmsgSysError, "Memory (Re)allocation Error in: %s %d",__FILE__,__LINE__); return (DBFault); }
 			recordLen = recordLen > arcNitRecord [fieldNum].ItemPosition () + arcNitRecord [fieldNum].ItemWidth () ?
 							recordLen : arcNitRecord [fieldNum].ItemPosition () + arcNitRecord [fieldNum].ItemWidth ();
 			fieldNum++;
@@ -342,7 +342,7 @@ DBInt DBInfoGetTable (DBObjTable *table,const char *infoName)
 	recordLen = (recordLen & 0x01) == 0 ? recordLen : ((recordLen >> 0x01) + 1) << 0x01;
 	fclose (inFile);
 	if ((fields = (DBObjTableField **) calloc (sizeof (DBObjTableField *),fieldNum)) == (DBObjTableField **) NULL)
-		{ perror ("Memory Allocation Error in: DBInt DBInfoGetTable (const char *,DBObjTable *)"); return (DBFault); }
+		{ CMmsgPrint (CMmsgSysError, "Memory Allocation Error in: %s %d",__FILE__,__LINE__); return (DBFault); }
 	for (i = 0;i < fieldNum;++i)
 		{
 		strncpy (name,arcNitRecord [i].Name (),16); name [16] = '\0';
@@ -355,12 +355,12 @@ DBInt DBInfoGetTable (DBObjTable *table,const char *infoName)
 	external = DBFileSize (fileName) == 80 ? true : false;
 	
 	if ((inFile = fopen (fileName,"r")) == (FILE *) NULL)
-		{ perror ("File Opening Error in:  DBInfoGetTable ()"); return (DBFault); }
+		{ CMmsgPrint (CMmsgSysError, "File Opening Error in: %s %d",__FILE__,__LINE__); return (DBFault); }
 
 	if (external)
 		{
 		if (fread (name,80,1,inFile) != 1)
-			{ perror ("File Reading Error in: DBInfoGetTable ()"); fclose (inFile); return (DBFault); }
+			{ CMmsgPrint (CMmsgSysError, "File Reading Error in: %s %d",__FILE__,__LINE__); fclose (inFile); return (DBFault); }
 		fclose (inFile);
 		for (i = sizeof (name) - 1;(i >= 0) && (name [i] == ' ');--i) name [i] = '\0';
 		sep = 0; for (i = strlen (name); (i >= 0) && (sep < 2);--i) if (name [i] == '/') ++sep;
@@ -368,11 +368,11 @@ DBInt DBInfoGetTable (DBObjTable *table,const char *infoName)
 		strcpy (fileName + j + 2,name + i + 2);
 		
 		if ((inFile = fopen (fileName,"r")) == (FILE *) NULL)
-			{ perror ("File Opening Error in:  DBInfoGetTable ()"); return (DBFault); }
+			{ CMmsgPrint (CMmsgSysError, "File Opening Error in: %s %d",__FILE__,__LINE__); return (DBFault); }
 		}
 	
 	if ((buffer = (char *) calloc (recordLen,sizeof (char))) == NULL)
-		{ perror ("Memory Allocation Error in: DBInfoGetTable ()"); fclose (inFile); return (DBFault); }
+		{ CMmsgPrint (CMmsgSysError, "Memory Allocation Error in: %s %d",__FILE__,__LINE__); fclose (inFile); return (DBFault); }
 
 	for (record = table->First ();fread (buffer,recordLen,1,inFile) == 1;record = table->Next ())
 		{
@@ -380,7 +380,7 @@ DBInt DBInfoGetTable (DBObjTable *table,const char *infoName)
 			sprintf (name,"Table Record: %d",table->ItemNum () + 1); table->Add (name); record = table->Item ();
 
 		if (record == (DBObjRecord *) NULL)
-			{ perror ("Null Record in: DBInfoGetTable (const char *,DBObjTable *)"); return (DBFault); }
+			{ CMmsgPrint (CMmsgAppError, "Null Record in: %s %d",__FILE__,__LINE__); return (DBFault); }
 
 		for (i = 0;i < fieldNum;++i)
 			if (fields [i] != NULL) _DBInfoGetField (fields [i],record,arcNitRecord + i,buffer,swap);

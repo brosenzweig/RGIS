@@ -56,7 +56,7 @@ int DBImportARCVector (DBObjData *vecData,const char *arcCov,const char *nameFie
 					if ((symbolRec = (DBObjRecord *) symbols->Item (symbolFLD->String (record))) == NULL)
 						{
 						if ((symbolRec = symbols->Add (symbolFLD->String (record))) == NULL)
-							{ fprintf (stderr,"Symbol Object Creation Error in: DBImportARC ()\n"); return (DBFault); }
+							{ CMmsgPrint (CMmsgAppError,"Symbol Object Creation Error in: %s %d",__FILE__,__LINE__); return (DBFault); }
 						symbolIDFLD->Int (symbolRec,symbolRec->RowID ());
 						foregroundFLD->Int (symbolRec,1);
 						backgroundFLD->Int (symbolRec,0);
@@ -68,7 +68,7 @@ int DBImportARCVector (DBObjData *vecData,const char *arcCov,const char *nameFie
 					if ((symbolRec = (DBObjRecord *) symbols->Item (symbolName)) == NULL)
 						{
 						if ((symbolRec = symbols->Add (symbolName)) == NULL)
-							{ fprintf (stderr,"Symbol Object Creation Error in: DBImportARC ()\n"); return (DBFault); }
+							{ CMmsgPrint (CMmsgAppError, "Symbol Object Creation Error in: %s %d",__FILE__,__LINE__); return (DBFault); }
 						symbolIDFLD->Int (symbolRec,symbolFLD->Int (record));
 						foregroundFLD->Int (symbolRec,1);
 						backgroundFLD->Int (symbolRec,0);
@@ -76,7 +76,7 @@ int DBImportARCVector (DBObjData *vecData,const char *arcCov,const char *nameFie
 						}
 					break;
 				default:
-					fprintf (stderr,"Invalid Field Type in: DBImportARC ()\n");
+					CMmsgPrint (CMmsgAppError, "Invalid Field Type in: %s %d",__FILE__,__LINE__);
 					break;
 				}
 			symbolResFLD->Record (record,symbolRec);
@@ -86,7 +86,7 @@ int DBImportARCVector (DBObjData *vecData,const char *arcCov,const char *nameFie
 		{
 		symbols->Add ("Default Symbol");
 		if ((symbolRec = (DBObjRecord *) symbols->Item ()) == (DBObjRecord *) NULL)
-			{ fprintf (stderr,"Symbol Object Creation Error in: DBImportARC ()\n"); return (DBFault); }
+			{ CMmsgPrint (CMmsgAppError, "Symbol Object Creation Error in: %s %d",__FILE__,__LINE__); return (DBFault); }
 		symbolIDFLD->Int (symbolRec,0);
 		foregroundFLD->Int (symbolRec,1);
 		backgroundFLD->Int (symbolRec,0);

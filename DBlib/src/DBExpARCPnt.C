@@ -22,7 +22,7 @@ int DBExportARCGenPoint (DBObjData *data,char *fileName)
 	DBObjRecord *pntRec;
 	
 	if ((file = fopen (fileName,"w")) == (FILE *) NULL)
-		{ perror ("ARC Generate File Opening Error in: DBExportARCGenPoint ()"); return (DBFault); }
+		{ CMmsgPrint (CMmsgSysError, "ARC Generate File Opening Error in: %s %d",__FILE__,__LINE__); return (DBFault); }
 	for (pntRec = items->First ();pntRec != (DBObjRecord *) NULL;pntRec = items->Next ())
 		{
 		coord = coordField->Coordinate (pntRec);
@@ -46,11 +46,11 @@ int DBExportARCTableDef (DBObjData *data,char *tableName,char *fileName)
 	DBObjRecord *itemRec;
 
 	if (table == (DBObjTable *) NULL)
-		{ fprintf (stderr,"Invalid Table in: DBExportARCTableData ()\n"); return (DBFault); }
+		{ CMmsgPrint (CMmsgAppError, "Invalid Table in: %s %d",__FILE__,__LINE__); return (DBFault); }
 	fields = table->Fields ();
 	
 	if ((file = fopen (fileName,"w")) == (FILE *) NULL)
-		{ perror ("Table Definition File Opening Error in: DBExportARCTableDef ()"); return (DBFault); }
+		{ CMmsgPrint (CMmsgSysError, "Table Definition File Opening Error in: %s %d",__FILE__,__LINE__); return (DBFault); }
 	fprintf (file,"\"ID\" 4 4 B\n");
 	for (itemRec = table->First ();itemRec != (DBObjRecord *) NULL;itemRec = table->Next ())
 		{
@@ -89,7 +89,7 @@ int DBExportARCTableDef (DBObjData *data,char *tableName,char *fileName)
 						outWidth = DBStringLength;
 						fprintf (file,"%d %d C\n",outWidth,outWidth);
 				default:
-						fprintf (stderr,"Invalid Field Type in: DBExportARCAttribDef ()\n");
+						CMmsgPrint (CMmsgAppError, "Invalid Field Type in: %s %d",__FILE__,__LINE__);
 						break; 
 				}
 			}
@@ -108,10 +108,10 @@ int DBExportARCTableData (DBObjData *data,char *tableName,char *fileName)
 	DBObjRecord *itemRec;
 	
 	if (table == (DBObjTable *) NULL)
-		{ fprintf (stderr,"Invalid Table in: DBExportARCTableData ()\n"); return (DBFault); }
+		{ CMmsgPrint (CMmsgAppError, "Invalid Table in: %s %d",__FILE__,__LINE__); return (DBFault); }
 	fields = table->Fields ();
 	if ((file = fopen (fileName,"w")) == (FILE *) NULL)
-		{ perror ("File Opening Error in: DBExportARCTableData ()"); return (DBFault); }
+		{ CMmsgPrint (CMmsgSysError, "File Opening Error in: %s %d",__FILE__,__LINE__); return (DBFault); }
 
 	for (itemRec = table->First ();itemRec != (DBObjRecord *) NULL;itemRec = table->Next ())
 		{
@@ -121,11 +121,11 @@ int DBExportARCTableData (DBObjData *data,char *tableName,char *fileName)
 				switch (tableField->Type ())
 					{
 					case DBTableFieldTableRec:	
-					case DBTableFieldString:	fprintf (file,",\"%s\"",tableField->String (itemRec));break;
-					case DBTableFieldInt:		fprintf (file,",%d",tableField->Int (itemRec));			break;
-					case DBTableFieldFloat:		fprintf (file,",%f",tableField->Float (itemRec));		break;
-					case DBTableFieldDate:		fprintf (file,",\"%s\"",tableField->String (itemRec));break;
-					default:	fprintf (stderr,"Invalid Field Type in: DBExportARCTableData ()\n");		break;
+					case DBTableFieldString:	fprintf (file,",\"%s\"",tableField->String (itemRec));     break;
+					case DBTableFieldInt:		fprintf (file,",%d",tableField->Int (itemRec));            break;
+					case DBTableFieldFloat:		fprintf (file,",%f",tableField->Float (itemRec));          break;
+					case DBTableFieldDate:		fprintf (file,",\"%s\"",tableField->String (itemRec));     break;
+					default: CMmsgPrint (CMmsgAppError, "Invalid Field Type in: %s %d",__FILE__,__LINE__); break;
 					}
 		fprintf (file,"\n");
 		}

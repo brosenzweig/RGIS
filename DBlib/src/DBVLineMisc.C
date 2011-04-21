@@ -68,7 +68,7 @@ void DBVLineIF::Vertexes (DBObjRecord *lineRec,DBCoordinate *coord,DBInt vertexN
 			}
 		else	dataRec->Realloc (vertexNum * sizeof (DBCoordinate));
 		if ((vertexes = (DBCoordinate *) dataRec->Data ()) == NULL)
-			{ perror ("Memory Allocation Error in:  DBVLineIF::Vertexes ()"); return; }
+			{ CMmsgPrint (CMmsgSysError, "Memory Allocation Error in: %s %d",__FILE__,__LINE__); return; }
 		for (vertex = 0;vertex < vertexNum;vertex++)
 			{
 			lineExtent.Expand (vertexes [vertex] = coord [vertex]);

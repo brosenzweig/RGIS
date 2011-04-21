@@ -62,7 +62,7 @@ DBInt DBGridCont2Network (DBObjData *gridData,DBObjData *netData, bool downhill)
 
 	if ((zones = (DBInt *) calloc (9 * zLayerNum,sizeof (DBInt))) == (DBInt *) NULL)
 		{
-		perror ("Memory Allocation Error in: DBGridCont2Network ()");
+		CMmsgPrint (CMmsgSysError, "Memory Allocation Error in: %s %d",__FILE__,__LINE__);
 		if (zGridIF != (DBGridIF *) NULL) delete zGridIF;
 		delete gridIF;
 		return (DBFault);

@@ -107,8 +107,8 @@ int main (int argc,char *argv [])
 	for (data = 0;data < dataNum;++data)
 		{
 		mergeData = new DBObjData ();
-		if (mergeData->Read (dataList [data]) == DBFault)                     { delete grdData; delete mergeData; return (CMfailed); }
-		if ((retData = DBGridMerge (grdData,mergeData))  == (DBObjData) NULL) { delete grdData; delete mergeData; return (CMfailed); }
+		if (mergeData->Read (dataList [data]) == DBFault)                       { delete grdData; delete mergeData; return (CMfailed); }
+		if ((retData = DBGridMerge (grdData,mergeData))  == (DBObjData *) NULL) { delete grdData; delete mergeData; return (CMfailed); }
 		delete mergeData;
 		if (retData != grdData) { delete grdData; grdData = retData; }
 		}

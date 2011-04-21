@@ -54,7 +54,7 @@ DBInt DBNetworkExportASCIIGridBasin (DBObjData *netData,char *fileName)
 	DBNetworkIF *netIF = new DBNetworkIF (netData);
 
 	if ((file = fopen (fileName,"w")) == NULL)
-		{ perror ("File Opening Error in: DBNetworkExportASCIIGridBasin ()"); return (DBFault); }
+		{ CMmsgPrint (CMmsgSysError, "File Opening Error in: %s %d",__FILE__,__LINE__); return (DBFault); }
 	cellSize = netIF->CellSize ();
 
 	fprintf (file,"ncols         %d\n",netIF->ColNum ());
@@ -85,7 +85,7 @@ DBInt DBNetworkExportASCIIGridOrder (DBObjData *netData,char *fileName)
 	DBNetworkIF *netIF = new DBNetworkIF (netData);
 
 	if ((file = fopen (fileName,"w")) == NULL)
-		{ perror ("File Opening Error in: DBNetworkExportASCIIGridOrder ()"); return (DBFault); }
+		{ CMmsgPrint (CMmsgSysError, "File Opening Error in: %s %d",__FILE__,__LINE__); return (DBFault); }
 	cellSize = netIF->CellSize ();
 
 	fprintf (file,"ncols         %d\n",netIF->ColNum ());
@@ -117,7 +117,7 @@ DBInt DBNetworkExportASCIIGridArea (DBObjData *netData,char *fileName)
 	DBObjRecord *cellRec;
 
 	if ((file = fopen (fileName,"w")) == NULL)
-		{ perror ("File Opening Error in: DBNetworkExportASCIIGridArea ()"); return (DBFault); }
+		{ CMmsgPrint (CMmsgSysError, "File Opening Error in: %s %d",__FILE__,__LINE__); return (DBFault); }
 	cellSize = netIF->CellSize ();
 
 	fprintf (file,"ncols         %d\n",netIF->ColNum ());
@@ -150,7 +150,7 @@ DBInt DBNetworkExportASCIIGridLength (DBObjData *netData,char *fileName)
 	DBObjRecord *cellRec;
 
 	if ((file = fopen (fileName,"w")) == NULL)
-		{ perror ("File Opening Error in: DBNetworkExportASCIIGridLength ()"); return (DBFault); }
+		{ CMmsgPrint (CMmsgSysError, "File Opening Error in: %s %d",__FILE__,__LINE__); return (DBFault); }
 	cellSize = netIF->CellSize ();
 
 	fprintf (file,"ncols         %d\n",netIF->ColNum ());
@@ -184,7 +184,7 @@ DBInt DBNetworkExportASCIIGridDistToMouth (DBObjData *netData,char *fileName)
 
 	if (netIF->DistToMouth () != true) return (DBFault);
 	if ((file = fopen (fileName,"w")) == NULL)
-		{ perror ("File Opening Error in: DBNetworkExportASCIIGridLength ()"); return (DBFault); }
+		{ CMmsgPrint (CMmsgSysError, "File Opening Error in: %s %d",__FILE__,__LINE__); return (DBFault); }
 	cellSize = netIF->CellSize ();
 
 	fprintf (file,"ncols         %d\n",netIF->ColNum ());
@@ -218,7 +218,7 @@ DBInt DBNetworkExportASCIIGridDistToOcean (DBObjData *netData,char *fileName)
 
 	if (netIF->DistToOcean () != true) return (DBFault);
 	if ((file = fopen (fileName,"w")) == NULL)
-		{ perror ("File Opening Error in: DBNetworkExportASCIIGridLength ()"); return (DBFault); }
+		{ CMmsgPrint (CMmsgSysError, "File Opening Error in: %s %d",__FILE__,__LINE__); return (DBFault); }
 	cellSize = netIF->CellSize ();
 
 	fprintf (file,"ncols         %d\n",netIF->ColNum ());
@@ -251,7 +251,7 @@ DBInt DBNetworkExportArcGenARC (DBObjData *netData,char *fileName)
 	DBObjRecord *cellRec;
 
 	if ((file = fopen (fileName,"w")) == NULL)
-		{ perror ("File Opening Error in: DBNetworkExportArcGenARC ()"); return (DBFault); }
+		{ CMmsgPrint (CMmsgSysError, "File Opening Error in: %s %d",__FILE__,__LINE__); return (DBFault); }
 	cellSize = netIF->CellSize ();
 
 	for (cellID = 0;cellID < netIF->CellNum ();++cellID)
@@ -284,7 +284,7 @@ DBInt DBNetworkExportArcGenNODE (DBObjData *netData,char *fileName)
 	DBObjRecord *basinRec, *cellRec;
 
 	if ((file = fopen (fileName,"w")) == NULL)
-		{ perror ("File Opening Error in: DBNetworkExportArcGenNODE ()"); return (DBFault); }
+		{ CMmsgPrint (CMmsgSysError, "File Opening Error in: %s %d",__FILE__,__LINE__); return (DBFault); }
 
 	for (basinID = 0;basinID < netIF->BasinNum ();++basinID)
 		{

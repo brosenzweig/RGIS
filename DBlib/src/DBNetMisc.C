@@ -59,9 +59,9 @@ DBNetworkIF::DBNetworkIF (DBObjData *data)
 	layerFLD			= LayerTable->Field (DBrNLayer);
 
 	if ((LayerRecord = LayerTable->Item (DBrNLookupGrid)) == (DBObjRecord *) NULL)
-		{ fprintf (stderr,"Bailing Out like ARC/INFO in: DBNetworkIF::DBNetworkIF\n"); exit (-1); }
+		{ CMmsgPrint (CMmsgAppError,"Bailing Out like ARC/INFO in: %s %d",__FILE__,__LINE__); exit (-1); }
 	if((DataRec	= layerFLD->Record (LayerRecord)) == (DBObjRecord *) NULL)
-		{ fprintf (stderr,"Bailing Out in: DBNetworkIF::DBNetworkIF\n"); exit (-1); }
+		{ CMmsgPrint (CMmsgAppError,"Bailing Out in: %s %d",__FILE__,__LINE__); exit (-1); }
 	if (CellLengthFLD == (DBObjTableField *) NULL)
 		{
 		DBInt cellID;
@@ -581,7 +581,7 @@ DBInt DBNetworkIF::Build ()
 		{
 		cellRec = CellTable->Item (i);
 		if ((basinRec = Basin (cellRec)) == (DBObjRecord *) NULL)
-			{ fprintf (stderr,"BasinID: %d CellID:%d\n",BasinFLD->Int (cellRec),cellRec->RowID ()); continue; }
+			{ CMmsgPrint (CMmsgAppError,"BasinID: %d CellID:%d\n",BasinFLD->Int (cellRec),cellRec->RowID ()); continue; }
 		if (basin != basinRec->RowID ())
 			{
 			basin = basinRec->RowID ();

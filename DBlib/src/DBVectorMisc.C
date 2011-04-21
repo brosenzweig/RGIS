@@ -49,7 +49,7 @@ DBObjRecord *DBVectorIF::Item (DBCoordinate coord) const
 			} break;
 		case DBTypeVectorLine:		break;
 		case DBTypeVectorPolygon:	break;
-		default: fprintf (stderr,"Unknown Vector Data Type in: DBVectorIO::Item (DBCoordinate coord)\n"); break;
+		default: CMmsgPrint (CMmsgAppError, "Unknown Vector Data Type in: %s %d",__FILE__,__LINE__); break;
 		}
 	return (retRecord);
 	}

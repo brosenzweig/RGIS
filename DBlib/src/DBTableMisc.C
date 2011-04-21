@@ -32,10 +32,10 @@ DBInt DBTableIF::AppendASCII (char *fileName)
 	DBObjRecord *record;
 	
 	if ((inFile = fopen (fileName,"r")) == (FILE *) NULL)
-		{ perror ("File Openning Error in: DBTableIF::AppendASCII ()"); return (DBFault); }
+		{ CMmsgPrint (CMmsgSysError, "File Openning Error in: %s %d",__FILE__,__LINE__); return (DBFault); }
 
 	if (fgets (buffer,sizeof (buffer) - 1,inFile) == (char *) NULL)
-		{ perror ("File Reading Error in: DBTableIF::AppendASCII ()"); fclose (inFile);  return (DBFault); }
+		{ CMmsgPrint (CMmsgSysError, "File Reading Error in: %s %d",__FILE__,__LINE__); fclose (inFile);  return (DBFault); }
 	bufferLength = strlen (buffer);
 	while ((buffer [bufferLength - 1] == '\n') || (buffer [bufferLength - 1] == '\r'))
 		{ buffer [bufferLength - 1] = '\0'; bufferLength = strlen (buffer); }
@@ -49,7 +49,7 @@ DBInt DBTableIF::AppendASCII (char *fileName)
 			{ fieldToken [--i] = '\0'; fieldToken++;}
 		fields = (DBObjTableField **) realloc (fields,sizeof (DBObjTableField *) * (fieldNum + 1));
 		if (fields == (DBObjTableField **) NULL)
-			{ perror ("Memory Allocation Error in: DBTableIF::AppendASCII ()"); fclose (inFile); return (DBFault); }
+			{ CMmsgPrint (CMmsgSysError, "Memory Allocation Error in: %s %d",__FILE__,__LINE__); fclose (inFile); return (DBFault); }
 		fields [fieldNum] = ItemTablePTR->Field (fieldToken);
 		fieldToken = fieldToken + i + 1;
 		fieldNum++;

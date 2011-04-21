@@ -156,64 +156,64 @@ static DBInt _DBExportNetCDFPoint (DBObjData *dbData, int ncid)
 	DBVPointIF *pntIF;
 
 	if ((status = nc_redef (ncid)) != NC_NOERR)
-		{ fprintf(stderr, "NC Error: %s\n", nc_strerror(status)); return (DBFault); }
+		{ CMmsgPrint (CMmsgAppError, "NC Error '%s' in: %s %d", nc_strerror(status),__FILE__,__LINE__); return (DBFault); }
 	if ((status = nc_def_dim (ncid,_DBExportNetCDFRename (DBrNItems),table->ItemNum (),&dimid)) != NC_NOERR)
-		{ fprintf(stderr, "NC Error: %s\n", nc_strerror(status)); return (DBFault); }
+		{ CMmsgPrint (CMmsgAppError, "NC Error '%s' in: %s %d", nc_strerror(status),__FILE__,__LINE__); return (DBFault); }
 
 	/* Begin Defining Latitude Variable */
 	varname = dbData->Projection () ==  DBProjectionSpherical ? "latitude" : "y-coord";
 	if ((status = nc_def_var (ncid,varname,  NC_DOUBLE, (int) 1,&dimid, &latid))  != NC_NOERR)
-		{ fprintf(stderr, "NC Error: %s\n", nc_strerror(status)); return (DBFault); }
+		{ CMmsgPrint (CMmsgAppError, "NC Error '%s' in: %s %d", nc_strerror(status),__FILE__,__LINE__); return (DBFault); }
 	str = "Latitude";
 	if ((status = nc_put_att_text (ncid,latid,"long_name",strlen (str),str)) != NC_NOERR)
-		{ fprintf(stderr, "NC Error: %s\n", nc_strerror(status)); return (DBFault); }
+		{ CMmsgPrint (CMmsgAppError, "NC Error '%s' in: %s %d", nc_strerror(status),__FILE__,__LINE__); return (DBFault); }
 	str = "latitude_north";
 	if ((status = nc_put_att_text (ncid,latid,"standard_name",strlen (str),str)) != NC_NOERR)
-		{ fprintf(stderr, "NC Error: %s\n", nc_strerror(status)); return (DBFault); }
+		{ CMmsgPrint (CMmsgAppError, "NC Error '%s' in: %s %d", nc_strerror(status),__FILE__,__LINE__); return (DBFault); }
 	str = "degrees_north";
 	if ((status = nc_put_att_text (ncid,latid,"units",strlen (str),str)) != NC_NOERR)
-		{ fprintf(stderr, "NC Error: %s\n", nc_strerror(status)); return (DBFault); }
+		{ CMmsgPrint (CMmsgAppError, "NC Error '%s' in: %s %d", nc_strerror(status),__FILE__,__LINE__); return (DBFault); }
 	extent [0] = -90.0;
 	extent [1] =  90.0;
 	if ((status = nc_put_att_double (ncid,latid,"valid_range", NC_DOUBLE,2,extent)) != NC_NOERR)
-		{ fprintf(stderr, "NC Error: %s\n", nc_strerror(status)); return (DBFault); }
+		{ CMmsgPrint (CMmsgAppError, "NC Error '%s' in: %s %d", nc_strerror(status),__FILE__,__LINE__); return (DBFault); }
 	extent [0] = (dbData->Extent ()).LowerLeft.Y;
 	extent [1] = (dbData->Extent ()).UpperRight.Y;
 	if ((status = nc_put_att_double (ncid,latid,"actual_range",NC_DOUBLE,2,extent)) != NC_NOERR)
-		{ fprintf(stderr, "NC Error: %s\n", nc_strerror(status)); return (DBFault); }
+		{ CMmsgPrint (CMmsgAppError, "NC Error '%s' in: %s %d", nc_strerror(status),__FILE__,__LINE__); return (DBFault); }
 	str = "y";
 	if ((status = nc_put_att_text (ncid,latid,"axis",strlen (str),str)) != NC_NOERR)
-		{ fprintf(stderr, "NC Error: %s\n", nc_strerror(status)); return (DBFault); }
+		{ CMmsgPrint (CMmsgAppError, "NC Error '%s' in %s %d", nc_strerror(status),__FILE__,__LINE__); return (DBFault); }
 	/* End Defining Latitude Variable */
 
 	/* Begin Defining Longitude Variable */
 	varname = dbData->Projection () ==  DBProjectionSpherical ? "longitude" : "x-coord";
 	if ((status = nc_def_var (ncid,"longitude",  NC_DOUBLE, (int) 1,&dimid, &lonid))  != NC_NOERR)
-	 	{ fprintf(stderr, "NC Error: %s\n", nc_strerror(status)); return (DBFault); }
+	 	{ CMmsgPrint (CMmsgAppError, "NC Error '%s' in %s %d", nc_strerror(status),__FILE__,__LINE__); return (DBFault); }
 	str = "Longitude";
 	if ((status = nc_put_att_text (ncid,lonid,"long_name",strlen (str),str)) != NC_NOERR)
-		{ fprintf(stderr, "NC Error: %s\n", nc_strerror(status)); return (DBFault); }
+		{ CMmsgPrint (CMmsgAppError, "NC Error '%s' in: %s %d", nc_strerror(status),__FILE__,__LINE__); return (DBFault); }
 		str = "longitude_east";
 	if ((status = nc_put_att_text (ncid,lonid,"standard_name",strlen (str),str)) != NC_NOERR)
-		{ fprintf(stderr, "NC Error: %s\n", nc_strerror(status)); return (DBFault); }
+		{ CMmsgPrint (CMmsgAppError, "NC Error '%s' in: %s %d", nc_strerror(status),__FILE__,__LINE__); return (DBFault); }
 	str = "degrees_east";
 	if ((status = nc_put_att_text (ncid,lonid,"units",strlen (str),str)) != NC_NOERR)
-		{ fprintf(stderr, "NC Error: %s\n", nc_strerror(status)); return (DBFault); }
+		{ CMmsgPrint (CMmsgAppError, "NC Error '%s' in: %s %d", nc_strerror(status),__FILE__,__LINE__); return (DBFault); }
 	extent [0] = -180.0;
 	extent [1] =  180.0;
 	if ((status = nc_put_att_double (ncid,lonid,"valid_range", NC_DOUBLE,2,extent)) != NC_NOERR)
-		{ fprintf(stderr, "NC Error: %s\n", nc_strerror(status)); return (DBFault); }
+		{ CMmsgPrint (CMmsgAppError, "NC Error '%s' in: %s %d", nc_strerror(status),__FILE__,__LINE__); return (DBFault); }
 	extent [0] = (dbData->Extent ()).LowerLeft.X;
 	extent [1] = (dbData->Extent ()).UpperRight.X;
 	if ((status = nc_put_att_double (ncid,lonid,"actual_range",NC_DOUBLE,2,extent)) != NC_NOERR)
-		{ fprintf(stderr, "NC Error: %s\n", nc_strerror(status)); return (DBFault); }
+		{ CMmsgPrint (CMmsgAppError, "NC Error '%s' in: %s %d", nc_strerror(status),__FILE__,__LINE__); return (DBFault); }
 	str = "x";
 	if ((status = nc_put_att_text (ncid,lonid,"axis",strlen (str),str)) != NC_NOERR)
-		{ fprintf(stderr, "NC Error: %s\n", nc_strerror(status)); return (DBFault); }
+		{ CMmsgPrint (CMmsgAppError, "NC Error '%s' in: %s %d", nc_strerror(status),__FILE__,__LINE__); return (DBFault); }
 	/* End Defining Longitude Variable */
 
 	if ((status = nc_enddef (ncid)) != NC_NOERR)
-		{ fprintf(stderr, "NC Error: %s\n", nc_strerror(status)); return (DBFault); }
+		{ CMmsgPrint (CMmsgAppError, "NC Error '%s' in: %s %d", nc_strerror(status),__FILE__,__LINE__); return (DBFault); }
 
 	pntIF = new DBVPointIF (dbData);
 	for (pntID = 0;pntID < pntIF->ItemNum ();pntID++)
@@ -222,9 +222,9 @@ static DBInt _DBExportNetCDFPoint (DBObjData *dbData, int ncid)
 		start = pntID;
 		count = 1;
 	if ((status = nc_put_vara_double (ncid,latid,&start,&count,&coord.X)) != NC_NOERR)
-		{ fprintf(stderr, "NC Error: %s\n", nc_strerror(status)); delete pntIF; return (DBFault); }
+		{ CMmsgPrint (CMmsgAppError, "NC Error '%s' in: %s %d", nc_strerror(status),__FILE__,__LINE__); delete pntIF; return (DBFault); }
 	if ((status = nc_put_vara_double (ncid,lonid,&start,&count,&coord.Y)) != NC_NOERR)
-		{ fprintf(stderr, "NC Error: %s\n", nc_strerror(status)); delete pntIF; return (DBFault); }
+		{ CMmsgPrint (CMmsgAppError, "NC Error '%s' in: %s %d", nc_strerror(status),__FILE__,__LINE__); delete pntIF; return (DBFault); }
 	}
 
 	delete pntIF;
@@ -263,118 +263,118 @@ static DBInt _DBExportNetCDFGridDefine (DBObjData *dbData,int ncid, int dimids [
 			delete netIF;
 			} break;
 		default:
-			fprintf (stderr,"Invalid data type in: _DBExportNetCDFGridDefine ()\n");
+			CMmsgPrint (CMmsgAppError, "Invalid data type in: %s %d",__FILE__,__LINE__);
 			return (DBFault);
 		}
 
 	if ((status = nc_redef (ncid)) != NC_NOERR)
-		{ fprintf(stderr, "NC Error: %s\n", nc_strerror(status)); return (DBFault); }
+		{ CMmsgPrint (CMmsgAppError, "NC Error '%s' in: %s %d", nc_strerror(status),__FILE__,__LINE__); return (DBFault); }
 	/* Begin Defining Dimensions */
 	if ((status = nc_def_dim (ncid,"latitude", rowNum,dimids + DIMLat))   != NC_NOERR)
-		{ fprintf(stderr, "NC Error: %s\n", nc_strerror(status)); return (DBFault); }
+		{ CMmsgPrint (CMmsgAppError, "NC Error '%s' in: %s %d", nc_strerror(status),__FILE__,__LINE__); return (DBFault); }
 	if ((status = nc_def_dim (ncid,"longitude",colNum,dimids + DIMLon))   != NC_NOERR)
-		{ fprintf(stderr, "NC Error: %s\n", nc_strerror(status)); return (DBFault); }
+		{ CMmsgPrint (CMmsgAppError, "NC Error '%s' in: %s %d", nc_strerror(status),__FILE__,__LINE__); return (DBFault); }
 	if ((status = nc_def_dim (ncid,"bnds",     2,    bdimids + 1))        != NC_NOERR)
-		{ fprintf(stderr, "NC Error: %s\n", nc_strerror(status)); return (DBFault); }
+		{ CMmsgPrint (CMmsgAppError, "NC Error '%s' in: %s %d", nc_strerror(status),__FILE__,__LINE__); return (DBFault); }
 	/* End Defining Dimensions */
 
 	/* Begin Defining Latitude Variable */
 	if ((status = nc_def_var (ncid,"latitude",  NC_DOUBLE, (int) 1,dimids + DIMLat, &latid))  != NC_NOERR)
-		{ fprintf(stderr, "NC Error: %s\n", nc_strerror(status)); nc_close (ncid); return (DBFault); }
+		{ CMmsgPrint (CMmsgAppError, "NC Error '%s' in: %s %d", nc_strerror(status),__FILE__,__LINE__); nc_close (ncid); return (DBFault); }
 	str = (char *) "Latitude";
 	if ((status = nc_put_att_text (ncid,latid,"long_name",strlen (str),str)) != NC_NOERR)
-		{ fprintf(stderr, "NC Error: %s\n", nc_strerror(status)); nc_close (ncid); return (DBFault); }
+		{ CMmsgPrint (CMmsgAppError, "NC Error '%s' in: %s %d", nc_strerror(status),__FILE__,__LINE__); nc_close (ncid); return (DBFault); }
 	str = (char *) "latitude_north";
 	if ((status = nc_put_att_text (ncid,latid,"standard_name",strlen (str),str)) != NC_NOERR)
-		{ fprintf(stderr, "NC Error: %s\n", nc_strerror(status)); nc_close (ncid); return (DBFault); }
+		{ CMmsgPrint (CMmsgAppError, "NC Error '%s' in: %s %d", nc_strerror(status),__FILE__,__LINE__); nc_close (ncid); return (DBFault); }
 	str = (char *) "degrees_north";
 	if ((status = nc_put_att_text (ncid,latid,"units",strlen (str),str)) != NC_NOERR)
-		{ fprintf(stderr, "NC Error: %s\n", nc_strerror(status)); nc_close (ncid); return (DBFault); }
+		{ CMmsgPrint (CMmsgAppError, "NC Error '%s' in: %s %d", nc_strerror(status),__FILE__,__LINE__); nc_close (ncid); return (DBFault); }
 	extent [0] = -90.0;
 	extent [1] =  90.0;
 	if ((status = nc_put_att_double (ncid,latid,"valid_range", NC_DOUBLE,2,extent)) != NC_NOERR)
-		{ fprintf(stderr, "NC Error: %s\n", nc_strerror(status)); nc_close (ncid); return (DBFault); }
+		{ CMmsgPrint (CMmsgAppError, "NC Error '%s' in: %s %d", nc_strerror(status),__FILE__,__LINE__); nc_close (ncid); return (DBFault); }
 	extent [0] = (dbData->Extent ()).LowerLeft.Y;
 	extent [1] = (dbData->Extent ()).UpperRight.Y;
 	if ((status = nc_put_att_double (ncid,latid,"actual_range",NC_DOUBLE,2,extent)) != NC_NOERR)
-		{ fprintf(stderr, "NC Error: %s\n", nc_strerror(status)); nc_close (ncid); return (DBFault); }
+		{ CMmsgPrint (CMmsgAppError, "NC Error '%s' in: %s %d", nc_strerror(status),__FILE__,__LINE__); nc_close (ncid); return (DBFault); }
 	str = (char *) "latitude_bnds";
 	if ((status = nc_put_att_text (ncid,latid,"bounds",strlen (str),str)) != NC_NOERR)
-		{ fprintf(stderr, "NC Error: %s\n", nc_strerror(status)); nc_close (ncid); return (DBFault); }
+		{ CMmsgPrint (CMmsgAppError, "NC Error '%s' in: %s %d", nc_strerror(status),__FILE__,__LINE__); nc_close (ncid); return (DBFault); }
 	str = (char *) "y";
 	if ((status = nc_put_att_text (ncid,latid,"axis",strlen (str),str)) != NC_NOERR)
-		{ fprintf(stderr, "NC Error: %s\n", nc_strerror(status)); nc_close (ncid); return (DBFault); }
+		{ CMmsgPrint (CMmsgAppError, "NC Error '%s' in: %s %d", nc_strerror(status),__FILE__,__LINE__); nc_close (ncid); return (DBFault); }
 	/* End Defining Latitude Variable */
 
 	/* Begin Defining Longitude Variable */
 	if ((status = nc_def_var (ncid,"longitude",  NC_DOUBLE, (int) 1,dimids + DIMLon, &lonid))  != NC_NOERR)
-	 	{ fprintf(stderr, "NC Error: %s\n", nc_strerror(status)); nc_close (ncid); return (DBFault); }
+	 	{ CMmsgPrint (CMmsgAppError, "NC Error '%s' in: %s %d", nc_strerror(status),__FILE__,__LINE__); nc_close (ncid); return (DBFault); }
 	str = (char *) "Longitude";
 	if ((status = nc_put_att_text (ncid,lonid,"long_name",strlen (str),str)) != NC_NOERR)
-		{ fprintf(stderr, "NC Error: %s\n", nc_strerror(status)); nc_close (ncid); return (DBFault); }
+		{ CMmsgPrint (CMmsgAppError, "NC Error '%s' in: %s %d", nc_strerror(status),__FILE__,__LINE__); nc_close (ncid); return (DBFault); }
 	str = (char *) "longitude_east";
 	if ((status = nc_put_att_text (ncid,lonid,"standard_name",strlen (str),str)) != NC_NOERR)
-		{ fprintf(stderr, "NC Error: %s\n", nc_strerror(status)); nc_close (ncid); return (DBFault); }
+		{ CMmsgPrint (CMmsgAppError, "NC Error '%s' in: %s %d", nc_strerror(status),__FILE__,__LINE__); nc_close (ncid); return (DBFault); }
 	str = (char *) "degrees_east";
 	if ((status = nc_put_att_text (ncid,lonid,"units",strlen (str),str)) != NC_NOERR)
-		{ fprintf(stderr, "NC Error: %s\n", nc_strerror(status)); nc_close (ncid); return (DBFault); }
+		{ CMmsgPrint (CMmsgAppError, "NC Error '%s' in: %s %d", nc_strerror(status),__FILE__,__LINE__); nc_close (ncid); return (DBFault); }
 	extent [0] = -180.0;
 	extent [1] =  180.0;
 	if ((status = nc_put_att_double (ncid,lonid,"valid_range", NC_DOUBLE,2,extent)) != NC_NOERR)
-		{ fprintf(stderr, "NC Error: %s\n", nc_strerror(status)); nc_close (ncid); return (DBFault); }
+		{ CMmsgPrint (CMmsgAppError, "NC Error '%s' in: %s %d", nc_strerror(status),__FILE__,__LINE__); nc_close (ncid); return (DBFault); }
 	extent [0] = (dbData->Extent ()).LowerLeft.X;
 	extent [1] = (dbData->Extent ()).UpperRight.X;
 	if ((status = nc_put_att_double (ncid,lonid,"actual_range",NC_DOUBLE,2,extent)) != NC_NOERR)
-		{ fprintf(stderr, "NC Error: %s\n", nc_strerror(status)); nc_close (ncid); return (DBFault); }
+		{ CMmsgPrint (CMmsgAppError, "NC Error '%s' in: %s %d", nc_strerror(status),__FILE__,__LINE__); nc_close (ncid); return (DBFault); }
 	str = (char *) "longitude_bnds";
 	if ((status = nc_put_att_text (ncid,latid,"bounds",strlen (str),str)) != NC_NOERR)
-		{ fprintf(stderr, "NC Error: %s\n", nc_strerror(status)); nc_close (ncid); return (DBFault); }
+		{ CMmsgPrint (CMmsgAppError, "NC Error '%s' in: %s %d", nc_strerror(status),__FILE__,__LINE__); nc_close (ncid); return (DBFault); }
 	str = (char *) "x";
 	if ((status = nc_put_att_text (ncid,lonid,"axis",strlen (str),str)) != NC_NOERR)
-		{ fprintf(stderr, "NC Error: %s\n", nc_strerror(status)); nc_close (ncid); return (DBFault); }
+		{ CMmsgPrint (CMmsgAppError, "NC Error '%s' in: %s %d", nc_strerror(status),__FILE__,__LINE__); nc_close (ncid); return (DBFault); }
 	/* End Defining Longitude Variable */
 
 	/* Begin Defining Latitude_bounds Variable */
 	bdimids [0] = dimids[DIMLat];
 	if ((status = nc_def_var (ncid,"latitude_bnds",  NC_DOUBLE, (int) 2,bdimids, &latbndid))  != NC_NOERR)
-		{ fprintf(stderr, "NC Error: %s\n", nc_strerror(status)); nc_close (ncid); return (DBFault); }
+		{ CMmsgPrint (CMmsgAppError, "NC Error '%s' in: %s %d", nc_strerror(status),__FILE__,__LINE__); nc_close (ncid); return (DBFault); }
 	/* End Defining Latitude_bounds Variable */
 
 	/* Begin Defining Longitude_bounds Variable */
 	bdimids [0] = dimids[DIMLon];
 	if ((status = nc_def_var (ncid,"longitude_bnds",  NC_DOUBLE, (int) 2,bdimids, &lonbndid))  != NC_NOERR)
-		{ fprintf(stderr, "NC Error: %s\n", nc_strerror(status)); nc_close (ncid); return (DBFault); }
+		{ CMmsgPrint (CMmsgAppError, "NC Error '%s' in: %s %d", nc_strerror(status),__FILE__,__LINE__); nc_close (ncid); return (DBFault); }
 	/* End Defining Longitude_bounds Variable */
 
 	if ((status = nc_enddef (ncid)) != NC_NOERR)
-		{ fprintf(stderr, "NC Error: %s\n", nc_strerror(status)); nc_close (ncid); return (DBFault); }
+		{ CMmsgPrint (CMmsgAppError, "NC Error '%s' in: %s %d", nc_strerror(status),__FILE__,__LINE__); nc_close (ncid); return (DBFault); }
 
 	if ((record = (double *) calloc ((rowNum > colNum ? rowNum : colNum) * 2,sizeof (double))) == (double *) NULL)
-		{ fprintf (stderr,"Memory allocation error in: DBExportNetCDF ()\n"); return (DBFault); }
+		{ CMmsgPrint (CMmsgSysError, "Memory allocation error in: %s %d",__FILE__,__LINE__); return (DBFault); }
 
 	start[0] = start[1] =0;
 	count[0] = rowNum;
 	count[1] = 2;
 	for (i = 0;i < rowNum;i++) record [i] = (dbData->Extent ()).LowerLeft.Y + i * cellHeight + cellHeight / 2.0;
 	if ((status = nc_put_vara_double (ncid,latid,start,count,record)) != NC_NOERR)
-		{ fprintf(stderr, "NC Error: %s\n", nc_strerror(status)); free (record); return (DBFault); }
+		{ CMmsgPrint (CMmsgAppError, "NC Error '%s' in: %s %d", nc_strerror(status),__FILE__,__LINE__); free (record); return (DBFault); }
 	for (i = 0;i < rowNum;i++) {
 		record [i * 2]     = (dbData->Extent ()).LowerLeft.Y + i       * cellHeight;
 		record [i * 2 + 1] = (dbData->Extent ()).LowerLeft.Y + (i + 1) * cellHeight;
 	}
 	if ((status = nc_put_vara_double (ncid,latbndid,start,count,record)) != NC_NOERR)
-		{ fprintf(stderr, "NC Error: %s\n", nc_strerror(status)); free (record); return (DBFault); }
+		{ CMmsgPrint (CMmsgAppError, "NC Error '%s' in: %s %d", nc_strerror(status),__FILE__,__LINE__); free (record); return (DBFault); }
 
 	count[0] = colNum;
 	for (i = 0;i < colNum;i++) record [i] = (dbData->Extent ()).LowerLeft.X + i * cellWidth + cellWidth / 2.0;
 	if ((status = nc_put_vara_double (ncid,lonid,start,count,record)) != NC_NOERR)
-		{ fprintf(stderr, "NC Error: %s\n", nc_strerror(status)); free (record); return (DBFault); }
+		{ CMmsgPrint (CMmsgAppError, "NC Error '%s' in: %s %d", nc_strerror(status),__FILE__,__LINE__); free (record); return (DBFault); }
 	for (i = 0;i < colNum;i++) {
 		record [i * 2]     = (dbData->Extent ()).LowerLeft.X + i       * cellWidth;
 		record [i * 2 + 1] = (dbData->Extent ()).LowerLeft.X + (i + 1) * cellWidth;
 	}
 	if ((status = nc_put_vara_double (ncid,lonbndid,start,count,record)) != NC_NOERR)
-		{ fprintf(stderr, "NC Error: %s\n", nc_strerror(status)); free (record); return (DBFault); }
+		{ CMmsgPrint (CMmsgAppError, "NC Error '%s' in: %s %d", nc_strerror(status),__FILE__,__LINE__); free (record); return (DBFault); }
 	free (record);
 	return (DBSuccess);
 	}
@@ -396,17 +396,17 @@ static DBInt _DBExportNetCDFTimeDefine (DBObjData *dbData,int ncid,int dimids []
 
 	if ((utSystem = ut_read_xml ((char *) NULL)) == (ut_system *) NULL)
 		{
-		fprintf (stderr,"Total metal gebasz in %s:%d!\n",__FILE__,__LINE__);
+		CMmsgPrint (CMmsgAppError,"Total metal gebasz in: %s %d",__FILE__,__LINE__);
 		return (DBFault);
 		}
 	if ((baseTimeUnit = ut_parse (utSystem, "seconds since 2001-01-01 00:00:00", UT_ASCII)) == (ut_unit *) NULL)
 		{
-		fprintf (stderr,"Total metal gebasz in %s:%d!\n",__FILE__,__LINE__);
+		CMmsgPrint (CMmsgAppError, "Total metal gebasz in: %s %d",__FILE__,__LINE__);
 		switch (ut_get_status ()) {
-			case UT_BAD_ARG: fprintf (stderr, "System or string is NULL!\n");               break;
-			case UT_SYNTAX:  fprintf (stderr, "String contained a syntax error!n");         break;
-			case UT_UNKNOWN: fprintf (stderr, "String contained an unknown identifier!\n"); break;
-			default:         fprintf (stderr, "System error in %s:%d!n",__FILE__,__LINE__);
+			case UT_BAD_ARG: CMmsgPrint (CMmsgUsrError, "System or string is NULL!");               break;
+			case UT_SYNTAX:  CMmsgPrint (CMmsgUsrError, "String contained a syntax error!");        break;
+			case UT_UNKNOWN: CMmsgPrint (CMmsgUsrError, "String contained an unknown identifier!"); break;
+			default:         CMmsgPrint (CMmsgAppError, "System error in %s:%d!n",__FILE__,__LINE__);
 			}
 		ut_free_system (utSystem);
 		return (DBFault);
@@ -414,7 +414,7 @@ static DBInt _DBExportNetCDFTimeDefine (DBObjData *dbData,int ncid,int dimids []
 	/* Begin Defining Dimensions */
 	if ((status = nc_redef (ncid)) != NC_NOERR)
 		{
-		fprintf(stderr, "NC Error: %s\n", nc_strerror(status));
+		CMmsgPrint (CMmsgAppError, "NC Error '%s' in: %s %d", nc_strerror(status),__FILE__,__LINE__);
 		ut_free (baseTimeUnit);
 		ut_free_system (utSystem);
 		delete gridIF;
@@ -422,7 +422,7 @@ static DBInt _DBExportNetCDFTimeDefine (DBObjData *dbData,int ncid,int dimids []
 		}
 	if ((status = nc_def_dim (ncid,"time",NC_UNLIMITED,    dimids + DIMTime)) != NC_NOERR)
 		{
-		fprintf(stderr, "NC Error: %s\n", nc_strerror(status));
+		CMmsgPrint (CMmsgAppError, "NC Error '%s' in: %s %d", nc_strerror(status),__FILE__,__LINE__);
 		ut_free (baseTimeUnit);
 		ut_free_system (utSystem);
 		delete gridIF;
@@ -433,7 +433,7 @@ static DBInt _DBExportNetCDFTimeDefine (DBObjData *dbData,int ncid,int dimids []
 	/* Begin Defining Time Variable */
 	if ((status = nc_def_var (ncid,"time", NC_INT,(int) 1,dimids + DIMTime,&timeid)) != NC_NOERR)
 		{
-		fprintf(stderr, "NC Error: %s\n", nc_strerror(status));
+		CMmsgPrint (CMmsgAppError, "NC Error '%s' in: %s %d", nc_strerror(status),__FILE__,__LINE__);
 		ut_free (baseTimeUnit);
 		ut_free_system (utSystem);
 		delete gridIF;
@@ -442,7 +442,7 @@ static DBInt _DBExportNetCDFTimeDefine (DBObjData *dbData,int ncid,int dimids []
 	str = (char *) "Time";
 	if ((status = nc_put_att_text (ncid,timeid,"long_name",strlen (str),str)) != NC_NOERR)
 		{
-		fprintf(stderr, "NC Error: %s\n", nc_strerror(status));
+		CMmsgPrint (CMmsgAppError, "NC Error '%s' in: %s %d", nc_strerror(status),__FILE__,__LINE__);
 		ut_free (baseTimeUnit);
 		ut_free_system (utSystem);
 		delete gridIF;
@@ -451,7 +451,7 @@ static DBInt _DBExportNetCDFTimeDefine (DBObjData *dbData,int ncid,int dimids []
 	str = (char *) "time";
 	if ((status = nc_put_att_text (ncid,timeid,"standard_name",strlen (str),str)) != NC_NOERR)
 		{
-		fprintf(stderr, "NC Error: %s\n", nc_strerror(status));
+		CMmsgPrint (CMmsgAppError, "NC Error '%s' in: %s %d", nc_strerror(status),__FILE__,__LINE__);
 		ut_free (baseTimeUnit);
 		ut_free_system (utSystem);
 		delete gridIF;
@@ -498,7 +498,7 @@ static DBInt _DBExportNetCDFTimeDefine (DBObjData *dbData,int ncid,int dimids []
 		}
 	if ((utUnit = ut_parse (utSystem, unitStr, UT_ASCII)) == (ut_unit *) NULL)
 		{
-		fprintf (stderr,"Invalid time Unit [%s] in: DBImportNetCDF ()",unitStr);
+		CMmsgPrint (CMmsgAppError, "Invalid time Unit [%s] in: %s %d",unitStr,__FILE__,__LINE__);
 		ut_free (baseTimeUnit);
 		ut_free_system (utSystem);
 		delete gridIF;
@@ -506,11 +506,11 @@ static DBInt _DBExportNetCDFTimeDefine (DBObjData *dbData,int ncid,int dimids []
 		}
 	if ((cvConverter = ut_get_converter (baseTimeUnit, utUnit)) == (cv_converter *) NULL)
 		{
-		fprintf (stderr,"Time converter error!n");
+		CMmsgPrint (CMmsgUsrError, "Time converter error!n");
 		switch (ut_get_status ()) {
-			case UT_BAD_ARG:         fprintf (stderr, "unit1 or unit2 is NULL.\n");                         break;
-			case UT_NOT_SAME_SYSTEM: fprintf (stderr, "unit1 and unit2 belong to different unit-systems."); break;
-			default:                 fprintf (stderr, "Conversion between the units is not possible.");     break;
+			case UT_BAD_ARG:         CMmsgPrint (CMmsgUsrError, "unit1 or unit2 is NULL.\n");                         break;
+			case UT_NOT_SAME_SYSTEM: CMmsgPrint (CMmsgUsrError, "unit1 and unit2 belong to different unit-systems."); break;
+			default:                 CMmsgPrint (CMmsgUsrError, "Conversion between the units is not possible.");     break;
 			}
 		ut_free (utUnit);
 		ut_free (baseTimeUnit);
@@ -520,7 +520,7 @@ static DBInt _DBExportNetCDFTimeDefine (DBObjData *dbData,int ncid,int dimids []
 		}
 	if ((status = nc_put_att_text (ncid,timeid,"units",strlen (unitStr),unitStr)) != NC_NOERR)
 		{
-		fprintf(stderr, "NC Error: %s\n", nc_strerror(status));
+		CMmsgPrint (CMmsgAppError, "NC Error '%s' in: %s %d", nc_strerror(status),__FILE__,__LINE__);
 		ut_free_system (utSystem);
 		ut_free (utUnit);
 		ut_free (baseTimeUnit);
@@ -531,7 +531,7 @@ static DBInt _DBExportNetCDFTimeDefine (DBObjData *dbData,int ncid,int dimids []
 	str = (char *) "t";
 	if ((status = nc_put_att_text (ncid,timeid,"axis",strlen (str),str)) != NC_NOERR)
 		{
-		fprintf(stderr, "NC Error: %s\n", nc_strerror(status));
+		CMmsgPrint (CMmsgAppError, "NC Error '%s' in: %s %d", nc_strerror(status),__FILE__,__LINE__);
 		ut_free_system (utSystem);
 		ut_free (utUnit);
 		ut_free (baseTimeUnit);
@@ -543,7 +543,7 @@ static DBInt _DBExportNetCDFTimeDefine (DBObjData *dbData,int ncid,int dimids []
 
 	if ((status = nc_enddef (ncid)) != NC_NOERR)
 		{
-		fprintf(stderr, "%s\n", nc_strerror(status));
+		CMmsgPrint (CMmsgAppError, "NC Error '%s' in: %s %d", nc_strerror(status),__FILE__,__LINE__);
 		ut_free_system (utSystem); ut_free (utUnit);
 		ut_free (utUnit);
 		ut_free (baseTimeUnit);
@@ -554,7 +554,7 @@ static DBInt _DBExportNetCDFTimeDefine (DBObjData *dbData,int ncid,int dimids []
 
 	if ((record = (int *) calloc (gridIF->LayerNum () * 2,sizeof (int))) == (int *) NULL)
 		{
-		fprintf (stderr,"Memory allocation error in: DBExportNetCDF ()\n");
+		CMmsgPrint (CMmsgSysError, "Memory allocation error in: %s %d",__FILE__,__LINE__);
 		ut_free_system (utSystem);
 		ut_free (utUnit);
 		ut_free (baseTimeUnit);
@@ -586,7 +586,7 @@ static DBInt _DBExportNetCDFTimeDefine (DBObjData *dbData,int ncid,int dimids []
 		}
 	if ((status = nc_put_vara_int (ncid,timeid,&start,&count,record)) != NC_NOERR)
 		{
-		fprintf(stderr, "%s\n", nc_strerror(status));
+		CMmsgPrint (CMmsgAppError, "NC Error '%s' in: %s %d", nc_strerror(status),__FILE__,__LINE__);
 		ut_free_system (utSystem);
 		ut_free (utUnit);
 		ut_free (baseTimeUnit);
@@ -598,7 +598,7 @@ static DBInt _DBExportNetCDFTimeDefine (DBObjData *dbData,int ncid,int dimids []
 
 	if ((status = nc_redef (ncid)) != NC_NOERR)
 		{
-		fprintf(stderr, "NC Error: %s\n", nc_strerror(status));
+		CMmsgPrint (CMmsgAppError, "NC Error '%s' in: %s %d", nc_strerror(status),__FILE__,__LINE__);
 		ut_free_system (utSystem);
 		ut_free (utUnit);
 		ut_free (baseTimeUnit);
@@ -610,7 +610,7 @@ static DBInt _DBExportNetCDFTimeDefine (DBObjData *dbData,int ncid,int dimids []
 	extent[1] = record[layerID - 1];
 	if ((status = nc_put_att_int (ncid,timeid,"actual_range",NC_INT,2,extent)) != NC_NOERR)
 		{
-		fprintf(stderr, "NC Error: %s\n", nc_strerror(status));
+		CMmsgPrint (CMmsgAppError, "NC Error '%s' in: %s %d", nc_strerror(status),__FILE__,__LINE__);
 		ut_free_system (utSystem);
 		ut_free (utUnit);
 		ut_free (baseTimeUnit);
@@ -620,7 +620,7 @@ static DBInt _DBExportNetCDFTimeDefine (DBObjData *dbData,int ncid,int dimids []
 		}
 	if ((status = nc_enddef (ncid)) != NC_NOERR)
 		{
-		fprintf(stderr, "%s\n", nc_strerror(status));
+		CMmsgPrint (CMmsgAppError, "NC Error '%s' in: %s %d", nc_strerror(status),__FILE__,__LINE__);
 		ut_free_system (utSystem);
 		ut_free (utUnit);
 		ut_free (baseTimeUnit);
@@ -648,7 +648,7 @@ static DBInt _DBExportNetCDFTable (DBObjTable *table,int ncid)
 	DBObjTableField *fieldRec;
 	DBObjRecord *itemRec;
 
-	if ((status = nc_redef (ncid)) != NC_NOERR) { fprintf(stderr, "NC Error: %s\n", nc_strerror(status)); return (DBFault); }
+	if ((status = nc_redef (ncid)) != NC_NOERR) { CMmsgPrint (CMmsgAppError, "NC Error '%s' in: %s %d", nc_strerror(status),__FILE__,__LINE__); return (DBFault); }
 
 	tableName = _DBExportNetCDFRename (table->Name ());
 	if (!(((nc_inq_dimid (ncid,"time",dimids) == NC_NOERR) ||
@@ -657,7 +657,7 @@ static DBInt _DBExportNetCDFTable (DBObjTable *table,int ncid)
 		   (index [0] == (size_t) table->ItemNum ())))
 		{
 		if ((status = nc_def_dim (ncid,tableName,table->ItemNum (),dimids)) != NC_NOERR)
-			{ fprintf(stderr, "NC Error: %s\n", nc_strerror(status)); return (DBFault); }
+			{ CMmsgPrint (CMmsgAppError, "NC Error '%s' in: %s %d", nc_strerror(status),__FILE__,__LINE__); return (DBFault); }
 		}
 
 	for (fieldID = 0;fieldID < table->FieldNum ();++fieldID)
@@ -691,11 +691,18 @@ static DBInt _DBExportNetCDFTable (DBObjTable *table,int ncid)
 						index [0] = itemID;
 						count [1] = strlen (str) + 1;
 						if ((status = nc_put_vara_text (ncid,varid,index,count,str)) != NC_NOERR)
-							{ fprintf(stderr, "NC Error: %s [%s]\n", nc_strerror(status), fieldRec->Name ()); return (DBFault); }
+							{
+							CMmsgPrint (CMmsgAppError, "NC Error '%s [%s]' in: %s %d", nc_strerror(status), fieldRec->Name (),__FILE__,__LINE__);
+							return (DBFault);
+							}
 						}
-					if ((status = nc_redef  (ncid)) != NC_NOERR) { fprintf(stderr, "NC Error: %s\n", nc_strerror(status)); return (DBFault); }
+					if ((status = nc_redef  (ncid)) != NC_NOERR) { CMmsgPrint (CMmsgAppError, "NC Error '%s' in: %s %d", nc_strerror(status),__FILE__,__LINE__); return (DBFault); }
 					}
-				else { fprintf(stderr, "Skipping variable :%s\n", fieldName); fprintf(stderr, "NC Error: %s\n", nc_strerror(status)); }
+				else
+					{
+					CMmsgPrint (CMmsgUsrError, "Skipping variable :%s", fieldName);
+					CMmsgPrint (CMmsgAppError, "NC Error '%s' in: %s %d", nc_strerror(status),__FILE__,__LINE__);
+					}
 				} break;
 			case DBTableFieldInt:
 				{
@@ -705,7 +712,7 @@ static DBInt _DBExportNetCDFTable (DBObjTable *table,int ncid)
 					case sizeof (char):
 					case sizeof (short): vtype = NC_SHORT; break;
 					case sizeof (int):   vtype = NC_INT;   break;
-					default: { fprintf (stderr,"Invalide field size in: _DBExportNetCDF ()\n"); return (DBFault); }
+					default: { CMmsgPrint (CMmsgAppError,"Invalid field size in: %s %d",__FILE__,__LINE__); return (DBFault); }
 					}
 				if (((status = nc_def_var (ncid,fieldName,vtype,(int) 1,dimids,&varid))  == NC_NOERR) &&
 					 ((status = nc_enddef (ncid)) == NC_NOERR))
@@ -718,11 +725,19 @@ static DBInt _DBExportNetCDFTable (DBObjTable *table,int ncid)
 						var = fieldRec->Int (itemRec);
 						index [0] = itemID;
 						if ((status = nc_put_var1_int (ncid,varid,index,&var)) != NC_NOERR)
-							{ fprintf(stderr, "NC Error; %s [%s]\n", nc_strerror(status),fieldRec->Name ()); return (DBFault); }
+							{ CMmsgPrint (CMmsgAppError, "NC Error '%s [%s]' in: %s %d", nc_strerror(status),fieldRec->Name (),__FILE__,__LINE__); return (DBFault); }
 						}
-					if ((status = nc_redef  (ncid)) != NC_NOERR) { fprintf(stderr, "NC Error: %s\n", nc_strerror(status)); return (DBFault); }
+					if ((status = nc_redef  (ncid)) != NC_NOERR)
+						{
+						CMmsgPrint (CMmsgAppError, "NC Error '%s' in: %s %d", nc_strerror(status),__FILE__,__LINE__);
+						return (DBFault);
+						}
 					}
-				else { fprintf(stderr, "Skipping variable :%s\n", fieldName); fprintf(stderr, "NC Error: %s\n", nc_strerror(status)); }
+				else
+					{
+					CMmsgPrint (CMmsgUsrError, "Skipping variable :%s\n", fieldName);
+					CMmsgPrint (CMmsgAppError, "NC Error '%s' in: %s %d", nc_strerror(status),__FILE__,__LINE__);
+					}
 				} break;
 			case DBTableFieldFloat:
 				{
@@ -731,7 +746,7 @@ static DBInt _DBExportNetCDFTable (DBObjTable *table,int ncid)
 					{
 					case sizeof (DBFloat4): vtype = NC_FLOAT;  break;
 					case sizeof (DBFloat):  vtype = NC_DOUBLE; break;
-					default: { fprintf (stderr,"Invalide field size in: _DBExportNetCDF ()\n"); return (DBFault); }
+					default: { CMmsgPrint (CMmsgAppError, "Invalid field size in: %s %d",__FILE__,__LINE__); return (DBFault); }
 					}
 				if (((status = nc_def_var (ncid,fieldName,vtype,(int) 1,dimids,&varid)) == NC_NOERR) &&
 					 ((status = nc_enddef (ncid)) == NC_NOERR))
@@ -744,11 +759,18 @@ static DBInt _DBExportNetCDFTable (DBObjTable *table,int ncid)
 						var = fieldRec->Float (itemRec);
 						index [0] = itemID;
 						if ((status = nc_put_var1_double (ncid,varid,index,&var)) != NC_NOERR)
-							{ fprintf(stderr, "NC Error: %s [%s]\n", nc_strerror(status),fieldRec->Name ()); return (DBFault); }
+							{
+							CMmsgPrint (CMmsgAppError, "NC Error '%s [%s]' in: %s %d", nc_strerror(status),fieldRec->Name (),__FILE__,__LINE__);
+							return (DBFault);
+							}
 						}
-					if ((status = nc_redef  (ncid)) != NC_NOERR) { fprintf(stderr, "NC Error: %s\n", nc_strerror(status)); return (DBFault); }
+					if ((status = nc_redef  (ncid)) != NC_NOERR) { CMmsgPrint (CMmsgAppError, "NC Error '%s' in: %s %d", nc_strerror(status),__FILE__,__LINE__); return (DBFault); }
 					}
-				else { fprintf(stderr, "Skipping variable :%s\n", fieldName); fprintf(stderr, "NC Error: %s\n", nc_strerror(status)); }
+				else
+					{
+					CMmsgPrint (CMmsgAppError, "Skipping variable :%s", fieldName);
+					CMmsgPrint (CMmsgAppError, "NC Error '%s' in: %s %d", nc_strerror(status),__FILE__,__LINE__);
+					}
 				} break;
 			case DBTableFieldDate:
 				{
@@ -757,7 +779,11 @@ static DBInt _DBExportNetCDFTable (DBObjTable *table,int ncid)
 					 ((status = nc_enddef (ncid)) == NC_NOERR))
 					{
 					}
-				else { fprintf(stderr, "Skipping variable :%s\n", fieldName); fprintf(stderr, "NC Error: %s\n", nc_strerror(status)); }
+				else
+					{
+					CMmsgPrint (CMmsgAppError, "Skipping variable :%s", fieldName);
+					CMmsgPrint (CMmsgAppError, "NC Error '%s' in: %s %d", nc_strerror(status),__FILE__,__LINE__);
+					}
 				} break;
 			case DBTableFieldCoord:  break;
 			case DBTableFieldRegion:
@@ -783,11 +809,15 @@ static DBInt _DBExportNetCDFTable (DBObjTable *table,int ncid)
 						box [2] = region.UpperRight.X;
 						box [3] = region.UpperRight.Y;
 						if ((status = nc_put_vara_double (ncid,varid,index,count, box))  != NC_NOERR)
-							{ fprintf(stderr, "NC Error: %s [%s]\n", nc_strerror(status),fieldRec->Name ()); return (DBFault); }
+							{ CMmsgPrint (CMmsgAppError, "NC Error '%s [%s]' in: %s %d", nc_strerror(status),fieldRec->Name (),__FILE__,__LINE__); return (DBFault); }
 						}
-					if ((status = nc_redef  (ncid)) != NC_NOERR) { fprintf(stderr, "NC Error: %s\n", nc_strerror(status)); return (DBFault); }
+					if ((status = nc_redef  (ncid)) != NC_NOERR) { CMmsgPrint (CMmsgAppError, "NC Error '%s' in: %s %d", nc_strerror(status),__FILE__,__LINE__); return (DBFault); }
 					}
-				else { fprintf(stderr, "Skipping variable :%s\n", fieldName); fprintf(stderr, "NC Error: %s\n", nc_strerror(status)); }
+				else
+					{
+					CMmsgPrint (CMmsgAppError, "Skipping variable :%s\n", fieldName);
+					CMmsgPrint (CMmsgAppError, "NC Error '%s' in: %s %d", nc_strerror(status),__FILE__,__LINE__);
+					}
 				} break;
 			case DBTableFieldPosition:
 				{
@@ -809,11 +839,15 @@ static DBInt _DBExportNetCDFTable (DBObjTable *table,int ncid)
 						index [0] = itemID;
 						if (((status = nc_put_var1_int (ncid,cvarid,index, &pos.Col)) != NC_NOERR) ||
 						    ((status = nc_put_var1_int (ncid,rvarid,index, &pos.Row)) != NC_NOERR))
-							{ fprintf(stderr, "NC Error: %s [%s]\n", nc_strerror(status),fieldRec->Name ()); return (DBFault); }
+							{ CMmsgPrint (CMmsgAppError, "NC Error '%s [%s]' in: %s %d", nc_strerror(status),fieldRec->Name (),__FILE__,__LINE__); return (DBFault); }
 						}
-					if ((status = nc_redef  (ncid)) != NC_NOERR) { fprintf(stderr, "NC Error: %s\n", nc_strerror(status)); return (DBFault); }
+					if ((status = nc_redef  (ncid)) != NC_NOERR) { CMmsgPrint (CMmsgAppError, "NC Error '%s' in: %s %d", nc_strerror(status),__FILE__,__LINE__); return (DBFault); }
 					}
-				else { fprintf(stderr, "Skipping variable :%s\n", fieldName); fprintf(stderr, "NC Error: %s\n", nc_strerror(status)); }
+				else
+					{
+					CMmsgPrint (CMmsgAppError, "Skipping variable :%s", fieldName);
+					CMmsgPrint (CMmsgAppError, "NC Error '%s' in: %s %d", nc_strerror(status),__FILE__,__LINE__);
+					}
 				} break;
 			case DBTableFieldTableRec:
 			case DBTableFieldDataRec:
@@ -830,16 +864,23 @@ static DBInt _DBExportNetCDFTable (DBObjTable *table,int ncid)
 						var = (fieldRec->Record (itemRec))->RowID ();
 						index [0] = itemID;
 						if ((status = nc_put_var1_int (ncid,varid,index,&var)) != NC_NOERR)
-							{ fprintf(stderr, "NC Error; %s [%s]\n", nc_strerror(status),fieldRec->Name ()); return (DBFault); }
+							{
+							CMmsgPrint (CMmsgAppError, "NC Error '%s [%s]' in: %s %d", nc_strerror(status),fieldRec->Name (),__FILE__,__LINE__);
+							return (DBFault);
+							}
 						}
-					if ((status = nc_redef  (ncid)) != NC_NOERR) { fprintf(stderr, "NC Error: %s\n", nc_strerror(status)); return (DBFault); }
+					if ((status = nc_redef  (ncid)) != NC_NOERR) { CMmsgPrint (CMmsgAppError, "NC Error '%s' in: %s %d", nc_strerror(status),__FILE__,__LINE__); return (DBFault); }
 					}
-				else { fprintf(stderr, "Skipping variable :%s\n", fieldName); fprintf(stderr, "NC Error: %s\n", nc_strerror(status)); }
+				else
+					{
+					CMmsgPrint (CMmsgAppError, "Skipping variable :%s", fieldName);
+					CMmsgPrint (CMmsgAppError, "NC Error '%s' in: %s %d", nc_strerror(status),__FILE__,__LINE__);
+					}
 				} break;
-			default: { fprintf (stderr,"Invalid field type in DBExportNetCDFTable ()\n"); return (DBFault); }
+			default: { CMmsgPrint (CMmsgAppError, "Invalid field type in: %s %d",__FILE__,__LINE__); return (DBFault); }
 			}
 		}
-	if ((status = nc_enddef (ncid)) != NC_NOERR) { fprintf(stderr, "NC Error: %s\n", nc_strerror(status)); return (DBFault); }
+	if ((status = nc_enddef (ncid)) != NC_NOERR) { CMmsgPrint (CMmsgAppError, "NC Error '%s' in: %s %d", nc_strerror(status),__FILE__,__LINE__); return (DBFault); }
 	return (DBSuccess);
 	}
 
@@ -851,35 +892,35 @@ DBInt DBExportNetCDF (DBObjData *dbData,const char *fileName)
 	size_t start [3], count [3];
 
 	if ((status = nc_create (fileName,NC_CLOBBER,&ncid)) != NC_NOERR)
-		{ fprintf(stderr, "NC Error: %s\n", nc_strerror(status)); return (DBFault); }
+		{ CMmsgPrint (CMmsgAppError, "NC Error '%s' in: %s %d", nc_strerror(status),__FILE__,__LINE__); return (DBFault); }
 	if ((status = nc_put_att_text (ncid,NC_GLOBAL,"Conventions",strlen ("CF-1.2"),"CF-1.2")) != NC_NOERR)
-		{ fprintf(stderr, "NC Error: %s\n", nc_strerror(status)); nc_close (ncid); return (DBFault); }
+		{ CMmsgPrint (CMmsgAppError, "NC Error '%s' in: %s %d", nc_strerror(status),__FILE__,__LINE__); nc_close (ncid); return (DBFault); }
 	if ((status = nc_put_att_text (ncid,NC_GLOBAL,"title",strlen (dbData->Name ()),dbData->Name ())) != NC_NOERR)
-		{ fprintf(stderr, "NC Error: %s\n", nc_strerror(status)); nc_close (ncid); return (DBFault); }
+		{ CMmsgPrint (CMmsgAppError, "NC Error '%s' in: %s %d", nc_strerror(status),__FILE__,__LINE__); nc_close (ncid); return (DBFault); }
 	str = _DBExportNetCDFRename (DBDataTypeString (dbData->Type ()));
 	if ((status = nc_put_att_text (ncid,NC_GLOBAL,"data_type",  strlen (str),str)) != NC_NOERR)
-		{ fprintf(stderr, "NC Error: %s\n", nc_strerror(status)); nc_close (ncid); return (DBFault); }
+		{ CMmsgPrint (CMmsgAppError, "NC Error '%s' in: %s %d", nc_strerror(status),__FILE__,__LINE__); nc_close (ncid); return (DBFault); }
 	str = dbData->Document (DBDocGeoDomain);
 	if ((status = nc_put_att_text (ncid,NC_GLOBAL,"domain",     strlen (str),str)) != NC_NOERR)
-		{ fprintf(stderr, "NC Error: %s\n", nc_strerror(status)); nc_close (ncid); return (DBFault); }
+		{ CMmsgPrint (CMmsgAppError, "NC Error '%s' in: %s %d", nc_strerror(status),__FILE__,__LINE__); nc_close (ncid); return (DBFault); }
 	str = _DBExportNetCDFRename (dbData->Document (DBDocSubject));
 	if ((status = nc_put_att_text (ncid,NC_GLOBAL,"subject",    strlen (str),str)) != NC_NOERR)
-		{ fprintf(stderr, "NC Error: %s\n", nc_strerror(status)); nc_close (ncid); return (DBFault); }
+		{ CMmsgPrint (CMmsgAppError, "NC Error '%s' in: %s %d", nc_strerror(status),__FILE__,__LINE__); nc_close (ncid); return (DBFault); }
 	str = dbData->Document (DBDocCitationRef);
 	if ((status = nc_put_att_text (ncid,NC_GLOBAL,"references", strlen (str),str)) != NC_NOERR)
-		{ fprintf(stderr, "NC Error: %s\n", nc_strerror(status)); nc_close (ncid); return (DBFault); }
+		{ CMmsgPrint (CMmsgAppError, "NC Error '%s' in: %s %d", nc_strerror(status),__FILE__,__LINE__); nc_close (ncid); return (DBFault); }
 	str = dbData->Document (DBDocCitationInst);
 	if ((status = nc_put_att_text (ncid,NC_GLOBAL,"institution",strlen (str),str)) != NC_NOERR)
-		{ fprintf(stderr, "NC Error: %s\n", nc_strerror(status)); nc_close (ncid); return (DBFault); }
+		{ CMmsgPrint (CMmsgAppError, "NC Error '%s' in: %s %d", nc_strerror(status),__FILE__,__LINE__); nc_close (ncid); return (DBFault); }
 	str = dbData->Document (DBDocSourceInst);
 	if ((status = nc_put_att_text (ncid,NC_GLOBAL,"source",     strlen (str),str)) != NC_NOERR)
-		{ fprintf(stderr, "NC Error: %s\n", nc_strerror(status)); nc_close (ncid); return (DBFault); }
+		{ CMmsgPrint (CMmsgAppError, "NC Error '%s' in: %s %d", nc_strerror(status),__FILE__,__LINE__); nc_close (ncid); return (DBFault); }
 	str = dbData->Document (DBDocComment);
 	if ((status = nc_put_att_text (ncid,NC_GLOBAL,"comments",   strlen (str),str)) != NC_NOERR)
-		{ fprintf(stderr, "NC Error: %s\n", nc_strerror(status)); nc_close (ncid); return (DBFault); }
+		{ CMmsgPrint (CMmsgAppError, "NC Error '%s' in: %s %d", nc_strerror(status),__FILE__,__LINE__); nc_close (ncid); return (DBFault); }
 
 	if ((status = nc_enddef (ncid)) != NC_NOERR)
-		{ fprintf(stderr, "NC Error: %s\n", nc_strerror(status)); nc_close (ncid); return (DBFault); }
+		{ CMmsgPrint (CMmsgAppError, "NC Error '%s' in: %s %d", nc_strerror(status),__FILE__,__LINE__); nc_close (ncid); return (DBFault); }
 
 	switch (dbData->Type ())
 		{
@@ -904,30 +945,30 @@ DBInt DBExportNetCDF (DBObjData *dbData,const char *fileName)
 			if (_DBExportNetCDFTable (dbData->Table (DBrNSymbols),ncid) == DBFault) { nc_close (ncid); return (DBFault); }
 
 			if ((status = nc_redef (ncid)) != NC_NOERR)
-				{ fprintf(stderr, "NC Error: %s\n", nc_strerror(status)); nc_close (ncid); return (DBFault); }
+				{ CMmsgPrint (CMmsgAppError, "NC Error '%s' in: %s %d", nc_strerror(status),__FILE__,__LINE__); nc_close (ncid); return (DBFault); }
 
 			if ((status = nc_def_var (ncid,_DBExportNetCDFRename (dbData->Document (DBDocSubject)),NC_SHORT,(int) 3,dimids,&varid))  != NC_NOERR)
-				{ fprintf(stderr, "NC Error: %s\n", nc_strerror(status)); nc_close (ncid); return (DBFault); }
+				{ CMmsgPrint (CMmsgAppError, "NC Error '%s' in: %s %d", nc_strerror(status),__FILE__,__LINE__); nc_close (ncid); return (DBFault); }
 			str = dbData->Name ();
 			if ((status = nc_put_att_text (ncid,varid,"long_name",strlen (str),str)) != NC_NOERR)
-				{ fprintf(stderr, "NC Error: %s\n", nc_strerror(status)); nc_close (ncid); return (DBFault); }
+				{ CMmsgPrint (CMmsgAppError, "NC Error '%s' in: %s %d", nc_strerror(status),__FILE__,__LINE__); nc_close (ncid); return (DBFault); }
 			str = dbData->Document (DBDocSubject);
 			if ((status = nc_put_att_text (ncid,varid,"standard_name",strlen (str),str)) != NC_NOERR)
-				{ fprintf(stderr, "NC Error: %s\n", nc_strerror(status)); nc_close (ncid); return (DBFault); }
+				{ CMmsgPrint (CMmsgAppError, "NC Error '%s' in: %s %d", nc_strerror(status),__FILE__,__LINE__); nc_close (ncid); return (DBFault); }
 			if ((status = nc_put_att_text (ncid,varid,"var_desc",strlen (str),str)) != NC_NOERR)
-				{ fprintf(stderr, "NC Error: %s\n", nc_strerror(status)); nc_close (ncid); return (DBFault); }
+				{ CMmsgPrint (CMmsgAppError, "NC Error '%s' in: %s %d", nc_strerror(status),__FILE__,__LINE__); nc_close (ncid); return (DBFault); }
 			if ((status = nc_put_att_short (ncid,varid,"_FillValue",   NC_SHORT,1,&fillVal)) != NC_NOERR)
-				{ fprintf(stderr, "NC Error: %s\n", nc_strerror(status)); nc_close (ncid); return (DBFault); }
+				{ CMmsgPrint (CMmsgAppError, "NC Error '%s' in: %s %d", nc_strerror(status),__FILE__,__LINE__); nc_close (ncid); return (DBFault); }
 			if ((status = nc_put_att_short (ncid,varid,"missing_value",NC_SHORT,1,&fillVal)) != NC_NOERR)
-				{ fprintf(stderr, "NC Error: %s\n", nc_strerror(status)); nc_close (ncid); return (DBFault); }
+				{ CMmsgPrint (CMmsgAppError, "NC Error '%s' in: %s %d", nc_strerror(status),__FILE__,__LINE__); nc_close (ncid); return (DBFault); }
 
 			if ((status = nc_enddef (ncid)) != NC_NOERR)
-				{ fprintf(stderr, "NC Error: %s\n", nc_strerror(status)); nc_close (ncid); return (DBFault); }
+				{ CMmsgPrint (CMmsgAppError, "NC Error '%s' in: %s %d", nc_strerror(status),__FILE__,__LINE__); nc_close (ncid); return (DBFault); }
 
 			gridIF = new DBGridIF (dbData);
 			if ((record = (short *) calloc (gridIF->ColNum (),sizeof (short))) == (short *) NULL)
 				{
-				fprintf (stderr,"Memory allocation error in: DBExportNetCDF ()\n");
+				CMmsgPrint (CMmsgSysError, "Memory allocation error in: %s %d",__FILE__,__LINE__);
 				delete gridIF;
 				nc_close (ncid);
 				return (DBFault);
@@ -944,7 +985,7 @@ DBInt DBExportNetCDF (DBObjData *dbData,const char *fileName)
 						record [pos.Col] = gridIF->Value (layerRec,pos,&intVal) ? intVal : fillVal;
 					if ((status = nc_put_vara_short (ncid,varid,start,count,record)) != NC_NOERR)
 						{
-						fprintf(stderr, "NC Error: %s\n", nc_strerror(status));
+						CMmsgPrint (CMmsgAppError, "NC Error '%s' in: %s %d", nc_strerror(status),__FILE__,__LINE__);
 						free (record);
 						delete gridIF;
 						nc_close (ncid);
@@ -971,18 +1012,18 @@ DBInt DBExportNetCDF (DBObjData *dbData,const char *fileName)
 
 			/* Begin Defining Core Variable */
 			if ((status = nc_redef (ncid)) != NC_NOERR)
-				{ fprintf(stderr, "NC Error: %s\n", nc_strerror(status)); nc_close (ncid); return (DBFault); }
+				{ CMmsgPrint (CMmsgAppError, "NC Error '%s' in: %s %d", nc_strerror(status),__FILE__,__LINE__); nc_close (ncid); return (DBFault); }
 			if ((status = nc_def_var (ncid,_DBExportNetCDFRename (dbData->Document (DBDocSubject)),NC_FLOAT,(int) 3,dimids,&varid))  != NC_NOERR)
-				{ fprintf(stderr, "NC Error: %s\n", nc_strerror(status)); nc_close (ncid); return (DBFault); }
+				{ CMmsgPrint (CMmsgAppError, "NC Error '%s' in: %s %d", nc_strerror(status),__FILE__,__LINE__); nc_close (ncid); return (DBFault); }
 
 			str = dbData->Name ();
 			if ((status = nc_put_att_text (ncid,varid,"long_name",strlen (str),str)) != NC_NOERR)
-				{ fprintf(stderr, "NC Error: %s\n", nc_strerror(status)); nc_close (ncid); return (DBFault); }
+				{ CMmsgPrint (CMmsgAppError, "NC Error '%s' in: %s %d", nc_strerror(status),__FILE__,__LINE__); nc_close (ncid); return (DBFault); }
 			str = dbData->Document (DBDocSubject);
 			if ((status = nc_put_att_text (ncid,varid,"standard_name",strlen (str),str)) != NC_NOERR)
-				{ fprintf(stderr, "NC Error: %s\n", nc_strerror(status)); nc_close (ncid); return (DBFault); }
+				{ CMmsgPrint (CMmsgAppError, "NC Error '%s' in: %s %d", nc_strerror(status),__FILE__,__LINE__); nc_close (ncid); return (DBFault); }
 			if ((status = nc_put_att_text (ncid,varid,"var_desc",strlen (str),str)) != NC_NOERR)
-				{ fprintf(stderr, "NC Error: %s\n", nc_strerror(status)); nc_close (ncid); return (DBFault); }
+				{ CMmsgPrint (CMmsgAppError, "NC Error '%s' in: %s %d", nc_strerror(status),__FILE__,__LINE__); nc_close (ncid); return (DBFault); }
 
 			gridIF = new DBGridIF (dbData);
 
@@ -992,22 +1033,22 @@ DBInt DBExportNetCDF (DBObjData *dbData,const char *fileName)
 			extent [0]  = gridIF->Minimum ();
 			extent [1]  = gridIF->Maximum ();
 			if ((status = nc_put_att_float (ncid,varid,"missing_value",NC_FLOAT,1,&fillVal)) != NC_NOERR)
-				{ fprintf(stderr, "NC Error: %s\n", nc_strerror(status)); nc_close (ncid); return (DBFault); }
+				{ CMmsgPrint (CMmsgAppError, "NC Error '%s' in: %s %d", nc_strerror(status),__FILE__,__LINE__); nc_close (ncid); return (DBFault); }
 			if ((status = nc_put_att_float (ncid,varid,"_FillValue",   NC_FLOAT,1,&fillVal)) != NC_NOERR)
-				{ fprintf(stderr, "NC Error: %s\n", nc_strerror(status)); nc_close (ncid); return (DBFault); }
+				{ CMmsgPrint (CMmsgAppError, "NC Error '%s' in: %s %d", nc_strerror(status),__FILE__,__LINE__); nc_close (ncid); return (DBFault); }
 			if ((status = nc_put_att_float (ncid,varid,"scale_factor",NC_FLOAT,1,&scaleFactor)) != NC_NOERR)
-				{ fprintf(stderr, "NC Error: %s\n", nc_strerror(status)); delete gridIF; nc_close (ncid); return (DBFault); }
+				{ CMmsgPrint (CMmsgAppError, "NC Error '%s' in: %s %d", nc_strerror(status),__FILE__,__LINE__); delete gridIF; nc_close (ncid); return (DBFault); }
 			if ((status = nc_put_att_float (ncid,varid,"add_offset",  NC_FLOAT,1,&dataOffset)) != NC_NOERR)
-				{ fprintf(stderr, "NC Error: %s\n", nc_strerror(status)); delete gridIF; nc_close (ncid); return (DBFault); }
+				{ CMmsgPrint (CMmsgAppError, "NC Error '%s' in: %s %d", nc_strerror(status),__FILE__,__LINE__); delete gridIF; nc_close (ncid); return (DBFault); }
 			if ((status = nc_put_att_float (ncid,varid,"actual_range",NC_FLOAT,2,extent)) != NC_NOERR)
-				{ fprintf(stderr, "NC Error: %s\n", nc_strerror(status)); delete gridIF; nc_close (ncid); return (DBFault); }
+				{ CMmsgPrint (CMmsgAppError, "NC Error '%s' in: %s %d", nc_strerror(status),__FILE__,__LINE__); delete gridIF; nc_close (ncid); return (DBFault); }
 			if ((status = nc_enddef (ncid)) != NC_NOERR)
-				{ fprintf(stderr, "NC Error: %s\n", nc_strerror(status)); delete gridIF; nc_close (ncid); return (DBFault); }
+				{ CMmsgPrint (CMmsgAppError, "NC Error '%s' in: %s %d", nc_strerror(status),__FILE__,__LINE__); delete gridIF; nc_close (ncid); return (DBFault); }
 			/* End Defining Core Variable */
 
 			if ((record = (float *) calloc (gridIF->ColNum (),sizeof (float))) == (float *) NULL)
 				{
-				fprintf (stderr,"Memory allocation error in: DBExportNetCDF ()\n");
+				CMmsgPrint (CMmsgSysError, "Memory allocation error in: %s %d",__FILE__,__LINE__);
 				delete gridIF;
 				nc_close (ncid);
 				return (DBFault);
@@ -1024,7 +1065,7 @@ DBInt DBExportNetCDF (DBObjData *dbData,const char *fileName)
 						record [pos.Col] = gridIF->Value (layerRec,pos,&gridVal) ? gridVal : fillVal;
 					if ((status = nc_put_vara_float (ncid,varid,start,count,record)) != NC_NOERR)
 						{
-						fprintf(stderr, "NC Error: %s\n", nc_strerror(status));
+						CMmsgPrint (CMmsgAppError, "NC Error '%s' in: %s %d", nc_strerror(status),__FILE__,__LINE__);
 						free (record);
 						delete gridIF;
 						nc_close (ncid);
@@ -1050,35 +1091,35 @@ DBInt DBExportNetCDF (DBObjData *dbData,const char *fileName)
 
 			/* Begin Defining Core Variable */
 			if ((status = nc_redef (ncid)) != NC_NOERR)
-				{ fprintf(stderr, "NC Error: %s\n", nc_strerror(status)); nc_close (ncid); return (DBFault); }
+				{ CMmsgPrint (CMmsgAppError, "NC Error '%s' in: %s %d", nc_strerror(status),__FILE__,__LINE__); nc_close (ncid); return (DBFault); }
 			if ((status = nc_def_var (ncid,_DBExportNetCDFRename (dbData->Document (DBDocSubject)),NC_INT,(int) 3,dimids + 1,&varid))  != NC_NOERR)
-				{ fprintf(stderr, "NC Error: %s\n", nc_strerror(status)); nc_close (ncid); return (DBFault); }
+				{ CMmsgPrint (CMmsgAppError, "NC Error '%s' in: %s %d", nc_strerror(status),__FILE__,__LINE__); nc_close (ncid); return (DBFault); }
 
 			str = dbData->Name ();
 			if ((status = nc_put_att_text (ncid,varid,"long_name",strlen (str),str)) != NC_NOERR)
-				{ fprintf(stderr, "NC Error: %s\n", nc_strerror(status)); nc_close (ncid); return (DBFault); }
+				{ CMmsgPrint (CMmsgAppError, "NC Error '%s' in: %s %d", nc_strerror(status),__FILE__,__LINE__); nc_close (ncid); return (DBFault); }
 			str = dbData->Document (DBDocSubject);
 			if ((status = nc_put_att_text (ncid,varid,"standard_name",strlen (str),str)) != NC_NOERR)
-				{ fprintf(stderr, "NC Error: %s\n", nc_strerror(status)); nc_close (ncid); return (DBFault); }
+				{ CMmsgPrint (CMmsgAppError, "NC Error '%s' in: %s %d", nc_strerror(status),__FILE__,__LINE__); nc_close (ncid); return (DBFault); }
 			if ((status = nc_put_att_text (ncid,varid,"var_desc",strlen (str),str)) != NC_NOERR)
-				{ fprintf(stderr, "NC Error: %s\n", nc_strerror(status)); nc_close (ncid); return (DBFault); }
+				{ CMmsgPrint (CMmsgAppError, "NC Error '%s' in: %s %d", nc_strerror(status),__FILE__,__LINE__); nc_close (ncid); return (DBFault); }
 			if ((status = nc_put_att_int (ncid,varid,"_FillValue",   NC_INT,1,&fillVal)) != NC_NOERR)
-				{ fprintf(stderr, "NC Error: %s\n", nc_strerror(status)); nc_close (ncid); return (DBFault); }
+				{ CMmsgPrint (CMmsgAppError, "NC Error '%s' in: %s %d", nc_strerror(status),__FILE__,__LINE__); nc_close (ncid); return (DBFault); }
 			if ((status = nc_put_att_int (ncid,varid,"missing_value",NC_INT,1,&fillVal)) != NC_NOERR)
-				{ fprintf(stderr, "NC Error: %s\n", nc_strerror(status)); nc_close (ncid); return (DBFault); }
+				{ CMmsgPrint (CMmsgAppError, "NC Error '%s' in: %s %d", nc_strerror(status),__FILE__,__LINE__); nc_close (ncid); return (DBFault); }
 
 			netIF = new DBNetworkIF (dbData);
 
 			extent [0] = 0;
 			extent [1] = netIF->CellNum ();
 			if ((status = nc_put_att_int (ncid,varid,"actual_range",NC_INT,2,extent)) != NC_NOERR)
-				{ fprintf(stderr, "NC Error: %s\n", nc_strerror(status)); delete netIF; nc_close (ncid); return (DBFault); }
+				{ CMmsgPrint (CMmsgAppError, "NC Error '%s' in: %s %d", nc_strerror(status),__FILE__,__LINE__); delete netIF; nc_close (ncid); return (DBFault); }
 			if ((status = nc_enddef (ncid)) != NC_NOERR)
-				{ fprintf(stderr, "NC Error: %s\n", nc_strerror(status)); delete netIF; nc_close (ncid); return (DBFault); }
+				{ CMmsgPrint (CMmsgAppError, "NC Error '%s' in: %s %d", nc_strerror(status),__FILE__,__LINE__); delete netIF; nc_close (ncid); return (DBFault); }
 
 			if ((record = (int *) calloc (netIF->ColNum (),sizeof (int))) == (int *) NULL)
 				{
-				fprintf (stderr,"Memory allocation error in: DBExportNetCDF ()\n");
+				CMmsgPrint (CMmsgSysError, "Memory allocation error in: %s %d");
 				delete netIF;
 				nc_close (ncid);
 				return (DBFault);
@@ -1094,7 +1135,7 @@ DBInt DBExportNetCDF (DBObjData *dbData,const char *fileName)
 					}
 				if ((status = nc_put_vara_int (ncid,varid,start + 1,count + 1,record)) != NC_NOERR)
 					{
-					fprintf(stderr, "NC Error: %s\n", nc_strerror(status));
+					CMmsgPrint (CMmsgAppError, "NC Error '%s' in: %s %d", nc_strerror(status),__FILE__,__LINE__);
 					free (record);
 					delete netIF;
 					nc_close (ncid);
@@ -1150,24 +1191,24 @@ DBInt DBImportNetCDF (DBObjData *data,const char *filename)
 
 	if ((utSystem = ut_read_xml ((char *) NULL)) == (ut_system *) NULL)
 		{
-		fprintf (stderr,"Total metal gebasz in %s:%d!\n",__FILE__,__LINE__);
+		CMmsgPrint (CMmsgAppError, "Total metal gebasz in %s:%d",__FILE__,__LINE__);
 		return (DBFault);
 		}
 	if ((baseTimeUnit = ut_parse (utSystem, "seconds since 2001-01-01 00:00:00", UT_ASCII)) == (ut_unit *) NULL)
 		{
-		fprintf (stderr,"Total metal gebasz in %s:%d!\n",__FILE__,__LINE__);
+		CMmsgPrint (CMmsgAppError, "Total metal gebasz in %s:%d",__FILE__,__LINE__);
 		switch (ut_get_status ()) {
-			case UT_BAD_ARG: fprintf (stderr, "System or string is NULL!\n");               break;
-			case UT_SYNTAX:  fprintf (stderr, "String contained a syntax error!n");         break;
-			case UT_UNKNOWN: fprintf (stderr, "String contained an unknown identifier!\n"); break;
-			default:         fprintf (stderr, "System error in %s:%d!n",__FILE__,__LINE__);
+			case UT_BAD_ARG: CMmsgPrint (CMmsgUsrError, "System or string is NULL!");               break;
+			case UT_SYNTAX:  CMmsgPrint (CMmsgUsrError, "String contained a syntax error!");        break;
+			case UT_UNKNOWN: CMmsgPrint (CMmsgUsrError, "String contained an unknown identifier!"); break;
+			default:         CMmsgPrint (CMmsgAppError, "System error in %s:%d!n",__FILE__,__LINE__);
 			}
 		ut_free_system (utSystem);
 		return (DBFault);
 		}
 	if ((status = nc_open(filename, NC_NOWRITE, &ncid)) != NC_NOERR)
 		{
-		fprintf(stderr, "NC Error: %s\n", nc_strerror(status));
+		CMmsgPrint (CMmsgAppError, "NC Error '%s' in: %s %d", nc_strerror(status),__FILE__,__LINE__);
 		ut_free (baseTimeUnit);
 		ut_free_system (utSystem);
 		return (DBFault);
@@ -1175,7 +1216,7 @@ DBInt DBImportNetCDF (DBObjData *data,const char *filename)
 
 	if ((status = nc_inq (ncid, &ndims, &nvars, &natts, &unlimdim)) != NC_NOERR)
 		{
-		fprintf(stderr, "NC Error: %s\n", nc_strerror(status));
+		CMmsgPrint (CMmsgAppError, "NC Error '%s' in: %s %d", nc_strerror(status),__FILE__,__LINE__);
 		nc_close (ncid);
 		ut_free (baseTimeUnit);
 		ut_free_system (utSystem);
@@ -1185,17 +1226,17 @@ DBInt DBImportNetCDF (DBObjData *data,const char *filename)
 	for (id = 0;id < ndims;id++)
 		{
 		if ((status = nc_inq_dim (ncid,id,name,&len)) != NC_NOERR)
-			{ fprintf(stderr, "NC Error: %s\n", nc_strerror(status)); nc_close (ncid); return (DBFault); }
+			{ CMmsgPrint (CMmsgAppError, "NC Error '%s' in: %s %d", nc_strerror(status),__FILE__,__LINE__); nc_close (ncid); return (DBFault); }
 		if      (strncmp (name,"lon",   3) == 0) { londim  = id; colNum   = len; }
 		else if (strncmp (name,"lat",   3) == 0) { latdim  = id; rowNum   = len; }
 		else if (strncmp (name,"time",  4) == 0) { timedim = id; layerNum = len; }
 		else if (strncmp (name,"level", 5) == 0) { levdim  = id; }
 		}
 	if ((colNum < 2) || (rowNum < 2))
-		{ fprintf (stderr,"Invalid array dimensions in: DBImportNetCDF ()\n"); nc_close (ncid); return (DBFault); }
+		{ CMmsgPrint (CMmsgAppError, "Invalid array dimensions in: %s %d",__FILE__,__LINE__); nc_close (ncid); return (DBFault); }
 	if ((vector = (double *) calloc (colNum,sizeof (double))) == (double *) NULL)
 		{
-		perror ("Memory Allocation Error in: DBImportNetCDF ()");
+		CMmsgPrint (CMmsgSysError, "Memory Allocation Error in: %s %d",__FILE__,__LINE__);
 		nc_close (ncid);
 		ut_free (baseTimeUnit);
 		ut_free_system (utSystem);
@@ -1203,7 +1244,7 @@ DBInt DBImportNetCDF (DBObjData *data,const char *filename)
 		}
 	if ((longitudes = (double *) calloc (colNum,sizeof (double))) == (double *) NULL)
 		{
-		perror ("Memory Allocation Error in: DBImportNetCDF ()");
+		CMmsgPrint (CMmsgSysError, "Memory Allocation Error in: %s %d",__FILE__,__LINE__);
 		free (vector);
 		nc_close (ncid);
 		ut_free (baseTimeUnit);
@@ -1212,7 +1253,7 @@ DBInt DBImportNetCDF (DBObjData *data,const char *filename)
 		}
 	if ((latitudes  = (double *) calloc (rowNum,sizeof (double))) == (double *) NULL)
 		{
-		perror ("Memory Allocation Error in: DBImportNetCDF ()");
+		CMmsgPrint (CMmsgSysError, "Memory Allocation Error in: %s %d",__FILE__,__LINE__);
 		free (vector);
 		free (longitudes);
 		nc_close (ncid);
@@ -1222,7 +1263,7 @@ DBInt DBImportNetCDF (DBObjData *data,const char *filename)
 		}
 	if ((timeSteps = (double *) calloc (layerNum,sizeof (double))) == (double *) NULL)
 		{
-		perror ("Memory Allocation Error in: DBImportNetCDF ()");
+		CMmsgPrint (CMmsgSysError, "Memory Allocation Error in: %s %d",__FILE__,__LINE__);
 		free (vector);
 		free (longitudes);
 		free (latitudes);
@@ -1236,7 +1277,7 @@ DBInt DBImportNetCDF (DBObjData *data,const char *filename)
 		{
 		if ((status = nc_inq_varname (ncid,id,name)) != NC_NOERR)
 			{
-			fprintf(stderr, "NC Error: %s\n", nc_strerror(status));
+			CMmsgPrint (CMmsgAppError, "NC Error '%s' in: %s %d", nc_strerror(status),__FILE__,__LINE__);
 			free (vector);
 			free (longitudes);
 			free (latitudes);
@@ -1257,7 +1298,7 @@ DBInt DBImportNetCDF (DBObjData *data,const char *filename)
 			{
 			if ((status = nc_inq_varndims (ncid,id,&ndims)) != NC_NOERR)
 				{
-				fprintf(stderr, "NC Error: %s\n", nc_strerror(status));
+				CMmsgPrint (CMmsgAppError, "NC Error '%s' in: %s %d", nc_strerror(status),__FILE__,__LINE__);
 				free (vector);
 				free (longitudes);
 				free (latitudes);
@@ -1269,7 +1310,7 @@ DBInt DBImportNetCDF (DBObjData *data,const char *filename)
 				}
 			if (ndims != 1)
 				{
-				fprintf (stderr,"Longitude has more than one dimension in: DBImportNetCDF ()\n");
+				CMmsgPrint (CMmsgAppError,"Longitude has more than one dimension in: %s %d",__FILE__,__LINE__);
 				free (vector);
 				free (longitudes);
 				free (latitudes);
@@ -1281,7 +1322,7 @@ DBInt DBImportNetCDF (DBObjData *data,const char *filename)
 				}
 			if ((status = nc_inq_vardimid (ncid,id,dimids)) != NC_NOERR)
 				{
-				fprintf(stderr, "NC Error: %s\n", nc_strerror(status));
+				CMmsgPrint (CMmsgAppError, "NC Error '%s' in: %s %d", nc_strerror(status),__FILE__,__LINE__);
 				free (vector);
 				free (longitudes);
 				free (latitudes);
@@ -1293,7 +1334,7 @@ DBInt DBImportNetCDF (DBObjData *data,const char *filename)
 				}
 			if (dimids [0] != londim)
 				{
-				fprintf (stderr,"Longitude has invalid dimension in: DBImportNetCDF ()\n");
+				CMmsgPrint (CMmsgAppError, "Longitude has invalid dimension in: %s %d",__FILE__,__LINE__);
 				free (vector);
 				free (longitudes);
 				free (latitudes);
@@ -1306,7 +1347,7 @@ DBInt DBImportNetCDF (DBObjData *data,const char *filename)
 			start [0] = 0; count [0] = colNum;
 			if ((status = nc_get_vara_double (ncid,id,start,count,longitudes)) != NC_NOERR)
 				{
-				fprintf(stderr, "NC Error: %s\n", nc_strerror(status));
+				CMmsgPrint (CMmsgAppError, "NC Error '%s' in: %s %d", nc_strerror(status),__FILE__,__LINE__);
 				free (vector);
 				free (longitudes);
 				free (latitudes);
@@ -1325,7 +1366,7 @@ DBInt DBImportNetCDF (DBObjData *data,const char *filename)
 				extent.UpperRight.X  = extent.UpperRight.X > longitudes [i] ? extent.UpperRight.X : longitudes [i];
 				if (CMmathEqualValues (cellSize.X,fabs (longitudes [i] - longitudes [i - 1])) != true)
 					{
-					fprintf (stderr,"Longitude has irregular spacing in: DBImportNetCDF ()\n");
+					CMmsgPrint (CMmsgAppError, "Longitude has irregular spacing in: %s %d",__FILE__,__LINE__);
 					free (vector);
 					free (longitudes);
 					free (latitudes);
@@ -1344,7 +1385,7 @@ DBInt DBImportNetCDF (DBObjData *data,const char *filename)
 			{
 			if ((status = nc_inq_varndims (ncid,id,&ndims)) != NC_NOERR)
 				{
-				fprintf(stderr, "NC Error: %s\n", nc_strerror(status));
+				CMmsgPrint (CMmsgAppError, "NC Error '%s' in: %s %d", nc_strerror(status),__FILE__,__LINE__);
 				free (vector);
 				free (longitudes);
 				free (latitudes);
@@ -1354,10 +1395,10 @@ DBInt DBImportNetCDF (DBObjData *data,const char *filename)
 				ut_free_system (utSystem);
 				return (DBFault);
 				}
-			if (ndims != 1) { fprintf (stderr,"Latitude has more than one dimension in: DBImportNetCDF ()\n"); return (DBFault); }
+			if (ndims != 1) { CMmsgPrint (CMmsgAppError,"Latitude has more than one dimension in: %s %d",__FILE__,__LINE__); return (DBFault); }
 			if ((status = nc_inq_vardimid (ncid,id,dimids)) != NC_NOERR)
 				{
-				fprintf(stderr, "NC Error: %s\n", nc_strerror(status));
+				CMmsgPrint (CMmsgAppError, "NC Error '%s' in: %s %d", nc_strerror(status),__FILE__,__LINE__);
 				free (vector);
 				free (longitudes);
 				free (latitudes);
@@ -1369,7 +1410,7 @@ DBInt DBImportNetCDF (DBObjData *data,const char *filename)
 				}
 			if (dimids [0] != latdim)
 				{
-				fprintf (stderr,"Latitude has invalid dimension in: DBImportNetCDF ()\n");
+				CMmsgPrint (CMmsgAppError, "Latitude has invalid dimension in: %s %d",__FILE__,__LINE__);
 				free (vector);
 				free (longitudes);
 				free (latitudes);
@@ -1382,7 +1423,7 @@ DBInt DBImportNetCDF (DBObjData *data,const char *filename)
 			start [0] = 0; count [0] = rowNum;
 			if ((status = nc_get_vara_double (ncid,id,start,count,latitudes)) != NC_NOERR)
 				{
-				fprintf(stderr, "NC Error: %s\n", nc_strerror(status));
+				CMmsgPrint (CMmsgAppError, "NC Error '%s' in: %s %d", nc_strerror(status),__FILE__,__LINE__);
 				free (vector);
 				free (longitudes);
 				free (latitudes);
@@ -1401,7 +1442,7 @@ DBInt DBImportNetCDF (DBObjData *data,const char *filename)
 				extent.UpperRight.Y  = extent.UpperRight.Y > latitudes [i] ? extent.UpperRight.Y : latitudes [i];
 				if (CMmathEqualValues (cellSize.Y,fabs (latitudes [i - 1] - latitudes [i])) != true)
 					{
-					fprintf (stderr,"Latitude has irregular spacing in: DBImportNetCDF ()\n");
+					CMmsgPrint (CMmsgAppError, "Latitude has irregular spacing in: %s %d",__FILE__,__LINE__);
 					free (vector);
 					free (longitudes);
 					free (latitudes);
@@ -1420,7 +1461,7 @@ DBInt DBImportNetCDF (DBObjData *data,const char *filename)
 			if (((status = nc_inq_attlen   (ncid, id, "units", &attlen))    != NC_NOERR) ||
 				((status = nc_get_att_text (ncid, id, "units", timeString)) != NC_NOERR))
 				{
-				fprintf(stderr, "NC Error: %s\n", nc_strerror(status));
+				CMmsgPrint (CMmsgAppError, "NC Error '%s' in: %s %d", nc_strerror(status),__FILE__,__LINE__);
 				free (vector);
 				free (longitudes);
 				free (latitudes);
@@ -1433,7 +1474,7 @@ DBInt DBImportNetCDF (DBObjData *data,const char *filename)
 			else timeString [attlen] = '\0';
 			if ((status = nc_inq_varndims (ncid,id,&ndims)) != NC_NOERR)
 				{
-				fprintf(stderr, "NC Error: %s\n", nc_strerror(status));
+				CMmsgPrint (CMmsgAppError, "NC Error '%s' in: %s %d", nc_strerror(status),__FILE__,__LINE__);
 				free (vector);
 				free (longitudes);
 				free (latitudes);
@@ -1445,7 +1486,7 @@ DBInt DBImportNetCDF (DBObjData *data,const char *filename)
 				}
 			if (ndims != 1)
 				{
-				fprintf (stderr,"Time has more than one dimension in: DBImportNetCDF ()\n");
+				CMmsgPrint (CMmsgAppError, "Time has more than one dimension in: %s %d",__FILE__,__LINE__);
 				free (vector);
 				free (longitudes);
 				free (latitudes);
@@ -1457,7 +1498,7 @@ DBInt DBImportNetCDF (DBObjData *data,const char *filename)
 				}
 			if ((status = nc_inq_vardimid (ncid,id,dimids)) != NC_NOERR)
 				{
-				fprintf(stderr, "NC Error: %s\n", nc_strerror(status));
+				CMmsgPrint (CMmsgAppError, "NC Error '%s' in: %s %d", nc_strerror(status),__FILE__,__LINE__);
 				free (vector);
 				free (longitudes);
 				free (latitudes);
@@ -1469,7 +1510,7 @@ DBInt DBImportNetCDF (DBObjData *data,const char *filename)
 				}
 			if (dimids [0] != timedim)
 				{
-				fprintf (stderr,"Time has invalid dimension in: DBImportNetCDF ()\n");
+				CMmsgPrint (CMmsgAppError, "Time has invalid dimension in: %s %d",__FILE__,__LINE__);
 				free (vector);
 				free (longitudes);
 				free (latitudes);
@@ -1482,7 +1523,7 @@ DBInt DBImportNetCDF (DBObjData *data,const char *filename)
 			start [0] = 0; count [0] = layerNum;
 			if ((status = nc_get_vara_double (ncid,id,start,count,timeSteps)) != NC_NOERR)
 				{
-				fprintf(stderr, "NC Error: %s\n", nc_strerror(status));
+				CMmsgPrint (CMmsgAppError, "NC Error '%s' in: %s %d", nc_strerror(status),__FILE__,__LINE__);
 				free (vector);
 				free (longitudes);
 				free (latitudes);
@@ -1498,7 +1539,7 @@ DBInt DBImportNetCDF (DBObjData *data,const char *filename)
 			strcpy (varname,name);
 			if ((status = nc_inq_varndims (ncid,id,&ndims)) != NC_NOERR)
 				{
-				fprintf(stderr, "NC Error: %s\n", nc_strerror(status));
+				CMmsgPrint (CMmsgAppError, "NC Error '%s' in: %s %d", nc_strerror(status),__FILE__,__LINE__);
 				free (vector);
 				free (longitudes);
 				free (latitudes);
@@ -1515,7 +1556,7 @@ DBInt DBImportNetCDF (DBObjData *data,const char *filename)
 /*			if (((status = nc_inq_attlen   (ncid,id,"units", &attlen)) != NC_NOERR) ||
 			    ((status = nc_get_att_text (ncid,id,"units", varUnit)) != NC_NOERR))
 				{
-				fprintf(stderr, "NC Error [%s,units]: %s\n", nc_strerror(status),varname);
+				CMmsgPrint (CMmsgAppError, "NC Error [%s,units] '%s' in: %s %d", nc_strerror(status),varname,__FILE__,__LINE__);
 				free (vector);
 				free (longitudes);
 				free (latitudes);
@@ -1538,7 +1579,7 @@ DBInt DBImportNetCDF (DBObjData *data,const char *filename)
 
 	if ((rowNum < 1) || (colNum < 1) || (layerNum < 1))
 		{
-		fprintf (stderr,"Incomplete NetCDF file: DBImportNetCDF ()\n");
+		CMmsgPrint (CMmsgAppError, "Incomplete NetCDF file: %s %d",__FILE__,__LINE__);
 		free (vector);
 		free (longitudes);
 		free (latitudes);
@@ -1552,7 +1593,7 @@ DBInt DBImportNetCDF (DBObjData *data,const char *filename)
 
 	if ((status = nc_inq_varndims (ncid,varid,&ndims)) != NC_NOERR)
 		{
-		fprintf(stderr, "NC Error: %s\n", nc_strerror(status));
+		CMmsgPrint (CMmsgAppError, "NC Error '%s' in: %s %d", nc_strerror(status),__FILE__,__LINE__);
 		free (vector);
 		free (longitudes);
 		free (latitudes);
@@ -1564,7 +1605,7 @@ DBInt DBImportNetCDF (DBObjData *data,const char *filename)
 		}
 	if ((status = nc_inq_vardimid (ncid,varid,dimids)) != NC_NOERR)
 		{
-		fprintf(stderr, "NC Error: %s\n", nc_strerror(status));
+		CMmsgPrint (CMmsgAppError, "NC Error '%s' in: %s %d", nc_strerror(status),__FILE__,__LINE__);
 		free (vector);
 		free (longitudes);
 		free (latitudes);
@@ -1590,12 +1631,12 @@ DBInt DBImportNetCDF (DBObjData *data,const char *filename)
 		for (i = 0; i < (int) strlen (timeString); ++i) timeString [i] = (int) tolower ((int) timeString[i]);
 		if ((timeUnit = ut_parse (utSystem, timeString, UT_ASCII)) == (ut_unit *) NULL)
 			{
-			fprintf (stderr,"Time string [%s] parsing error in %s:%d!\n",timeString,__FILE__,__LINE__);
+			CMmsgPrint (CMmsgAppError, "Time string [%s] parsing error in: %s %d",timeString,__FILE__,__LINE__);
 			switch (ut_get_status ()) {
-				case UT_BAD_ARG: fprintf (stderr, "System or string is NULL!\n");               break;
-				case UT_SYNTAX:  fprintf (stderr, "String contained a syntax error!n");         break;
-				case UT_UNKNOWN: fprintf (stderr, "String contained an unknown identifier!\n"); break;
-				default:         fprintf (stderr, "System error in %s:%d!n",__FILE__,__LINE__);
+				case UT_BAD_ARG: CMmsgPrint (CMmsgAppError, "System or string is NULL!");               break;
+				case UT_SYNTAX:  CMmsgPrint (CMmsgAppError, "String contained a syntax error!");        break;
+				case UT_UNKNOWN: CMmsgPrint (CMmsgAppError, "String contained an unknown identifier!"); break;
+				default:         CMmsgPrint (CMmsgAppError, "System error in %s:%d!",__FILE__,__LINE__);
 				}
 			ut_free (baseTimeUnit);
 			ut_free_system (utSystem);
@@ -1603,11 +1644,11 @@ DBInt DBImportNetCDF (DBObjData *data,const char *filename)
 			}
 		if ((cvConverter = ut_get_converter (timeUnit, baseTimeUnit)) == (cv_converter *) NULL)
 			{
-			fprintf (stderr,"Time converter error!n");
+			CMmsgPrint (CMmsgAppError, "Time converter error!");
 			switch (ut_get_status ()) {
-				case UT_BAD_ARG:         fprintf (stderr, "unit1 or unit2 is NULL.\n");                         break;
-				case UT_NOT_SAME_SYSTEM: fprintf (stderr, "unit1 and unit2 belong to different unit-systems."); break;
-				default:                 fprintf (stderr, "Conversion between the units is not possible.");     break;
+				case UT_BAD_ARG:         CMmsgPrint (CMmsgAppError, "unit1 or unit2 is NULL.");                           break;
+				case UT_NOT_SAME_SYSTEM: CMmsgPrint (CMmsgAppError, "unit1 and unit2 belong to different unit-systems."); break;
+				default:                 CMmsgPrint (CMmsgAppError, "Conversion between the units is not possible.");     break;
 				}
 			ut_free (timeUnit);
 			ut_free (baseTimeUnit);
@@ -1667,7 +1708,7 @@ DBInt DBImportNetCDF (DBObjData *data,const char *filename)
 			start [latidx] = latitudes [0] < latitudes [1] ? rowNum - rowID - 1 : rowID;
 			if ((status = nc_get_vara_double (ncid,varid,start,count,vector)) != NC_NOERR)
 				{
-				fprintf(stderr,"NC Error: %s\n", nc_strerror(status));
+				CMmsgPrint (CMmsgAppError, "NC Error '%s' in: %s %d", nc_strerror(status),__FILE__,__LINE__);
 				free (vector);
 				free (longitudes);
 				free (latitudes);

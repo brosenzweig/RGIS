@@ -67,11 +67,11 @@ int DBImportASCIINet (DBObjData *netData,const char *fileName)
 	DBNetworkIF *netIF;
 
 	if ((file = fopen (fileName,"r")) == NULL)
-		{ perror ("File Opening Error in: DBImportASCIINet ()"); return (DBFault); }
+		{ CMmsgPrint (CMmsgSysError, "File Opening Error in: %s %d",__FILE__,__LINE__); return (DBFault); }
 
 	for (i = 0;i < 6;++i)
 		if (fgets (buffer,sizeof (buffer),file) == (char *) NULL)
-			{ perror ("File Reading Error in: DBImportASCIINet ()"); return (DBFault); }
+			{ CMmsgPrint (CMmsgSysError, "File Reading Error in: %s %d",__FILE__,__LINE__); return (DBFault); }
 		else
 			{
 			for (j = 0;(j < (int) strlen (buffer)) && (buffer [j] != ' ');++j)
@@ -95,7 +95,7 @@ int DBImportASCIINet (DBObjData *netData,const char *fileName)
 			}
 	layerTable->Add (DBrNLookupGrid);
 	if ((layerRec = layerTable->Item (DBrNLookupGrid)) == (DBObjRecord *) NULL)
-		{ fprintf (stderr,"Network Layer Creation Error in: DBImportASCIINet ()\n"); return (DBFault); }
+		{ CMmsgPrint (CMmsgAppError, "Network Layer Creation Error in: %s %d",__FILE__,__LINE__); return (DBFault); }
 	 printf ("%f %f\n",coord.X,coord.Y);
 	cellWidthFLD->Float  (layerRec,cellSize);
 	cellHeightFLD->Float (layerRec,cellSize);
@@ -111,7 +111,7 @@ int DBImportASCIINet (DBObjData *netData,const char *fileName)
 		for (pos.Col = 0;pos.Col < colNum;++pos.Col)
 			{
 			if (fscanf (file,"%d", &gridVal) != 1)
-				{ perror ("Warning: Incomplete network grid!"); goto Stop; }
+				{ CMmsgPrint (CMmsgUsrError, "Warning: Incomplete network grid!"); goto Stop; }
 			else
 				{
 				if (gridVal == noData)

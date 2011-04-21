@@ -71,14 +71,14 @@ class DMFileHeader
 		int Read (FILE *file)
 			{
 			if (fread (this,sizeof (DMFileHeader),1,file) != 1)
-				{ perror("Reading Error in: DMFileHeader::Read ()"); return (DBFault); }
+				{ CMmsgPrint (CMmsgSysError, "Reading Error in: %s %d",__FILE__,__LINE__); return (DBFault); }
 			if (ByteOrderVAR != 1)	{ Swap (); return (true); }
 			return (false);
 			}
 		int Write (FILE *file)
 			{
 			if (fwrite (this,sizeof (DMFileHeader),1,file) != 1)
-				{ perror("Writing Error in: DMFileHeader::Write ()"); return (DBFault); }
+				{ CMmsgPrint (CMmsgSysError, "Writing Error in: %s %d",__FILE__,__LINE__); return (DBFault); }
 			return (DBSuccess);
 			}
 		DBInt DataType ()		const { return (DataTypeVAR); }
@@ -133,14 +133,14 @@ class DMLayerHeader
 		int Read (FILE *file,int swap)
 			{
 			if (fread (this,sizeof (DMLayerHeader),1,file) != 1)
-				{ perror("Reading Error in: DMLayerHeader::Read ()"); return (DBFault); }
+				{ CMmsgPrint (CMmsgSysError, "Reading Error in: %s %d",__FILE__,__LINE__); return (DBFault); }
 			if (swap) Swap ();
 			return (DBSuccess);
 			}
 		int Write (FILE *file)
 			{
 			if (fwrite (this,sizeof (DMLayerHeader),1,file) != 1)
-				{ perror("Writing Error in: DMLayerHeader::Write ()"); return (DBFault); }
+				{ CMmsgPrint (CMmsgSysError, "Writing Error in: %s %d",__FILE__,__LINE__); return (DBFault); }
 			return (DBSuccess);
 			}
 		char *Description () { return (DescriptionSTR); }
@@ -180,13 +180,13 @@ class DMDataset : public DMFileHeader
          data->Projection (DBMathGuessProjection (data->Extent ()));
          data->Precision  (DBMathGuessPrecision  (data->Extent ()));
 			if (FileType () != DMMatrix)
-				{ fprintf (stderr,"Wrong File Type in: DMDataset::Read ()\n"); return (DBFault); }
+				{ CMmsgPrint (CMmsgAppError, "Wrong File Type in: %s %d",__FILE__,__LINE__); return (DBFault); }
 			switch (DataType ())
 				{
 				case DMFloat:	valueType = DBTableFieldFloat;	valueSize = sizeof (DBFloat4);break;
 				case DMInt:		valueType = DBTableFieldInt;		valueSize = sizeof (DBInt);	break;
 				case DMByte:	valueType = DBTableFieldInt;		valueSize = sizeof (DBByte);	break;
-				default: fprintf (stderr,"Wrong Data Value Type in: DMDataset::Read ()\n"); return (DBFault);
+				default: CMmsgPrint (CMmsgAppError, "Wrong Data Value Type in: %s %d",__FILE__,__LINE__); return (DBFault);
 				}
 			for (layer = 0;layer < LayerNum ();++layer)
 				{
@@ -207,21 +207,21 @@ class DMDataset : public DMFileHeader
 				layerFLD->Record (layerRec,dataRec);
 				}
 			if (fread (&docLength,sizeof (int),1,file) != 1)
-				{ perror ("File Reading Error in: DMDataset::Read ()"); return (DBFault); }
+				{ CMmsgPrint (CMmsgSysError, "File Reading Error in: %s %d",__FILE__,__LINE__); return (DBFault); }
 			if (swap) DBByteOrderSwapWord (&docLength);
 			if (docLength > 0)
 				{
 				char *docString;
 				if ((docString = (char *) calloc (docLength,sizeof (char))) == (char *) NULL)
-					{ perror ("Memory Allocation Error in: DMDataset::Read ()"); return (DBFault); }
+					{ CMmsgPrint (CMmsgSysError, "Memory Allocation Error in: %s %d",__FILE__,__LINE__); return (DBFault); }
 				if (fread (docString,docLength,1,file) != 1)
-					{ perror ("File Reading Error in: DMDataset::Read ()"); return (DBFault); }
+					{ CMmsgPrint (CMmsgSysError, "File Reading Error in: %s %d",__FILE__,__LINE__); return (DBFault); }
 				data->Document (DBDocComment,docString);
 				free (docString);
 				}
 			for (dataRec = (data->Arrays ())->First ();dataRec != (DBObjRecord *) NULL;dataRec = (data->Arrays ())->Next ())
 				if (fread (dataRec->Data (),ColNum () * valueSize * RowNum (),1,file) != 1)
-					{ perror ("File Reading Error in: DMDataset::Read ()"); return (DBFault); }
+					{ CMmsgPrint (CMmsgSysError, "File Reading Error in: %s %d",__FILE__,__LINE__); return (DBFault); }
 			if (swap && valueSize > 1)
 				{
 				int i;
@@ -231,7 +231,7 @@ class DMDataset : public DMFileHeader
 					case 2: swapFunc = DBByteOrderSwapHalfWord; break;
 					case 4: swapFunc = DBByteOrderSwapWord; break;
 					case 8: swapFunc = DBByteOrderSwapLongWord; break;
-					default: fprintf (stderr,"Wrong Data Value Size in: DMDataset::Read ()\n"); return (DBFault);
+					default: CMmsgPrint (CMmsgAppError, "Wrong Data Value Size in: %s %d",__FILE__,__LINE__); return (DBFault);
 					}
 				for (dataRec = (data->Arrays ())->First ();dataRec != (DBObjRecord *) NULL;dataRec = (data->Arrays ())->Next ())
 					for (i = 0;i < ColNum () * RowNum ();++i) (*swapFunc) ((char *) dataRec->Data () + i * valueSize);
@@ -268,16 +268,16 @@ class DMDataset : public DMFileHeader
 										case sizeof (DBByte):  value = (DBInt) (*((DBByte *)  ((char *) dataRec->Data () + i * valueSize))); break;
 										case sizeof (DBShort): value = (DBInt) (*((DBShort *) ((char *) dataRec->Data () + i * valueSize))); break;
 										case sizeof (DBInt):	  value = (DBInt) (*((DBInt *)	((char *) dataRec->Data () + i * valueSize))); break;
-										default: fprintf (stderr,"Wrong Data Size in: DMDataset::Read ()\n"); return (DBFault);
+										default: CMmsgPrint (CMmsgAppError, "Wrong Data Size in: %s %d",__FILE__,__LINE__); return (DBFault);
 										}
 									break;
-								default: fprintf (stderr,"Wrong Data Type in: DMDataset::Read ()\n"); return (DBFault);
+								default: CMmsgPrint (CMmsgAppError, "Wrong Data Type in: %s %d",__FILE__,__LINE__); return (DBFault);
 								}
 							sprintf (nameStr,"Category%04d",value);
 							if ((itemRec = itemTable->Item (nameStr)) == (DBObjRecord *) NULL)
 								{
 								if ((itemRec = itemTable->Add (nameStr)) == (DBObjRecord *) NULL)
-									{ fprintf (stderr,"Item Object Creation Error in: DMDataset::Read ()\n"); return (DBFault); }
+									{ CMmsgPrint (CMmsgAppError, "Item Object Creation Error in: %s %d",__FILE__,__LINE__); return (DBFault); }
 								gridValueFLD->Int (itemRec,value);
 								gridSymbolFLD->Record (itemRec,symRec);
 								}
@@ -287,7 +287,7 @@ class DMDataset : public DMFileHeader
 								case sizeof (DBByte):  *((DBByte *)  ((char *) dataRec->Data () + i * valueSize)) = value; break;
 								case sizeof (DBShort): *((DBShort *) ((char *) dataRec->Data () + i * valueSize)) = value; break;
 								case sizeof (DBInt):	  *((DBInt *)	 ((char *) dataRec->Data () + i * valueSize)) = value; break;
-								default: fprintf (stderr,"Wrong Data Size in: DMDataset::Read ()\n"); return (DBFault);
+								default: CMmsgPrint (CMmsgAppError, "Wrong Data Size in: %s %d",__FILE__,__LINE__); return (DBFault);
 								}
 							}
 						}
@@ -301,7 +301,7 @@ class DMDataset : public DMFileHeader
 								case sizeof (DBByte):  value = (DBInt) (*((DBByte *)  ((char *) dataRec->Data () + i * valueSize))); break;
 								case sizeof (DBShort): value = (DBInt) (*((DBShort *) ((char *) dataRec->Data () + i * valueSize))); break;
 								case sizeof (DBInt):	  value = (DBInt) (*((DBInt *)	((char *) dataRec->Data () + i * valueSize))); break;
-								default: fprintf (stderr,"Wrong Data Size in: DMDataset::Read ()\n"); return (DBFault);
+								default: CMmsgPrint (CMmsgAppError, "Wrong Data Size in: %s %d",__FILE__,__LINE__); return (DBFault);
 								}
 							itemRec = itemTable->Item (value);
 							value = itemRec->ListPos ();
@@ -310,7 +310,7 @@ class DMDataset : public DMFileHeader
 								case sizeof (DBByte):  *((DBByte *)  ((char *) dataRec->Data () + i * valueSize)) = value; break;
 								case sizeof (DBShort): *((DBShort *) ((char *) dataRec->Data () + i * valueSize)) = value; break;
 								case sizeof (DBInt):	  *((DBInt *)	 ((char *) dataRec->Data () + i * valueSize)) = value; break;
-								default: fprintf (stderr,"Wrong Data Size in: DMDataset::Read ()\n"); return (DBFault);
+								default: CMmsgPrint (CMmsgAppError, "Wrong Data Size in: %s %d",__FILE__,__LINE__); return (DBFault);
 								}
 							}
 						}
@@ -331,7 +331,7 @@ class DMDataset : public DMFileHeader
 					gridIF = new DBGridIF (data);
 					gridIF->RecalcStats ();
 					delete gridIF;
-               data->Flags (DBDataFlagDispModeContBlueRed,DBSet);
+					data->Flags (DBDataFlagDispModeContBlueRed,DBSet);
 					break;
 					}
 				default: break;
@@ -363,7 +363,7 @@ class DMDataset : public DMFileHeader
 			ColNum (gridIF->ColNum ());
 			dmRecord = (char *) calloc (RowNum () * ColNum (),DataType () != DMByte ? sizeof (int) : sizeof (char));
 			if (dmRecord == (char *) NULL)
-				{ perror ("Memory Allocation Error in: DMDataset::Write ()"); return (DBFault); }
+				{ CMmsgPrint (CMmsgSysError, "Memory Allocation Error in: %s %d",__FILE__,__LINE__); return (DBFault); }
 
 			DMFileHeader::Write (file);
 			for (layerID = 0;layerID < gridIF->LayerNum ();++layerID)
@@ -374,11 +374,11 @@ class DMDataset : public DMFileHeader
 				}
 			docLen = strlen (data->Document (DBDocComment));
 			if (fwrite (&docLen,sizeof (int),1,file) != 1)
-				{ perror ("File Writiing Error in: DMDataset::Write ()"); return (DBFault); }
+				{ CMmsgPrint (CMmsgSysError, "File Writing Error in: %s %d",__FILE__,__LINE__); return (DBFault); }
 			if (docLen > 0)
 				{
 				if (fwrite (data->Document (DBDocComment),docLen,1,file) != 1)
-					{ perror ("File Writiing Error in: DMDataset::Write ()"); return (DBFault); }
+					{ CMmsgPrint (CMmsgSysError, "File Writing Error in: %s %d",__FILE__,__LINE__); return (DBFault); }
 				}
 			for (layerID = 0;layerID < gridIF->LayerNum ();++layerID)
 				{
@@ -430,13 +430,13 @@ class DMDataset : public DMFileHeader
 								}
 						break;
 					default:
-						fprintf (stderr,"Invalid Data Type in: DMDataset::Write ()\n");
+						CMmsgPrint (CMmsgAppError, "Invalid Data Type in: %s %d",__FILE__,__LINE__);
 						free (dmRecord);
 						delete gridIF;
 						return (DBFault);
 					}
 				if ((DBInt) fwrite (dmRecord,DataType () == DMByte ? sizeof (char) : sizeof (int),DataPointNum (),file) != DataPointNum ())
-					{ perror ("File Writing Error in: DMDataset::Write ()"); return (DBFault); }
+					{ CMmsgPrint (CMmsgSysError, "File Writing Error in: %s %d",__FILE__,__LINE__); return (DBFault); }
 				}
 			free (dmRecord);
 			delete gridIF;
@@ -456,7 +456,7 @@ int DBImportDMGrid (DBObjData *data,const char *fileName)
 	DBInt ret;
 
 	if ((file = fopen (fileName,"r")) == (FILE *) NULL)
-		{ perror("File Opening Error in: DBImportDMGrid ()"); return (DBFault); }
+		{ CMmsgPrint (CMmsgSysError, "File Opening Error in: %s %d",__FILE__,__LINE__); return (DBFault); }
 	ret = DBImportDMGrid (data,file);
 	fclose (file);
 	return (ret);
@@ -473,7 +473,7 @@ int DBExportDMGrid (DBObjData *data,const char *fileName)
 	DBInt ret;
 
 	if ((file = fopen (fileName,"w")) == (FILE *) NULL)
-		{ perror("File Opening Error in: DBExportDMGrid ()"); return (DBFault); }
+		{ CMmsgPrint (CMmsgSysError, "File Opening Error in: %s %d",__FILE__,__LINE__); return (DBFault); }
 
 	ret = DBExportDMGrid (data,file);
 

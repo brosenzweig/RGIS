@@ -547,7 +547,7 @@ DBMathOperand::DBMathOperand (char *expression)
 
 	{
 	if ((Var.String = (char *) malloc (strlen (expression) + 1)) == (char *) NULL)
-		{ perror ("Memory allocation error in: DBMathEqnOperand::DBMathEqnOperand ()"); }
+		{ CMmsgPrint (CMmsgSysError, "Memory allocation error in: %s %d",__FILE__,__LINE__); }
 	else
 		{
 		strcpy (Var.String, expression);
@@ -598,7 +598,7 @@ DBInt DBMathOperand::Expand (DBObjectLIST<DBObject> *variables)
 			expression [condPos] = '\0';
 			expression [i + 1] = '\0';
 			i += 2;
-//			fprintf (stderr,"if %s then %s else %s\n",expression,expression + condPos + 1,expression + i + 1);
+//			CMmsgPrint (CMmsgDebug,"if %s then %s else %s\n",expression,expression + condPos + 1,expression + i + 1);
 			expr = new DBMathExpression (expression + condPos + 1,expression + i + 1);
 			if (expr->Expand (variables) == DBFault) return (DBFault);
 			Var.ExpPTR = new DBMathExpression (expression, expr);
@@ -637,7 +637,7 @@ DBInt DBMathOperand::Expand (DBObjectLIST<DBObject> *variables)
 		oper = _DBMathOperator (expression + operPos,&operLen);
 		expression [operPos] = '\0';
 		for ( ;operLen > 1;--operLen) ++operPos;
-//		fprintf (stderr,"%s and %s\n", expression, expression + operPos + 1);
+//		CMmsgPrint (CMmsgDebug,"%s and %s\n", expression, expression + operPos + 1);
 		Var.ExpPTR = new DBMathExpression (expression,expression + operPos + 1,oper);
 		free (expression);
 		return (Var.ExpPTR->Expand (variables));
@@ -649,7 +649,7 @@ DBInt DBMathOperand::Expand (DBObjectLIST<DBObject> *variables)
 		VarTypeVAR = DBFault;
 
 		expression [operPos] = '\0';
-//		fprintf (stderr,"%s of %s\n", expression, expression + operPos + 1);
+//		CMmsgPrint (CMmsgDebug,"%s of %s\n", expression, expression + operPos + 1);
 		Var.ExpPTR = new DBMathExpression (expression + operPos + 1,DBVariableFloat,function);
 		free (expression);
 		return (Var.ExpPTR->Expand (variables));
@@ -662,7 +662,7 @@ DBInt DBMathOperand::Expand (DBObjectLIST<DBObject> *variables)
 		VarTypeVAR = DBVariableInt;
 
 		Var.Int = intVal;
-//		fprintf (stderr,"Constant integer: %d\n",(int) intVal);
+//		CMmsgPrint (CMmsgDebug,"Constant integer: %d\n",(int) intVal);
 		free (expression);
 		return (DBSuccess);
 		}
@@ -674,7 +674,7 @@ DBInt DBMathOperand::Expand (DBObjectLIST<DBObject> *variables)
 		VarTypeVAR = DBVariableFloat;
 
 		Var.Float = floatVal;
-//		fprintf (stderr,"Constant float: %f\n",floatVal);
+//		CMmsgPrint (CMmsgDebug,"Constant float: %f\n",floatVal);
 		free (expression);
 		return (DBSuccess);
 		}
@@ -686,9 +686,9 @@ DBInt DBMathOperand::Expand (DBObjectLIST<DBObject> *variables)
 			{
 			OprTypeVAR = DBMathOperandConst;
 			VarTypeVAR = DBVariableString;
-//			fprintf (stderr,"Constant string: %s\n",expression);
+//			CMmsgPrint (CMmsgDebug,"Constant string: %s\n",expression);
 			if ((Var.String = (char *) malloc (strlen (expression) + 1)) == (char *) NULL)
-				{ perror ("Memory allocation error in: DBMathOperand::Expand ()"); return (DBFault); }
+				{ CMmsgPrint (CMmsgSysError, "Memory allocation error in: %s %d",__FILE__,__LINE__); return (DBFault); }
 			strcpy (Var.String,expression);
 			free (expression);
 			return (DBSuccess);
@@ -701,7 +701,7 @@ DBInt DBMathOperand::Expand (DBObjectLIST<DBObject> *variables)
 		VarTypeVAR = DBVariableFloat;
 
 		Var.Float = M_PI;
-//		fprintf (stderr,"Constant float: %f\n",floatVal);
+//		CMmsgPrint (CMmsgDebug,"Constant float: %f\n",floatVal);
 		free (expression);
 		return (DBSuccess);
 		}
@@ -712,7 +712,7 @@ DBInt DBMathOperand::Expand (DBObjectLIST<DBObject> *variables)
 		VarTypeVAR = DBVariableFloat;
 
 		Var.Float = M_E;
-//		fprintf (stderr,"Constant float: %f\n",floatVal);
+//		CMmsgPrint (CMmsgDebug,"Constant float: %f\n",floatVal);
 		free (expression);
 		return (DBSuccess);
 		}
@@ -723,7 +723,7 @@ DBInt DBMathOperand::Expand (DBObjectLIST<DBObject> *variables)
 		VarTypeVAR = DBVariableInt;
 
 		Var.Int = DBDefaultMissingIntVal;
-//		fprintf (stderr,"Nodata\n");
+//		CMmsgPrint (CMmsgDebug,"Nodata\n");
 		free (expression);
 		return (DBSuccess);
 		}
@@ -734,7 +734,7 @@ DBInt DBMathOperand::Expand (DBObjectLIST<DBObject> *variables)
 		VarTypeVAR = DBVariableInt;
 
 		Var.Int = true;
-//		fprintf (stderr,"True\n");
+//		CMmsgPrint (CMmsgDebug,"True\n");
 		free (expression);
 		return (DBSuccess);
 		}
@@ -745,7 +745,7 @@ DBInt DBMathOperand::Expand (DBObjectLIST<DBObject> *variables)
 		VarTypeVAR = DBVariableInt;
 
 		Var.Int = false;
-//		fprintf (stderr,"False\n");
+//		CMmsgPrint (CMmsgDebug,"False\n");
 		free (expression);
 		return (DBSuccess);
 		}
@@ -755,7 +755,7 @@ DBInt DBMathOperand::Expand (DBObjectLIST<DBObject> *variables)
 	if ((Var.ObjPTR = variables->Item (expression)) == (DBObject *) NULL)
 		{ Var.ObjPTR = new DBObject (expression); variables->Add (Var.ObjPTR); }
 
-//	fprintf (stderr,"Variable: %s(%d)\n",expression,Var.ObjPTR->RowID ());
+//	CMmsgPrint (CMmsgDebug,"Variable: %s(%d)\n",expression,Var.ObjPTR->RowID ());
 	free (expression);
 	return (DBSuccess);
 	}

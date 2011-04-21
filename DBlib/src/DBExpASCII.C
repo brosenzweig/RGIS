@@ -19,7 +19,7 @@ DBInt DBExportASCIITable (DBObjTable *table, const char *fileName)
 	DBInt ret;
 	FILE *fp;
 	if ((fp = fopen (fileName,"w")) == (FILE *) NULL)
-		{ perror ("File Opening Error in: DBExportASCIITable ()"); return (DBFault); }
+		{ CMmsgPrint (CMmsgSysError, "File Opening Error in: %s %d",__FILE__,__LINE__); return (DBFault); }
 	ret = DBExportASCIITable (table,fp);
 	fclose (fp);
 	return (ret);

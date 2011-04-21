@@ -81,7 +81,7 @@ int DBImportARCLine (DBObjData *vecData,const char *arcCov)
 		{
 		case DBTypeVectorLine:		lines = vecData->Table (DBrNItems);		break;
 		case DBTypeVectorPolygon:	lines = vecData->Table (DBrNContours);	break;
-		default: fprintf (stderr,"Invalide Vector Data Type in: DBImportARCLine ()\n"); return (DBFault);
+		default: CMmsgPrint (CMmsgAppError, "Invalide Vector Data Type in: %s %d",__FILE__,__LINE__); return (DBFault);
 		}
 
 	fromNodeFLD	= lines->Field (DBrNFromNode);
@@ -101,9 +101,9 @@ int DBImportARCLine (DBObjData *vecData,const char *arcCov)
 	if (access (fileName,R_OK) == DBFault) sprintf (fileName,"%s/arc.adf",arcCov);
 
 	if ((inFile = fopen (fileName,"r")) == NULL)
-		{ perror ("File Opening Error in: DBImportARCLine ()"); return (DBFault); }
+		{ CMmsgPrint (CMmsgSysError, "File Opening Error in: %s %d",__FILE__,__LINE__); return (DBFault); }
 	if (fread (infoHeader,sizeof (short),50,inFile) != 50)
-		{ perror ("File Reading Error in: DBImportARCLine ()"); return (DBFault); }
+		{ CMmsgPrint (CMmsgSysError, "File Reading Error in: %s %d",__FILE__,__LINE__); return (DBFault); }
 	
 	arcNum = 0;			
 	for (lineRec = lines->First ();arcRecord.Read (inFile,swap) != DBFault;lineRec = lines->Next ())
@@ -124,11 +124,11 @@ int DBImportARCLine (DBObjData *vecData,const char *arcCov)
 			linkNumFLD->Int (nodeRec,0);
 			}
 		if ((nodeRec = nodes->Item (arcRecord.FromNode () - 1)) == (DBObjRecord *) NULL)
-			{ fprintf (stderr,"Node Not Found in: DBImportARCLine ()\n"); return (DBFault); }
+			{ CMmsgPrint (CMmsgAppError, "Node Not Found in: %s %d",__FILE__,__LINE__); return (DBFault); }
 		if (floatCov)
 			{
 			if (fread (floatVAR,sizeof (floatVAR),1,inFile) != 1)
-				{ perror ("File Reading Error in: DBImportARCLine ()"); return (DBFault); }
+				{ CMmsgPrint (CMmsgSysError, "File Reading Error in: %s %d",__FILE__,__LINE__); return (DBFault); }
 			if (swap)	{ DBByteOrderSwapWord (floatVAR); DBByteOrderSwapWord (floatVAR + 1); }
 			nodeCoord.X = (DBFloat) floatVAR [0];
 			nodeCoord.Y = (DBFloat) floatVAR [1];
@@ -136,7 +136,7 @@ int DBImportARCLine (DBObjData *vecData,const char *arcCov)
 		else
 			{
 			if (fread (&nodeCoord,sizeof (DBCoordinate),1,inFile) != 1)
-				{ perror ("File Reading Error in: DBImportARCLine ()"); return (DBFault); }
+				{ CMmsgPrint (CMmsgSysError, "File Reading Error in: %s %d",__FILE__,__LINE__); return (DBFault); }
 			if (swap) nodeCoord.Swap ();
 			}
 		coordFLD->Coordinate (nodeRec,nodeCoord);
@@ -155,13 +155,13 @@ int DBImportARCLine (DBObjData *vecData,const char *arcCov)
 				}
 			dataRec->Realloc ((arcRecord.NumOfPnts () - 2) * sizeof (DBCoordinate));
 			if ((vertexes = (DBCoordinate *) dataRec->Data ()) == NULL)
-				{ perror ("Memory Allocation Error in: DBImportARCLine ()"); return (DBFault); }
+				{ CMmsgPrint (CMmsgSysError, "Memory Allocation Error in: %s %d",__FILE__,__LINE__); return (DBFault); }
 		
 			if (floatCov)
 				for (vertex = 0;vertex < arcRecord.NumOfPnts () - 2;++vertex)
 					{
 					if (fread (floatVAR,sizeof (floatVAR),1,inFile) != 1)
-					{ perror ("File Reading Error in: DBImportARCLine ()"); return (DBFault); }
+						{ CMmsgPrint (CMmsgSysError, "File Reading Error in: %s %d",__FILE__,__LINE__); return (DBFault); }
 					if (swap) { DBByteOrderSwapWord (floatVAR); DBByteOrderSwapWord (floatVAR + 1); }
 					vertexes [vertex].X = (DBFloat) floatVAR [0];
 					vertexes [vertex].Y = (DBFloat) floatVAR [1];
@@ -172,7 +172,7 @@ int DBImportARCLine (DBObjData *vecData,const char *arcCov)
 				for (vertex = 0;vertex < arcRecord.NumOfPnts () - 2;++vertex)
 					{
 					if (fread (vertexes + vertex,sizeof (DBCoordinate),1,inFile) != 1)
-						{ perror ("File Reading Error in: DBImportARCLine ()"); return (DBFault); }
+						{ CMmsgPrint (CMmsgSysError, "File Reading Error in: %s %d",__FILE__,__LINE__); return (DBFault); }
 					if (swap) vertexes [vertex].Swap ();
 					dataExtent.Expand (vertexes [vertex]);
 					itemExtent.Expand (vertexes [vertex]);
@@ -189,11 +189,11 @@ int DBImportARCLine (DBObjData *vecData,const char *arcCov)
 			linkNumFLD->Int (nodeRec,0);
 			}
 		if ((nodeRec = nodes->Item (arcRecord.ToNode () - 1)) == (DBObjRecord *) NULL)
-			{ fprintf (stderr,"Node Not Found in: DBImportARCLine ()\n"); return (DBFault); }
+			{ CMmsgPrint (CMmsgAppError, "Node Not Found in: %s %d",__FILE__,__LINE__); return (DBFault); }
 		if (floatCov)
 			{
 			if (fread (floatVAR,sizeof (floatVAR),1,inFile) != 1)
-				{ perror ("File Reading Error in: DBImportARCLine ()"); return (DBFault); }
+				{ CMmsgPrint (CMmsgAppError, "File Reading Error in: %s %d",__FILE__,__LINE__); return (DBFault); }
 			if (swap)	{ DBByteOrderSwapWord (floatVAR); DBByteOrderSwapWord (floatVAR + 1); }
 			nodeCoord.X = (DBFloat) floatVAR [0];
 			nodeCoord.Y = (DBFloat) floatVAR [1];
@@ -201,7 +201,7 @@ int DBImportARCLine (DBObjData *vecData,const char *arcCov)
 		else
 			{
 			if (fread (&nodeCoord,sizeof (DBCoordinate),1,inFile) != 1)
-				{ perror ("File Reading Error in: DBImportARCLine ()"); return (DBFault); }
+				{ CMmsgPrint (CMmsgAppError, "File Reading Error in: %s %d",__FILE__,__LINE__); return (DBFault); }
 			if (swap) nodeCoord.Swap ();
 			}
 		itemExtent.Expand (nodeCoord);

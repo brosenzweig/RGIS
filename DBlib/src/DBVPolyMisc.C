@@ -34,7 +34,7 @@ DBVPolyIF::DBVPolyIF (DBObjData *data) : DBVLineIF (data,data->Table (DBrNContou
 	for (polyRec = FirstItem ();polyRec != (DBObjRecord *) NULL;polyRec = NextItem ())
 		MaxVertexNumVAR = MaxVertexNumVAR > VertexNum (polyRec) ? MaxVertexNumVAR : VertexNum (polyRec);
 	if ((CoordsPTR = (DBCoordinate *) malloc (MaxVertexNumVAR * sizeof (DBCoordinate))) == (DBCoordinate *) NULL)
-		{ perror ("Memory Allocation Error in: DBVPolyIF::DBVPolyIF ()"); }
+		{ CMmsgPrint (CMmsgSysError, "Memory Allocation Error in: %s %d",__FILE__,__LINE__); }
 	}
 
 DBCoordinate *DBVPolyIF::Vertexes (const DBObjRecord *polyRec) const
@@ -87,7 +87,7 @@ DBCoordinate *DBVPolyIF::Vertexes (const DBObjRecord *polyRec) const
 	CoordsPTR [vertex++] = NodeCoord (nodeRec);
 	if (nodeRec != firstNodeRec) CoordsPTR [vertex++] = NodeCoord (firstNodeRec); 
 	if (VertexNum (polyRec) != vertex)
-		fprintf (stderr,"Warning in Polygon %d VertexNum [%d %d] in: DBVPolyIF::Vertexes ()\n",polyRec->RowID (), VertexNum (polyRec),vertex);
+		CMmsgPrint (CMmsgAppError, "Warning in Polygon %d VertexNum [%d %d] in: %s %d",polyRec->RowID (), VertexNum (polyRec),vertex,__FILE__,__LINE__);
 	return (CoordsPTR);
 	}
 

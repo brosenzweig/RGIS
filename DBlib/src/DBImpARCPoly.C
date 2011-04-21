@@ -50,7 +50,7 @@ int DBImportARCPoly (DBObjData *vecData,const char *arcCov)
 		}
 
 	if ((lineRecArray = (DBObjRecord **) calloc (lines->ItemNum (),sizeof (DBObjRecord *))) == (DBObjRecord **) NULL)
-		{ perror ("Memory Allocation Error in: DBImportARCPoly ()"); return (DBFault); }
+		{ CMmsgPrint (CMmsgSysError, "Memory Allocation Error in: %s %d",__FILE__,__LINE__); return (DBFault); }
 
 	for (polyRec = items->First ();polyRec != (DBObjRecord *) NULL;polyRec = items->Next ())
 		{

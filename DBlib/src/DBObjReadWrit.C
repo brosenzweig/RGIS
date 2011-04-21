@@ -16,12 +16,12 @@ int DBVarString::Read (FILE *file,int swap)
 
 	{
 	if (fread (&LengthVAR,sizeof (LengthVAR),1,file) != 1)
-		{ perror ("File Reading Error in: DBVarString::Read ()"); return (DBFault); }
+		{ CMmsgPrint (CMmsgSysError, "File Reading Error in: %s %d",__FILE__,__LINE__); return (DBFault); }
 	if (swap) Swap ();
 	if ((StringPTR = (DBAddress) ((char *) malloc (LengthVAR + 1) - (char *) NULL)) == (DBAddress) NULL)
-		{ perror ("Memory Allocation Error in: DBVarString::Read ()"); return (DBFault); }
+		{ CMmsgPrint (CMmsgSysError, "Memory Allocation Error in: %s %d",__FILE__,__LINE__); return (DBFault); }
 	if (fread ((char *) NULL + StringPTR,LengthVAR + 1,1,file) != 1)
-		{ perror ("File Reading Error in: DBVarString::Read ()"); return (DBFault); }
+		{ CMmsgPrint (CMmsgSysError, "File Reading Error in: %s %d",__FILE__,__LINE__); return (DBFault); }
 	return (DBSuccess);
 	}
 
@@ -29,9 +29,9 @@ int DBVarString::Write (FILE *file)
 
 	{
 	if (fwrite (&LengthVAR,sizeof (LengthVAR),1,file) != 1)
-		{ perror ("File Writing Error in: DBVarString::Write ()"); return (DBFault); }
+		{ CMmsgPrint (CMmsgSysError, "File Writing Error in: %s %d",__FILE__,__LINE__); return (DBFault); }
 	if (fwrite ((char *) NULL + StringPTR,LengthVAR + 1,1,file) != 1)
-		{ perror ("File Writing Error in: DBVarString::Write ()"); return (DBFault); }
+		{ CMmsgPrint (CMmsgSysError, "File Writing Error in: %s %d",__FILE__,__LINE__); return (DBFault); }
 	return (DBSuccess);
 	}
 
@@ -40,7 +40,7 @@ int DBObject::Read (FILE *file,int swap)
 	{
 	if (NameSTR.Read (file,swap) != DBSuccess) return (DBFault);
 	if (fread ((char *) this + sizeof (DBObjectHeader),sizeof (DBObject) - sizeof (DBObjectHeader) - sizeof (NameSTR),1,file) != 1)
-		{ perror ("File Reading Error in: DBObject::Read ()"); return (DBFault); }
+		{ CMmsgPrint (CMmsgSysError, "File Reading Error in: %s %d",__FILE__,__LINE__); return (DBFault); }
 	if (swap) Swap ();
 	return (DBSuccess);
 	}
@@ -50,7 +50,7 @@ int DBObject::Write (FILE *file)
 	{
 	if (NameSTR.Write (file) != DBSuccess) return (DBFault);
 	if (fwrite ((char *) this + sizeof (DBObjectHeader),sizeof (DBObject) - sizeof (DBObjectHeader) - sizeof (NameSTR),1,file) != 1)
-		{ perror ("File Writing Error in: DBObject::Write ()"); return (DBFault); }
+		{ CMmsgPrint (CMmsgSysError, "File Writing Error in: %s %d",__FILE__,__LINE__); return (DBFault); }
 	return (DBSuccess);
 	}
 
@@ -60,13 +60,13 @@ int DBObjRecord::Read (FILE *file,int swap)
 	if (DBObject::Read (file,swap) != DBSuccess) return (DBFault);
 
 	if (fread ((char *) this + sizeof (DBObject),sizeof (DBObjRecord) - sizeof (DBObject) - sizeof (DBAddress),1,file) != 1)
-		{ perror ("File Reading Error in: DBObjRecord::Read ()"); return (DBFault); }
+		{ CMmsgPrint (CMmsgSysError, "File Reading Error in: %s %d",__FILE__,__LINE__); return (DBFault); }
 	if (swap) Swap ();
 
 	if ((DataPTR = (DBAddress) ((char *) malloc (LengthVAR) - (char *) NULL)) == (DBAddress) NULL)
-		{ perror ("Memory Allocation Error in: DBObjRecord::Read ()"); return (DBFault); }
+		{ CMmsgPrint (CMmsgSysError, "Memory Allocation Error in: %s %d",__FILE__,__LINE__); return (DBFault); }
 	if (fread ((char *) NULL + DataPTR,LengthVAR,1,file) != 1)
-		{ perror ("File Reading Error in: DBObjRecord::Read ()"); return (DBFault); }
+		{ CMmsgPrint (CMmsgSysError, "File Reading Error in: %s %d",__FILE__,__LINE__); return (DBFault); }
 	if (swap && ItemSizeVAR > 0)
 		{
 		DBUnsigned i;
@@ -79,7 +79,7 @@ int DBObjRecord::Read (FILE *file,int swap)
 			case 4:	swapFunc = DBByteOrderSwapWord; 		break;
 			case 8:	swapFunc = DBByteOrderSwapLongWord; break;
 			default:
-				fprintf (stderr,"Invalid Item Size (Record %d %s) in: DBObjRecord::Swap ()",RowID (), Name ());
+				CMmsgPrint (CMmsgAppError, "Invalid Item Size (Record %d %s) in: %s %d",RowID (), Name (),__FILE__,__LINE__);
 				return (DBFault);
 			}
 		if (swapFunc != (void (*) (void *)) NULL)
@@ -94,9 +94,9 @@ int DBObjRecord::Write (FILE *file)
 	if (DBObject::Write (file) != DBSuccess) return (DBFault);
 
 	if (fwrite ((char *) this + sizeof (DBObject),sizeof (DBObjRecord) - sizeof (DBObject) - sizeof (DBAddress),1,file) != 1)
-		{ perror ("File Writing Error in: DBObjRecord::Write ()"); return (DBFault); }
+		{ CMmsgPrint (CMmsgSysError, "File Writing Error in: %s %d",__FILE__,__LINE__); return (DBFault); }
 	if (fwrite ((char *) NULL + DataPTR,LengthVAR,1,file) != 1)
-		{ perror ("File Writing Error in: DBObjRecord::Write ()"); return (DBFault); }
+		{ CMmsgPrint (CMmsgSysError, "File Writing Error in: %s %d",__FILE__,__LINE__); return (DBFault); }
 	return (DBSuccess);
 	}
 
@@ -105,7 +105,7 @@ int DBObjTableField::Read (FILE *file,int swap)
 	{
 	if (DBObject::Read (file,swap) != DBSuccess) return (DBFault);
 	if (fread ((char *) this + sizeof (DBObject),sizeof (DBObjTableField) - sizeof (DBObject),1,file) != 1)
-		{ perror ("File Reading Error in: DBObjTableField::Read ()"); return (DBFault); }
+		{ CMmsgPrint (CMmsgSysError, "File Reading Error in: %s %d",__FILE__,__LINE__); return (DBFault); }
 	if (swap) Swap ();
 	if ((strcmp (Name (),"Drain") == 0) && Required ()) Required (false);
 	return (DBSuccess);
@@ -116,7 +116,7 @@ int DBObjTableField::Write (FILE *file)
 	{
 	if (DBObject::Write (file) != DBSuccess) return (DBFault);
 	if (fwrite ((char *) this + sizeof (DBObject),sizeof (DBObjTableField) - sizeof (DBObject),1,file) != 1)
-		{ perror ("File Writing Error in: DBObjTableField::Write ()"); return (DBFault); }
+		{ CMmsgPrint (CMmsgSysError, "File Writing Error in: %s %d",__FILE__,__LINE__); return (DBFault); }
 	return (DBSuccess);
 	}
 
@@ -208,7 +208,7 @@ int DBDataHeader::Read (FILE *file)
 
 	{
 	if (fread (this,sizeof (DBDataHeader),1,file) != 1)
-		{ fprintf (stderr,"File Reading Error in: DBDataHeader::Read ()\n"); return (DBFault); }
+		{ CMmsgPrint (CMmsgSysError, "File Reading Error in: %s %d",__FILE__,__LINE__); return (DBFault); }
 	if (ByteOrderVAR != 1) { Swap (); return (true); }
 	return (false);
 	}
@@ -219,7 +219,7 @@ int DBDataHeader::Write (FILE *file)
 	MajorVAR = 2;
 	MinorVAR = 0;
 	if (fwrite (this,sizeof (DBDataHeader),1,file) != 1)
-		{ fprintf (stderr,"File Writing Error in: DBDataHeader::Write ()\n"); return (DBFault); }
+		{ CMmsgPrint (CMmsgSysError, "File Writing Error in: %s %d",__FILE__,__LINE__); return (DBFault); }
 	return (DBSuccess);
 	}
 
@@ -230,8 +230,7 @@ int DBObjData::Read (const char *fileName)
 
 	if ((file = fopen (fileName,"r")) == (FILE *) NULL)
 		{
-		perror ("File Opening Error in: DBObjData::Read ()");
-		fprintf (stderr,"Filename: %s\n",fileName);
+		CMmsgPrint (CMmsgAppError, "File (%s) Opening Error in: %s %d",fileName, __FILE__,__LINE__);
 		return (DBFault);
 		}
 	if (Read (file) == DBFault) return (DBFault);
@@ -281,7 +280,7 @@ int DBObjData::Write (const char *fileName)
 	FILE *file;
 
 	if ((file = fopen (fileName,"w")) == (FILE *) NULL)
-		{ perror ("File Opening Error in: DBObjData::Write ()"); return (DBFault); }
+		{ CMmsgPrint (CMmsgSysError, "File Opening Error in: %s %d",__FILE__,__LINE__); return (DBFault); }
 	ret = Write (file);
 	fclose (file);
 	return (ret);
@@ -338,7 +337,7 @@ int DBObjData::BuildFields ()
 				{
 				case DBTableFieldTableRec:
 					if ((refTable = TablesPTR->Item (field->RecordProp ())) == (DBObjTable *) NULL)
-						{ perror ("Corrupt Dataset in: DBObjData::BuildFields ()"); ret = DBFault; continue; }
+						{ CMmsgPrint (CMmsgAppError, "Corrupt Dataset in: %s %d",__FILE__,__LINE__); ret = DBFault; continue; }
 					for (tableRec = table->First ();tableRec != (DBObjRecord *) NULL;tableRec = table->Next ())
 						if ((DBInt) (field->Record (tableRec) - (DBObjRecord *) NULL) != DBFault)
 								field->Record (tableRec,refTable->Item  ((DBInt) ((char *) (field->Record (tableRec)) - (char *) NULL)));

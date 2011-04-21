@@ -57,7 +57,7 @@ DBInt DBPointToGrid (DBObjData *pntData,DBObjData *netData,DBObjData *grdData)
 
 	if ((recARR = (DBObjRecord **) calloc (_DBPntIF->ItemNum (),2 * sizeof (DBObjRecord *))) == (DBObjRecord **) NULL)
 		{
-		perror ("Memory Allocation Error in: DBPointToGrid ()");
+		CMmsgPrint (CMmsgAppError, "Memory Allocation Error in: %s %d",__FILE__,__LINE__);
 		delete _DBPntIF;
 		return (DBFault);
 		}
@@ -132,12 +132,12 @@ DBInt DBPointToGrid (DBObjData *pntData,DBObjData *grdData,DBFloat factor)
 	DBMathDistanceFunction distFunc = DBMathGetDistanceFunction (pntData);
 
 	if (distFunc != DBMathGetDistanceFunction (grdData))
-	{ fprintf (stderr,"Incompatible projections in: DBPointToGrid ()\n"); return (DBFault); }
+	{ CMmsgPrint (CMmsgAppError, "Incompatible projections in: %s %d",__FILE__,__LINE__); return (DBFault); }
 
 	pntIF = new DBVPointIF(pntData);
 	itemNum = pntIF->ItemNum ();
 	if ((pCoord = (DBCoordinate *) calloc (itemNum,sizeof (DBCoordinate))) == (DBCoordinate *) NULL)
-		{ perror ("Memory allocation Error in: DBPointToGrid ()"); return (DBFault); }
+		{ CMmsgPrint (CMmsgSysError, "Memory allocation Error in: %s %d",__FILE__,__LINE__); return (DBFault); }
 
 	gridIF = new DBGridIF (grdData);
 	for (pntID = 0;pntID < itemNum;++pntID) pCoord [pntID] = pntIF->Coordinate (pntIF->Item (pntID));
@@ -151,7 +151,8 @@ DBInt DBPointToGrid (DBObjData *pntData,DBObjData *grdData,DBFloat factor)
 		symTable  = grdData->Table (DBrNSymbols);
 	   valField  = itemTable->Field (DBrNGridValue);
 		symField  = itemTable->Field (DBrNSymbol);
-		if ((symRec = symTable->Item (0)) == (DBObjRecord *) NULL) fprintf (stderr, "Total Metal Gebasz in: DBPointToGrid ()\n");
+		if ((symRec = symTable->Item (0)) == (DBObjRecord *) NULL)
+			CMmsgPrint (CMmsgAppError, "Total Metal Gebasz in: %s %d",__FILE__,__LINE__);
 		for (pntID = 0;pntID < itemNum; ++pntID)
 			{
 			pntRec = pntIF->Item (pntID);

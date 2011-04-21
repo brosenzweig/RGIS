@@ -37,7 +37,7 @@ DBObjData *DBGridToGrid (DBObjData *srcGridData,DBInt type)
 				valueSize = gridIF->ValueSize ();
 				break;
 			default:
-				fprintf (stderr,"Invalid Data Type in: DBGridToGrid ()\n");
+				CMmsgPrint (CMmsgAppError, "Invalid Data Type in: %s %d",__FILE__,__LINE__);
 				return ((DBObjData *) NULL);
 			}
 		delete gridIF;
@@ -54,7 +54,7 @@ DBObjData *DBGridToGrid (DBObjData *srcGridData,DBInt type)
 				valueSize = sizeof (DBShort);
 				break;
 			default:
-				fprintf (stderr,"Invalid Data Type in: DBGridToGrid ()\n");
+				CMmsgPrint (CMmsgAppError, "Invalid Data Type in: %s %d",__FILE__,__LINE__);
 				return ((DBObjData *) NULL);
 			}
 	return (DBGridToGrid (srcGridData,type,valueType,valueSize));
@@ -151,7 +151,7 @@ DBObjData *DBGridCreate (char *title,DBRegion extent,DBCoordinate cellSize,DBInt
 	DBObjData *data;
 
 	if ((type & DBTypeGrid) != DBTypeGrid)
-		{ fprintf (stderr,"Invalid data type in: DBGridCreate ()\n"); return ((DBObjData *) NULL); }
+		{ CMmsgPrint (CMmsgAppError, "Invalid data type in: %s %d",__FILE__,__LINE__); return ((DBObjData *) NULL); }
 
 	colNum = (DBShort) ceil ((extent.UpperRight.X - extent.LowerLeft.X) / cellSize.X);
 	rowNum = (DBShort) ceil ((extent.UpperRight.Y - extent.LowerLeft.Y) / cellSize.Y);
@@ -184,7 +184,7 @@ DBObjData *DBGridCreate (char *title,DBRegion extent,DBCoordinate cellSize,DBInt
 		case DBTypeGridContinuous:	varType = DBVariableFloat;	varSize = sizeof (DBFloat4);	break;
 		case DBTypeGridDiscrete:	varType = DBVariableInt;	varSize = sizeof (DBShort);	break;
 		default:
-			fprintf (stderr,"Invalid Data Type in: DBGridCreate ()\n");
+			CMmsgPrint (CMmsgAppError, "Invalid Data Type in: %s %d",__FILE__,__LINE__);
 			delete data;
 			return ((DBObjData *) NULL);
 		}
@@ -305,36 +305,35 @@ DBObjData *DBGridMerge (DBObjData *grdData, DBObjData *mergeData)
 	DBGridIF *gridIF, *mergeIF;
 	DBObjRecord *grdLayerRec, *appLayerRec;
 
-	if (((grdData->Type () != DBTypeGridDiscrete) && (grdData->Type () != DBTypeGridContinuous)) ||
-		((appData->Type () != DBTypeGridDiscrete) && (appData->Type () != DBTypeGridContinuous)) ||
+	if (((grdData->Type   () != DBTypeGridDiscrete) && (grdData->Type   () != DBTypeGridContinuous)) ||
+		((mergeData->Type () != DBTypeGridDiscrete) && (mergeData->Type () != DBTypeGridContinuous)) ||
 		(grdData->Type () != mergeData->Type ()))
-		return (DBFault);
+		return ((DBObjData *) NULL);
 
 	grdTable   = grdData->Table(DBrNLayers);
 	mergeTable = mergeData->Table(DBrNLayers);
 
 	if (grdTable->ItemNum () != mergeTable->ItemNum ())
 		{
-		CMmsgPrint (CMmsgUsrError,"")
+		CMmsgPrint (CMmsgUsrError,"Incompatible grids");
 		}
 	for (layerID = 0; layerID < grdData->Table(DBrNItems)->ItemNum(); ++layerID)
 		{
 
 		}
-	extent->Expand (grdData->Extent ());
-	if (!extent->InRegion (mergeData->Extent ()))
+	extent.Expand (grdData->Extent ());
+	if (!extent.InRegion (mergeData->Extent ()))
 		{
-		extent->Expand (mergeData->Extent ());
+		extent.Expand (mergeData->Extent ());
 
 		}
 
-	gridIF = new DBGridIF (grdData);
-	appIF = new DBGridIF (appData);
+	gridIF  = new DBGridIF (grdData);
+	mergeIF = new DBGridIF (mergeData);
 
-	for (appLayerID = 0;appLayerID < appIF->LayerNum ();++appLayerID)
+/*	for (layerID = 0;layerID < layerNum;++layerID)
 		{
 		appLayerRec = appIF->Layer (appLayerID);
-		grdLayerRec = gridIF->AddLayer (appLayerRec->Name ());
 		switch (grdData->Type ())
 			{
 			case DBTypeGridContinuous:
@@ -384,7 +383,8 @@ DBObjData *DBGridMerge (DBObjData *grdData, DBObjData *mergeData)
 				} break;
 			}
 		}
+*/
 	delete gridIF;
-	delete appIF;
-	return (DBSuccess);
+	delete mergeIF;
+	return (grdData);
 	}

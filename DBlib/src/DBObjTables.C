@@ -382,13 +382,13 @@ void DBObjTableField::Int (DBObjRecord  *record,DBInt value)
 					*((DBByte *) record->Data () + StartByte ()) = byteVAR;
 					} break;
 				default:
-					fprintf (stderr,"Invalid Data Length [%s %d] in DBObjTableField::Int ()",Name (),Length ());
+					CMmsgPrint (CMmsgAppError, "Invalid Data Length [%s %d] in: %s %d",Name (),Length (),__FILE__,__LINE__);
 					break;
 				} break;
 		case DBTableFieldFloat:
 			Float (record,(DBFloat) value); break;
 		default:
-			fprintf (stderr,"Invalid Data Type [%s] in DBObjTableField::Int ()",Name ());
+			CMmsgPrint (CMmsgAppError, "Invalid Data Type [%s] in: %s %d",Name (),__FILE__,__LINE__);
 			break;
 		}
 	}
@@ -427,7 +427,7 @@ DBInt DBObjTableField::Int (const DBObjRecord *record) const
 				} break;
 		case DBTableFieldFloat:	return ((DBInt) Float (record));
 		}
-	fprintf (stderr,"Bogus Data Field [%s] in DBObjTableField::Int ()",Name ());
+	CMmsgPrint (CMmsgAppError, "Bogus Data Field [%s] in: %s %d",Name (),__FILE__,__LINE__);
 	return (IntPROP.NoData ());
 	}
 
@@ -452,12 +452,12 @@ void DBObjTableField::Float (DBObjRecord *record,DBFloat value)
 					memcpy ((char *) record->Data () + StartByte (),&float4VAR,	Length ());
 					} break;
 				default:
-					fprintf (stderr,"Invalid Data length [%s %d] in DBObjTableField::Float ()",Name (),Length ());
+					CMmsgPrint (CMmsgAppError, "Invalid Data length [%s %d] in: %s %d",Name (),Length (),__FILE__,__LINE__);
 					break;
 				}
 			break;
 		default:
-			fprintf (stderr,"Invalid Data Type [%s] in DBObjTableField::Float ()",Name ());
+			CMmsgPrint (CMmsgAppError, "Invalid Data Type [%s] in: %s %d",Name (),__FILE__,__LINE__);
 			break;
 		}
 	}
@@ -485,11 +485,11 @@ DBFloat DBObjTableField::Float (const DBObjRecord *record) const
 					return ((DBFloat) float4VAR);
 					}
 				default:
-					fprintf (stderr,"[%s] Invalid field length in DBObjTableField::Float ()",Name ());
+					CMmsgPrint (CMmsgAppError, "[%s] Invalid field length in: %s %d",Name (),__FILE__,__LINE__);
 					break;
 				}
 		default:
-			fprintf (stderr,"[%s] Invalid field type in DBObjTableField::Float ()",Name ());
+			CMmsgPrint (CMmsgAppError, "[%s] Invalid field type in: %s %d",Name (),__FILE__,__LINE__);
 			break;
 		}
 	return (FloatPROP.NoData ());

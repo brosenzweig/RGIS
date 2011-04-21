@@ -44,14 +44,14 @@ class DBPointARCLabRecord
 					DBByteOrderSwapLongWord (&MaxY);
 					break;
 				default:
-					fprintf (stderr,"Wrong Float Size in: DBPointARCLabRecord<Float> ::Swap ()\n");
+					CMmsgPrint (CMmsgAppError,"Wrong Float Size in: %s %d",__FILE__,__LINE__);
 					break;
 				}
 			}
 		DBInt Read (FILE *file,int swap)
 			{
 			if (fread (this,sizeof (DBPointARCLabRecord),1,file) != (int) 1)
-				{ perror ("File Reading Error in: DBPointARCLabRecord::Read ()"); return (DBFault); }
+				{ CMmsgPrint (CMmsgAppError, "File Reading Error in: %s %d",__FILE__,__LINE__); return (DBFault); }
 			if (swap) Swap ();
 			return (DBSuccess);
 			}
@@ -65,7 +65,7 @@ class DBPointARCLabRecord
 			
 			if (coordField == (DBObjTableField *) NULL)
 				{
-				fprintf (stderr,"Corrupt Point Data Block in: DBPointARCFloatLabRecord::LoadPoints (DBObjTable *)\n");
+				CMmsgPrint (CMmsgAppError, "Corrupt Point Data Block in: %s %d",__FILE__,__LINE__);
 				return (DBFault);
 				}
 			
@@ -107,15 +107,15 @@ int DBImportARCPoint (DBObjData *vecData,const char *arcCov)
 	if (access (fileName,R_OK) == DBFault) sprintf (fileName,"%s/lab.adf",arcCov);	
 
 	if ((inFile = fopen (fileName,"r")) == NULL)
-		{ perror ("File Opening Error in: DBImportARCPoint ()"); return (DBFault); }
+		{ CMmsgPrint (CMmsgSysError, "File Opening Error in: %s %d",__FILE__,__LINE__); return (DBFault); }
 	if (fread (infoHeader,sizeof (short),50,inFile) != 50)
-		{ perror ("File Reading Error in: DBImportARCPoint ()"); return (DBFault); }
+		{ CMmsgPrint (CMmsgSysError, "File Reading Error in: %s %d",__FILE__,__LINE__); return (DBFault); }
 		
 	if (floatCov)	floatRec.LoadPoints  (inFile,items,&dataExtent);
 	else				doubleRec.LoadPoints (inFile,items,&dataExtent);
 	fclose (inFile);
 	vecData->Extent (dataExtent);
-   vecData->Projection (DBMathGuessProjection (dataExtent));
-   vecData->Precision  (DBMathGuessPrecision  (dataExtent));
+	vecData->Projection (DBMathGuessProjection (dataExtent));
+	vecData->Precision  (DBMathGuessPrecision  (dataExtent));
 	return (DBSuccess);
 	}

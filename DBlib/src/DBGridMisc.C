@@ -54,7 +54,7 @@ void DBGridIF::Initialize (DBObjData *data, bool flat)
 			BackgroundFLD	= (DBObjTableField *) NULL;
 			StyleFLD 		= (DBObjTableField *) NULL;
 			break;
-		default:	fprintf (stderr,"Invalid Data Type in: DBGridIF::DBGridIF ()\n");	break;
+		default:	CMmsgPrint (CMmsgAppError, "Invalid Data Type in: %s %d",__FILE__,__LINE__); break;
 		}
 	LayerTable = data->Table (DBrNLayers);
 	LayerFLD = LayerTable->Field (DBrNLayer);
@@ -133,11 +133,11 @@ DBInt DBGridIF::DeleteLayer (char *layerName)
 	if (DataPTR->Type () == DBTypeGridContinuous)
 		{
 		if ((layerRec = ItemTable->Item (layerName)) == (DBObjRecord *) NULL)
-			{ fprintf (stderr,"Invalid layer name in: DBGridIF::DeleteLayer ()"); return (DBFault); }
+			{ CMmsgPrint (CMmsgAppError, "Invalid layer name in: %s %d",__FILE__,__LINE__); return (DBFault); }
 		ItemTable->Delete (layerRec);
 		}
 	if ((layerRec = LayerTable->Item (layerName)) == (DBObjRecord *) NULL)
-		{ fprintf (stderr,"Total Gebasz in: DBGridIF::DeleteLayer ()"); return (DBFault); }
+		{ CMmsgPrint (CMmsgAppError, "Total Gebasz in: %s %d",__FILE__,__LINE__); return (DBFault); }
 	dataRec = LayerFLD->Record (layerRec);
 	((Data ())->Arrays ())->Delete (dataRec);
 	LayerTable->Delete (layerRec);
@@ -151,7 +151,7 @@ DBInt DBGridIF::DeleteLayers (char *firstLayer, char *lastLayer)
 	DBObjRecord *layerRec;
 
 	if ((layerRec = LayerTable->Item (firstLayer)) == (DBObjRecord *) NULL)
-		{ fprintf (stderr,"Invalid layer name in: DBGridIF::DeleteLayers ()"); return (DBFault); }
+		{ CMmsgPrint (CMmsgAppError, "Invalid layer name in: %s %d",__FILE__,__LINE__); return (DBFault); }
 	layerID = layerRec->RowID ();
 
 	while (strcmp (layerRec->Name (),lastLayer) != 0)
@@ -546,7 +546,7 @@ char *DBGridIF::ValueString (DBObjRecord *layerRec,DBPosition pos)
 				if (Value (layerRec,pos,&cellVal) == false) return ((char *) "");
 				sprintf (retString,ValueFormat (),cellVal);
 			} break;
-		default:	fprintf (stderr,"Invalid Data Type in: DBGridIF::ValueString ()\n"); return ((char *) NULL);
+		default:	CMmsgPrint (CMmsgAppError, "Invalid Data Type in: %s %d\n",__FILE__,__LINE__); return ((char *) NULL);
 		}
 	return (retString);
 	}
@@ -655,13 +655,13 @@ void DBGridOperation (DBObjData *leftGrd,DBObjData *rightGrd,DBInt oper,DBInt me
 		leftRec = leftIF->Layer (leftID);
 		if ((leftRec->Flags () & DBObjectFlagIdle) != DBObjectFlagIdle) break;
 		}
-	if (leftID == leftIF->LayerNum ()) { fprintf (stderr,"No Layer to Process in DBGridOperation ()\n"); return; }
+	if (leftID == leftIF->LayerNum ()) { CMmsgPrint (CMmsgAppError, "No Layer to Process in %s %d",__FILE__,__LINE__); return; }
 	for (rightID = 0;rightID < rightIF->LayerNum ();++rightID)
 		{
 		rightRec = rightIF->Layer (rightID);
 		if ((rightRec->Flags () & DBObjectFlagIdle) != DBObjectFlagIdle) break;
 		}
-	if (rightID == rightIF->LayerNum ()) { fprintf (stderr,"No Layer to Process in DBGridOperation ()\n"); return; }
+	if (rightID == rightIF->LayerNum ()) { CMmsgPrint (CMmsgAppError, "No Layer to Process in %s %d",__FILE__,__LINE__); return; }
 
 	rightID = (DBInt) 0;
 	for (leftID = 0;leftID < leftIF->LayerNum ();++leftID)
@@ -727,7 +727,7 @@ void DBGridOperation (DBObjData *grdData,DBFloat constant,DBInt oper)
 		layerRec = gridIF->Layer (layerID);
 		if ((layerRec->Flags () & DBObjectFlagIdle) != DBObjectFlagIdle) break;
 		}
-	if (layerID == gridIF->LayerNum ()) { fprintf (stderr,"No Layer to Process in DBGridOperation ()\n"); return; }
+	if (layerID == gridIF->LayerNum ()) { CMmsgPrint (CMmsgAppError, "No Layer to Process in %s %d",__FILE__,__LINE__); return; }
 
 	for (layerID = 0;layerID < gridIF->LayerNum ();++layerID)
 		{
@@ -770,7 +770,7 @@ void DBGridOperationAbs (DBObjData *grdData)
 		layerRec = gridIF->Layer (layerID);
 		if ((layerRec->Flags () & DBObjectFlagIdle) != DBObjectFlagIdle) break;
 		}
-	if (layerID == gridIF->LayerNum ()) { fprintf (stderr,"No Layer to Process in DBGridOperation ()\n"); return; }
+	if (layerID == gridIF->LayerNum ()) { CMmsgPrint (CMmsgAppError, "No Layer to Process in %s %d",__FILE__,__LINE__); return; }
 
 	for (layerID = 0;layerID < gridIF->LayerNum ();++layerID)
 		{

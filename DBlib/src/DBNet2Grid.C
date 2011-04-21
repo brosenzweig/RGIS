@@ -58,7 +58,7 @@ DBObjData *DBNetworkToGrid (DBObjData *netData,DBInt type)
 			valueSizeFLD->Int (layerRec,sizeof (DBShort));
 			break;
 		default:
-			fprintf (stderr,"Invalid Data Type in: DBNetworkToGrid ()\n");
+			CMmsgPrint (CMmsgAppError, "Invalid Data Type in: %s %d",__FILE__,__LINE__);
 			delete grdData;
 			delete netIF;
 			return ((DBObjData *) NULL);

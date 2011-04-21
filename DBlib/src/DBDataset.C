@@ -132,7 +132,7 @@ int DBDataset::Read (const char *fileName)
 	
 	if (fread (&byteOrder,sizeof (DBInt),1,file) != 1)
 		{
-		perror ("File Reading Error in: DBDataset::Read ()");
+		CMmsgPrint (CMmsgSysError, "File Reading Error in: %s %d",__FILE__,__LINE__);
 		fclose (file);
 		return (DBFault);
 		}
