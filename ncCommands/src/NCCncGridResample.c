@@ -1,5 +1,6 @@
-#include<unistd.h>
-#include<NCdsHandle.h>
+#include <cm.h>
+#include <unistd.h>
+#include <NCdsHandle.h>
 
 int main (int argc,char *argv [])
 {
@@ -14,29 +15,29 @@ int main (int argc,char *argv [])
 		if (NCcmArgTest (argv [argPos],"-T","--template"))
 		{
 			NCcmArgShiftLeft (argPos,argv,argc); argNum--;
-			if (NCcmArgCheck(argv,argPos,argNum)) { fprintf (stderr,"Missing template!\n");		return (NCfailed); }
+			if (NCcmArgCheck(argv,argPos,argNum)) { CMmsgPrint (CMmsgUsrError, "Missing template!");		return (NCfailed); }
 			template  = argv [argPos];
 			NCcmArgShiftLeft (argPos,argv,argc); argNum--;
 			continue;
 		}
 		if (NCcmArgTest (argv [argPos],"-h","--help"))
 		{
-			fprintf (stdout,"%s [options] <ncgis grid> <ncgis grid>\n", NCcmProgName(argv [0]));
-			fprintf (stdout,"     -T,--template\n");
-			fprintf (stdout,"     -h,--help\n");
+			printf ("%s [options] <ncgis grid> <ncgis grid>", NCcmProgName(argv [0]));
+			printf ("     -T,--template");
+			printf ("     -h,--help");
 			return (NCsucceeded);
 		}
 		if ((argv [argPos][0] == '-') && (strlen (argv [argPos]) > 1))
 		{
-			fprintf (stderr,"Unknown option: %s!\n",argv [argPos]);
+			CMmsgPrint (CMmsgUsrError, "Unknown option: %s!",argv [argPos]);
 			return (NCfailed);
 		}
 		argPos++;
 	}
 	if (template == (char *) NULL)
-	{ fprintf (stderr,"%s: Missing template!\n",  NCcmProgName (argv [0])); return (NCfailed); }
+	{ CMmsgPrint (CMmsgUsrError, "%s: Missing template!",  NCcmProgName (argv [0])); return (NCfailed); }
 	if (argNum < 3)
-	{ fprintf (stderr,"%s: Too few arguments!\n", NCcmProgName (argv [0])); return (NCfailed); }
+	{ CMmsgPrint (CMmsgUsrError, "%s: Too few arguments!", NCcmProgName (argv [0])); return (NCfailed); }
 
 	if ((status = nc_open (argv [1], NC_NOWRITE, &sncid)) != NC_NOERR)
 	{ NCprintNCError (status,"main"); return (NCfailed); }
@@ -44,7 +45,7 @@ int main (int argc,char *argv [])
 	if ((dataType = NCdataGetType (sncid)) == NCfailed) { nc_close (sncid); return (NCfailed); }
 	if ((dataType != NCtypeGCont) && (dataType != NCtypeGDisc))
 	{
-		fprintf (stderr,"%s: Non-grid input coverage!\n", NCcmProgName (argv [0]));
+		CMmsgPrint (CMmsgUsrError, "%s: Non-grid input coverage!", NCcmProgName (argv [0]));
 		nc_close (sncid);
 		return (NCfailed);
 	}
@@ -58,7 +59,7 @@ int main (int argc,char *argv [])
 	{ nc_close (sncid); nc_close (sncid); return (NCfailed); }
 	if ((dataType != NCtypeGCont) && (dataType != NCtypeGDisc) && (dataType != NCtypeNetwork))
 	{
-		fprintf (stderr,"%s: Non-grid template coverage!\n", NCcmProgName (argv [0]));
+		CMmsgPrint (CMmsgUsrError, "%s: Non-grid template coverage!", NCcmProgName (argv [0]));
 		nc_close (sncid);
 		nc_close (tncid);
 		return (NCfailed);

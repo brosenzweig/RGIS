@@ -1,4 +1,5 @@
-#include<NC.h>
+#include <cm.h>
+#include <NC.h>
 
 int main (int argc,char *argv [])
 {
@@ -14,7 +15,7 @@ int main (int argc,char *argv [])
 			NCcmArgShiftLeft (argPos,argv,argc); argNum--;
 			if (NCcmArgCheck(argv,argPos,argNum))
 			{
-				fprintf (stderr,"%s: Missing sampling coverage!\n",NCcmProgName (argv [0]));
+				CMmsgPrint (CMmsgUsrError, "%s: Missing sampling coverage!",NCcmProgName (argv [0]));
 				return (NCfailed);
 			}
 			sample = argv [argPos];
@@ -24,10 +25,10 @@ int main (int argc,char *argv [])
 		if (NCcmArgTest (argv [argPos],"-L","--layout"))
 		{
 			NCcmArgShiftLeft (argPos,argv,argc); argNum--;
-			if (NCcmArgCheck(argv,argPos,argNum)) { fprintf (stderr,"Missing layout!\n"); return (NCfailed); }
+			if (NCcmArgCheck(argv,argPos,argNum)) { CMmsgPrint (CMmsgUsrError, "Missing layout!"); return (NCfailed); }
 			if ((tblLayout = NCcmStringLookup (layoutTexts, argv [argPos],true)) == NCfailed)
 			{
-				fprintf (stderr,"%s: Invalid table layout [%s]!\n",NCcmProgName (argv [0]), argv [argPos]);
+				CMmsgPrint (CMmsgUsrError, "%s: Invalid table layout [%s]!",NCcmProgName (argv [0]), argv [argPos]);
 				return (NCfailed);
 			}
 			tblLayout = tblLayouts [tblLayout];
@@ -36,35 +37,35 @@ int main (int argc,char *argv [])
 		}
 		if (NCcmArgTest (argv [argPos],"-h","--help"))
 		{
-			fprintf (stdout,"%s [options] <ncgis grid> <ascii table>\n", NCcmProgName(argv [0]));
-			fprintf (stdout,"     -S,--sampling\n");
-			fprintf (stdout,"     -L,--layout [vertical|horizontal]\n");
-			fprintf (stdout,"     -h,--help\n");
+			fprintf (stdout,"%s [options] <ncgis grid> <ascii table>", NCcmProgName(argv [0]));
+			fprintf (stdout,"     -S,--sampling");
+			fprintf (stdout,"     -L,--layout [vertical|horizontal]");
+			fprintf (stdout,"     -h,--help");
 			return (NCsucceeded);
 		}
 		if ((argv [argPos][0] == '-') && (strlen (argv [argPos]) > 1))
 		{
-			fprintf (stderr,"Unknown option: %s!\n",argv [argPos]);
+			CMmsgPrint (CMmsgUsrError, "Unknown option: %s!",argv [argPos]);
 			return (NCfailed);
 		}
 		argPos++;
 		}
 	if (sample == (char *) NULL)
 	{
-		fprintf (stderr,"%s: Missing template!\n",NCcmProgName (argv [0]));
+		CMmsgPrint (CMmsgUsrError, "%s: Missing template!",NCcmProgName (argv [0]));
 		return (NCfailed);
 	}
 
 	if (argNum < 2)
 	{
-		fprintf (stderr,"%s: Too few arguments!\n", NCcmProgName (argv [0]));
+		CMmsgPrint (CMmsgUsrError, "%s: Too few arguments!", NCcmProgName (argv [0]));
 		return (NCfailed);
 	}
 /*
 	if ((objGrid = NCObjDataOpen (argv [1],true)) == (NCObjData_t *) NULL) return (NCfailed);
 	if ((objGrid->DType != NCTypeContGrid) && (objGrid->DType != NCTypeDiscGrid))
 	{
-		fprintf (stderr,"%s: Non-grid input coverage!\n", NCcmProgName (argv [0]));
+		CMmsgPrint (CMmsgUsrError, "%s: Non-grid input coverage!", NCcmProgName (argv [0]));
 		NCObjDataFree (objGrid);
 		return (NCfailed);
 	}
@@ -75,7 +76,7 @@ int main (int argc,char *argv [])
 	}
 	if ((objData->DType != NCTypePoint)    && (objData->DType != NCTypeNetwork))
 	{
-		fprintf (stderr,"%s: Invalid sampling coverage!\n", NCcmProgName (argv [0]));
+		CMmsgPrint (CMmsgUsrError, "%s: Invalid sampling coverage!", NCcmProgName (argv [0]));
 		NCObjDataFree (objGrid);
 		NCObjDataFree (objData);
 		return (NCfailed);

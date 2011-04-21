@@ -1,29 +1,30 @@
+#include <cm.h>
 #include <NCtable.h>
 
 void do_help(char *progName,bool extend)
 {
 	if(extend) {
-		fprintf(stderr,"Usage: %s [OPTIONS] \n",progName);
-		fprintf(stderr,"  Flags:\n");
-		fprintf(stderr,"  -d,--debug             => initiate debug output\n");
-		fprintf(stderr,"  -f,--file [filename]   => set input file name\n");
-		fprintf(stderr,"  -h,--help              => print this message\n");
-		fprintf(stderr,"  -o,--output [filename] => set output file name [default: stdout]\n");
-		fprintf(stderr,"  -t,--table [tablename] => table name [default: time]\n");
+		CMmsgPrint (CMmsgUsrError, "Usage: %s [OPTIONS] ",progName);
+		CMmsgPrint (CMmsgUsrError, "  Flags:");
+		CMmsgPrint (CMmsgUsrError, "  -d,--debug             => initiate debug output");
+		CMmsgPrint (CMmsgUsrError, "  -f,--file [filename]   => set input file name");
+		CMmsgPrint (CMmsgUsrError, "  -h,--help              => print this message");
+		CMmsgPrint (CMmsgUsrError, "  -o,--output [filename] => set output file name [default: stdout]");
+		CMmsgPrint (CMmsgUsrError, "  -t,--table [tablename] => table name [default: time]");
 	} else {
-		fprintf(stderr,"Usage: %s [OPTIONS] \n",progName);
-		fprintf(stderr,"  Flags:\n");
-		fprintf(stderr,"  -d,--debug\n");
-		fprintf(stderr,"  -f,--file [filename]\n");
-		fprintf(stderr,"  -h,--help\n");
-		fprintf(stderr,"  -o,--output [filename]\n");
-		fprintf(stderr,"  -t,--table\n");
+		CMmsgPrint (CMmsgUsrError, "Usage: %s [OPTIONS] ",progName);
+		CMmsgPrint (CMmsgUsrError, "  Flags:");
+		CMmsgPrint (CMmsgUsrError, "  -d,--debug");
+		CMmsgPrint (CMmsgUsrError, "  -f,--file [filename]");
+		CMmsgPrint (CMmsgUsrError, "  -h,--help");
+		CMmsgPrint (CMmsgUsrError, "  -o,--output [filename]");
+		CMmsgPrint (CMmsgUsrError, "  -t,--table");
 	}
 }
 
 // *** MAIN
 
-#define cleanup(ret) if((fname != (char *) NULL) && (nc_close(ncid) != NC_NOERR)) fprintf(stderr,"Error closing file!\n"); \
+#define cleanup(ret) if((fname != (char *) NULL) && (nc_close(ncid) != NC_NOERR)) CMmsgPrint (CMmsgUsrError, "Error closing file!"); \
 	NCtableClose(tbl); if(output != stdout) fclose(output); printMemInfo(); return ret;
 
 int main(int argc, char* argv[])
@@ -58,20 +59,20 @@ int main(int argc, char* argv[])
 		if (NCcmArgTest(argv[argPos],"-o","--output"))
 		{
 			NCcmArgShiftLeft(argPos,argv,argc); argNum--;
-			if(output != stdout) { fprintf(stderr,"Output file defined twice!\n"); cleanup(NCfailed); }
+			if(output != stdout) { CMmsgPrint (CMmsgUsrError, "Output file defined twice!"); cleanup(NCfailed); }
 			if((output = fopen(argv[argPos],"w")) == (FILE *) NULL)
-				{ fprintf(stderr,"Cannot open for writing: %s\n",argv[argPos]); cleanup(NCfailed); }
+				{ CMmsgPrint (CMmsgUsrError, "Cannot open for writing: %s",argv[argPos]); cleanup(NCfailed); }
 			NCcmArgShiftLeft(argPos,argv,argc); argNum--;
 			continue;
 		}
 		if ((argv[argPos][0] == '-') && (strlen (argv[argPos]) > 1))
-			{ fprintf(stderr,"Unknown option: %s!\n",argv[argPos]); cleanup(NCfailed); }
+			{ CMmsgPrint (CMmsgUsrError, "Unknown option: %s!",argv[argPos]); cleanup(NCfailed); }
 		argPos++;
 	}
-	if(fname == (char *) NULL) { do_help(argv[0],false); fprintf(stderr,"\nNo file specified!\n"); cleanup(NCfailed); }
-	if(nc_open(fname,NC_NOWRITE,&ncid) != NC_NOERR) { fprintf (stderr,"Error opening file!\n"); cleanup(NCfailed); }
-	if((tbl = NCtableOpen(ncid,tname)) == (NCtable_t *) NULL) { fprintf(stderr,"Error opening table!\n"); cleanup(NCfailed); }
-	if(GetDebug()) fprintf(stderr,"Loaded file!\n");
+	if(fname == (char *) NULL) { do_help(argv[0],false); CMmsgPrint (CMmsgUsrError, "No file specified!"); cleanup(NCfailed); }
+	if(nc_open(fname,NC_NOWRITE,&ncid) != NC_NOERR) { CMmsgPrint (CMmsgUsrError, "Error opening file!"); cleanup(NCfailed); }
+	if((tbl = NCtableOpen(ncid,tname)) == (NCtable_t *) NULL) { CMmsgPrint (CMmsgUsrError, "Error opening table!"); cleanup(NCfailed); }
+	if(GetDebug()) CMmsgPrint (CMmsgUsrError, "Loaded file!");
 	NCtableExportAscii(tbl,output);
 	cleanup(NCsucceeded);
 }

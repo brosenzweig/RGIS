@@ -1,5 +1,6 @@
-#include<NC.h>
-#include<NCnames.h>
+#include <cm.h>
+#include <NC.h>
+#include <NCnames.h>
 
 NCdataType NCdataGetType (int ncid)
 {
@@ -14,7 +15,7 @@ NCdataType NCdataGetType (int ncid)
 		else if (strncmp (dTypeStr,NCnameTypeLine,   strlen (NCnameTypeLine))    == 0)  return (NCtypeLine);
 		else if (strncmp (dTypeStr,NCnameTypePolygon,strlen (NCnameTypePolygon)) == 0)  return (NCtypePolygon);
 		else if (strncmp (dTypeStr,NCnameTypeNetwork,strlen (NCnameTypeNetwork)) == 0)  return (NCtypeNetwork);
-		fprintf (stderr,"Invalid data type in: NCdataGetType ()\n");
+		CMmsgPrint (CMmsgAppError, "Invalid data type in: %s %d",__FILE__,__LINE__);
 		return (NCundefined);
 	}
 	return (NCtypeGCont);
@@ -30,7 +31,7 @@ char *NCdataGetTextAttribute (int ncid, int varid, const char *attName)
 
 	if ((att = (char *) malloc (attlen + 1)) == (char *) NULL)
 	{
-		fprintf (stderr,"Memory allocation error in: NCdataGetTextAttribute ()\n");
+		CMmsgPrint (CMmsgSysError, "Memory allocation error in: %s %d",__FILE__,__LINE__);
 		return ((char *) NULL);
 	}
 	if ((status = nc_get_att_text (ncid, varid, attName, att)) != NC_NOERR)
@@ -115,14 +116,14 @@ NCprojection NCdataGetProjection (int ncid)
 	{
 		if      (strcmp (projName, NCnameGAProjCartesian)) return (NCprojCartesian);
 		else if (strcmp (projName, NCnameGAProjSpherical)) return (NCprojSpherical);
-		fprintf (stderr,"Invalid data type in: NCdataGetProjection ()\n");
+		CMmsgPrint (CMmsgAppError, "Invalid data type in: %s %d",__FILE__,__LINE__);
 	}
 	else
 	{
 		if      (nc_inq_dimid (ncid, NCnameDNXCoord,    &dimid) == NC_NOERR) return (NCprojCartesian);
 		else if (nc_inq_dimid (ncid, NCnameDNLon,       &dimid) == NC_NOERR) return (NCprojSpherical);
 		else if (nc_inq_dimid (ncid, NCnameDNLongitude, &dimid) == NC_NOERR) return (NCprojSpherical);
-		fprintf (stderr,"Nongeographical data in: NCdataGetProjection ()\n");
+		CMmsgPrint (CMmsgAppError, "Nongeographical data in: %s %d",__FILE__,__LINE__);
 	}
 	return (NCundefined);
 }
@@ -133,8 +134,8 @@ int NCdataGetXDimId (int ncid)
 
 	if ((nc_inq_dimid  (ncid, NCnameDNCoord,     &dimid) == NC_NOERR) ||
 	    (nc_inq_dimid  (ncid, NCnameDNXCoord,    &dimid) == NC_NOERR) ||
-		 (nc_inq_dimid  (ncid, NCnameDNLon,       &dimid) == NC_NOERR) ||
-		 (nc_inq_dimid  (ncid, NCnameDNLongitude, &dimid) == NC_NOERR)) return (dimid);
+		(nc_inq_dimid  (ncid, NCnameDNLon,       &dimid) == NC_NOERR) ||
+		(nc_inq_dimid  (ncid, NCnameDNLongitude, &dimid) == NC_NOERR)) return (dimid);
 	return (NCfailed);
 }
 
@@ -143,8 +144,8 @@ int NCdataGetXVarId (int ncid)
 	int varid;
 
 	if ((nc_inq_varid  (ncid, NCnameDNXCoord,    &varid) == NC_NOERR) ||
-		 (nc_inq_varid  (ncid, NCnameDNLon,       &varid) == NC_NOERR) ||
-		 (nc_inq_varid  (ncid, NCnameDNLongitude, &varid) == NC_NOERR)) return (varid);
+		(nc_inq_varid  (ncid, NCnameDNLon,       &varid) == NC_NOERR) ||
+		(nc_inq_varid  (ncid, NCnameDNLongitude, &varid) == NC_NOERR)) return (varid);
 	return (NCfailed);
 }
 
@@ -154,8 +155,8 @@ int NCdataGetYDimId (int ncid)
 
 	if ((nc_inq_dimid  (ncid, NCnameDNCoord,     &dimid) == NC_NOERR) ||
 	    (nc_inq_dimid  (ncid, NCnameDNYCoord,    &dimid) == NC_NOERR) ||
-		 (nc_inq_dimid  (ncid, NCnameDNLat,       &dimid) == NC_NOERR) ||
-		 (nc_inq_dimid  (ncid, NCnameDNLatitude,  &dimid) == NC_NOERR)) return (dimid);
+		(nc_inq_dimid  (ncid, NCnameDNLat,       &dimid) == NC_NOERR) ||
+		(nc_inq_dimid  (ncid, NCnameDNLatitude,  &dimid) == NC_NOERR)) return (dimid);
 	return (NCfailed);
 }
 
@@ -164,8 +165,8 @@ int NCdataGetYVarId (int ncid)
 	int varid;
 
 	if ((nc_inq_varid  (ncid, NCnameDNYCoord,    &varid) == NC_NOERR) ||
-		 (nc_inq_varid  (ncid, NCnameDNLat,       &varid) == NC_NOERR) ||
-		 (nc_inq_varid  (ncid, NCnameDNLatitude,  &varid) == NC_NOERR)) return (varid);
+		(nc_inq_varid  (ncid, NCnameDNLat,       &varid) == NC_NOERR) ||
+		(nc_inq_varid  (ncid, NCnameDNLatitude,  &varid) == NC_NOERR)) return (varid);
 	return (NCfailed);
 }
 
@@ -207,7 +208,7 @@ double *NCdataGetVector (int ncid, int dimid, int varid, size_t *len)
 	}
 	if ((coords = (double  *) calloc (*len, sizeof (double))) == (double *) NULL)
 	{
-		fprintf (stderr,"Memory allocation error in: NCdataGetVector ()\n");
+		CMmsgPrint (CMmsgSysError, "Memory allocation error in: %s %d",__FILE__,__LINE__);
 		return ((double *) NULL);
 	}
 	start = 0;

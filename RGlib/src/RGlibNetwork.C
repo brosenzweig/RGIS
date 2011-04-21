@@ -95,7 +95,7 @@ DBInt RGlibNetworkToGrid (DBObjData *netData,DBObjTableField *field, DBObjData *
 					if ((itemRec = itemTable->Item (nameStr)) == (DBObjRecord *) NULL)
 						{
 						if ((itemRec = itemTable->Add (nameStr)) == (DBObjRecord *) NULL)
-							{ fprintf (stderr,"Item Object Creation Error in: DMDataset::Read ()\n"); return (DBFault); }
+							{ CMmsgPrint (CMmsgAppError, "Item Object Creation Error in: %s %d",__FILE__,__LINE__); return (DBFault); }
 						gridValueFLD->Int (itemRec,intVal);
 						gridSymbolFLD->Record (itemRec,symRec);
 						}
@@ -107,7 +107,7 @@ DBInt RGlibNetworkToGrid (DBObjData *netData,DBObjTableField *field, DBObjData *
 			gridIF->DiscreteStats ();
 			} break;
 		default:
-			perror ("Invalid data type in: RGlibNetworkToGrid ()!\n");
+			CMmsgPrint (CMmsgSysError, "Invalid data type in: %s %d",__FILE__,__LINE__);
 			break;
 		}
 Stop:
@@ -172,7 +172,7 @@ DBInt RGlibNetworkBasinGrid (DBObjData *netData, DBObjData *grdData)
 					case DBTableFieldInt:		outFLD->Int 	(itemRec,inFLD->Int		(basinRec));	break;
 					case DBTableFieldFloat:		outFLD->Float 	(itemRec,inFLD->Float	(basinRec));	break;
 					case DBTableFieldDate:		outFLD->Date 	(itemRec,inFLD->Date		(basinRec));	break;
-					default: fprintf (stderr,"Invalid field type in: RGlibNetworkToBasinGrid ()\n");	break;
+					default: CMmsgPrint (CMmsgAppError, "Invalid field type in: %s %d",__FILE__,__LINE__);	break;
 					}
 				}
 			}
@@ -237,7 +237,7 @@ DBInt RGlibNetworkStations (DBObjData *netData,DBFloat area, DBFloat tolerance,D
 
 	if ((areaARR = (DBFloat *) calloc (netIF->CellNum (),sizeof (DBFloat))) == (DBFloat *) NULL)
 		{
-		perror ("Memory Allocation Error in: RGlibNetworkStations ()");
+		CMmsgPrint (CMmsgSysError, "Memory Allocation Error in: %s %d",__FILE__,__LINE__);
 		delete netIF;
 		return (DBFault);
 		}
@@ -378,43 +378,43 @@ DBInt RGlibNetworkAccumulate (DBObjData *netData,
 		{
 		if (disData == (DBObjData *) NULL) return (DBFault);
 		if (stnData->Type () != DBTypeVectorPoint)
-			{ fprintf (stderr,"Invalid station data\n"); return (DBFault); }
+			{ CMmsgPrint (CMmsgUsrError, "Invalid station data!"); return (DBFault); }
 /*		if (disData->Type () != DBTypeTable)
-			{ fprintf (stderr,"Invalid time series data\n"); return (DBFault); }
+			{ CMmsgPrint (CMmsgAppError, "Invalid time series data\n"); return (DBFault); }
 */		stnTable = stnData->Table (DBrNItems);
 		disTable = disData->Table (DBrNItems);
 		if ((fields [0] != (char *) NULL) &&
 			((relateFLD = stnTable->Field (fields [0])) == (DBObjTableField *) NULL))
-			{ fprintf (stderr,"Invalid relate field [%s]!\n",fields [0]); return (DBFault); }
+			{ CMmsgPrint (CMmsgUsrError, "Invalid relate field [%s]!",fields [0]); return (DBFault); }
 		nextStnFLD = stnTable->Field (fields [1] == (char *) NULL ?  RGlibNextStation : fields [1]);
 		if (nextStnFLD == (DBObjTableField *) NULL)
-			{ fprintf (stderr,"Invalid next station field!\n"); return (DBFault); }
+			{ CMmsgPrint (CMmsgUsrError, "Invalid next station field!"); return (DBFault); }
 		if (nextStnFLD->Type () != DBVariableInt)
-			{ fprintf (stderr,"Invalid next station field\n"); return (DBFault); }
+			{ CMmsgPrint (CMmsgUsrError, "Invalid next station field!"); return (DBFault); }
 		if ((fields [2] != (char *) NULL) &&
 			((joinFLD = disTable->Field (fields [2])) == (DBObjTableField *) NULL))
-			{ fprintf (stderr,"Invalid join field [%s]!\n",fields [2]); return (DBFault); }
+			{ CMmsgPrint (CMmsgUsrError, "Invalid join field [%s]!",fields [2]); return (DBFault); }
 		if ((relateFLD != (DBObjTableField *) NULL) && (DBTableFieldIsCategory (relateFLD) != true))
-			{ fprintf (stderr,"Invalid relate field type!\n"); return (DBFault); }
+			{ CMmsgPrint (CMmsgUsrError, "Invalid relate field type!"); return (DBFault); }
 		if ((joinFLD != (DBObjTableField *) NULL) && (DBTableFieldIsCategory (joinFLD) != true))
-			{ fprintf (stderr,"Invalid join field type!\n"); return (DBFault); }
+			{ CMmsgPrint (CMmsgUsrError, "Invalid join field type!"); return (DBFault); }
 		if ((relateFLD != (DBObjTableField *) NULL) &&
 			 (joinFLD   != (DBObjTableField *) NULL) &&
 			 (relateFLD->Type () != joinFLD->Type ()))
-			{ fprintf (stderr,"Relate and join fields have different types!\n"); return (DBFault); }
+			{ CMmsgPrint (CMmsgUsrError, "Relate and join fields have different types!"); return (DBFault); }
 		if ((relateFLD != (DBObjTableField *) NULL) &&
 			 (joinFLD == (DBObjTableField *) NULL) &&
 			 (relateFLD->Type () != DBVariableString))
-			{ fprintf (stderr,"Invalid relate field type!\n"); return (DBFault); }
+			{ CMmsgPrint (CMmsgUsrError, "Invalid relate field type!"); return (DBFault); }
 		if ((relateFLD == (DBObjTableField *) NULL) &&
 			 (joinFLD != (DBObjTableField *) NULL) &&
 			 (joinFLD->Type () != DBVariableString))
-			{ fprintf (stderr,"Invalid join field type!\n"); return (DBFault); }
+			{ CMmsgPrint (CMmsgUsrError, "Invalid join field type!"); return (DBFault); }
 
 		if (fields [3] != (char *) NULL)
 			{
 			if ((dateFLD = disTable->Field (fields [3])) == (DBObjTableField *) NULL)
-				{ fprintf (stderr,"Invalid date field [%s]!\n",fields [3]); return (DBFault); }
+				{ CMmsgPrint (CMmsgUsrError, "Invalid date field [%s]!",fields [3]); return (DBFault); }
 			}
 		else
 			{
@@ -424,12 +424,12 @@ DBInt RGlibNetworkAccumulate (DBObjData *netData,
 				if (dateFLD->Type () == DBVariableDate) break;
 				}
 			if (fieldID == disTable->FieldNum ())
-				{ fprintf (stderr,"No date field in time series!\n"); return (DBFault); }
+				{ CMmsgPrint (CMmsgUsrError, "No date field in time series!"); return (DBFault); }
 			}
 		if (fields [4] != (char *) NULL)
 			{
 			if ((dischargeFLD = disTable->Field (fields [4])) == (DBObjTableField *) NULL)
-				{ fprintf (stderr,"Invalid discharge field [%s]!\n",fields [4]); return (DBFault); }
+				{ CMmsgPrint (CMmsgUsrError, "Invalid discharge field [%s]!",fields [4]); return (DBFault); }
 			}
 		else
 			{
@@ -439,7 +439,7 @@ DBInt RGlibNetworkAccumulate (DBObjData *netData,
 				if (dischargeFLD->Type () == DBVariableFloat) break;
 				}
 			if (fieldID == disTable->FieldNum ())
-				{ fprintf (stderr,"No discharge field in time series!\n"); return (DBFault); }
+				{ CMmsgPrint (CMmsgUsrError, "No discharge field in time series!"); return (DBFault); }
 			}
 		stnIF = new DBVPointIF (stnData);
 
@@ -463,7 +463,7 @@ DBInt RGlibNetworkAccumulate (DBObjData *netData,
 		}
 	if (layerNum < 1)
 		{
-		fprintf (stderr,"No Layer to Process in RGlibNetworkAccumulate ()\n");
+		CMmsgPrint (CMmsgUsrError, "No Layer to Process!");
 		delete inGridIF; return (DBFault);
 		}
 
@@ -774,7 +774,7 @@ DBInt RGlibNetworkUpStreamAvg (DBObjData *netData,DBObjData *inGridData,DBObjDat
 		if ((layerRec->Flags () & DBObjectFlagIdle) != DBObjectFlagIdle) ++layerNum;
 		}
 	if (layerNum < 1)
-		{ fprintf (stderr,"No Layer to Process in RGlibNetworkUpStreamAvg ()\n"); delete inGridIF; return (DBFault); }
+		{ CMmsgPrint (CMmsgUsrError, "No Layer to Process!"); delete inGridIF; return (DBFault); }
 	netIF 	= new DBNetworkIF (netData);
 	outGridIF = new DBGridIF (outGridData);
 	outGridIF->MissingValue (inGridIF->MissingValue ());
@@ -783,7 +783,7 @@ DBInt RGlibNetworkUpStreamAvg (DBObjData *netData,DBObjData *inGridData,DBObjDat
 	maxProgress = layerNum * netIF->RowNum ();
 	if ((upstreamArea = (DBFloat *) calloc (netIF->CellNum (),sizeof (DBFloat))) == (DBFloat *) NULL)
 		{
-		perror ("Memory Allocation Error in: RGlibNetworkUpStreamAvg ()");
+		CMmsgPrint (CMmsgSysError, "Memory Allocation Error in: %s %d",__FILE__,__LINE__);
 		delete netIF;
 		delete outGridIF;
 		delete inGridIF;
@@ -823,7 +823,7 @@ DBInt RGlibNetworkUpStreamAvg (DBObjData *netData,DBObjData *inGridData,DBObjDat
 			cellRec = netIF->Cell (cellID);
 			if ((cellRec->Flags () & DBObjectFlagIdle) == DBObjectFlagIdle) continue;
 			if (outGridIF->Value (outLayerRec,netIF->CellPosition (cellRec),&value) == false)
-				{ fprintf (stderr,"Total metal Gebasz in: RGlibNetworkUpStreamAvg ()\n"); value = 0.0; }
+				{ CMmsgPrint (CMmsgAppError, "Total metal Gebasz in: %s %d",__FILE__,__LINE__); value = 0.0; }
 			if ((toCellRec = netIF->ToCell (cellRec)) != (DBObjRecord *) NULL)
 				{
 				if (outGridIF->Value (outLayerRec,netIF->CellPosition (toCellRec),&accumVal) == false) accumVal = 0.0;
@@ -866,7 +866,7 @@ DBInt RGlibNetworkCellSlopes (DBObjData *netData,DBObjData *inGridData,DBObjData
 		if ((layerRec->Flags () & DBObjectFlagIdle) != DBObjectFlagIdle) ++layerNum;
 		}
 	if (layerNum < 1)
-		{ fprintf (stderr,"No Layer to Process in RGlibNetworkCellSlopes ()\n"); delete inGridIF; return (DBFault); }
+		{ CMmsgPrint (CMmsgUsrError, "No Layer to Process!"); delete inGridIF; return (DBFault); }
 
 	netIF 	= new DBNetworkIF (netData);
 	outGridIF = new DBGridIF (outGridData);
@@ -985,7 +985,7 @@ DBInt RGlibNetworkBasinProf (DBObjData *netData,DBObjData *gridData,DBObjData *t
 		if ((layerRec->Flags () & DBObjectFlagIdle) != DBObjectFlagIdle) ++layerNum;
 		}
 	if (layerNum < 1)
-		{ fprintf (stderr,"No Layer to Process in RGlibNetworkBasinProf ()\n"); delete gridIF; return (DBFault); }
+		{ CMmsgPrint (CMmsgUsrError, "No Layer to Process!"); delete gridIF; return (DBFault); }
 
 	table = tblData->Table (DBrNItems);
 	fields = table->Fields ();
@@ -1070,7 +1070,7 @@ DBInt RGlibNetworkBasinStats (DBObjData *netData, DBObjData *grdData, DBObjData 
 		if ((layerRec->Flags () & DBObjectFlagIdle) != DBObjectFlagIdle) ++layerNum;
 		}
 	if (layerNum < 1)
-		{ fprintf (stderr,"No Layer to Process in RGlibNetworkBasinStats ()\n"); delete gridIF; return (DBFault); }
+		{ CMmsgPrint (CMmsgUsrError, "No Layer to Process!"); delete gridIF; return (DBFault); }
 
 	table = tblData->Table (DBrNItems);
 	netIF = new DBNetworkIF (netData);
@@ -1186,7 +1186,7 @@ DBInt RGlibNetworkHeadStats (DBObjData *netData, DBObjData *grdData, DBObjData *
 		if ((layerRec->Flags () & DBObjectFlagIdle) != DBObjectFlagIdle) ++layerNum;
 		}
 	if (layerNum < 1)
-		{ fprintf (stderr,"No Layer to Process in RGlibNetworkHeadStats ()\n"); delete gridIF; return (DBFault); }
+		{ CMmsgPrint (CMmsgAppError, "No Layer to Process in RGlibNetworkHeadStats ()\n"); delete gridIF; return (DBFault); }
 
 	table = tblData->Table (DBrNItems);
 	netIF = new DBNetworkIF (netData);
@@ -1375,7 +1375,7 @@ DBInt RGlibNetworkBasinDistrib (DBObjData *netData,DBObjData *grdData, DBObjData
 		if ((layerRec->Flags () & DBObjectFlagIdle) != DBObjectFlagIdle) ++layerNum;
 		}
 	if (layerNum < 1)
-		{ fprintf (stderr,"No Layer to Process in RGlibNetworkBasinDistrib ()\n"); delete gridIF; return (DBFault); }
+		{ CMmsgPrint (CMmsgUsrError, "No Layer to Process!"); delete gridIF; return (DBFault); }
 
 	table = tblData->Table (DBrNItems);
 	netIF = new DBNetworkIF (netData);
@@ -1394,7 +1394,7 @@ DBInt RGlibNetworkBasinDistrib (DBObjData *netData,DBObjData *grdData, DBObjData
 	if (histogram == (Histogram *) NULL) histogram = (Histogram *) malloc (gridTable->ItemNum () * sizeof (Histogram));
 	else histogram = (Histogram *) realloc (histogram,gridTable->ItemNum () * sizeof (Histogram));
 	if (histogram == (Histogram *) NULL)
-		{ perror ("Memory Allocation Error in: _RGISAnNetworkBasinDistribCBK ()"); return (DBFault); }
+		{ CMmsgPrint (CMmsgSysError, "Memory Allocation Error in: %s %d",__FILE__,__LINE__); return (DBFault); }
 	maxProgress = netIF->CellNum () * layerNum;
 	for (layerID = 0;layerID < gridIF->LayerNum ();++layerID)
 		{

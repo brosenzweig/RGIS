@@ -82,7 +82,7 @@ int Open_File(int argc, char* argv[]){
 		if(*test!='-') {
 			if (access (argv[i],R_OK) == 0) {
 				if (fopen (argv[i],"r") == (FILE *) NULL) {
-					fprintf (stderr,"File opening error in: %s", argv [i]);
+					CMmsgPrint (CMmsgUsrError, "File opening error: %s!", argv [i]);
 					return (0);
 					}
 				else

@@ -27,7 +27,7 @@ DBInt RGlibGenFuncFieldCompare (DBObjTable *table,char *f0Text,char *f1Text,char
 	field [1] = table->Field (f1Text);
 	result = table->Field (rText);
 	if ((field [0] == (DBObjTableField *) NULL) || (field [1] == (DBObjTableField *) NULL))
-		{ fprintf (stderr,"Invalid Compare Fields in: RGISFuncFieldCompare ()\n"); return (DBFault); }
+		{ CMmsgPrint (CMmsgAppError, "Invalid Compare Fields in: %s %d",__FILE__,__LINE__); return (DBFault); }
 	if (result == (DBObjTableField *) NULL)
 		table->AddField (result = new DBObjTableField (rText,DBTableFieldFloat,"%10.3f",sizeof (DBFloat4)));
 	if (diffMethod > 0) result->Format ("%6.2f");
@@ -122,7 +122,7 @@ DBInt RGlibGenFuncFieldCalculate (DBObjTable *table,char *f0Text,char *f1Text,ch
 					case DBMathOperatorSub:	result->Float (record, val [0] - val [1]);	break;
 					case DBMathOperatorMul:	result->Float (record, val [0] * val [1]);	break;
 					case DBMathOperatorDiv:	result->Float (record, val [0] / val [1]);	break;
-					default:	fprintf (stderr,"Invalid Operand in RGISFuncFieldCalculate ()\n");	break;
+					default:	CMmsgPrint (CMmsgAppError, "Invalid Operand in: %s %d",__FILE__,__LINE__);	break;
 					}
 Continue:
 			continue;
@@ -242,19 +242,19 @@ int RGlibGenFuncSymbolField (DBObjData *data, const char *fieldName)
 
 	if (table == (DBObjTable *) NULL) return (DBFault);
 	if ((field = table->Field (fieldName)) == (DBObjTableField *) NULL)
-	{ fprintf (stderr, "Invalid field name in: RGlibGenFuncSymbolField ()\n");       return (DBFault); }
+	{ CMmsgPrint (CMmsgAppError,  "Invalid field name in: %s %d",__FILE__,__LINE__);       return (DBFault); }
 	if ((symbolFLD = table->Field (DBrNSymbol)) == (DBObjTableField *) NULL)
-	{ fprintf (stderr, "Missing symbol field in: RGlibGenFuncSymbolField ()\n");     return (DBFault); }
+	{ CMmsgPrint (CMmsgAppError,  "Missing symbol field in: %s %d",__FILE__,__LINE__);     return (DBFault); }
 	if (symbols == (DBObjTable *) NULL)
-	{ fprintf (stderr, "Missing symbol table in: RGlibGenFuncSymbolField ()\n");     return (DBFault); }
+	{ CMmsgPrint (CMmsgAppError,  "Missing symbol table in: %s %d",__FILE__,__LINE__);     return (DBFault); }
 	if ((symbolIDFLD   = symbols->Field (DBrNSymbolID))   == (DBObjTableField *) NULL)
-	{ fprintf (stderr, "Missing symbolID field in: RGlibGenFuncSymbolField ()\n");   return (DBFault); }
+	{ CMmsgPrint (CMmsgAppError,  "Missing symbolID field in: %s %d",__FILE__,__LINE__);   return (DBFault); }
 	if ((foregroundFLD = symbols->Field (DBrNForeground)) == (DBObjTableField *) NULL)
-	{ fprintf (stderr, "Missing foreground field in: RGlibGenFuncSymbolField ()\n"); return (DBFault); }
+	{ CMmsgPrint (CMmsgAppError,  "Missing foreground field in: %s %d",__FILE__,__LINE__); return (DBFault); }
 	if ((backgroundFLD = symbols->Field (DBrNBackground)) == (DBObjTableField *) NULL)
-	{ fprintf (stderr, "Missing background field in: RGlibGenFuncSymbolField ()\n"); return (DBFault); }
+	{ CMmsgPrint (CMmsgAppError,  "Missing background field in: %s %d",__FILE__,__LINE__); return (DBFault); }
 	if ((styleFLD      = symbols->Field (DBrNStyle))      == (DBObjTableField *) NULL)
-	{ fprintf (stderr, "Missing style field in: RGlibGenFuncSymbolField ()\n");      return (DBFault); }
+	{ CMmsgPrint (CMmsgAppError,  "Missing style field in: %s %d",__FILE__,__LINE__);      return (DBFault); }
 
 	symbols->DeleteAll ();
 	for (recID = 0;recID < table->ItemNum (); ++recID)
@@ -267,7 +267,7 @@ int RGlibGenFuncSymbolField (DBObjData *data, const char *fieldName)
 		if ((symbolRec = (DBObjRecord *) symbols->Item (symbolName)) == (DBObjRecord *) NULL)
 			{
 			if ((symbolRec = symbols->Add (symbolName)) == NULL)
-				{ fprintf (stderr,"Symbol Object Creation Error in: RGlibGenFuncSymbolField ()\n"); return (DBFault); }
+				{ CMmsgPrint (CMmsgAppError, "Symbol Object Creation Error in: %s %d",__FILE__,__LINE__); return (DBFault); }
 			symbolIDFLD->Int (symbolRec,field->Type () == DBTableFieldString ? symbolRec->RowID () : field->Int (record));
 			foregroundFLD->Int (symbolRec,1);
 			backgroundFLD->Int (symbolRec,0);

@@ -351,7 +351,7 @@ void UIXYGraphShell::SetData ()
 		{
 		if ((metaEntry = dataset->Meta (relDataFLD->String (relRecord))) == (DBObjMetaEntry *) NULL)
 			{
-			fprintf (stderr,"Meta Enrty Finding Error in:  UIXYGraphShell::ConfigureTS ()\n");
+			CMmsgPrint (CMmsgAppError, "Meta Enrty Finding Error in: %s %d",__FILE__,__LINE__);
 			XtSetSensitive (XAxisButtonWGT,false);
 			XtSetSensitive (XAxisFieldWGT,false);
 			XtSetSensitive (YAxisButtonWGT,false);

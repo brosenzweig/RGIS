@@ -275,7 +275,7 @@ void _UIGlobeInitialize (Widget widget,int globeSize,Pixel background,DBInt spin
 	_UIBackground  = background;
 	
 	if ((data = (char *) malloc (_UIGlobeSize * _UIGlobeSize * (bitmap_pad >> 0x03))) == (char *) NULL)
-		{ perror ("Memory Allocation Error in: _UIGlobeInitialize ()"); return; }
+		{ CMmsgPrint (CMmsgSysError, "Memory Allocation Error in: %s %d",__FILE__,__LINE__); return; }
 	_UIGlobeImage = XCreateImage(XtDisplay(UITopLevel ()),DefaultVisual (XtDisplay(UITopLevel ()),XDefaultScreen (XtDisplay (UITopLevel ()))),sDepth,ZPixmap,0,data,_UIGlobeSize,_UIGlobeSize,bitmap_pad,0);
 	for (rot = 0;rot < 360 / UIRotationStep;++rot) _UIGlobePixmap [rot] = (Pixmap) NULL;
 	if (spin) XtAppAddTimeOut (UIApplicationContext (),50,_UIGlobeSpin,(XtPointer) true);

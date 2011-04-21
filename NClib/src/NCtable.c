@@ -1,3 +1,4 @@
+#include <cm.h>
 #include <NCtable.h>
 
 void NCtableClose(NCtable_t *tbl)
@@ -16,7 +17,8 @@ void NCtableClose(NCtable_t *tbl)
 
 static int _NCtableVarLen(int ncid, int varid, int dimid, int *dimids)
 {
-	int status, ndims, i, len = 1, dimlen;
+	int status, ndims, i, len = 1;
+	size_t dimlen;
 
 	if((status = nc_inq_varndims (ncid,varid,&ndims))  != NC_NOERR)
 	{ NCprintNCError (status,"_NCtableVarCheck"); return (NCfailed); }
@@ -35,7 +37,8 @@ static int _NCtableVarLen(int ncid, int varid, int dimid, int *dimids)
 NCtable_t *NCtableOpen(int ncid, char *tablename)
 {
 	int status, *dimids, dimid, i = 0, j = 0;
-	int ndims, nvars, nrecords;
+	int ndims, nvars;
+	size_t nrecords;
 	size_t len;
 	char varname [NC_MAX_NAME];
 	nc_type type;
@@ -51,12 +54,12 @@ NCtable_t *NCtableOpen(int ncid, char *tablename)
 	if(nc_inq_ndims(ncid,&ndims) != NC_NOERR)
 	{ NCprintNCError (status,"NCtableOpen"); return ((NCtable_t *) NULL); }
 	if ((dimids = (int *) malloc(sizeof(int) * ndims)) == (int *) NULL)
-	{ perror("Memory allocation error in: NCtableOpen ()"); return (NCtable_t *) NULL; }
+	{ CMmsgPrint (CMmsgSysError, "Memory allocation error in: %s %d",__FILE__,__LINE__); return (NCtable_t *) NULL; }
 
 	if ((tbl = (NCtable_t *) malloc(sizeof(NCtable_t))) == (NCtable_t *) NULL)
-	{ perror("Memory allocation error in: NCtableOpen ()"); free (dimids); return ((NCtable_t *) NULL); }
+	{ CMmsgPrint (CMmsgSysError, "Memory allocation error in: %s %d",__FILE__,__LINE__); free (dimids); return ((NCtable_t *) NULL); }
 	if ((tbl->Name = (char *) malloc (strlen(tablename) + 1)) == (char *) NULL)
-	{ perror("Memory allocation error in: NCtableOpen ()"); free (dimids); free (tbl); return ((NCtable_t *) NULL); }
+	{ CMmsgPrint (CMmsgSysError, "Memory allocation error in: %s %d",__FILE__,__LINE__); free (dimids); free (tbl); return ((NCtable_t *) NULL); }
 	strcpy(tbl->Name,tablename);
 	tbl->NFields  = 0;
 	tbl->Fields   = (NCfield_t *) NULL;
@@ -72,7 +75,7 @@ NCtable_t *NCtableOpen(int ncid, char *tablename)
 		{ NCprintNCError (status,"NCtableOpen"); free (dimids); NCtableClose (tbl); return ((NCtable_t *) NULL); }
 
 		if ((tbl->Fields = (NCfield_t *) realloc (tbl->Fields, sizeof (NCfield_t) * (tbl->NFields + 1))) == (NCfield_t *) NULL)
-		{ perror ("Error allocating memory in: NCtableOpen ()"); free (dimids); NCtableClose (tbl); return ((NCtable_t *) NULL); }
+		{ CMmsgPrint (CMmsgSysError, "Error allocating memory in: %s %d",__FILE__,__LINE__); free (dimids); NCtableClose (tbl); return ((NCtable_t *) NULL); }
 		field = tbl->Fields + tbl->NFields;
 		tbl->NFields += 1;
 		field->NRecords = nrecords;
@@ -82,7 +85,7 @@ NCtable_t *NCtableOpen(int ncid, char *tablename)
 		field->Len  = len;
 
 		if ((field->Name = malloc (strlen (varname) + 1)) == (char *) NULL)
-		{ perror ("Error allocating memory in: NCtableOpen ()"); free (dimids); NCtableClose (tbl); return ((NCtable_t *) NULL); }
+		{ CMmsgPrint (CMmsgSysError, "Error allocating memory in: %s %d",__FILE__,__LINE__); free (dimids); NCtableClose (tbl); return ((NCtable_t *) NULL); }
 		strcpy (field->Name,varname);
 
 		if (nc_get_att_double (ncid,i,NCnameVAScaleFactor,&field->Scale)      != NC_NOERR) field->Scale      = 1.0;
@@ -92,7 +95,7 @@ NCtable_t *NCtableOpen(int ncid, char *tablename)
 		{
 			case NC_CHAR:
 				if ((field->Data = (void *) malloc(field->NRecords * field->Len * sizeof (char)))   == (void *) NULL)
-				{ perror ("Error allocating memory in: NCtableOpen ()"); free (dimids); NCtableClose (tbl); return ((NCtable_t *) NULL); }
+				{ CMmsgPrint (CMmsgSysError, "Error allocating memory in: %s %d",__FILE__,__LINE__); free (dimids); NCtableClose (tbl); return ((NCtable_t *) NULL); }
 				if((status = nc_get_var_text(ncid,i,(char *) (field->Data))) != NC_NOERR)
 				{ NCprintNCError (status,"NCtableOpen"); free (dimids); NCtableClose (tbl); return ((NCtable_t *) NULL); }
 				break;
@@ -100,7 +103,7 @@ NCtable_t *NCtableOpen(int ncid, char *tablename)
 			case NC_SHORT:
 			case NC_INT:
 				if ((field->Data = (void *) malloc(field->NRecords * field->Len * sizeof (int)))   == (void *) NULL)
-				{ perror ("Error allocating memory in: NCtableOpen ()"); free (dimids); NCtableClose (tbl); return ((NCtable_t *) NULL); }
+				{ CMmsgPrint (CMmsgSysError, "Error allocating memory in: %s %d",__FILE__,__LINE__); free (dimids); NCtableClose (tbl); return ((NCtable_t *) NULL); }
 				if((status = nc_get_var_int(ncid,i,(int *) (field->Data))) != NC_NOERR)
 				{ NCprintNCError (status,"NCtableOpen"); free (dimids); NCtableClose (tbl); return ((NCtable_t *) NULL); }
 				if (nc_get_att_int    (ncid,i,NCnameVAFillValue,  &field->FillValue.Int)  != NC_NOERR) field->FillValue.Int  = INT_NOVALUE;
@@ -109,7 +112,7 @@ NCtable_t *NCtableOpen(int ncid, char *tablename)
 			case NC_FLOAT:
 			case NC_DOUBLE:
 				if ((field->Data = (void *) malloc(field->NRecords * field->Len * sizeof (double))) == (void *) NULL)
-				{ perror ("Error allocating memory in: NCtableOpen ()"); free (dimids); NCtableClose (tbl); return ((NCtable_t *) NULL); }
+				{ CMmsgPrint (CMmsgSysError, "Error allocating memory in: %s %d",__FILE__,__LINE__); free (dimids); NCtableClose (tbl); return ((NCtable_t *) NULL); }
 				if((status = nc_get_var_double(ncid,i,(double *) (field->Data))) != NC_NOERR)
 				{ NCprintNCError (status,"NCtableOpen"); free (dimids); NCtableClose (tbl); return ((NCtable_t *) NULL); }
 				if (nc_get_att_double (ncid,i,NCnameVAFillValue,  &field->FillValue.Float)  != NC_NOERR) field->FillValue.Float = FLOAT_NOVALUE;
@@ -117,40 +120,40 @@ NCtable_t *NCtableOpen(int ncid, char *tablename)
 				break;
 			default:        field->Data = (void *) NULL; break;
 		}
-		if(GetDebug()) fprintf(stderr,"Loaded: %s(dimid: %d)\n",field->Name,dimid);
+		if(GetDebug()) CMmsgPrint (CMmsgUsrError, "Loaded: %s(dimid: %d)\n",field->Name,dimid);
 	}
 
 	if(GetDebug())
 	{
-		fprintf(stderr,"Dim: %d Name: %s Cols: %d Rows: %d\n",dimid,tbl->Name,tbl->NFields,field->NRecords);
+		CMmsgPrint (CMmsgUsrError, "Dim: %d Name: %s Cols: %d Rows: %d\n",dimid,tbl->Name,tbl->NFields,field->NRecords);
 		for(i = 0; i < tbl->NFields; i++)
 		{
 			field = tbl->Fields + i;
-			fprintf(stderr,"\tField: %d Name: %s ",i,field->Name);
+			CMmsgPrint (CMmsgUsrError, "\tField: %d Name: %s ",i,field->Name);
 			switch(field->Type)
 			{
 				case NC_CHAR:
 					if(field->Len == 1)
 					{
-						fprintf(stderr,"Type: char\n");
-						for(j = 0; j < 5; j++) fprintf (stderr,"\t\t%d %c\n",j,((char *) (field->Data)) [j]);
+						CMmsgPrint (CMmsgUsrError, "Type: char\n");
+						for(j = 0; j < 5; j++) CMmsgPrint (CMmsgUsrError, "\t\t%d %c\n",j,((char *) (field->Data)) [j]);
 					}
 					else
 					{
-						fprintf(stderr,"Type: string\n");
-						for(j = 0; j < 5; j++) fprintf (stderr,"\t\t%d %s\n",j,((char *) (field->Data)) + j * field->Len);
+						CMmsgPrint (CMmsgUsrError, "Type: string\n");
+						for(j = 0; j < 5; j++) CMmsgPrint (CMmsgUsrError, "\t\t%d %s\n",j,((char *) (field->Data)) + j * field->Len);
 					}
 					break;
 				case NC_BYTE:
 				case NC_SHORT:
 				case NC_INT:
-					fprintf(stderr,"Type: int\n");
-					for(j = 0; j < 5; j++) fprintf(stderr,"\t\t%d %i\n",j,((int *)    (field->Data)) [j]);
+					CMmsgPrint (CMmsgUsrError, "Type: int\n");
+					for(j = 0; j < 5; j++) CMmsgPrint (CMmsgUsrError, "\t\t%d %i\n",j,((int *)    (field->Data)) [j]);
 					break;
 				case NC_FLOAT:
 				case NC_DOUBLE:
-					fprintf(stderr,"Type: double\n");
-					for(j = 0; j < 5; j++) fprintf(stderr,"\t\t%d %f\n",j,((double *) (field->Data)) [j]);
+					CMmsgPrint (CMmsgUsrError, "Type: double\n");
+					for(j = 0; j < 5; j++) CMmsgPrint (CMmsgUsrError, "\t\t%d %f\n",j,((double *) (field->Data)) [j]);
 					break;
 				default: break;
 			}
@@ -201,7 +204,7 @@ NCfield_t *NCtableAddField (NCtable_t *tbl, char *name, nc_type type)
 	NCfield_t *field;
 
 	if ((tbl->Fields = (NCfield_t *) realloc(tbl->Fields, sizeof (NCfield_t) * (tbl->NFields + 1))) == (NCfield_t *) NULL)
-	{ perror ("Memory allocation error in: NCtableAddField ()"); return ((NCfield_t *) NULL); }
+	{ CMmsgPrint (CMmsgSysError, "Memory allocation error in: %s %d",__FILE__,__LINE__); return ((NCfield_t *) NULL); }
 	field = tbl->Fields + tbl->NFields;
 	field->NRecords = tbl->NFields > 1 ? tbl->Fields [tbl->NFields - 1].NRecords : 0;
 	field->Data = (void *) NULL;
@@ -211,7 +214,7 @@ NCfield_t *NCtableAddField (NCtable_t *tbl, char *name, nc_type type)
 	field->Offset = 0.0;
 	tbl->NFields += 1;
 	if ((field->Name = (char *) malloc(strlen (name) + 1)) == (char *) NULL)
-	{ perror ("Memory allocation error in: NCtableAddField ()"); return ((NCfield_t *) NULL); }
+	{ CMmsgPrint (CMmsgSysError, "Memory allocation error in: %s %d",__FILE__,__LINE__); return ((NCfield_t *) NULL); }
 	strcpy(field->Name,name);
 
 	switch (field->Type)
@@ -219,14 +222,14 @@ NCfield_t *NCtableAddField (NCtable_t *tbl, char *name, nc_type type)
 		default:
 		case NC_CHAR:
 			if ((field->Data = (void *) malloc (field->NRecords * sizeof (char)))   == (void *) NULL)
-			{ perror ("Memory allocation error in: NCtableAddField ()"); return ((NCfield_t *) NULL); }
+			{ CMmsgPrint (CMmsgSysError, "Memory allocation error in: %s %d",__FILE__,__LINE__); return ((NCfield_t *) NULL); }
 			for (i = 0; i < field->NRecords; i++) ((char *)   field->Data) [i] = '\0';
 			break;
 		case NC_BYTE:
 		case NC_SHORT:
 		case NC_INT:
 			if ((field->Data = (void *) malloc (field->NRecords * sizeof (int)))    == (void *) NULL)
-			{ perror ("Memory allocation error in: NCtableAddField ()"); return ((NCfield_t *) NULL); }
+			{ CMmsgPrint (CMmsgSysError, "Memory allocation error in: %s %d",__FILE__,__LINE__); return ((NCfield_t *) NULL); }
 			field->MissingVal = INT_NOVALUE;
 			field->FillValue.Int = INT_NOVALUE;
 			for (i = 0; i < field->NRecords; i++) ((int *)    field->Data) [i] = INT_NOVALUE;
@@ -234,7 +237,7 @@ NCfield_t *NCtableAddField (NCtable_t *tbl, char *name, nc_type type)
 		case NC_FLOAT:
 		case NC_DOUBLE:
 			if ((field->Data = (void *) malloc (field->NRecords * sizeof (double))) == (void *) NULL)
-			{ perror ("Memory allocation error in: NCtableAddField ()"); return ((NCfield_t *) NULL); }
+			{ CMmsgPrint (CMmsgSysError, "Memory allocation error in: %s %d",__FILE__,__LINE__); return ((NCfield_t *) NULL); }
 			field->MissingVal = FLOAT_NOVALUE;
 			field->FillValue.Float = FLOAT_NOVALUE;
 			for (i = 0; i < field->NRecords; i++) ((double *) field->Data) [i] = FLOAT_NOVALUE;

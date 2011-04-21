@@ -1,5 +1,5 @@
 include ./common.mk
-all: rgis_target rcommands_target rgisPlot_target tfcommands_target
+all: rgis_target rcommands_target nccommands_target rgisPlot_target tfcommands_target
 
 install: $(INSTALLDIR)/bin $(INSTALLDIR)/XResources/bitmaps $(INSTALLDIR)/Messages $(INSTALLDIR)/html $(INSTALLDIR)/Scripts $(INSTALLDIR)/f
 	$(UNIXMAKE) -C rGIS       install
@@ -68,6 +68,8 @@ rgis_target: cmlib_target dblib_target rglib_target uilib_target
 	$(UNIXMAKE) -C rGIS all
 rcommands_target: cmlib_target rglib_target mflib_target
 	$(UNIXMAKE) -C rCommands all
+nccommands_target: cmlib_target nclib_target
+	$(UNIXMAKE) -C ncCommands all
 tfcommands_target: cmlib_target dblib_target flib_target
 	$(UNIXMAKE) -C tfCommands all
 rgisPlot_target: cmlib_target dblib_target
@@ -77,6 +79,8 @@ cmlib_target:
 	$(UNIXMAKE) -C CMlib all
 dblib_target:
 	$(UNIXMAKE) -C DBlib all
+nclib_target:
+	$(UNIXMAKE) -C NClib all
 rglib_target:
 	$(UNIXMAKE) -C RGlib all
 uilib_target:

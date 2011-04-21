@@ -199,7 +199,7 @@ static void _UISymbolLoadNamesCBK (Widget widget,Widget list,XmAnyCallbackStruct
 	if ((fileName =  UIFileSelection (select,true)) == NULL) return;
 
 	if ((file =  fopen (fileName,"r")) == NULL)
-		{ perror ("File Openning Error in: _UISymbolLoadNamesCBK ()"); return; }
+		{ CMmsgPrint (CMmsgSysError, "File Openning Error in: %s %d",__FILE__,__LINE__); return; }
 
 	sprintf (delimit,"%c%c",DBASCIISeparator,'\0');
 	while (fgets (buffer,sizeof (buffer),file) != NULL)
@@ -454,10 +454,7 @@ int UISymbolEdit (DBObjTable *symbols,int symbolType)
 		}
 
 	if ((editSymbols = (UISymbol **) calloc (symbols->ItemNum (),sizeof (UISymbol *))) == NULL)
-		{
-		perror ("Memory Allocation Error in: UISymbolEdit (DBObjLIST *,int)");
-		return (DBFault);
-		}
+		{ CMmsgPrint (CMmsgSysError, "Memory Allocation Error in: %s %d",__FILE__,__LINE__); return (DBFault); }
 	symNum = 0;
 	for (symRecord = symbols->First ();symRecord != NULL;symRecord = symbols->Next ())
 		{

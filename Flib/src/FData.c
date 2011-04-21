@@ -9,10 +9,11 @@ FData.c
 Unknown
 
 *******************************************************************************/
-#include <Flib.h>
+#include <cm.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <Flib.h>
 //----------------------------------------
 char* formatString( const fDataType t )
 {
@@ -184,18 +185,18 @@ int verifyType( const char* data, const fDataType type )
   comp = newFDataType();
   findType( &comp, data );
   
-  if(comp.type==STRING) {fprintf(stderr,"\twrong type"); return 0;}
-  if(comp.type==FLOAT && type.type==INT){fprintf(stderr,"\twrong type"); return 0;}
+  if(comp.type==STRING) {CMmsgPrint (CMmsgUsrError, "\twrong type"); return 0;}
+  if(comp.type==FLOAT && type.type==INT){CMmsgPrint (CMmsgUsrError, "\twrong type"); return 0;}
   if(comp.type==INT && type.type==FLOAT)return 1;
   
   if(comp.type==FLOAT)
     {
-      if(comp.sigDigits > type.sigDigits) {fprintf(stderr,"\tsig.digits too low"); return 0;}
+      if(comp.sigDigits > type.sigDigits) {CMmsgPrint (CMmsgUsrError, "\tsig.digits too low"); return 0;}
       else if(comp.inSigDigits > type.inSigDigits)
-	{fprintf(stderr,"\tinsig.digits too low"); return 0;}
+	{CMmsgPrint (CMmsgUsrError, "\tinsig.digits too low"); return 0;}
       else return 1;
     }
-  if(comp.sigDigits > type.sigDigits) {fprintf(stderr,"\tsig.digits too low"); return 0;}
+  if(comp.sigDigits > type.sigDigits) {CMmsgPrint (CMmsgUsrError, "\tsig.digits too low"); return 0;}
   else return 1;
 }
 //-------------------------------------
@@ -206,7 +207,7 @@ int verifyRow(char** data, const fDataType* types, const int numCols)
 
   for(i=0;i<numCols;i++)
     if(!verifyType(data[i],types[i]))
-      { fprintf(stderr,": column %d\n", i); errFlag = 1; }
+      { CMmsgPrint (CMmsgUsrError, ": column %d\n", i); errFlag = 1; }
   return errFlag == 0;
 }
 //-------------------------------------

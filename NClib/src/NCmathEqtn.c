@@ -1,3 +1,4 @@
+#include <cm.h>
 #include <NCmathEqtn.h>
 
 // *** GLOBAL VARIABLES
@@ -113,9 +114,9 @@ int NCmathGetVarNum() { return _VarNum; }
 int NCmathAddVar(int colnum,char *name,bool vary)
 {
 	if((_Vars = realloc(_Vars,(_VarNum + 1) * sizeof(Variable_t))) == (Variable_t *) NULL)
-		{ perror("Memory Allocation error in: NCmathAddVar ()\n"); return (NCfailed); }
+		{ CMmsgPrint (CMmsgSysError, "Memory Allocation error in: %s %d",__FILE__,__LINE__); return (NCfailed); }
 	if((_Vars[_VarNum].name = (char *) malloc(sizeof(char) * (strlen(name) + 1))) == (char *) NULL)
-		{ perror("Memory allocation error in: NCmathAddVar ()\n"); return (NCfailed); }
+		{ CMmsgPrint (CMmsgSysError, "Memory allocation error in: %s %d",__FILE__,__LINE__); return (NCfailed); }
 	else strcpy(_Vars[_VarNum].name,name);
 	_Vars[_VarNum].colnum = colnum;
 	_Vars[_VarNum].vary = vary;
@@ -146,20 +147,20 @@ TreeNode_t* mkTree(char expr[])
 	int i = 0;
   	int s = 0, strLen = 0;
 	TreeNode_t *head;
-	if(expr == (char *) NULL) { if(GetDebug()) fprintf(stderr,"mkTree(): Null string passed!\n"); return ((TreeNode_t *) NULL); }
+	if(expr == (char *) NULL) { if(GetDebug()) CMmsgPrint (CMmsgUsrError, "mkTree(): Null string passed!"); return ((TreeNode_t *) NULL); }
 	if((head = malloc(sizeof(TreeNode_t))) == (TreeNode_t *) NULL)
-		{ perror("Memory allocation error in: mkTree()\n"); return ((TreeNode_t *) NULL); }
-	if(GetDebug()) { Dprint(stderr,"mkTree(): malloc(%p)\n",head); }
+		{ CMmsgPrint (CMmsgSysError, "Memory allocation error in: %s %d",__FILE__,__LINE__); return ((TreeNode_t *) NULL); }
+	if(GetDebug()) { Dprint(stderr,"mkTree(): malloc(%p)",head); }
 
 	while(NCstringStripch(&expr,' ') || NCstringStripbr(&expr));
 	strLen = strlen(expr);
-	if(GetDebug()) fprintf(stderr,"mkTree: expr='%s'\n",expr);
+	if(GetDebug()) CMmsgPrint (CMmsgUsrError, "mkTree: expr='%s'",expr);
 	if(expr[0] == '(')
 	{
 		i = NCstringEndPar(expr,i);
 		s = i;
 		if((head->oper = getOper(expr,&i)) != NOOP) {
-			if(GetDebug()) fprintf(stderr,"mkTree(): PAR:i='%d' i-1='%c' i='%c' i+1='%c'\n",i,expr[i-1],expr[i],expr[i+1]);
+			if(GetDebug()) CMmsgPrint (CMmsgUsrError, "mkTree(): PAR:i='%d' i-1='%c' i='%c' i+1='%c'",i,expr[i-1],expr[i],expr[i+1]);
 			head->left = mkTree(NCstringSubstr(expr,0,i - 2));
 			head->right = mkTree(NCstringSubstr(expr,i + 2, strLen - 1));
 			head->type = OPER;
@@ -168,7 +169,7 @@ TreeNode_t* mkTree(char expr[])
 			i = s;
 			if((head->func = getFunc(expr,&i)) != functions[numFunc])
 			{
-				if(GetDebug()) fprintf(stderr,"mkTree(): PAR:i='%d' i-1='%c' i='%c' i+1='%c'\n",i,expr[i-1],expr[i],expr[i+1]);
+				if(GetDebug()) CMmsgPrint (CMmsgUsrError, "mkTree(): PAR:i='%d' i-1='%c' i='%c' i+1='%c'",i,expr[i-1],expr[i],expr[i+1]);
 				head->left = NULL;
 				head->right = mkTree(NCstringSubstr(expr,i, NCstringEndPar(expr,i)));
 				head->type = FUNC;
@@ -182,13 +183,13 @@ TreeNode_t* mkTree(char expr[])
 				head->left = head->right = NULL;
 				head->cons = atof(expr);
 				head->type = CONST;
-			} else { fprintf(stderr,"mkTree(): PAR:Unrecognized operator: strLen:%d i:%d '%s'\n",strLen,i,expr); abort(); }
+			} else { CMmsgPrint (CMmsgUsrError, "mkTree(): PAR:Unrecognized operator: strLen:%d i:%d '%s'",strLen,i,expr); abort(); }
 		}
 	} else {
 		i = 0;
 		if((head->oper = getOper(expr,&i)) != NOOP)
 		{
-			if(GetDebug()) fprintf(stderr,"mkTree(): NOPAR:i='%d' i-1='%c' i='%c' i+1='%c'\n",i,expr[i-1],expr[i],expr[i+1]);
+			if(GetDebug()) CMmsgPrint (CMmsgUsrError, "mkTree(): NOPAR:i='%d' i-1='%c' i='%c' i+1='%c'",i,expr[i-1],expr[i],expr[i+1]);
 			head->left = mkTree(NCstringSubstr(expr,0,i - 2));
 			head->right = mkTree(NCstringSubstr(expr,i + 2, strLen - 1));
 			head->type = OPER;
@@ -197,7 +198,7 @@ TreeNode_t* mkTree(char expr[])
 			i = 0;
 			if((head->func = getFunc(expr,&i)) != functions[numFunc])
 			{
-				if(GetDebug()) fprintf(stderr,"mkTree(): NOPAR:i='%d' i-1='%c' i='%c' i+1='%c'\n",i,expr[i-1],expr[i],expr[i+1]);
+				if(GetDebug()) CMmsgPrint (CMmsgUsrError, "mkTree(): NOPAR:i='%d' i-1='%c' i='%c' i+1='%c'",i,expr[i-1],expr[i],expr[i+1]);
 				head->left = NULL;
 				head->right = mkTree(NCstringSubstr(expr,i, NCstringEndPar(expr,i)));
 				head->type = FUNC;
@@ -208,14 +209,14 @@ TreeNode_t* mkTree(char expr[])
 				else { head->type = CONST; head->cons = _Vars[i].val; }
 			} else if(NCmathIsNumber(expr))
 			{
-				if(GetDebug()) fprintf(stderr,"mkTree(): NOPAR:i='%d' i-1='%c' i='%c' i+1='%c'\n",i,expr[i-1],expr[i],expr[i+1]);
+				if(GetDebug()) CMmsgPrint (CMmsgUsrError, "mkTree(): NOPAR:i='%d' i-1='%c' i='%c' i+1='%c'",i,expr[i-1],expr[i],expr[i+1]);
 				head->left = head->right = NULL;
 				head->cons = atof(expr);
 				head->type = CONST;
-			} else { fprintf(stderr,"mkTree(): NOPAR: Unrecognized operator: strLen:%d i:%d '%s'\n",strLen,i,expr); abort(); }
+			} else { CMmsgPrint (CMmsgUsrError, "mkTree(): NOPAR: Unrecognized operator: strLen:%d i:%d '%s'",strLen,i,expr); abort(); }
 		}
 	}
-	if(GetDebug()) fprintf(stderr,"mkTree(): Passing back(%s): %p\n",expr,expr);
+	if(GetDebug()) CMmsgPrint (CMmsgUsrError, "mkTree(): Passing back(%s): %p",expr,expr);
 	free(expr);
 	return head;
 }
@@ -225,34 +226,34 @@ IneqNode_t* mkTreeI(char expr[])
 	int i = 0, s, strLen = 0;
 	IneqNode_t *head;
 	char *temp;
-	if(expr == (char *) NULL) { if(GetDebug()) fprintf(stderr,"mkTreeI(): Null string passed!\n"); return NULL; }
+	if(expr == (char *) NULL) { if(GetDebug()) CMmsgPrint (CMmsgUsrError, "mkTreeI(): Null string passed!"); return NULL; }
 	if((head = malloc(sizeof(IneqNode_t))) == (IneqNode_t *) NULL)
-		{ perror("Memory allocation error in: mkTreeI ()\n"); return ((IneqNode_t *) NULL); }
-	if(GetDebug()) { Dprint(stderr,"mkTreeI(): malloc(%p)\n",head); }
+		{ CMmsgPrint (CMmsgSysError, "Memory allocation error in: %s %d",__FILE__,__LINE__); return ((IneqNode_t *) NULL); }
+	if(GetDebug()) { Dprint(stderr,"mkTreeI(): malloc(%p)",head); }
 
 	while(NCstringStripch(&expr, ' ') || NCstringStripbr(&expr));
 	strLen = strlen(expr);
-	if(GetDebug()) fprintf(stderr,"mkTreeI: expr='%s'\n",expr);
+	if(GetDebug()) CMmsgPrint (CMmsgUsrError, "mkTreeI: expr='%s'",expr);
 	if(expr[0] == '(') i = NCstringEndPar(expr,0);
 	if((head->equal = getIneq(expr,&i)) != NOEQ)
 	{
-		if(GetDebug()) fprintf(stderr,"mkTreeI(): PAR:i='%d' i-1='%c' i='%c' i+1='%c'\n",i,expr[i-1],expr[i],expr[i+1]);
+		if(GetDebug()) CMmsgPrint (CMmsgUsrError, "mkTreeI(): PAR:i='%d' i-1='%c' i='%c' i+1='%c'",i,expr[i-1],expr[i],expr[i+1]);
 		if((temp = NCstringSubstr(expr, 0, i - 1)) == (char *) NULL)
-			{ fprintf(stderr,"Problem encountered with NCstringSubstr(%s, %d, %d)!\n",expr,0,i - 1); return ((IneqNode_t *) NULL); }
+			{ CMmsgPrint (CMmsgUsrError, "Problem encountered with NCstringSubstr(%s, %d, %d)!",expr,0,i - 1); return ((IneqNode_t *) NULL); }
 		s = (expr[i+1] == ' ') ? i + 1 : i + 2;
 		while(NCstringStripch(&temp, ' ') || NCstringStripbr(&temp));
 		i = 0;
 		if(getIneq(temp,&i) == NOEQ) { head->lTree = true; head->lhead = mkTree(temp);
 		} else { head->lTree = false; head->left = mkTreeI(temp); }
 		if((temp = NCstringSubstr(expr, s, strLen)) == (char *) NULL)
-			{ fprintf(stderr,"Problem encountered with NCstringSubstr(%s, %d, %d)!\n",expr,s,strLen); return ((IneqNode_t *) NULL); }
+			{ CMmsgPrint (CMmsgUsrError, "Problem encountered with NCstringSubstr(%s, %d, %d)!",expr,s,strLen); return ((IneqNode_t *) NULL); }
 		while(NCstringStripch(&temp, ' ') || NCstringStripbr(&temp));
 		i = 0;
 		if(getIneq(temp,&i) == NOEQ) { head->rTree = true; head->rhead = mkTree(temp);
 		} else { head->rTree = false; head->right = mkTreeI(temp); }
 	}
 
-	if(GetDebug()) fprintf(stderr,"mkTreeI(): Passing back(%s): %p\n",expr,expr);
+	if(GetDebug()) CMmsgPrint (CMmsgUsrError, "mkTreeI(): Passing back(%s): %p",expr,expr);
 	free(expr);
 	return head;
 }
@@ -285,7 +286,7 @@ void printInorder(TreeNode_t *s, FILE *out)
 				break;
 			case FUNC:
 				for(i = 0; i < numFunc; i++) if(s->func == functions[i]) fprintf(out,"%s(",funcNames[i]);
-				if(s->func == functions[numFunc]) fprintf(out,"BADFUNC!\n");
+				if(s->func == functions[numFunc]) fprintf(out,"BADFUNC!");
 				break;
 			default:
 				fprintf(out,"BADTP");
@@ -402,8 +403,8 @@ void NCmathEqtnFixTree(TreeNode_t **s) {
 		} else {
 			prev = *s;
 			if((*s = malloc(sizeof(TreeNode_t))) == (TreeNode_t *) NULL)
-				{ perror("Memory allocation error in: NCmathEqtnFixTree()\n"); *s = ((TreeNode_t *) NULL); }
-			if(GetDebug()) { Dprint(stderr,"NCmathEqtnFixTree(): malloc(%p)\n",s); }
+				{ CMmsgPrint (CMmsgSysError, "Memory allocation error in: %s %d",__FILE__,__LINE__); *s = ((TreeNode_t *) NULL); }
+			if(GetDebug()) { Dprint(stderr,"NCmathEqtnFixTree(): malloc(%p)",s); }
 			(*s)->type = CONST;
 			(*s)->cons = result;
 			(*s)->left = (*s)->right = (TreeNode_t *) NULL;
@@ -420,7 +421,7 @@ double Calculate(TreeNode_t *s)
 		switch (s->type)
 		{
 			case CONST:
-				if(GetDebug()) { fprintf(stderr,"%f [const] = ",s->cons); printInorder(s,stderr); fprintf(stderr,"\n"); }
+				if(GetDebug()) { fprintf(stderr,"%f [const] = ",s->cons); printInorder(s,stderr); }
 				return s->cons;
 			case OPER:
 				left = Calculate(s->left);
@@ -430,41 +431,41 @@ double Calculate(TreeNode_t *s)
 				switch(s->oper)
 				{
 					case ADD:
-						if(GetDebug()) { fprintf(stderr,"%f [oper] = ",left + right); printInorder(s,stderr); fprintf(stderr,"\n"); }
+						if(GetDebug()) { fprintf(stderr,"%f [oper] = ",left + right); printInorder(s,stderr); }
 						return left + right;
 					case SUB:
-						if(GetDebug()) { fprintf(stderr,"%f [oper] = ",left - right); printInorder(s,stderr); fprintf(stderr,"\n"); }
+						if(GetDebug()) { fprintf(stderr,"%f [oper] = ",left - right); printInorder(s,stderr);}
 						return left - right;
 					case MUL:
-						if(GetDebug()) { fprintf(stderr,"%f [oper] = ",left * right); printInorder(s,stderr); fprintf(stderr,"\n"); }
+						if(GetDebug()) { fprintf(stderr,"%f [oper] = ",left * right); printInorder(s,stderr);}
 						return left * right;
 					case DIV:
-						if(GetDebug()) { fprintf(stderr,"%f [oper] = ",left / right); printInorder(s,stderr); fprintf(stderr,"\n"); }
+						if(GetDebug()) { fprintf(stderr,"%f [oper] = ",left / right); printInorder(s,stderr);}
 						return left / right;
 					case MOD:
 						if(NCmathEqualValues(right,(double) ((int) right)) &&
 							NCmathEqualValues(left,(double) ((int) left)))
 						{
-							if(GetDebug()) { fprintf(stderr,"%i [oper] = ",(int) left % (int) right); printInorder(s,stderr); fprintf(stderr,"\n"); }
+							if(GetDebug()) { fprintf(stderr,"%i [oper] = ",(int) left % (int) right); printInorder(s,stderr);}
 							return (int) left % (int) right;
 						}
-						fprintf(stderr,"Can't do %f %% %f\n",left,right);
+						fprintf(stderr,"Can't do %f %% %f",left,right);
 						abort();
 					case EXP:
-						if(GetDebug()) { fprintf(stderr,"%f [oper] = ",pow(Calculate(s->left),Calculate(s->right)) ); printInorder(s,stderr); fprintf(stderr,"\n"); }
+						if(GetDebug()) { fprintf(stderr,"%f [oper] = ",pow(Calculate(s->left),Calculate(s->right)) ); printInorder(s,stderr);}
 						return pow(Calculate(s->left), Calculate(s->right));
 					default: if(GetDebug()) fprintf(stderr,"BADOPER"); return FLOAT_NOVALUE;
 				}
 				break;
 			case VAR:
-				if(GetDebug()) { fprintf(stderr,"%f [var] = ",*(s->var)); printInorder(s,stderr); fprintf(stderr,"\n"); }
+				if(GetDebug()) { CMmsgPrint (CMmsgUsrError, "%f [var] = ",*(s->var)); printInorder(s,stderr);}
 				return *(s->var); // <<<<=======  this is where the table lookup happens
 				break;
 			case FUNC:
 				right = Calculate(s->right);
 				if(NCmathEqualValues(right,FLOAT_NOVALUE)) return FLOAT_NOVALUE;
-				if((GetDebug()) && (s->func == functions[numFunc])) fprintf(stderr,"WARN: Bad function used!\n");
-				if(GetDebug()) { fprintf(stderr,"%f [func] = ",s->func(right)); printInorder(s,stderr); fprintf(stderr,"\n"); }
+				if((GetDebug()) && (s->func == functions[numFunc])) CMmsgPrint (CMmsgUsrError, "WARN: Bad function used!");
+				if(GetDebug()) { CMmsgPrint (CMmsgUsrError, "%f [func] = ",s->func(right)); printInorder(s,stderr);}
 				return s->func(right);
 				break;
 			default:
@@ -572,7 +573,7 @@ bool CalculateI(IneqNode_t *s)
 				}
 				break;
 			default:
-				if(GetDebug()) fprintf(stderr,"BADINEQ!\n");
+				if(GetDebug()) fprintf(stderr,"BADINEQ!");
 				break;
 		}
 	}

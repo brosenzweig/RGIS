@@ -1,17 +1,18 @@
-#include<NCdsHandle.h>
+#include <cm.h>
+#include <NCdsHandle.h>
 
 NCstate NCdsHandleNetworkDefine (NCdsHandleNetwork_t *net, int ncid)
 {
 	int status;
 	if (NCdataGetType (ncid) != NCtypeNetwork) 
-	{ fprintf (stderr,"Invalid network in: NCdsHandleNetworkDefine ()\n"); return (NCfailed); }
+	{ CMmsgPrint (CMmsgAppError, "Invalid network in: %s %d",__FILE__,__LINE__); return (NCfailed); }
 
 	if (NCdsHandleGLayoutDefine ((NCdsHandleGLayout_t *) net, &ncid, 1) == NCfailed) return (NCfailed);
 	
 	net->Data = (int *) NULL; net->Basins.Table = net->Cells.Table = (NCtable_t *) NULL;
 	if ((net->Data = (int *) calloc (net->ColNum * net->RowNum,sizeof (int))) == (int *) NULL)
 	{
-		perror ("Memory allocation error in: NCdsHandleNetworkDefine ()");
+		CMmsgPrint (CMmsgSysError, "Memory allocation error in: %s %d",__FILE__,__LINE__);
 		NCdsHandleNetworkClear (net);
 		return (NCfailed);
 	}
@@ -43,7 +44,7 @@ NCstate NCdsHandleNetworkDefine (NCdsHandleNetwork_t *net, int ncid)
 	    ((net->Cells.LengthFld   = NCtableGetFieldByName (net->Cells.Table, NCnameCLSLength))   == (NCfield_t *) NULL) ||
 	    ((net->Cells.AreaFld     = NCtableGetFieldByName (net->Cells.Table, NCnameCLSArea))     == (NCfield_t *) NULL))
 	{
-		fprintf (stderr,"Corrupt networkd data in: NCdsHandleNetworkDefine ()\n");
+		CMmsgPrint (CMmsgAppError, "Corrupt networkd data in: %s %d",__FILE__,__LINE__);
 		NCdsHandleNetworkClear (net);
 		return (NCfailed);
 	}

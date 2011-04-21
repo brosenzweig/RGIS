@@ -24,7 +24,7 @@ UIDataSeries::UIDataSeries (char *name,DBCoordinate *coords,DBInt obsNum,DBInt s
 
 	{
 	if ((DataPTR = (void *) calloc (sizeof (DBCoordinate),obsNum)) == (void *) NULL)
-		{ perror ("Memory Allocation Error in: UIXYSeries::UIXYSeries ()"); return; }
+		{ CMmsgPrint (CMmsgSysError, "Memory Allocation Error in: %s %d",__FILE__,__LINE__); return; }
 	TypeVAR = UIDataXYSeries;
 	SymbolVAR = symbol;
 	Initialize ();
@@ -39,7 +39,7 @@ UIDataSeries::UIDataSeries (char *name,DBObservation *obs,DBInt obsNum,DBInt sym
 
 	{
 	if ((DataPTR = (void *) calloc (sizeof (DBObservation),obsNum)) == (void *) NULL)
-		{ perror ("Memory Allocation Error in: UIXYSeries::UIXYSeries ()"); return; }
+		{ CMmsgPrint (CMmsgSysError, "Memory Allocation Error in: %s %d",__FILE__,__LINE__); return; }
 	TypeVAR = UIDataTimeSeries;
 	SymbolVAR = symbol;
 	Initialize ();
@@ -72,7 +72,7 @@ UIDataSeries::UIDataSeries (char *name,DBObjTable *table,DBObjTableField *idFLD,
 			if (varNum > ObsNumVAR)
 				{
 				if ((DataPTR = (void *) realloc (DataPTR,objSize * varNum)) == (void *) NULL)
-					{ perror ("Memory Allocation Error in: UIDataSeries::UIDataSeries ()"); ObsNumVAR = 0; return; }
+					{ CMmsgPrint (CMmsgSysError, "Memory Allocation Error in: %s %d",__FILE__,__LINE__); ObsNumVAR = 0;  return; }
 				ObsNumVAR = varNum;
 				}
 			if (TypeVAR == UIDataXYSeries)
@@ -520,7 +520,7 @@ void UIXYGraph::Add (UIDataSeries *series)
 	UIDataSeries *firstSeries = First ();
 	
 	if ((firstSeries != (UIDataSeries *) NULL) && (firstSeries->Type () != series->Type ()))
-		{ fprintf (stderr,"Invalid Data Series in: UIXYGraph::AddSeries ()\n"); return; }
+		{ CMmsgPrint (CMmsgAppError, "Invalid Data Series in: %s %d",__FILE__,__LINE__); return; }
 	DBObjectLIST<UIDataSeries>::Add (series);
 	SetRange ();
 	}

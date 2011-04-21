@@ -1,4 +1,5 @@
-#include<NCstring.h>
+#include <cm.h>
+#include <NCstring.h>
 
 int NCstringEndPar(char *expr, int i)
 { // returns the number of the char in array of the other side of the parentheses
@@ -46,12 +47,12 @@ int NCstringEndPar(char *expr, int i)
 		}
 		if(b1num == 0 && b2num == 0 && b3num == 0) return i + 1;
 	}
-	if(b1num > 0) fprintf(stderr,"NCstringEndPar(): Unmatched '(' in: '%s'\n",expr);
-	if(b2num > 0) fprintf(stderr,"NCstringEndPar(): Unmatched '[' in: '%s'\n",expr);
-	if(b3num > 0) fprintf(stderr,"NCstringEndPar(): Unmatched '{' in: '%s'\n",expr);
-	if(b1num < 0) fprintf(stderr,"NCstringEndPar(): Unmatched ')' in: '%s'\n",expr);
-	if(b2num < 0) fprintf(stderr,"NCstringEndPar(): Unmatched ']' in: '%s'\n",expr);
-	if(b3num < 0) fprintf(stderr,"NCstringEndPar(): Unmatched '}' in: '%s'\n",expr);
+	if(b1num > 0) CMmsgPrint (CMmsgUsrError, "NCstringEndPar(): Unmatched '(' in: '%s'",expr);
+	if(b2num > 0) CMmsgPrint (CMmsgUsrError, "NCstringEndPar(): Unmatched '[' in: '%s'",expr);
+	if(b3num > 0) CMmsgPrint (CMmsgUsrError, "NCstringEndPar(): Unmatched '{' in: '%s'",expr);
+	if(b1num < 0) CMmsgPrint (CMmsgUsrError, "NCstringEndPar(): Unmatched ')' in: '%s'",expr);
+	if(b2num < 0) CMmsgPrint (CMmsgUsrError, "NCstringEndPar(): Unmatched ']' in: '%s'",expr);
+	if(b3num < 0) CMmsgPrint (CMmsgUsrError, "NCstringEndPar(): Unmatched '}' in: '%s'",expr);
 	return -1;
 }
 
@@ -61,12 +62,12 @@ char* NCstringSubstr(char *str, int s, int e)
 	int i = 0,strLen = strlen(str);
 	if((s < 0) || (strLen < e) || (s > e))
 	{
-		fprintf(stderr,"NCstringSubstr(): WARN: substr('%s' strlen=%d ,%d,%d) called!\n",str,strLen,s,e);
+		CMmsgPrint (CMmsgUsrError, "NCstringSubstr(): WARN: substr('%s' strlen=%d ,%d,%d) called!",str,strLen,s,e);
 		return (char *) NULL;
 	}
-//	fprintf(stderr,"malloc(%d - %d + 2 = %d)\n",e,s,e - s + 2);
+//	CMmsgPrint (CMmsgUsrError, "malloc(%d - %d + 2 = %d)\n",e,s,e - s + 2);
 	if((ret = malloc((e - s + 2) * sizeof(char))) == (char *) NULL)
-		{ perror("Memory allocation error in: NCstringSubstr()\n"); return (char *) NULL; }
+		{ CMmsgPrint (CMmsgSysError, "Memory allocation error in: %s %d",__FILE__,__LINE__); return (char *) NULL; }
 	for(i = 0;s <= e;s++,i++) ret[i] = str[s];
 	ret[i] = '\0';
 	e = i;
@@ -77,7 +78,7 @@ bool NCstringUnStripch(char **expr, char ch)
 {
 	register int k = strlen(*expr) + 2;
 	if((*expr = realloc(*expr,sizeof(char) * (k + 1))) == (char *) NULL)
-		{ perror("Memory Allocation error in: NCstringUnStripch ()\n"); return false; }
+		{ CMmsgPrint (CMmsgSysError, "Memory Allocation error in: %s %d",__FILE__,__LINE__); return false; }
 	(*expr)[k--] = '\0';
 	(*expr)[k--] = ch;
 	for(;k != 0; k--) (*expr)[k] = (*expr)[k-1];
@@ -124,7 +125,7 @@ bool NCstringMatch(char *a,int o, char *b)
 	int blen = strlen(b);
 	if((strlen(a) == 0) || (blen == 0))
 	{
-		fprintf(stderr,"NCstringMatch(): BAD string passed!\n");
+		CMmsgPrint (CMmsgUsrError, "NCstringMatch(): BAD string passed!");
 		return false;
 	}
 	for(i = 0; i < blen; i++) if(a[i+o] != b[i]) return false;
@@ -143,7 +144,7 @@ int NCstringTokenize(char *text,char ***tokens,char tok)
 		while ((pos < strLen) && (text[pos] != tok)) pos++;
 		if(lpos == pos) (*tokens)[numtokens - 1] = (char *) NULL;
 		else (*tokens)[numtokens - 1] = NCstringSubstr(text,lpos,pos - 1);
-//		fprintf(stderr,"substr(%s,%d,%d)\n",text,lpos,pos - 1);
+//		CMmsgPrint (CMmsgUsrError, "substr(%s,%d,%d)\n",text,lpos,pos - 1);
 		lpos = ++pos;
 	}
 	return numtokens;
@@ -152,8 +153,9 @@ int NCstringTokenize(char *text,char ***tokens,char tok)
 NCstate NCstringReplace(char **input, int s, int e, char *newstr) {
 	int i,j;
 	char *ret;
-	if(e < s) { fprintf(stderr,"NCstringReplace(): end is less than start!\n"); abort(); }
-	if((ret = malloc(sizeof(char) * ((strlen(*input) - (e - s)) + strlen(newstr) + 1))) == (char *) NULL) { perror("Memory allocation error in: NCstringReplace()\n"); return NCfailed; }
+	if(e < s) { CMmsgPrint (CMmsgUsrError, "NCstringReplace(): end is less than start!\n"); abort(); }
+	if((ret = malloc(sizeof(char) * ((strlen(*input) - (e - s)) + strlen(newstr) + 1))) == (char *) NULL)
+		{ CMmsgPrint (CMmsgSysError, "Memory allocation error in: %s %d",__FILE__,__LINE__); return NCfailed; }
 	for (i = 0,j = 0; j < s; i++,j++) ret[i] = (*input)[j];
 	s = strlen(newstr);
 	for (j = 0; j < s; i++,j++) ret[i] = newstr[j];

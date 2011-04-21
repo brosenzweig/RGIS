@@ -1,5 +1,6 @@
-#include<NC.h>
-#include<unistd.h>
+#include <cm.h>
+#include <unistd.h>
+#include <NC.h>
 
 int NCfileCreate (char *fileName, int tplNCId)
 {
@@ -162,8 +163,7 @@ int NCfileVarAdd (int ncid, const char *varname, nc_type ltype, nc_type ttype, n
 int NCfileVarClone (int sncid, int dncid)
 {
 	bool redef;
-	int status, varid, lvarid, tvarid, svarid, dvarid;
-	size_t ndims;
+	int status, varid, lvarid, tvarid, svarid, dvarid, ndims;
 	nc_type ltype, ttype, vtype;
 	char varname [NC_MAX_NAME];
 
@@ -176,7 +176,7 @@ int NCfileVarClone (int sncid, int dncid)
 	{
 		if ((status = nc_inq_varndims (sncid, lvarid, &ndims)) != NC_NOERR)
 		{ NCprintNCError (status,"NCfileVarClone"); return (NCfailed); }
-		if (ndims > 1) { fprintf (stderr,"Level variable has too many dimensions in: NCfileVarClone ()\n"); return (NCfailed); }
+		if (ndims > 1) { CMmsgPrint (CMmsgAppError, "Level variable has too many dimensions in: NCfileVarClone ()\n"); return (NCfailed); }
 		if ((status = nc_inq_vartype  (sncid, lvarid, &ltype)) != NC_NOERR)
 		{ NCprintNCError (status,"NCfileVarClone"); return (NCfailed); }
 	}
@@ -185,7 +185,7 @@ int NCfileVarClone (int sncid, int dncid)
 	{ NCprintNCError (status,"NCfileVarClone"); return (NCfailed); }
 	if ((status = nc_inq_varndims (sncid, tvarid, &ndims)) != NC_NOERR)
 	{ NCprintNCError (status,"NCfileVarClone"); return (NCfailed); }
-	if (ndims > 1) { fprintf (stderr,"Time variable has too many dimensions in: NCfileVarClone ()\n"); return (NCfailed); }
+	if (ndims > 1) { CMmsgPrint (CMmsgAppError, "Time variable has too many dimensions in: NCfileVarClone ()\n"); return (NCfailed); }
 	if ((status = nc_inq_vartype  (sncid, tvarid, &ttype)) != NC_NOERR)
 	{ NCprintNCError (status,"NCfileVarClone"); return (NCfailed); }
 
@@ -208,8 +208,8 @@ int NCfileVarClone (int sncid, int dncid)
 	{ NCprintNCError (status,"NCfileVarClone"); return (NCfailed); }
 	if (NCdataCopyAttributes (sncid, tvarid, dncid,  varid, true) == NCfailed) return (NCfailed);
 
-	redef = status = nc_redef (dncid) == NC_NOERR ? true : false;
-
+	status = nc_redef (dncid) == NC_NOERR ? true : false;
+	redef = status;
 	if ((status = nc_inq_varid (dncid, NCnameVAMaximum, &varid)) != NC_NOERR)
 	{ NCprintNCError (status,"NCfileVarClone"); return (NCfailed); }
 	nc_copy_att (sncid,svarid,NCnameVAUnits,      dncid,varid);
@@ -293,7 +293,7 @@ NCstate NCfileSetVarUnit (int ncid, const char *unitStr)
 	redef = nc_redef (ncid) == NC_NOERR ? true : false;
 
 	if ((varid = NCdataGetCoreVarId (ncid)) == NCfailed)
-	{ fprintf (stderr,"Missing core variable in: NCfileSetVarUnit ()\n"); goto ABORT; }
+	{ CMmsgPrint (CMmsgAppError, "Missing core variable in: %s %d",__FILE__,__LINE__); goto ABORT; }
 	else if ((status = nc_put_att_text (ncid, varid, NCnameVAUnits, strlen (unitStr), unitStr)) != NC_NOERR)
 	{ NCprintNCError (status,"NCfileSetVarUnit"); goto ABORT; }
 
@@ -332,7 +332,7 @@ NCstate NCfileSetVarTransform (int ncid, double scale, double offset)
 	redef = nc_redef (ncid) == NC_NOERR ? true : false;
 
 	if ((varid = NCdataGetCoreVarId (ncid)) == NCfailed)
-	{ fprintf (stderr,"Missing core variable in: NCfileSetVarTransform ()\n"); goto ABORT; }
+	{ CMmsgPrint (CMmsgAppError, "Missing core variable in: %s %d",__FILE__,__LINE__); goto ABORT; }
 	else
 	{
 		if (((status = nc_put_att_double (ncid, varid, NCnameVAScaleFactor,NC_FLOAT, 1, &scale))  != NC_NOERR) ||
@@ -379,7 +379,7 @@ NCstate NCfileSetMissingVal (int ncid,  double missingVal)
 	redef = nc_redef (ncid) == NC_NOERR ? true : false;
 
 	if ((varid = NCdataGetCoreVarId (ncid)) == NCfailed)
-	{ fprintf (stderr,"Missing core variable in: NCfileSetMissingVal ()\n"); goto ABORT; }
+	{ CMmsgPrint (CMmsgAppError, "Missing core variable in: %s %d",__FILE__,__LINE__); goto ABORT; }
 	else
 	{
 		if (((status = nc_put_att_double (ncid, varid, NCnameVAFillValue,   NC_FLOAT, 1, &missingVal)) != NC_NOERR) ||
@@ -429,7 +429,7 @@ NCstate NCfileSetValidRange (int ncid, double min, double max)
 	range [0] = min;
 	range [1] = max;
 	if ((varid = NCdataGetCoreVarId (ncid)) == NCfailed)
-	{ fprintf (stderr,"Missing core variable in: NCfileSetValidRange ()\n"); goto ABORT; }
+	{ CMmsgPrint (CMmsgAppError, "Missing core variable in: %s %d",__FILE__,__LINE__); goto ABORT; }
 	else
 	{
 		if ((status = nc_put_att_double (ncid, varid, NCnameVAValidRange,  NC_FLOAT, 2, range))       != NC_NOERR)

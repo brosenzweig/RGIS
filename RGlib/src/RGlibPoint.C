@@ -344,11 +344,11 @@ DBInt RGlibPointInterStationTS (DBObjData *pntData,DBObjData *tsData, char *rela
 	DBDate curDate, date;
 
 	if (pntNextFLD == (DBObjTableField *) NULL)
-		{ fprintf (stderr,"Missing Next Station Field in: RGlibPointInterStationTS ()\n");		return (DBFault); }
+		{ CMmsgPrint (CMmsgUsrError, "Missing Next Station Field!");		return (DBFault); }
 	if (pntAreaFLD == (DBObjTableField *) NULL)
-		{ fprintf (stderr,"Missing STN Area Field in: RGlibPointInterStationTS ()\n");			return (DBFault); }
+		{ CMmsgPrint (CMmsgUsrError, "Missing STN Area Field!");			return (DBFault); }
 	if (pntInterStnFLD == (DBObjTableField *) NULL)
-		{ fprintf (stderr,"Missing Interfluvial Area Field in: RGlibPointInterStationTS ()\n");	return (DBFault); }
+		{ CMmsgPrint (CMmsgUsrError, "Missing Interfluvial Area Field!");	return (DBFault); }
 
 	tsTBL = tsData->Table (DBrNItems);
 	tsNextStnFLD = new DBObjTableField (RGlibNextStation,DBTableFieldInt,"%8d",sizeof (DBInt));
@@ -359,9 +359,9 @@ DBInt RGlibPointInterStationTS (DBObjData *pntData,DBObjData *tsData, char *rela
 	for (tsTimeFLD = fields->First ();tsTimeFLD != (DBObjTableField *) NULL;tsTimeFLD = fields->Next ())
 			if (tsTimeFLD->Type () == DBTableFieldDate) break;
 	if (tsTimeFLD == (DBObjTableField *) NULL)
-		{ fprintf (stderr,"Missing Date Field in: RGlibPointInterStationTS ()\n");		return (DBFault); }
+		{ CMmsgPrint (CMmsgUsrError, "Missing Date Field!");		return (DBFault); }
 	if ((tsJoinFLD = tsTBL->Field (joinFldName)) == (DBObjTableField *) NULL)
-		{ fprintf (stderr,"Missing Join Field in: RGlibPointInterStationTS ()\n"); 	return (DBFault); }
+		{ CMmsgPrint (CMmsgUsrError, "Missing Join Field!"); 	return (DBFault); }
 	fields = new DBObjectLIST<DBObjTableField> ("Field List");
 	fields->Add (new DBObjTableField (*tsTimeFLD));
 	fields->Add (new DBObjTableField (*tsJoinFLD));
@@ -518,7 +518,7 @@ DBInt RGlibPointSubbasinStats (DBObjData *pntData, DBObjData *netData, DBObjData
 		}
 	if (layerNum < 1)
 		{
-		fprintf (stderr,"No Layer to Process in RGlibPointSubbasinStats ()\n");
+		CMmsgPrint (CMmsgUsrError, "No Layer to Process!");
 		delete _RGlibPointGrdIF;
 		return (DBFault);
 		}
@@ -634,7 +634,7 @@ DBInt RGlibPointSubbasinHist (DBObjData *pntData, DBObjData *netData, DBObjData 
 		}
 	if (layerNum < 1)
 		{
-		fprintf (stderr,"No Layer to Process in RGlibPointSubbasinHist ()\n");
+		CMmsgPrint (CMmsgUsrError, "No Layer to Process!");
 		delete _RGlibPointGrdIF;
 		return (DBFault);
 		}
@@ -652,7 +652,7 @@ DBInt RGlibPointSubbasinHist (DBObjData *pntData, DBObjData *netData, DBObjData 
 
 	_RGlibHistogram = (Histogram *) malloc (itemTable->ItemNum () * sizeof (Histogram));
 	if (_RGlibHistogram == (Histogram *) NULL)
-		{ perror ("Memory Allocation Error in: RGlibPointSubbasinHist ()"); return (DBFault); }
+		{ CMmsgPrint (CMmsgAppError, "Memory Allocation Error in: %s %d",__FILE__,__LINE__); return (DBFault); }
 	maxProgress = pntIF->ItemNum () * _RGlibPointGrdIF->LayerNum ();
 	for (layerID = 0;layerID < _RGlibPointGrdIF->LayerNum ();++layerID)
 		{

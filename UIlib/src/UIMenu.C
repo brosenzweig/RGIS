@@ -126,7 +126,7 @@ void UIMenuItem::CreateButton (Widget menuWidget,
 		case UIMENU_SEPARATOR:
 			menuBut->Button = 	 XmCreateSeparatorGadget (menuWidget,(char *) "GHAASMenuSeparator", NULL,0);
 			break;
-		default: fprintf (stderr,"Not valid Button type: in UIMenuItem::CreateButton ()\n"); return;
+		default: CMmsgPrint (CMmsgAppError, "Not valid Button type in: %s %d",__FILE__,__LINE__); return;
 		}
 	if (menuBut->VisibleVAR == UIMENU_NORULE)		XtManageChild	(menuBut->Button);
 	XtSetSensitive (menuBut->Button,menuBut->SensitiveVAR == UIMENU_NORULE);

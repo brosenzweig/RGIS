@@ -67,7 +67,7 @@ char *UISelection (Widget widget,char *items,int itemSize,int itemNum)
 
 	if ((strings = (XmString *) calloc	(itemNum,sizeof (XmString))) == NULL)
 		{
-		perror ("Memory Allocation Error in: UISelector ()\n");
+		CMmsgPrint (CMmsgSysError, "Memory Allocation Error in: %s %d",__FILE__,__LINE__);
 		return (NULL);
 		}
 	for (i = 0;i < itemNum;++i) strings [i] = XmStringCreate (items + i * itemSize,UICharSetNormal);
@@ -94,7 +94,7 @@ char *UISelectObject (Widget widget,DBObjectLIST<DBObject> *objList,DBInt (*cond
 
 	if (objList->ItemNum () < 1) { UIMessage ((char *) "Empty List"); return (NULL); }
 	if ((strings = (XmString *) calloc	(objList->ItemNum (),sizeof (XmString))) == NULL)
-		{ perror ("Memory Allocation Error in: UISelectObject ()\n"); return (NULL); }
+		{ CMmsgPrint (CMmsgSysError, "Memory Allocation Error in: %s %d",__FILE__,__LINE__); return (NULL); }
 
 	if (condFunc == (UISelectCondFunc) NULL) condFunc = _UISelectObjectAll;
 	for (obj = objList->First ();obj != NULL;obj = objList->Next ())

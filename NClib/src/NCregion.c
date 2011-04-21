@@ -1,9 +1,10 @@
-#include<NCmath.h>
+#include <cm.h>
+#include <NCmath.h>
 
 void NCregionInitialize (NCregion_t *region)
 	{
 	if (region == (NCregion_t *) NULL)
-		{ fprintf (stderr,"Null Region Pointer in: NCregionInitialize()\n"); return; }
+		{ CMmsgPrint (CMmsgAppError, "Null Region Pointer in: %s %d",__FILE__,__LINE__); return; }
 	region->LowerLeft.X = HUGE_VAL;
 	region->LowerLeft.Y = HUGE_VAL;
 	region->UpperRight.X = - HUGE_VAL;
@@ -13,7 +14,7 @@ void NCregionInitialize (NCregion_t *region)
 void NCregionExpand (NCregion_t *region0,NCregion_t *region1,NCregion_t *result)
 	{
 	if ((region0 == (NCregion_t *) NULL) || (region1 == (NCregion_t *) NULL) || (result == (NCregion_t *) NULL))
-		{ fprintf (stderr,"Null Region Pointer in: NCregionExpand ()\n"); return; }
+		{ CMmsgPrint (CMmsgAppError, "Null Region Pointer in: %s %s",__FILE__,__LINE__); return; }
 	result->LowerLeft.X = region0->LowerLeft.X < region1->LowerLeft.X ?  region0->LowerLeft.X : region1->LowerLeft.X;
 	result->LowerLeft.Y = region0->LowerLeft.Y < region1->LowerLeft.Y ?  region0->LowerLeft.Y : region1->LowerLeft.Y;
 	result->UpperRight.X = region0->UpperRight.X > region0->UpperRight.X ? region0->UpperRight.X : region0->UpperRight.X;
@@ -23,7 +24,7 @@ void NCregionExpand (NCregion_t *region0,NCregion_t *region1,NCregion_t *result)
 void NCregionExpandCoord (NCregion_t *region,NCcoordinate_t *coord,NCregion_t *result)
 	{
 	if ((region == (NCregion_t *) NULL) || (coord == (NCcoordinate_t *) NULL) || (result == (NCregion_t *) NULL))
-		{ fprintf (stderr,"Null Region Pointer in: NCregionExpandCoord ()\n"); return; }
+		{ CMmsgPrint (CMmsgAppError, "Null Region Pointer in: %s %d",__FILE__,__LINE__); return; }
 	result->LowerLeft.X = region->LowerLeft.X < coord->X ?  region->LowerLeft.X : coord->X;
 	result->LowerLeft.Y = region->LowerLeft.Y < coord->Y ?  region->LowerLeft.Y : coord->Y;
 	result->UpperRight.X = region->UpperRight.X > coord->X ? region->UpperRight.X : coord->X;
@@ -33,7 +34,7 @@ void NCregionExpandCoord (NCregion_t *region,NCcoordinate_t *coord,NCregion_t *r
 void NCregionUnion (NCregion_t *region0,NCregion_t *region1,NCregion_t *result)
 	{
 	if ((region0 == (NCregion_t *) NULL) || (region1 == (NCregion_t *) NULL) || (result == (NCregion_t *) NULL))
-		{ fprintf (stderr,"Null Region Pointer in: NCregionUnion ()\n"); return; }
+		{ CMmsgPrint (CMmsgAppError, "Null Region Pointer in: %s %d",__FILE__,__LINE__); return; }
 	result->LowerLeft.X = region0->LowerLeft.X > region1->LowerLeft.X ?  region0->LowerLeft.X : region1->LowerLeft.X;
 	result->LowerLeft.Y = region0->LowerLeft.Y > region1->LowerLeft.Y ?  region0->LowerLeft.Y : region1->LowerLeft.Y;
 	result->UpperRight.X = region0->UpperRight.X < region0->UpperRight.X ? region0->UpperRight.X : region0->UpperRight.X;
@@ -43,7 +44,7 @@ void NCregionUnion (NCregion_t *region0,NCregion_t *region1,NCregion_t *result)
 bool NCregionTestCoord (NCregion_t *region,NCcoordinate_t *coord)
 	{
 	if ((region == (NCregion_t *) NULL) || (coord == (NCcoordinate_t *) NULL))
-		{ fprintf (stderr,"Null Region Pointer in: NCregionTestCoord ()\n"); return (false); }
+		{ CMmsgPrint (CMmsgAppError, "Null Region Pointer in: %s %d",__FILE__,__LINE__); return (false); }
 	if (coord->X < region->LowerLeft.X)  return (false);
 	if (coord->Y < region->LowerLeft.Y)  return (false);
 	if (coord->X > region->UpperRight.X) return (false);
@@ -54,7 +55,7 @@ bool NCregionTestCoord (NCregion_t *region,NCcoordinate_t *coord)
 bool NCregionTestRegion (NCregion_t *testRegion,NCregion_t *region)
 	{
 	if ((testRegion == (NCregion_t *) NULL) || (region == (NCregion_t *) NULL))
-		{ fprintf (stderr,"Null Region Pointer in: NCregionTestRegion()\n"); return (false); }
+		{ CMmsgPrint (CMmsgAppError, "Null Region Pointer in: %s %d",__FILE__,__LINE__); return (false); }
 	if (region->LowerLeft.X   < testRegion->LowerLeft.X)  return (false);
 	if (region->LowerLeft.Y   < testRegion->LowerLeft.Y)  return (false);
 	if (region->UpperRight.X > testRegion->UpperRight.X) return (false);

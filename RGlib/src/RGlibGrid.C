@@ -10,6 +10,7 @@ balazs.fekete@unh.edu
 
 *******************************************************************************/
 
+#include <cm.h>
 #include <DB.H>
 #include <DBif.H>
 #include <RG.H>
@@ -77,7 +78,7 @@ DBInt RGlibGridResampling (DBObjData *inGData, DBObjRecord *noDataRec, DBObjData
 		}
 	if (layerNum < 1)
 		{
-		fprintf (stderr,"No Layer to Process in: RGlibPointSubbasinCente ()\n");
+		CMmsgPrint (CMmsgAppError, "No Layer to Process in: %s %d",__FILE__,__LINE__);
 		delete inGridIF;
 		return (DBFault);
 		}
@@ -133,7 +134,7 @@ DBInt RGlibGridResampling (DBObjData *inGData, DBObjRecord *noDataRec, DBObjData
 				}
 				break;
 			default:
-				fprintf (stderr,"Invalid Data Type in: RGlibPointSubbasinCenter ()\n");	goto Stop;
+				CMmsgPrint (CMmsgAppError, "Invalid Data Type in: %s %d",__FILE__,__LINE__);	goto Stop;
 			}
 		if (outGridIF->LayerNum () < layerNum) outLayerRec = outGridIF->AddLayer ((char *) "Next Layer");
 		}
@@ -224,17 +225,17 @@ DBInt RGlibGridUniformRunoff (DBObjData *gridData,DBObjData *tsData, char *grdRe
 	DBGridIF *gridIF, *runoffIF;
 
 	if (grdTBL->Field (RGlibNextStation) == (DBObjTableField *) NULL)
-		{ fprintf (stderr,"Missing Next Station Field!\n"); return (DBFault); }
+		{ CMmsgPrint (CMmsgUsrError, "Missing Next Station Field!"); return (DBFault); }
 	if (grdTBL->Field (RGlibArea) == (DBObjTableField *) NULL)
-		{ fprintf (stderr,"Missing Subbasin Area Field!\n"); return (DBFault); }
+		{ CMmsgPrint (CMmsgUsrError, "Missing Subbasin Area Field!"); return (DBFault); }
 	if (grdTBL->Field (grdRelate) == (DBObjTableField *) NULL)
-		{ fprintf (stderr,"Invalid Relate Field!\n"); return (DBFault); }
+		{ CMmsgPrint (CMmsgUsrError, "Invalid Relate Field!"); return (DBFault); }
 	if ((tsJoinFLD = tsTBL->Field (tsJoin)) == (DBObjTableField *) NULL)
-		{ fprintf (stderr,"Invalid Join Field!\n"); return (DBFault); }
+		{ CMmsgPrint (CMmsgUsrError, "Invalid Join Field!"); return (DBFault); }
 	if ((tsTimeFLD = tsTBL->Field (tsTime)) == (DBObjTableField *) NULL)
-		{ fprintf (stderr,"Invalid Time Field!\n"); return (DBFault); }
+		{ CMmsgPrint (CMmsgUsrError, "Invalid Time Field!"); return (DBFault); }
 	if ((tsVarFLD = tsTBL->Field (tsVar)) == (DBObjTableField *) NULL)
-		{ fprintf (stderr,"Invalid Variable Field!\n"); return (DBFault); }
+		{ CMmsgPrint (CMmsgUsrError, "Invalid Variable Field!"); return (DBFault); }
 
 	fields = new DBObjectLIST<DBObjTableField> ("Field List");
 	fields->Add (new DBObjTableField (*tsTimeFLD));
@@ -384,15 +385,15 @@ DBInt RGlibGridUniformGrid (DBObjData *gridData,DBObjData *tabData, char *relate
 	DBGridIF *gridIF, *outIF;
 
 	if ((relateFLD = grdTBL->Field (relateName)) == (DBObjTableField *) NULL)
-		{ fprintf (stderr,"Invalid relate field [%s] in: RGlibUniformGrid ()",relateName); return (DBFault); }
+		{ CMmsgPrint (CMmsgAppError, "Invalid relate field [%s] in: %s %d",relateName,__FILE__,__LINE__); return (DBFault); }
 	if ((joinFLD = datTBL->Field (joinName)) == (DBObjTableField *) NULL)
-		{ fprintf (stderr,"Invalid join field [%s] in: RGlibUniformGrid ()",joinName); return (DBFault); }
+		{ CMmsgPrint (CMmsgAppError, "Invalid join field [%s] in: %s %d",joinName,__FILE__,__LINE__); return (DBFault); }
 	if ((valueFLD = datTBL->Field (valueName)) == (DBObjTableField *) NULL)
-		{ fprintf (stderr,"Invalid value field [%s] in: RGlibUniformGrid ()",valueName); return (DBFault); }
+		{ CMmsgPrint (CMmsgAppError, "Invalid value field [%s] in: %s %d",valueName,__FILE__,__LINE__); return (DBFault); }
 	if (dateName != (char *) NULL)
 		{
 		if ((dateFLD = datTBL->Field (dateName)) == (DBObjTableField *) NULL)
-			{ fprintf (stderr,"Invalid date field [%s] in: RGlibUniformGrid ()",dateName); return (DBFault); }
+			{ CMmsgPrint (CMmsgAppError, "Invalid date field [%s] in: %d %d",dateName,__FILE__,__LINE__); return (DBFault); }
 		}
 	else	dateFLD = (DBObjTableField *) NULL;
 
@@ -483,7 +484,7 @@ DBInt RGlibGridReclassDiscrete (DBObjData *srcData,char *srcFieldName,DBObjData 
 	DBPosition pos;
 
 	if ((srcField = srcItemTable->Field (srcFieldName)) == (DBObjTableField *) NULL)
-		{ fprintf (stderr,"Invalid source field in: RGlibGridReclassDiscrete ()\n"); return (DBFault); }
+		{ CMmsgPrint (CMmsgUsrError, "Invalid source field [%s]!",srcFieldName); return (DBFault); }
 
 	dstField = new DBObjTableField (*srcField);
 	dstItemTable->AddField (dstField);
@@ -584,7 +585,7 @@ DBInt RGlibGridReclassContinuous (DBObjData *srcData,char *srcFieldName,DBObjDat
 	DBPosition pos;
 
 	if ((srcField = srcItemTable->Field (srcFieldName)) == (DBObjTableField *) NULL)
-		{ fprintf (stderr,"Invalid Field in: RGlibGridReclassContinuous ()\n"); return (DBFault); }
+		{ CMmsgPrint (CMmsgUsrError, "Invalid Field [%s]!",srcFieldName); return (DBFault); }
 
 	srcIF = new DBGridIF (srcData);
 	dstIF = new DBGridIF (dstData);
@@ -735,14 +736,14 @@ DBInt RGlibGridZoneHistogram (DBObjData *zGrdData,DBObjData *cGrdData, DBObjData
 		}
 	if ((cellNumARR = (DBInt *) calloc (zoneTable->ItemNum () * classTable->ItemNum (),sizeof (DBInt))) == (DBInt *) NULL)
 		{
-		perror ("Memory Allocation Error in: RGlibGridZoneHistogram ()");
+		CMmsgPrint (CMmsgSysError, "Memory Allocation Error in: %s %d",__FILE__,__LINE__);
 		delete zGrdIF;
 		delete cGrdIF;
 		return (DBFault);
 		}
 	if ((areaARR = (DBFloat *) calloc (zoneTable->ItemNum () * classTable->ItemNum (),sizeof (DBFloat))) == (DBFloat *) NULL)
 		{
-		perror ("Memory Allocation Error in: RGlibZoneHistogram ()");
+		CMmsgPrint (CMmsgSysError, "Memory Allocation Error in: %s %d",__FILE__,__LINE__);
 		free (cellNumARR);
 		delete zGrdIF;
 		delete cGrdIF;
@@ -885,23 +886,23 @@ DBInt RGlibGridZoneStatistics (DBObjData *zGrdData, DBObjData *wGrdData, DBObjDa
 		nameLen = strlen (zoneRec->Name ());
 		zoneNameLen = zoneNameLen > nameLen + 1 ? zoneNameLen : nameLen + 1;
 		}
-	outTable->AddField (outZLayerIDFLD	= new DBObjTableField ("ZoneLayerID",		DBTableFieldInt,		"%4d",sizeof (DBShort)));
-	outTable->AddField (outZLayerNameFLD= new DBObjTableField ("ZoneLayerName",	DBTableFieldString,	"%s",DBStringLength));
-	outTable->AddField (outZoneIDFLD		= new DBObjTableField ("ZoneGridID",		DBTableFieldInt,		"%8d",sizeof (DBInt)));
-	outTable->AddField (outZoneNameFLD	= new DBObjTableField ("ZoneGridName",		DBTableFieldString,	"%s",zoneNameLen));
-	outTable->AddField (outWLayerIDFLD	= new DBObjTableField ("WeightLayerID",	DBTableFieldInt,		"%4d",sizeof (DBShort)));
-	outTable->AddField (outWLayerNameFLD= new DBObjTableField ("WeightLayerName",	DBTableFieldString,	"%s",DBStringLength));
-	outTable->AddField (outZoneAreaFLD	= new DBObjTableField (RGlibZoneArea,		DBTableFieldFloat,	"%10.1f",sizeof (DBFloat4)));
-	outTable->AddField (outAverageFLD	= new DBObjTableField (RGlibZonalMean,		DBTableFieldFloat,	wGrdIF->ValueFormat (),sizeof (DBFloat4)));
-	outTable->AddField (outMinimumFLD	= new DBObjTableField (RGlibZonalMin,		DBTableFieldFloat,	wGrdIF->ValueFormat (),sizeof (DBFloat4)));
-	outTable->AddField (outMaximumFLD	= new DBObjTableField (RGlibZonalMax,		DBTableFieldFloat,	wGrdIF->ValueFormat (),sizeof (DBFloat4)));
-	outTable->AddField (outStdDevFLD 	= new DBObjTableField (RGlibZonalStdDev,	DBTableFieldFloat,	wGrdIF->ValueFormat (),sizeof (DBFloat4)));
-	zoneTable->AddField (tmpSumWeightFLD= new DBObjTableField ("TMPSumWeight",		DBTableFieldFloat,	wGrdIF->ValueFormat (),sizeof (DBFloat4)));
-	zoneTable->AddField (tmpPSumValFLD	= new DBObjTableField ("TMPPSumVal",		DBTableFieldFloat,	wGrdIF->ValueFormat (),sizeof (DBFloat4)));
-	zoneTable->AddField (tmpWSumValFLD	= new DBObjTableField ("TMPWSumVal",		DBTableFieldFloat,	wGrdIF->ValueFormat (),sizeof (DBFloat4)));
-	zoneTable->AddField (tmpSumValSqrFLD= new DBObjTableField ("TMPSumValSqr",		DBTableFieldFloat,	wGrdIF->ValueFormat (),sizeof (DBFloat4)));
-	zoneTable->AddField (tmpMinimumFLD	= new DBObjTableField ("TMPMin",				DBTableFieldFloat,	wGrdIF->ValueFormat (),sizeof (DBFloat4)));
-	zoneTable->AddField (tmpMaximumFLD	= new DBObjTableField ("TMPMax",				DBTableFieldFloat,	wGrdIF->ValueFormat (),sizeof (DBFloat4)));
+	outTable->AddField (outZLayerIDFLD   = new DBObjTableField ("ZoneLayerID",		DBTableFieldInt,	"%4d",sizeof (DBShort)));
+	outTable->AddField (outZLayerNameFLD = new DBObjTableField ("ZoneLayerName",	DBTableFieldString,	"%s",DBStringLength));
+	outTable->AddField (outZoneIDFLD     = new DBObjTableField ("ZoneGridID",		DBTableFieldInt,	"%8d",sizeof (DBInt)));
+	outTable->AddField (outZoneNameFLD	 = new DBObjTableField ("ZoneGridName",		DBTableFieldString,	"%s",zoneNameLen));
+	outTable->AddField (outWLayerIDFLD   = new DBObjTableField ("WeightLayerID",	DBTableFieldInt,	"%4d",sizeof (DBShort)));
+	outTable->AddField (outWLayerNameFLD = new DBObjTableField ("WeightLayerName",	DBTableFieldString,	"%s",DBStringLength));
+	outTable->AddField (outZoneAreaFLD   = new DBObjTableField (RGlibZoneArea,		DBTableFieldFloat,	"%10.1f",sizeof (DBFloat4)));
+	outTable->AddField (outAverageFLD    = new DBObjTableField (RGlibZonalMean,		DBTableFieldFloat,	wGrdIF->ValueFormat (),sizeof (DBFloat4)));
+	outTable->AddField (outMinimumFLD    = new DBObjTableField (RGlibZonalMin,		DBTableFieldFloat,	wGrdIF->ValueFormat (),sizeof (DBFloat4)));
+	outTable->AddField (outMaximumFLD    = new DBObjTableField (RGlibZonalMax,		DBTableFieldFloat,	wGrdIF->ValueFormat (),sizeof (DBFloat4)));
+	outTable->AddField (outStdDevFLD     = new DBObjTableField (RGlibZonalStdDev,	DBTableFieldFloat,	wGrdIF->ValueFormat (),sizeof (DBFloat4)));
+	zoneTable->AddField (tmpSumWeightFLD = new DBObjTableField ("TMPSumWeight",		DBTableFieldFloat,	wGrdIF->ValueFormat (),sizeof (DBFloat4)));
+	zoneTable->AddField (tmpPSumValFLD   = new DBObjTableField ("TMPPSumVal",		DBTableFieldFloat,	wGrdIF->ValueFormat (),sizeof (DBFloat4)));
+	zoneTable->AddField (tmpWSumValFLD   = new DBObjTableField ("TMPWSumVal",		DBTableFieldFloat,	wGrdIF->ValueFormat (),sizeof (DBFloat4)));
+	zoneTable->AddField (tmpSumValSqrFLD = new DBObjTableField ("TMPSumValSqr",		DBTableFieldFloat,	wGrdIF->ValueFormat (),sizeof (DBFloat4)));
+	zoneTable->AddField (tmpMinimumFLD   = new DBObjTableField ("TMPMin",			DBTableFieldFloat,	wGrdIF->ValueFormat (),sizeof (DBFloat4)));
+	zoneTable->AddField (tmpMaximumFLD   = new DBObjTableField ("TMPMax",			DBTableFieldFloat,	wGrdIF->ValueFormat (),sizeof (DBFloat4)));
 
 	maxProgress = zGrdIF->LayerNum () * wGrdIF->LayerNum () * zGrdIF->RowNum ();
 	for (zLayerID = 0;zLayerID < zGrdIF->LayerNum ();++zLayerID)
@@ -1128,7 +1129,7 @@ DBInt RGlibGridBivarCellStats (DBObjData *xSrcData,DBObjData *ySrcData, DBObjDat
 	DBGridIF *statGridIF = new DBGridIF (statData);
 
 	if (xSrcGridIF->LayerNum () < DBMathRegressionMin)
-		{ fprintf (stderr,"Insufficent number of layers in: RGlibGridBivarCellStats ()\n"); goto Stop; }
+		{ CMmsgPrint (CMmsgUsrError, "Insufficent number [%d] of layers!",xSrcGridIF->LayerNum ()); goto Stop; }
 
 	statGridIF->RenameLayer (statGridIF->Layer ((DBInt) 0),(char *) "InterceptB0");
 	statGridIF->AddLayer ((char *) "SlopeB1");
@@ -1221,14 +1222,14 @@ DBInt RGlibCycleMean (DBObjData *tsData,DBObjData *data,DBInt cycleStepNum,DBInt
 
 	if ((sum = (DBFloat *) calloc (cycleStepNum,sizeof (DBFloat))) == (DBFloat *) NULL)
 		{
-		perror ("Memory Allocation Error in: RGlibCycleMean ()");
+		CMmsgPrint (CMmsgSysError, "Memory Allocation Error in: %s %d",__FILE__,__LINE__);
 		delete tsGridIF;
 		delete gridIF;
 		return (DBFault);
 		}
 	if ((obsNum = (DBInt *) calloc (cycleStepNum,sizeof (DBInt))) == (DBInt *) NULL)
 		{
-		perror ("Memory Allocation Error in: RGlibCycleMean ()");
+		CMmsgPrint (CMmsgSysError, "Memory Allocation Error in: %s %d",__FILE__,__LINE__);
 		free (sum);
 		delete tsGridIF;
 		delete gridIF;
@@ -1320,7 +1321,7 @@ DBInt RGlibTSAggregate (DBObjData *tsData,DBObjData *data,DBInt timeStep,DBInt a
 
 	if ((sum = (DBFloat *) calloc (stepNum,sizeof (DBFloat))) == (DBFloat *) NULL)
 		{
-		perror ("Memory Allocation Error in: RGlibCycleMean ()");
+		CMmsgPrint (CMmsgSysError, "Memory Allocation Error in: %s %d",__FILE__,__LINE__);
 		delete tsGridIF;
 		delete gridIF;
 		return (DBFault);
@@ -1328,7 +1329,7 @@ DBInt RGlibTSAggregate (DBObjData *tsData,DBObjData *data,DBInt timeStep,DBInt a
 
 	if ((obsNum = (DBInt *) calloc (stepNum,sizeof (DBInt))) == (DBInt *) NULL)
 		{
-		perror ("Memory Allocation Error in: RGlibCycleMean ()");
+		CMmsgPrint (CMmsgSysError, "Memory Allocation Error in: %s %d",__FILE__,__LINE__);
 		free (sum);
 		delete tsGridIF;
 		delete gridIF;
@@ -1414,7 +1415,7 @@ DBInt RGlibSeasonAggregate (DBObjData *tsData,DBObjData *data,DBInt seasonLen, D
 
 	if ((seasonLen != 2) && (seasonLen != 3) && (seasonLen != 4) && (seasonLen != 6))
 		{
-		fprintf (stderr,"Invalid season length in: RGlibSeasonAggregate ()\n");
+		CMmsgPrint (CMmsgAppError, "Invalid season length in: %s %d",__FILE__,__LINE__);
 		delete tsGridIF;
 		delete gridIF;
 		return (DBFault);
@@ -1462,7 +1463,7 @@ DBInt RGlibSeasonAggregate (DBObjData *tsData,DBObjData *data,DBInt seasonLen, D
 
 	if ((sum = (DBFloat *) calloc (stepNum,sizeof (DBFloat))) == (DBFloat *) NULL)
 		{
-		perror ("Memory Allocation Error in: RGlibCycleMean ()");
+		CMmsgPrint (CMmsgSysError, "Memory Allocation Error in: %s %d",__FILE__,__LINE__);
 		delete tsGridIF;
 		delete gridIF;
 		return (DBFault);
@@ -1470,7 +1471,7 @@ DBInt RGlibSeasonAggregate (DBObjData *tsData,DBObjData *data,DBInt seasonLen, D
 
 	if ((obsNum = (DBInt *) calloc (stepNum,sizeof (DBInt))) == (DBInt *) NULL)
 		{
-		perror ("Memory Allocation Error in: RGlibCycleMean ()");
+		CMmsgPrint (CMmsgSysError, "Memory Allocation Error in: %s %d",__FILE__,__LINE__);
 		free (sum);
 		delete tsGridIF;
 		delete gridIF;
@@ -1539,7 +1540,7 @@ DBInt RGlibSeasonMean (DBObjData *tsData,DBObjData *data,DBInt seasonLen, DBInt 
 
 	if ((seasonLen != 2) && (seasonLen != 3) && (seasonLen != 4) && (seasonLen != 6))
 		{
-		fprintf (stderr,"Invalid season length in: RGlibSeasonAggregate ()\n");
+		CMmsgPrint (CMmsgAppError, "Invalid season length in: %s %d",__FILE__,__LINE__);
 		delete tsGridIF;
 		delete gridIF;
 		return (DBFault);
@@ -1575,7 +1576,7 @@ DBInt RGlibSeasonMean (DBObjData *tsData,DBObjData *data,DBInt seasonLen, DBInt 
 
 	if ((sum = (DBFloat *) calloc (seasonNum,sizeof (DBFloat))) == (DBFloat *) NULL)
 		{
-		perror ("Memory Allocation Error in: RGlibCycleMean ()");
+		CMmsgPrint (CMmsgSysError, "Memory Allocation Error in: %s %d",__FILE__,__LINE__);
 		delete tsGridIF;
 		delete gridIF;
 		return (DBFault);
@@ -1583,7 +1584,7 @@ DBInt RGlibSeasonMean (DBObjData *tsData,DBObjData *data,DBInt seasonLen, DBInt 
 
 	if ((obsNum = (DBInt *) calloc (seasonNum,sizeof (DBInt))) == (DBInt *) NULL)
 		{
-		perror ("Memory Allocation Error in: RGlibCycleMean ()");
+		CMmsgPrint (CMmsgSysError, "Memory Allocation Error in: %s %d",__FILE__,__LINE__);
 		free (sum);
 		delete tsGridIF;
 		delete gridIF;
@@ -1707,7 +1708,7 @@ DBInt RGlibGridSampling (DBObjData *dbData, DBObjData *grdData, DBObjData *tblDa
 		if ((layerRec->Flags () & DBObjectFlagIdle) != DBObjectFlagIdle) ++layerNum;
 		}
 	if (layerNum < 1)
-		{ fprintf (stderr,"No Layer to Process in RGlibGridSampling ()\n"); delete gridIF; return (DBFault); }
+		{ CMmsgPrint (CMmsgUsrError, "No Layer to Process!"); delete gridIF; return (DBFault); }
 
 
 	if (dbData->Type () == DBTypeVectorPoint)
@@ -1848,7 +1849,7 @@ void RGlibGridSampling (DBObjData *splData,DBObjData *grdData)
 		if ((layerRec->Flags () & DBObjectFlagIdle) != DBObjectFlagIdle) ++layerNum;
 		}
 	if (layerNum < 1)
-		{ fprintf (stderr,"No Layer to Process in RGlibGridSampling ()\n"); delete gridIF; return; }
+		{ CMmsgPrint (CMmsgAppError, "No Layer to Process!"); delete gridIF; return; }
 
 	if (splData->Type () == DBTypeVectorPoint)
 			{ pntIF = new DBVPointIF  (splData); tableName = DBrNItems; }

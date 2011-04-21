@@ -236,7 +236,7 @@ void UIAttribView::Draw (DBObjRecord *record)
 			DBObjRecord *basinRec;
 
 			if ((basinRec =  ItemTable->Item (basinFLD->Int (record) - 1)) == (DBObjRecord *) NULL)
-				{ fprintf (stderr,"BasinID Error in: UIAttribView::Draw (DBObjRecord *)\n"); return; }
+				{ CMmsgPrint (CMmsgAppError, "BasinID Error in:%s %d",__FILE__,__LINE__); return; }
 			DrawField ((char *) "Basin Name",basinRec->Name ());
 			fields = ItemTable->Fields ();
 			for (field = fields->First ();field != (DBObjTableField *) NULL;field = fields->Next ())

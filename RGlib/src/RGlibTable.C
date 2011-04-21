@@ -23,7 +23,7 @@ DBInt RGLibTableJoin (DBObjTable *itemTable, DBObjTableField *relateField,
 	DBObjTableField *field, **newFields;
 		
 	if ((newFields = (DBObjTableField **) calloc (1,sizeof (DBObjTableField *))) == (DBObjTableField **) NULL)
-		{ perror ("Memory Allocation Error in: RGLibTableJoin ()"); return (DBFault); }
+		{ CMmsgPrint (CMmsgSysError, "Memory Allocation Error in: RGLibTableJoin ()"); return (DBFault); }
 
 	if ((newFields [fieldNum] = itemTable->Field (joinTable->Name ())) == (DBObjTableField *) NULL)
 		{
@@ -38,7 +38,7 @@ DBInt RGLibTableJoin (DBObjTable *itemTable, DBObjTableField *relateField,
 			fieldNum++;
 			newFields = (DBObjTableField **) realloc (newFields,(fieldNum + 1) * sizeof (DBObjTableField *));
 			if (newFields == (DBObjTableField **) NULL)
-				{ perror ("Memory Allocation Error in: RGLibTableJoin ()"); return (DBFault); }
+				{ CMmsgPrint (CMmsgSysError, "Memory Allocation Error in: RGLibTableJoin ()"); return (DBFault); }
 			if ((newFields [fieldNum] = itemTable->Field (field->Name ())) == (DBObjTableField *) NULL)
 				{
 				itemTable->AddField (newFields [fieldNum] = new DBObjTableField (*field));

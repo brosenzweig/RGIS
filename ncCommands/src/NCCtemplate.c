@@ -1,17 +1,18 @@
+#include <cm.h>
 #include <NC.h> // or use NCmath.h if math libraries needed
 
 void do_help(char *progName,bool extend)
 {
 	if(extend) {
-		fprintf(stderr,"Usage: %s [OPTIONS] \n",progName);
-		fprintf(stderr,"  Flags:\n");
-		fprintf(stderr,"  -d,--debug                     => initiate debug output\n");
-		fprintf(stderr,"  -h,--help                      => print this message\n");
+		CMmsgPrint (CMmsgUsrError, "Usage: %s [OPTIONS] ",progName);
+		CMmsgPrint (CMmsgUsrError, "  Flags:");
+		CMmsgPrint (CMmsgUsrError, "  -d,--debug                     => initiate debug output");
+		CMmsgPrint (CMmsgUsrError, "  -h,--help                      => print this message");
 	} else {
-		fprintf(stderr,"Usage: %s [OPTIONS] \n",progName);
-		fprintf(stderr,"  Flags:\n");
-		fprintf(stderr,"  -d,--debug\n");
-		fprintf(stderr,"  -h,--help\n");
+		CMmsgPrint (CMmsgUsrError, "Usage: %s [OPTIONS] ",progName);
+		CMmsgPrint (CMmsgUsrError, "  Flags:");
+		CMmsgPrint (CMmsgUsrError, "  -d,--debug");
+		CMmsgPrint (CMmsgUsrError, "  -h,--help");
 	}
 }
 
@@ -36,7 +37,7 @@ int main(int argc, char* argv[])
 			continue;
 		}
 		if ((argv[argPos][0] == '-') && (strlen (argv[argPos]) > 1))
-			{ fprintf(stderr,"Unknown option: %s!\n",argv[argPos]); cleanup(NCfailed); }
+			{ CMmsgPrint (CMmsgUsrError, "Unknown option: %s!",argv[argPos]); cleanup(NCfailed); }
 		argPos++;
 	}
 

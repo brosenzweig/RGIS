@@ -1,4 +1,5 @@
-#include<NCstdlib.h>
+#include <cm.h>
+#include <NCstdlib.h>
 
 static bool _NCdebug = false;
 
@@ -11,9 +12,9 @@ int _StartSize = -1;
 int _MaxSize = 0;
 
 void printMemInfo() {
-	if (_StartSize == -1) { fprintf(stderr,"No previous call to initMemInfo()!\n"); return; }
-	fprintf(stderr,"Max Memory used: %d Current memory: ",_MaxSize);
-	fprintf(stderr,"uordblks=%d - _StartSize=%d = %d\n",mallinfo().uordblks,_StartSize,mallinfo().uordblks - _StartSize);
+	if (_StartSize == -1) { CMmsgPrint (CMmsgDebug, "No previous call to initMemInfo()!"); return; }
+	CMmsgPrint (CMmsgDebug, "Max Memory used: %d Current memory: ",_MaxSize);
+	CMmsgPrint (CMmsgDebug, "uordblks=%d - _StartSize=%d = %d",mallinfo().uordblks,_StartSize,mallinfo().uordblks - _StartSize);
 }
 
 #endif

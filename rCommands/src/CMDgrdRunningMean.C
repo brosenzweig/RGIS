@@ -162,7 +162,7 @@ int main(int argc, char* argv[])
 
 		beginLayerID = layerID >= offset ? layerID - offset : 0;
 		endLayerID   = (layerID - offset + kernel) < layerNum ? (layerID - offset + kernel) : layerNum;
-//		fprintf (stderr, "LayerID: %d Kernel: %d Offset: %d     Begin: %d  End: %d\n", layerID, kernel, offset, beginLayerID, endLayerID);
+//		CMmsgPrint (CMmsgDebug, "LayerID: %d Kernel: %d Offset: %d     Begin: %d  End: %d", layerID, kernel, offset, beginLayerID, endLayerID);
 		for (pos.Row = 0; pos.Row < inGridIF->RowNum (); pos.Row++)
 			{
 			for (pos.Col = 0; pos.Col < inGridIF->ColNum (); pos.Col++)

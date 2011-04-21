@@ -1,5 +1,6 @@
-#include<NCdsHandle.h>
-#include<NCmath.h>
+#include <cm.h>
+#include <NCdsHandle.h>
+#include <NCmath.h>
 
 NCstate NCdsHandleGContDefine (NCdsHandleGCont_t *gCont, int *ncids, size_t n)
 {
@@ -19,7 +20,7 @@ NCstate NCdsHandleGContDefine (NCdsHandleGCont_t *gCont, int *ncids, size_t n)
 
 	if (gCont->DataType != NCtypeGCont)
 	{
-		fprintf (stderr,"Invalid grid data in: NCdsHandleGContDefine ()\n");
+		CMmsgPrint (CMmsgAppError, "Invalid grid data in: %s %d",__FILE__,__LINE__);
 		NCdsHandleGridClear ((NCdsHandleGrid_t *) gCont);
 		return (NCfailed);
 	}
@@ -31,7 +32,7 @@ NCstate NCdsHandleGContDefine (NCdsHandleGCont_t *gCont, int *ncids, size_t n)
 	    ((gCont->AuxData = (double *) calloc (gCont->ColNum * gCont->RowNum,sizeof (double))) == (double *) NULL) ||
 	    ((gCont->ObsNum  = (size_t *) calloc (gCont->ColNum * gCont->RowNum,sizeof (size_t))) == (size_t *) NULL))
 	{
-		perror ("Memory allocation error in: NCdsHandleGContDefine ()");
+		CMmsgPrint (CMmsgSysError, "Memory allocation error in: %s %d",__FILE__,__LINE__);
 		if (gCont->MeanIds != (int *) NULL) free (gCont->MeanIds);
 		if (gCont->MinIds  != (int *) NULL) free (gCont->MinIds);
 		if (gCont->MaxIds  != (int *) NULL) free (gCont->MaxIds);
@@ -95,26 +96,26 @@ NCstate NCdsHandleGContDefine (NCdsHandleGCont_t *gCont, int *ncids, size_t n)
 		else
 		{
 			if (gCont->DoGUnit && ((status != NC_NOERR) || strcmp (unitstr,gunitstr) != 0))
-			{ fprintf (stderr,"Inconsistent data bundle (units) in: _NCdsHandleGetGContDefine ()\n"); return (NCfailed); }
+			{ CMmsgPrint (CMmsgAppError, "Inconsistent data bundle (units) in: %s %d",__FILE__,__LINE__); return (NCfailed); }
 			switch (gCont->GType)
 			{
 				case NC_BYTE:
 				case NC_SHORT:
 				case NC_INT:
 					if ((gCont->FillValue.Int  != fillInt) || (gCont->MissingVal.Int != missingInt))
-					{ fprintf (stderr,"Inconsistent data bundle (int fill value) in: _NCdsHandleGetGContDefine ()\n"); return (NCfailed); }
+					{ CMmsgPrint (CMmsgAppError, "Inconsistent data bundle (int fill value) in: %s %d",__FILE__,__LINE__); return (NCfailed); }
 					break;
 				default:
 				case NC_FLOAT:
 				case NC_DOUBLE:
 					if ((NCmathEqualValues (gCont->FillValue.Float,  fillFloat)    == false) ||
 					    (NCmathEqualValues (gCont->MissingVal.Float, missingFloat) == false))
-					{ fprintf (stderr,"Inconsistent bundle (float fill value) in: _NCdsHandleGetGContDefine ()\n"); return (NCfailed); }
+					{ CMmsgPrint (CMmsgAppError, "Inconsistent bundle (float fill value) in: %s %d",__FILE__,__LINE__); return (NCfailed); }
 					break;
 			}
 			if ((NCmathEqualValues (gCont->Scale,  scale)  == false) ||
 		       (NCmathEqualValues (gCont->Offset, offset) == false))
-			{ fprintf (stderr,"Inconsistent bundle (scale and offset) in: _NCdsHandleGetGContDefine ()\n"); return (NCfailed); }
+			{ CMmsgPrint (CMmsgAppError, "Inconsistent bundle (scale and offset) in: %s %d",__FILE__,__LINE__); return (NCfailed); }
 		}
 		gCont->MeanIds [i] = nc_inq_varid (ncids [i], NCnameVAAverage, &varid) == NC_NOERR ? varid : NCundefined;
 		gCont->MaxIds  [i] = nc_inq_varid (ncids [i], NCnameVAMaximum, &varid) == NC_NOERR ? varid : NCundefined;
@@ -207,12 +208,12 @@ NCstate NCdsHandleGContReference (const NCdsHandleGCont_t *gCont, const NCcoordi
 	}
 	if ((ref->Idx = (int *) calloc (num * 2,sizeof (int))) == (int *) NULL)
 	{
-		perror ("Memory allocation error in: NCdsHandleGContReference ()");
+		CMmsgPrint (CMmsgSysError, "Memory allocation error in: %s %d",__FILE__,__LINE__);
 		return (NCfailed);
 	}
 	if ((ref->Weight = (double *) calloc (num,sizeof (double))) == (double *) NULL)
 	{
-		perror ("Memory allocation error in: NCdsHandleGContReference ()");
+		CMmsgPrint (CMmsgSysError, "Memory allocation error in: %s %d",__FILE__,__LINE__);
 		free (ref->Idx);
 		NCreferenceInitialize (ref);
 		return (NCfailed);
@@ -233,7 +234,7 @@ static bool _NCdsHandleGContTestNodata (const NCdsHandleGCont_t *gCont, double v
 {
 	switch (gCont->GType)
 	{
-		default: fprintf (stderr,"Invalid data NetCDF type in: _NCdsHandleGContTestNodata ()\n"); break;
+		default: CMmsgPrint (CMmsgAppError, "Invalid data NetCDF type in: %s %d",__FILE__,__LINE__); break;
 		case NC_BYTE:
 		case NC_SHORT:
 		case NC_INT:    return ((gCont->MissingVal.Int == (int) val) || (gCont->FillValue.Int == (int) val) ? true : false);
@@ -245,7 +246,8 @@ static bool _NCdsHandleGContTestNodata (const NCdsHandleGCont_t *gCont, double v
 
 NCstate NCdsHandleGContLoadCache (NCdsHandleGCont_t *gCont,size_t sTStep, size_t nTSteps, size_t sLevel, size_t nLevels)
 {
-	int status, start [4], count [4];
+	int status;
+	size_t start [4], count [4];
 	size_t ncidx, tStep, level, row, col;
 	double val;
 
@@ -295,7 +297,8 @@ NCstate NCdsHandleGContLoadCache (NCdsHandleGCont_t *gCont,size_t sTStep, size_t
 
 NCstate NCdsHandleGContSaveCache (NCdsHandleGCont_t *gCont,size_t tStep, size_t level)
 {
-	int status, i = 0, start [4], count [4];
+	int status;
+	size_t i = 0, start [4], count [4];
 	size_t ncidx;
 
 	if (NCdsHandleGContCLStats (gCont,tStep,level) != NCsucceeded) return (NCfailed);
@@ -366,7 +369,7 @@ NCstate NCdsHandleGContSetFill (NCdsHandleGCont_t *gCont, size_t row,size_t col)
 	if (col > gCont->ColNum) return (NCfailed);
 	switch (gCont->GType)
 	{
-		default: fprintf (stderr,"Invalide NetCDF type in NCdsHandleGContSetFill ()\n"); return (NCfailed);
+		default: CMmsgPrint (CMmsgAppError, "Invalide NetCDF type in: %s %d",__FILE__,__LINE__); return (NCfailed);
 		case NC_BYTE:
 		case NC_SHORT:
 		case NC_INT:    gCont->Data [gCont->ColNum * row + col] = (double) gCont->FillValue.Int; break;
@@ -405,7 +408,7 @@ NCstate NCdsHandleGContCLStats (NCdsHandleGCont_t *gCont,size_t tStep, size_t le
 	else
 		switch (gCont->GType)
 		{
-			default: fprintf (stderr,"Invalide NetCDF type in NCdsHandleGContCLStats ()\n"); return (NCfailed);
+			default: CMmsgPrint (CMmsgAppError, "Invalid NetCDF type in: %s %d",__FILE__,__LINE__); return (NCfailed);
 			case NC_BYTE:
 			case NC_SHORT:
 			case NC_INT:    avg = stdDev = min = max = (double) gCont->FillValue.Int;   break;
@@ -438,12 +441,12 @@ NCstate NCdsHandleGContUpdateRanges  (const NCdsHandleGCont_t *gCont)
 	size_t start [2], count [2];
 
 	if ((gCont->MinIds == (int *) NULL) || (gCont->MaxIds == (int *) NULL))
-	{ fprintf (stderr,"Missing minimum or maximum variables in:  _NCdsHandleGContUpdateRanges ()\n"); goto ABORT; }
+	{ CMmsgPrint (CMmsgAppError, "Missing minimum or maximum variables in:  %s %d",__FILE__,__LINE__); goto ABORT; }
 
 	if (((meanArray = (double *) calloc (gCont->TNum, sizeof (double))) == (double *) NULL) ||
 	    ((minArray  = (double *) calloc (gCont->TNum, sizeof (double))) == (double *) NULL) ||
 	    ((maxArray  = (double *) calloc (gCont->TNum, sizeof (double))) == (double *) NULL))
-	{ perror ("Memory allocation error in: _NCdsHandleGContUpdateRange ()"); goto ABORT; }
+	{ CMmsgPrint (CMmsgSysError, "Memory allocation error in: %s %d",__FILE__,__LINE__); goto ABORT; }
 
 	glbRange [0] =  HUGE_VAL;
 	glbRange [1] = -HUGE_VAL;
@@ -454,7 +457,7 @@ NCstate NCdsHandleGContUpdateRanges  (const NCdsHandleGCont_t *gCont)
 		meanRange [0] = minRange [0] = maxRange [0] =  HUGE_VAL;
 		meanRange [1] = minRange [1] = maxRange [1] = -HUGE_VAL;
 		if ((gCont->MinIds [ncidx] == NCundefined) || (gCont->MaxIds [ncidx] == NCundefined))
-		{ fprintf (stderr,"Missing minimum or maximum variables in:  _NCdsHandleGContUpdateRange ()\n"); goto ABORT; }
+		{ CMmsgPrint (CMmsgAppError, "Missing minimum or maximum variables in: %s %d",__FILE__,__LINE__); goto ABORT; }
 		count [0] = (ncidx + 1 < gCont->NCnum ? gCont->NCoffset [ncidx + 1] : gCont->TNum) - gCont->NCoffset [ncidx];
 		offset = gCont->NCoffset [ncidx];
 		for (level = 0;level < gCont->LNum;level++)

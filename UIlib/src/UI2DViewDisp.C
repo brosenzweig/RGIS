@@ -181,7 +181,7 @@ void UI2DView::DrawLineObject (DBVLineIF *lineIF, DBObjRecord *record,GC gc)
 	if (MaxVertexNumVAR < lineIF->VertexNum (record) + 2)
 		{
 		PointARR = PointARR = (XPoint *) realloc (PointARR,(lineIF->VertexNum (record) + 2) * sizeof (XPoint));
-		if (PointARR == NULL) { perror ("Memory Allocation Error in: UI2DView::DrawLines ()"); return; }
+		if (PointARR == NULL) { CMmsgPrint (CMmsgSysError, "Memory Allocation Error in: %s %d",__FILE__,__LINE__); return; }
 		MaxVertexNumVAR =  lineIF->VertexNum (record) + 2;
 		}
 	nodeCoord = lineIF->FromCoord (record);
@@ -227,7 +227,7 @@ void UI2DView::DrawPolyObject (DBVPolyIF *polyIF, DBObjRecord *record,GC gc)
 		{
 		PointARR = (XPoint *) realloc (PointARR,polyIF->VertexNum (record) * sizeof (XPoint));
 		if (PointARR == (XPoint *) NULL)
-			{ perror ("Memory Allocation Error in: UI2DView::DrawPolygons ()"); return; }
+			{ CMmsgPrint (CMmsgSysError, "Memory Allocation Error in: %s %d",__FILE__,__LINE__); return; }
 		MaxVertexNumVAR = polyIF->VertexNum (record);
 		}
 	if ((coords = polyIF->Vertexes (record)) == (DBCoordinate *) NULL) return;

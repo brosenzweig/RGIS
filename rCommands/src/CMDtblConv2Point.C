@@ -192,11 +192,11 @@ int main (int argc,char *argv [])
 				if (CMmathEqualValues (coord.Y = yField->Float (tblRec),yField->FloatNoData ())) continue;
 				switch (tblFLD->Type ())
 					{
-					case DBTableFieldString:	pntFLD->String	(pntRec,tblFLD->String (tblRec));	break;
-					case DBTableFieldInt:		pntFLD->Int		(pntRec,tblFLD->Int (tblRec));		break;
-					case DBTableFieldFloat:		pntFLD->Float	(pntRec,tblFLD->Float (tblRec));		break;
-					case DBTableFieldDate:		pntFLD->Date	(pntRec,tblFLD->Date (tblRec));		break;
-					default: fprintf (stderr,"Invalid Field Type in: RGISToolsConvertToPointCBK ()\n");		break;
+					case DBTableFieldString:	pntFLD->String	(pntRec,tblFLD->String (tblRec));          break;
+					case DBTableFieldInt:		pntFLD->Int		(pntRec,tblFLD->Int (tblRec));             break;
+					case DBTableFieldFloat:		pntFLD->Float	(pntRec,tblFLD->Float (tblRec));           break;
+					case DBTableFieldDate:		pntFLD->Date	(pntRec,tblFLD->Date (tblRec));            break;
+					default: CMmsgPrint (CMmsgAppError, "Invalid Field Type in: %s %d",__FILE__,__LINE__); break;
 					}
 				pntRec = pntTable->Next ();
 				}

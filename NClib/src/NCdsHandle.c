@@ -1,5 +1,6 @@
-#include<unistd.h>
-#include<NCdsHandle.h>
+#include <cm.h>
+#include <unistd.h>
+#include <NCdsHandle.h>
 
 NCdsHandle_t *NCdsHandleOpenByIds (int *ncids, size_t n)
 {
@@ -10,7 +11,7 @@ NCdsHandle_t *NCdsHandleOpenByIds (int *ncids, size_t n)
 	if (n < 1) return ((NCdsHandle_t *) NULL);
 	switch (dataType = NCdataGetType (ncids [0]))
 	{
-		default: fprintf (stderr, "Invalid data type in NCdsHandleOpen ()"); return ((NCdsHandle_t *) NULL);
+		default: CMmsgPrint (CMmsgAppError,  "Invalid data type in: %s %d",__FILE__,__LINE__); return ((NCdsHandle_t *) NULL);
 		case NCtypeGCont:    dsHandle = (NCdsHandle_t *) malloc (sizeof (NCdsHandleGCont_t));    break;
 //		case NCtypeGDisc:    dsHandle = (NCdsHandle_t *) malloc (sizeof (NCdsHandleGDisc_t));    break;
 		case NCtypeNetwork:  dsHandle = (NCdsHandle_t *) malloc (sizeof (NCdsHandleNetwork_t));  break;
@@ -20,7 +21,7 @@ NCdsHandle_t *NCdsHandleOpenByIds (int *ncids, size_t n)
 	}
 	if (dsHandle == (NCdsHandle_t *) NULL) 
 	{
-		fprintf (stderr, "Memory allocation error in NCdsHandleOpen ()");
+		CMmsgPrint (CMmsgAppError,  "Memory allocation error in: %s %d",__FILE__,__LINE__);
 		return ((NCdsHandle_t *) NULL);
 	}
 	switch (dataType)
@@ -46,11 +47,11 @@ NCdsHandle_t *NCdsHandleOpen (const char *pattern)
 	if ((fileList = NCfileList (pattern,&ncNum)) == (char **) NULL) goto ABORT;
 
 	if ((ncids = (int *) calloc (ncNum, sizeof (int))) == (int *) NULL)
-	{ perror ("Memory allocation error in: NCdsHandleOpenByPattern ()"); goto ABORT; }
+	{ CMmsgPrint (CMmsgSysError, "Memory allocation error in: NCdsHandleOpenByPattern ()"); goto ABORT; }
 
 	for (i = 0;i < ncNum;++i)
 		if ((status = nc_open (fileList [i],NC_NOWRITE,ncids + i)) != NC_NOERR)
-		{ fprintf (stderr,"Filename: %s\n",fileList [0]); NCprintNCError (status,"NCdsHandleOpenByPattern"); ncids [i] = NCundefined; goto ABORT; }
+		{ CMmsgPrint (CMmsgUsrError, "Filename: %s",fileList [0]); NCprintNCError (status,"NCdsHandleOpenByPattern"); ncids [i] = NCundefined; goto ABORT; }
 
 	dsHandle = NCdsHandleOpenByIds (ncids,ncNum);
 	free (ncids);
@@ -82,11 +83,11 @@ NCdsHandle_t *NCdsHandleCreate (const char *pattern, const char *name, int dncid
 	NCdsHandle_t *dsh;
 
 	if ((searchStr = malloc (strlen (pattern) + 1)) == (char *) NULL)
-	{ perror ("Memory allocation error in: NCdsHandleCreate ()!"); return ((NCdsHandle_t *) NULL); }
+	{ CMmsgPrint (CMmsgSysError, "Memory allocation error in: NCdsHandleCreate ()!"); return ((NCdsHandle_t *) NULL); }
 
 	if ((utCalendar (eTime,tUnitIn,&endYear,&endMonth,&day,&hour,&minute,&second) != 0) ||
 	    (utCalendar (sTime,tUnitIn,&year,   &month,   &day,&hour,&minute,&second) != 0))
-	{ fprintf (stderr,"Calender scanning error in: NCdsHandleCreate ()\n"); goto ABORT; }
+	{ CMmsgPrint (CMmsgAppError, "Calender scanning error in:%s %d",__FILE__,__LINE__); goto ABORT; }
 
 	switch (tsMode)
 	{
@@ -100,7 +101,7 @@ NCdsHandle_t *NCdsHandleCreate (const char *pattern, const char *name, int dncid
 	if (tsMode > NCtimeMonth)
 	{
 		if ((utScan (tsUnitStr, &tUnitOut) != 0) || (utConvert (tUnitIn, &tUnitOut, &scale, &offset) != 0))
-		{ fprintf (stderr,"Time unit scanning error in: NCdsHandleCreate ()\n"); goto ABORT; }
+		{ CMmsgPrint (CMmsgAppError, "Time unit scanning error in: %s %d",__FILE__,__LINE__); goto ABORT; }
 		sTime = sTime * scale + offset;
 		eTime = eTime * scale + offset;
 	}
@@ -114,7 +115,7 @@ NCdsHandle_t *NCdsHandleCreate (const char *pattern, const char *name, int dncid
 		if (tsMode > NCtimeMonth)
 		{
 			if (utCalendar (sTime + time,&tUnitOut,&year,&month,&day,&hour,&minute,&second) != 0)
-			{ fprintf (stderr,"Time unit scaning error in: NCdsHandleCreate ()\n"); goto ABORT; }
+			{ CMmsgPrint (CMmsgAppError, "Time unit scaning error in: %s %d",__FILE__,__LINE__); goto ABORT; }
 		}
 		strcpy (searchStr, pattern);
 		for (i = 0;i < tsMode; ++i)
@@ -138,10 +139,10 @@ NCdsHandle_t *NCdsHandleCreate (const char *pattern, const char *name, int dncid
 		{
 			if (((fileNames = (char **) realloc (fileNames, (ncNum + 1) * sizeof (char *))) == (char **) NULL) ||
 				 ((ncids     = (int *)   realloc (ncids,     (ncNum + 1) * sizeof (int)))    == (int *)   NULL))
-			{ perror ("Memory allocation error in: NCdsHandleCreate"); goto ABORT; }
+			{ CMmsgPrint (CMmsgSysError, "Memory allocation error in: %s %d",__FILE__,__LINE__); goto ABORT; }
 			else ncNum++;
 			if  ((fileNames [ncNum - 1] = (char *) malloc (strlen (searchStr) + 1)) == (char *) NULL)
-			{ perror ("Memory allocation error in: NCdsHandleCreate"); goto ABORT; }
+			{ CMmsgPrint (CMmsgSysError, "Memory allocation error in: %s %d",__FILE__,__LINE__); goto ABORT; }
 			strcpy (fileNames [ncNum - 1], searchStr);
 			if (((ncids [ncNum - 1] = NCfileCreate (fileNames [ncNum - 1], dncid)) == NCfailed) ||
 			    (NCfileVarAdd (ncids [ncNum - 1], name, NC_FLOAT, NC_DOUBLE, NC_FLOAT) == NCfailed) ||
@@ -204,7 +205,7 @@ NCstate NCdsHandleDefine (NCdsHandle_t *dsh, int *ncids, size_t n)
 	if ((dataType = NCdataGetType (ncids [0])) == NCundefined) return (NCfailed);
 	dsh->DataType = dataType;
 	if ((dsh->NCIds = (int *) calloc (n,sizeof (int))) == (int *) NULL)
-	{ perror ("Memory allocation error in: NCdsHandleDefine ()"); return (NCfailed); }
+	{ CMmsgPrint (CMmsgSysError, "Memory allocation error in: %s %d",__FILE__,__LINE__); return (NCfailed); }
 	for (i = 0;i < n;++i) dsh->NCIds [i] = ncids [i];
 	dsh->NCnum = n;
 	return (NCsucceeded);
@@ -328,7 +329,7 @@ NCstate NCdsHandleGetTime (const NCdsHandle_t *dsh, size_t layerID, utUnit *tUni
 		case NCtypeGCont:   
 		case NCtypeGDisc:   return (NCdsHandleGridGetTime ((const NCdsHandleGrid_t *)  dsh, layerID,tUnit, time));
 	}
-	fprintf (stderr, "Data set does not have time series in: NCdsHandleGetTime ()\n");
+	CMmsgPrint (CMmsgAppError,  "Data set does not have time series in: %s %d",__FILE__,__LINE__);
 	return (NCfailed);
 }
 
@@ -340,7 +341,7 @@ int NCdsHandleGetTimeStep (const NCdsHandle_t *dsh, size_t layerID, utUnit *tUni
 		case NCtypeGCont:   
 		case NCtypeGDisc:   return (NCdsHandleGridGetTimeStep ((const NCdsHandleGrid_t *)  dsh, layerID, tUnit, tStep));
 	}
-	fprintf (stderr, "Data set does not have time series in: NCdsHandleGetTimeStep ()\n");
+	CMmsgPrint (CMmsgAppError,  "Data set does not have time series in: %s %d",__FILE__,__LINE__);
 	return (NCfailed);
 }
 
@@ -352,7 +353,7 @@ NCstate NCdsHandleGetTLayerID (const NCdsHandle_t *dsh, utUnit *tUnit, double ti
 		case NCtypeGCont:   
 		case NCtypeGDisc:   return (NCdsHandleGridGetTLayerID ((const NCdsHandleGrid_t *)  dsh, tUnit, time));
 	}
-	fprintf (stderr, "Data set does not have time series in: NCdsHandleGetTLayerID ()\n");
+	CMmsgPrint (CMmsgAppError,  "Data set does not have time series in: %s %d",__FILE__,__LINE__);
 	return (NCfailed);
 }
 
@@ -362,14 +363,14 @@ NCstate NCdsHandleGetUnitConv (const NCdsHandle_t *dsh, const utUnit *unit, doub
 	{
 		case NCtypeGDisc:
 		default:
-			fprintf (stderr, "Data set does not have time series in: NCdsHandleGetTimeStep ()\n");
+			CMmsgPrint (CMmsgAppError,  "Data set does not have time series in: %s %d",__FILE__,__LINE__);
 			return (NCfailed);
 		case NCtypeGCont:
 			if (((NCdsHandleGCont_t *) dsh)->DoGUnit)
 			{
 				if (utConvert (&(((NCdsHandleGCont_t *) dsh)->GUnit),unit, scale, offset) != 0)
 				{
-					fprintf (stderr,"Unit Conversion error in: NCdsHandleGetUnitConv ()\n");
+					CMmsgPrint (CMmsgAppError, "Unit Conversion error in: %s %d",__FILE__,__LINE__);
 					*scale = 1.0; *offset = 0.0;
 					return (NCfailed);
 				} 

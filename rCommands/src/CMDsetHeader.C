@@ -48,30 +48,30 @@ void CMDgetInfoInteractive(char **in, char *prompt, bool useMultipleLines)
 
 	if(useMultipleLines)
 	{
-		if(CMDgetDelim(in,&len,'$',stdin) == -1) { fprintf(stderr,"Error reading input!\n"); exit(-1); }
+		if(CMDgetDelim(in,&len,'$',stdin) == -1) { CMmsgPrint (CMmsgUsrError, "Error reading input!"); exit(-1); }
 		ch = getchar();
-		if (ch != '\n') { ungetc(ch,stdin); }
+		if (ch != '\n') { ungetc (ch,stdin); }
 	}
-	else if(CMDgetDelim(in,&len,'\n',stdin) == -1) { fprintf(stderr,"Error reading input!\n"); exit(-1); }
+	else if(CMDgetDelim(in,&len,'\n',stdin) == -1) { CMmsgPrint (CMmsgUsrError, "Error reading input!"); exit(-1); }
 }
 
 void CMDshowUsage(char *arg0)
 {
-	CMmsgPrint (CMmsgInfo,"%s [options] <RiverGIS file>\n",CMprgName(arg0));
-	CMmsgPrint (CMmsgInfo,"       => Sets RiverGIS file header informations.\n");
-	CMmsgPrint (CMmsgInfo,"       -a,--all\n");
-	CMmsgPrint (CMmsgInfo,"       -c,--comment\n");
-	CMmsgPrint (CMmsgInfo,"       -i,--citation\n");
-	CMmsgPrint (CMmsgInfo,"       -d,--domain\n");
-	CMmsgPrint (CMmsgInfo,"       -n,--institute\n");
-	CMmsgPrint (CMmsgInfo,"       -i,--interactive\n");
-	CMmsgPrint (CMmsgInfo,"       -p,--person\n");
-	CMmsgPrint (CMmsgInfo,"       -s,--subject\n");
-	CMmsgPrint (CMmsgInfo,"       -S,--source\n");
-	CMmsgPrint (CMmsgInfo,"       -t,--title\n");
-	CMmsgPrint (CMmsgInfo,"       -v,--version\n");
-	CMmsgPrint (CMmsgInfo,"       -V,--verbose\n");
-	CMmsgPrint (CMmsgInfo,"       -h,--help\n");
+	CMmsgPrint (CMmsgInfo,"%s [options] <RiverGIS file>",CMprgName(arg0));
+	CMmsgPrint (CMmsgInfo,"       => Sets RiverGIS file header informations.");
+	CMmsgPrint (CMmsgInfo,"       -a,--all");
+	CMmsgPrint (CMmsgInfo,"       -c,--comment");
+	CMmsgPrint (CMmsgInfo,"       -i,--citation");
+	CMmsgPrint (CMmsgInfo,"       -d,--domain");
+	CMmsgPrint (CMmsgInfo,"       -n,--institute");
+	CMmsgPrint (CMmsgInfo,"       -i,--interactive");
+	CMmsgPrint (CMmsgInfo,"       -p,--person");
+	CMmsgPrint (CMmsgInfo,"       -s,--subject");
+	CMmsgPrint (CMmsgInfo,"       -S,--source");
+	CMmsgPrint (CMmsgInfo,"       -t,--title");
+	CMmsgPrint (CMmsgInfo,"       -v,--version");
+	CMmsgPrint (CMmsgInfo,"       -V,--verbose");
+	CMmsgPrint (CMmsgInfo,"       -h,--help");
 	exit(1);
 }
 
@@ -132,7 +132,7 @@ int main(int argc, char* argv[])
 			 	if(Interactive_Mode) CMDgetInfoInteractive(&title,(char *) "title:>",false);
 			 	else
 				{
-					if (argNum <= argPos) { CMmsgPrint (CMmsgUsrError,"Missing title!\n"); return (CMfailed); }
+					if (argNum <= argPos) { CMmsgPrint (CMmsgUsrError,"Missing title!"); return (CMfailed); }
 					title = argv[argPos];
 					argNum = CMargShiftLeft (argPos,argv,argNum);
 				}
@@ -144,7 +144,7 @@ int main(int argc, char* argv[])
 				if(Interactive_Mode) CMDgetInfoInteractive(&domain,(char *) "domain:>",false);
 				else
 				{
-					if (argNum <= argPos) { CMmsgPrint (CMmsgUsrError,"Missing domain!\n"); return (CMfailed); }
+					if (argNum <= argPos) { CMmsgPrint (CMmsgUsrError,"Missing domain!"); return (CMfailed); }
 					domain = argv[argPos];
 					argNum = CMargShiftLeft (argPos,argv,argNum);
 				}
@@ -156,7 +156,7 @@ int main(int argc, char* argv[])
 			 	if(Interactive_Mode) CMDgetInfoInteractive(&subject,(char *) "subject:>",false);
 				else
 				{
-					if (argNum <= argPos) { CMmsgPrint (CMmsgUsrError,"Missing subject!\n"); return (CMfailed); }
+					if (argNum <= argPos) { CMmsgPrint (CMmsgUsrError,"Missing subject!"); return (CMfailed); }
 					subject = argv[argPos];
 					argNum = CMargShiftLeft (argPos,argv,argNum);
 				}
@@ -168,7 +168,7 @@ int main(int argc, char* argv[])
 				if(Interactive_Mode) CMDgetInfoInteractive(&version,(char *) "version:>",false);
 				else
 				{
-					if (argNum <= argPos) { CMmsgPrint (CMmsgUsrError,"Missing version!\n"); return (CMfailed); }
+					if (argNum <= argPos) { CMmsgPrint (CMmsgUsrError,"Missing version!"); return (CMfailed); }
 					version = argv[argPos];
 					argNum = CMargShiftLeft (argPos,argv,argNum);
 				}
@@ -180,7 +180,7 @@ int main(int argc, char* argv[])
 				if(Interactive_Mode) CMDgetInfoInteractive(&institute,(char *) "institute:>",false);
 				else
 				{
-					if (argNum <= argPos) { CMmsgPrint (CMmsgUsrError,"Missing institute!\n"); return (CMfailed); }
+					if (argNum <= argPos) { CMmsgPrint (CMmsgUsrError,"Missing institute!"); return (CMfailed); }
 					institute = argv[argPos];
 					argNum = CMargShiftLeft (argPos,argv,argNum);
 				}
@@ -192,7 +192,7 @@ int main(int argc, char* argv[])
 				if(Interactive_Mode) CMDgetInfoInteractive(&person, (char *) "person:>",false);
 				else
 				{
-					if (argNum <= argPos) { CMmsgPrint (CMmsgUsrError,"Missing person!\n"); return (CMfailed); }
+					if (argNum <= argPos) { CMmsgPrint (CMmsgUsrError,"Missing person!"); return (CMfailed); }
 					person = argv[argPos];
 					argNum = CMargShiftLeft (argPos,argv,argNum);
 				}
@@ -204,7 +204,7 @@ int main(int argc, char* argv[])
 				if(Interactive_Mode) CMDgetInfoInteractive(&citation,(char *) "citation (multiple lines finish with $):>",true);
 				else
 				{
-					if (argNum <= argPos) { CMmsgPrint (CMmsgUsrError,"Missing citation!\n"); return (CMfailed); }
+					if (argNum <= argPos) { CMmsgPrint (CMmsgUsrError,"Missing citation!"); return (CMfailed); }
 					citation = argv[argPos];
 					argNum = CMargShiftLeft (argPos,argv,argNum);
 				}
@@ -216,7 +216,7 @@ int main(int argc, char* argv[])
 				if(Interactive_Mode) CMDgetInfoInteractive(&comment,(char *) "comment (multiple lines finish with $):>",true);
 				else
 				{
-					if (argNum <= argPos) { CMmsgPrint (CMmsgUsrError,"Missing comment!\n"); return (CMfailed); }
+					if (argNum <= argPos) { CMmsgPrint (CMmsgUsrError,"Missing comment!"); return (CMfailed); }
 					comment = argv[argPos];
 					argNum = CMargShiftLeft (argPos,argv,argNum);
 				}
@@ -228,18 +228,18 @@ int main(int argc, char* argv[])
 				if(Interactive_Mode) CMDgetInfoInteractive(&source,(char *) "source (multiple lines finish with $):>",true);
 				else
 				{
-					if (argNum < argPos) { CMmsgPrint (CMmsgUsrError,"Missing source!\n"); return (CMfailed); }
+					if (argNum < argPos) { CMmsgPrint (CMmsgUsrError,"Missing source!"); return (CMfailed); }
 					source = argv[argPos];
 					argNum = CMargShiftLeft (argPos,argv,argNum);
 				}
 				continue;
 			}
 			if ((argv [argPos][0] == '-') && (strlen (argv [argPos]) > 1))
-				{ CMmsgPrint (CMmsgUsrError,"Unknown option: %s!\n",argv [argPos]); return (CMfailed); }
+				{ CMmsgPrint (CMmsgUsrError,"Unknown option: %s!",argv [argPos]); return (CMfailed); }
 			argPos++;
 			}
 		}
-	if (argNum > 3) { CMmsgPrint (CMmsgUsrError,"Extra arguments!\n"); return (CMfailed); }
+	if (argNum > 3) { CMmsgPrint (CMmsgUsrError,"Extra arguments!"); return (CMfailed); }
 	if (verbose) RGlibPauseOpen (argv[0]);
 
 	if ((argNum > 1) && (strcmp(argv[1],"-") != 0))
@@ -251,7 +251,7 @@ int main(int argc, char* argv[])
 	}
 	else
 	{
-		fprintf(stderr,"No data file, reading from stdin and writing to stdout!\n");
+		CMmsgPrint (CMmsgInfo,"No data file, reading from stdin and writing to stdout!");
 		file = stdout;
 		if(dbData->Read(stdin) == DBFault) { delete dbData; return(DBFault); }
 	}

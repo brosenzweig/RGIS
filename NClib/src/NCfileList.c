@@ -1,9 +1,10 @@
-#include<NCcore.h>
-#include<sys/types.h>
-#include<regex.h>
-#include<dirent.h>
-#include<string.h>
-#include<stdlib.h>
+#include <cm.h>
+#include <sys/types.h>
+#include <regex.h>
+#include <dirent.h>
+#include <string.h>
+#include <stdlib.h>
+#include <NCcore.h>
 
 static regex_t _NCfileListRegex;
 
@@ -24,7 +25,7 @@ char **NCfileList (const char *template, size_t *n)
 	strLength = strlen (template);
 	for (i = 0;i < strLength;++i)  if (template [i] == '.') ndots++;
 	if ((allocPath = (char *) malloc (strLength + ndots + 1)) == (char *) NULL)
-	{ perror ("Memory allocation error in: NCfileList ()"); goto ABORT; }
+	{ CMmsgPrint (CMmsgSysError, "Memory allocation error in: %s %d",__FILE__,__LINE__); goto ABORT; }
 	strcpy (allocPath,template);
 	for (i = 0;i < strLength + ndots;++i)
 		if (allocPath [i] == '.')
@@ -42,21 +43,21 @@ char **NCfileList (const char *template, size_t *n)
 	else { path = "./";      pattern = allocPath; }
 
 	if (regcomp (&_NCfileListRegex,pattern,REG_EXTENDED | REG_NOSUB) != 0)
-	{ fprintf (stderr,"Regular expression error in: _NCfileFilter ()\n"); goto ABORT; } 
+	{ CMmsgPrint (CMmsgAppError, "Regular expression error in: %s %d",__FILE__,__LINE__); goto ABORT; }
 	regexIsSet = true;	
 
 	if ((ndirents = scandir (path,&dirents,_NCfileFilter,alphasort)) < 0)
-	{ perror ("Directory scanning error in: NCfileList ()"); goto ABORT; }
+	{ CMmsgPrint (CMmsgSysError, "Directory scanning error in: %s %d",__FILE__,__LINE__); goto ABORT; }
 	if (ndirents < 1)
-	{ fprintf (stderr,"No file is matching pattern [%s]\n",template); goto ABORT; }
+	{ CMmsgPrint (CMmsgUsrError, "No file is matching pattern [%s]",template); goto ABORT; }
 	if ((fileList = (char **) calloc (ndirents,sizeof (char *))) == (char **) NULL)
-	{ perror ("Memory allocation error in: NCfileList ()"); goto ABORT; }
+	{ CMmsgPrint (CMmsgSysError, "Memory allocation error in: %s %d",__FILE__,__LINE__); goto ABORT; }
 	for (i = 0;i < ndirents;++i) fileList [i] = (char *) NULL;
 	strLength = strlen (path) + 1;
 	for (i = 0;i < ndirents;++i)
 	{
 		if ((fileList [i] = (char *) malloc (strLength + strlen (dirents [i]->d_name) + 1)) == (char *) NULL)
-		{ perror ("Memory allocation error in: NCfileList ()"); goto ABORT; }
+		{ CMmsgPrint (CMmsgSysError, "Memory allocation error in: NCfileList ()"); goto ABORT; }
 		sprintf (fileList [i],"%s/%s",path,dirents [i]->d_name);
 	}
 

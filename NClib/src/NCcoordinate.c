@@ -1,9 +1,10 @@
-#include<NC.h>
+#include <cm.h>
+#include <NC.h>
 
 void NCcoordinateAdd (NCcoordinate_t *coord0,NCcoordinate_t *coord1,NCcoordinate_t *result)
 	{
 	if ((coord0 == (NCcoordinate_t *) NULL) || (coord1 == (NCcoordinate_t *) NULL) || (result == (NCcoordinate_t *) NULL))
-		{ fprintf (stderr,"Null Coordinate Pointer in: NCcoordinateAdd ()\n"); return; }
+		{ CMmsgPrint (CMmsgAppError, "Null Coordinate Pointer in: %s %d",__FILE__,__LINE__); return; }
 	result->X = coord0->X + coord1->X;
 	result->Y = coord0->Y + coord1->Y;
 	}
@@ -11,7 +12,7 @@ void NCcoordinateAdd (NCcoordinate_t *coord0,NCcoordinate_t *coord1,NCcoordinate
 void NCcoordinateAddConst (NCcoordinate_t *coord0,double constant,NCcoordinate_t *result)
 	{
 	if ((coord0 == (NCcoordinate_t *) NULL) || (result == (NCcoordinate_t *) NULL))
-		{ fprintf (stderr,"Null Coordinate Pointer in: NCcoordinateAdd ()\n"); return; }
+		{ CMmsgPrint (CMmsgAppError, "Null Coordinate Pointer in: %s %d",__FILE__,__LINE__); return; }
 	result->X = coord0->X + constant;
 	result->Y = coord0->Y + constant;
 	}
@@ -19,7 +20,7 @@ void NCcoordinateAddConst (NCcoordinate_t *coord0,double constant,NCcoordinate_t
 void NCcoordinateSubtract (NCcoordinate_t *coord0,NCcoordinate_t *coord1,NCcoordinate_t *result)
 	{
 	if ((coord0 == (NCcoordinate_t *) NULL) || (coord1 == (NCcoordinate_t *) NULL) || (result == (NCcoordinate_t *) NULL))
-		{ fprintf (stderr,"Null Coordinate Pointer in: NCcoordinateSubtract ()\n"); return; }
+		{ CMmsgPrint (CMmsgAppError, "Null Coordinate Pointer in: %s %d",__FILE__,__LINE__); return; }
 	result->X = coord0->X - coord1->X;
 	result->Y = coord0->Y - coord1->Y;
 	}
@@ -27,7 +28,7 @@ void NCcoordinateSubtract (NCcoordinate_t *coord0,NCcoordinate_t *coord1,NCcoord
 void NCcoordinateSubtractConst (NCcoordinate_t *coord0,double constant,NCcoordinate_t *result)
 	{
 	if ((coord0 == (NCcoordinate_t *) NULL) || (result == (NCcoordinate_t *) NULL))
-		{ fprintf (stderr,"Null Coordinate Pointer in: NCcoordinateSubtractConst ()\n"); return; }
+		{ CMmsgPrint (CMmsgAppError, "Null Coordinate Pointer in: %s %d",__FILE__,__LINE__); return; }
 	result->X = coord0->X - constant;
 	result->Y = coord0->Y - constant;
 	}
@@ -35,7 +36,7 @@ void NCcoordinateSubtractConst (NCcoordinate_t *coord0,double constant,NCcoordin
 void NCcoordinateMultiply (NCcoordinate_t *coord0,NCcoordinate_t *coord1,NCcoordinate_t *result)
 	{
 	if ((coord0 == (NCcoordinate_t *) NULL) || (coord1 == (NCcoordinate_t *) NULL) || (result == (NCcoordinate_t *) NULL))
-		{ fprintf (stderr,"Null Coordinate Pointer in: NCcoordinateMultiply ()\n"); return; }
+		{ CMmsgPrint (CMmsgAppError, "Null Coordinate Pointer in: %s %d",__FILE__,__LINE__); return; }
 	result->X = coord0->X * coord1->X;
 	result->Y = coord0->Y * coord1->Y;
 	}
@@ -43,7 +44,7 @@ void NCcoordinateMultiply (NCcoordinate_t *coord0,NCcoordinate_t *coord1,NCcoord
 void NCcoordinateMultiplyConst (NCcoordinate_t *coord0,double constant,NCcoordinate_t *result)
 	{
 	if ((coord0 == (NCcoordinate_t *) NULL) || (result == (NCcoordinate_t *) NULL))
-		{ fprintf (stderr,"Null Coordinate Pointer in: NCcoordinateMultiplyConst ()\n"); return; }
+		{ CMmsgPrint (CMmsgAppError, "Null Coordinate Pointer in: %s %d",__FILE__,__LINE__); return; }
 	result->X = coord0->X * constant;
 	result->Y = coord0->Y * constant;
 	}
@@ -51,7 +52,7 @@ void NCcoordinateMultiplyConst (NCcoordinate_t *coord0,double constant,NCcoordin
 void NCcoordinateDivide (NCcoordinate_t *coord0,NCcoordinate_t *coord1,NCcoordinate_t *result)
 	{
 	if ((coord0 == (NCcoordinate_t *) NULL) || (coord1 == (NCcoordinate_t *) NULL) || (result == (NCcoordinate_t *) NULL))
-		{ fprintf (stderr,"Null Coordinate Pointer in: NCcoordinateDivide ()\n"); return; }
+		{ CMmsgPrint (CMmsgAppError, "Null Coordinate Pointer in: %s %d",__FILE__,__LINE__); return; }
 	result->X = coord0->X / coord1->X;
 	result->Y = coord0->Y / coord1->Y;
 	}
@@ -59,7 +60,7 @@ void NCcoordinateDivide (NCcoordinate_t *coord0,NCcoordinate_t *coord1,NCcoordin
 void NCcoordinateDivideConst (NCcoordinate_t *coord0,double constant,NCcoordinate_t *result)
 	{
 	if ((coord0 == (NCcoordinate_t *) NULL) || (result == (NCcoordinate_t *) NULL))
-		{ fprintf (stderr,"Null Coordinate Pointer in: NCcoordinateDivideConst ()\n"); return; }
+		{ CMmsgPrint (CMmsgAppError, "Null Coordinate Pointer in: %s %d",__FILE__,__LINE__); return; }
 	result->X = coord0->X / constant;
 	result->Y = coord0->Y / constant;
 	}

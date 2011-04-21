@@ -3,7 +3,7 @@ INC    = ../include
 SRC    = ../src
 OBJ    = ../obj
 LIB    = ../lib
-CC     = $(UNIXCC) $(UNIXCCOPS) -I$(INC)
+CC     = $(UNIXCC) $(UNIXCCOPS) -I$(INC) -I../../CMlib/include
 TARGET = $(LIB)/libNC10.a
 
 INCLUDES = $(INC)/NC.h\

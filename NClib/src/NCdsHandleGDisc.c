@@ -1,5 +1,6 @@
-#include<NCdsHandle.h>
-#include<NCmath.h>
+#include <cm.h>
+#include <NCdsHandle.h>
+#include <NCmath.h>
 
 NCstate NCdsHandleGDiscDefine (NCdsHandleGDisc_t *gDisc, int *ncids, size_t n)
 {
@@ -10,7 +11,7 @@ NCstate NCdsHandleGDiscDefine (NCdsHandleGDisc_t *gDisc, int *ncids, size_t n)
 
 	if (gDisc->DataType != NCtypeGDisc)
 	{
-		fprintf (stderr,"Invalid grid data in: NCdsHandleGDiscDefine ()\n");
+		CMmsgPrint (CMmsgAppError, "Invalid grid data in: %s %d",__FILE__,__LINE__);
 		NCdsHandleGridClear ((NCdsHandleGrid_t *) gDisc);
 		return (NCfailed);
 	}

@@ -1,11 +1,12 @@
-#include<NCdsHandle.h>
-#include<NCmath.h>
+#include <cm.h>
+#include <NCdsHandle.h>
+#include <NCmath.h>
 
 NCstate NCdsHandleVPointDefine (NCdsHandleVPoint_t *point, int ncid)
 {
 	if (NCdataGetType (ncid) != NCtypePoint) 
 	{
-		fprintf (stderr,"Invalid point data in: NCdsHandleVPointCreate ()\n");
+		CMmsgPrint (CMmsgAppError, "Invalid point data in: %s %d",__FILE__,__LINE__);
 		return (NCfailed);
 	}
 	if (NCdsHandleVectorDefine ((NCdsHandleVector_t *) point, ncid) == NCfailed)
@@ -17,14 +18,14 @@ NCstate NCdsHandleVPointDefine (NCdsHandleVPoint_t *point, int ncid)
 	point->XCoords = point->YCoords = (double *) NULL;
 	if ((point->XCoords = (double *) calloc (point->ItemNum,sizeof (double))) == (double *) NULL)
 	{
-		perror ("Memory allocation error in: NCdsHandleVPointCreate ()");
+		CMmsgPrint (CMmsgSysError, "Memory allocation error in: %s %d",__FILE__,__LINE__);
 		NCdsHandleVectorClear ((NCdsHandleVector_t *) point);
 		return (NCfailed);
 	}
 
 	if ((point->YCoords = (double *) calloc (point->ItemNum,sizeof (double))) == (double *) NULL)
 	{
-		perror ("Memory allocation error in: NCdsHandleVPointCreate ()");
+		CMmsgPrint (CMmsgSysError, "Memory allocation error in: %s %d",__FILE__,__LINE__);
 		free (point->XCoords);
 		NCdsHandleVectorClear ((NCdsHandleVector_t *) point);
 		return (NCfailed);
@@ -74,7 +75,7 @@ int NCdsHandleVPointReference (const NCdsHandleVPoint_t *point, const NCcoordina
 	}
 	if ((ref->Idx = (int *) calloc (num,sizeof (int))) == (int *) NULL)
 	{
-		perror ("Memory allocation error in: NCVPointReference ()");
+		CMmsgPrint (CMmsgSysError, "Memory allocation error in: %s %d",__FILE__,__LINE__);
 		return (NCfailed);
 	}
 	for (k = 0;k < num;k++) { ref->Idx [k] = idx [k]; }
@@ -82,7 +83,7 @@ int NCdsHandleVPointReference (const NCdsHandleVPoint_t *point, const NCcoordina
 	{
 		if ((ref->Weight = (double *) calloc (num,sizeof (double))) == (double *) NULL)
 		{
-			perror ("Memory allocation error in: NCVPointReference ()");
+			CMmsgPrint (CMmsgSysError, "Memory allocation error in: %s %d",__FILE__,__LINE__);
 			free (ref->Idx);
 			NCreferenceInitialize (ref);
 			return (NCfailed);

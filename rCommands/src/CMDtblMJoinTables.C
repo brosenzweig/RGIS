@@ -33,33 +33,33 @@ void doHelp(bool extended, const char *progName)
 	{
 	if(extended)
 		{
-		CMmsgPrint (CMmsgInfo,"%s [options] [field] ... <input file> ...\n",progName);
-		CMmsgPrint (CMmsgInfo,"  -b,--table   [inTableName] [outTableName] => Set the name of the table to use.\n\t(If either is set to NULL, then default table will be used)\n");
-		CMmsgPrint (CMmsgInfo,"  -d,--domain  [domain]                     => Specify domain of output table.\n");
-		CMmsgPrint (CMmsgInfo,"  -m,--match   [inFieldName] [outFieldName] => Which fields to match\n");
-		CMmsgPrint (CMmsgInfo,"  -o,--output  [filename]                   => Specify output filename, else use STDOUT\n");
-		CMmsgPrint (CMmsgInfo,"  -a,--dataset [filename]                   => Join dataset\n");
-		CMmsgPrint (CMmsgInfo,"  -s,--subject [subject]                    => Specify subject of output table.\n");
-		CMmsgPrint (CMmsgInfo,"  -t,--title   [title]                      => Specify title of output table.\n");
-		CMmsgPrint (CMmsgInfo,"  -v,--version [version]                    => Specify version of output table.\n");
-		CMmsgPrint (CMmsgInfo,"  -V,--verbose                              => Output all debuging statements to STDERR (Must be first flag)\n");
-		CMmsgPrint (CMmsgInfo,"  -c,--ascii                                => Output file in ascii format.\n");
-		CMmsgPrint (CMmsgInfo,"  -h,--help                                 => Print this usage information.\n");
+		CMmsgPrint (CMmsgInfo,"%s [options] [field] ... <input file> ...",progName);
+		CMmsgPrint (CMmsgInfo,"  -b,--table   [inTableName] [outTableName] => Set the name of the table to use.\t(If either is set to NULL, then default table will be used)");
+		CMmsgPrint (CMmsgInfo,"  -d,--domain  [domain]                     => Specify domain of output table.");
+		CMmsgPrint (CMmsgInfo,"  -m,--match   [inFieldName] [outFieldName] => Which fields to match");
+		CMmsgPrint (CMmsgInfo,"  -o,--output  [filename]                   => Specify output filename, else use STDOUT");
+		CMmsgPrint (CMmsgInfo,"  -a,--dataset [filename]                   => Join dataset");
+		CMmsgPrint (CMmsgInfo,"  -s,--subject [subject]                    => Specify subject of output table.");
+		CMmsgPrint (CMmsgInfo,"  -t,--title   [title]                      => Specify title of output table.");
+		CMmsgPrint (CMmsgInfo,"  -v,--version [version]                    => Specify version of output table.");
+		CMmsgPrint (CMmsgInfo,"  -V,--verbose                              => Output all debuging statements to STDERR (Must be first flag)");
+		CMmsgPrint (CMmsgInfo,"  -c,--ascii                                => Output file in ascii format.");
+		CMmsgPrint (CMmsgInfo,"  -h,--help                                 => Print this usage information.");
 		}
 	else
 		{
-		CMmsgPrint (CMmsgInfo,"%s [options] [field] ... <input file> ...\n",progName);
-		CMmsgPrint (CMmsgInfo,"  -b,--table   [inTableName] [outTableName]\n");
-		CMmsgPrint (CMmsgInfo,"  -d,--domain  [domain]\n");
-		CMmsgPrint (CMmsgInfo,"  -m,--match   [inFieldName] [outFieldName]\n");
-		CMmsgPrint (CMmsgInfo,"  -o,--output  [filename]\n");
-		CMmsgPrint (CMmsgInfo,"  -a,--dataset [filename]\n");
-		CMmsgPrint (CMmsgInfo,"  -s,--subject [subject]\n");
-		CMmsgPrint (CMmsgInfo,"  -t,--title   [title]\n");
-		CMmsgPrint (CMmsgInfo,"  -v,--version [version]\n");
-		CMmsgPrint (CMmsgInfo,"  -V,--verbose\n");
-		CMmsgPrint (CMmsgInfo,"  -c,--ascii\n");
-		CMmsgPrint (CMmsgInfo,"  -h,--help    => For more help type -h e, or --help extend.\n");
+		CMmsgPrint (CMmsgInfo,"%s [options] [field] ... <input file> ...",progName);
+		CMmsgPrint (CMmsgInfo,"  -b,--table   [inTableName] [outTableName]");
+		CMmsgPrint (CMmsgInfo,"  -d,--domain  [domain]");
+		CMmsgPrint (CMmsgInfo,"  -m,--match   [inFieldName] [outFieldName]");
+		CMmsgPrint (CMmsgInfo,"  -o,--output  [filename]");
+		CMmsgPrint (CMmsgInfo,"  -a,--dataset [filename]");
+		CMmsgPrint (CMmsgInfo,"  -s,--subject [subject]");
+		CMmsgPrint (CMmsgInfo,"  -t,--title   [title]");
+		CMmsgPrint (CMmsgInfo,"  -v,--version [version]");
+		CMmsgPrint (CMmsgInfo,"  -V,--verbose");
+		CMmsgPrint (CMmsgInfo,"  -c,--ascii");
+		CMmsgPrint (CMmsgInfo,"  -h,--help    => For more help type -h e, or --help extend.");
 		}
 	}
 
@@ -101,21 +101,21 @@ int main (int argc,char *argv [])
 		if (CMargTest(argv[argPos],"-b","--table"))
 			{
 			if ((argNum = CMargShiftLeft(argPos,argv,argNum)) <= argPos)
-				{ CMmsgPrint (CMmsgUsrError,"Missing inTable name!\n");  return (CMfailed); }
+				{ CMmsgPrint (CMmsgUsrError,"Missing inTable name!");  return (CMfailed); }
 			if(argv[argPos] != (char *) NULL) relateTableName = argv[argPos];
 			if ((argNum = CMargShiftLeft(argPos,argv,argNum)) <= argPos)
-				{ CMmsgPrint (CMmsgUsrError,"Missing outTable name!\n");  return (CMfailed); }
+				{ CMmsgPrint (CMmsgUsrError,"Missing outTable name!");  return (CMfailed); }
 			if(argv[argPos] != (char *) NULL) joinTableName = argv[argPos];
-			if(verbose) fprintf(stderr,"relateTableName: '%s'\njoinTableName: '%s'\n",relateTableName,joinTableName);
+			if(verbose) CMmsgPrint (CMmsgDebug, "relateTableName: '%s'joinTableName: '%s'",relateTableName,joinTableName);
 			if ((argNum = CMargShiftLeft(argPos,argv,argNum)) <= argPos) break;
 			continue;
 			}
 		if (CMargTest(argv[argPos],"-m","--match"))
 			{
 			if ((argNum = CMargShiftLeft(argPos,argv,argNum)) <= argPos + 1)
-				{ CMmsgPrint (CMmsgUsrError,"Missing match field(s)!\n"); return (CMfailed); }
+				{ CMmsgPrint (CMmsgUsrError,"Missing match field(s)!"); return (CMfailed); }
 			if((groups = (Groups **) realloc(groups,(numGrps + 1) * sizeof(Groups *))) == (Groups **) NULL)
-				{ perror ("Memory allocation error!\n"); return(DBFault); }
+				{ CMmsgPrint (CMmsgSysError, "Memory allocation error in: %s %d",__FILE__,__LINE__); return(DBFault); }
 			groups[numGrps] = new Groups();
 			groups[numGrps]->join = argv[argPos];
 			groups[numGrps]->relate = argv[argPos + 1];
@@ -127,7 +127,7 @@ int main (int argc,char *argv [])
 		if (CMargTest(argv[argPos],"-o","--output"))
 			{
 			if ((argNum = CMargShiftLeft(argPos,argv,argNum)) <= argPos)
-				{ CMmsgPrint (CMmsgUsrError,"Missing output filename!\n"); return (CMfailed); }
+				{ CMmsgPrint (CMmsgUsrError,"Missing output filename!"); return (CMfailed); }
 			if((outFile = fopen(argv[argPos],"w")) == (FILE *) NULL)
 				{ CMmsgPrint (CMmsgUsrError,"Cannot open file %s",argv[argPos]); return(DBFault); }
 			if ((argNum = CMargShiftLeft(argPos,argv,argNum)) <= argPos) break;
@@ -136,46 +136,46 @@ int main (int argc,char *argv [])
 		if (CMargTest(argv[argPos],"-a","--dataset"))
 			{
 			if ((argNum = CMargShiftLeft(argPos,argv,argNum)) <= argPos)
-				{ CMmsgPrint (CMmsgUsrError,"Missing output filename!\n"); return (CMfailed); }
+				{ CMmsgPrint (CMmsgUsrError,"Missing output filename!"); return (CMfailed); }
 			joinData = new DBObjData();
 			joinData->Read(argv[argPos]);
-			if(verbose) fprintf(stderr,"joinData: '%s'\n",argv[argPos]);
+			if(verbose) CMmsgPrint (CMmsgDebug, "joinData: '%s'",argv[argPos]);
 			if ((argNum = CMargShiftLeft(argPos,argv,argNum)) <= argPos) break;
 			continue;
 			}
 		if (CMargTest(argv[argPos],"-t","--title"))
 			{
 			if ((argNum = CMargShiftLeft(argPos,argv,argNum)) <= argPos)
-				{ CMmsgPrint (CMmsgUsrError,"Missing title!\n");       return (CMfailed); }
+				{ CMmsgPrint (CMmsgUsrError,"Missing title!");       return (CMfailed); }
 			title = argv[argPos];
-			if(verbose) fprintf(stderr,"title: '%s'\n",title);
+			if(verbose) CMmsgPrint (CMmsgDebug, "title: '%s'",title);
 			if ((argNum = CMargShiftLeft(argPos,argv,argNum)) <= argPos) break;
 			continue;
 			}
 		if (CMargTest(argv[argPos],"-s","--subject"))
 			{
 			if ((argNum = CMargShiftLeft(argPos,argv,argNum)) <= argPos)
-				{ CMmsgPrint (CMmsgUsrError,"Missing subject!\n");     return (CMfailed); }
+				{ CMmsgPrint (CMmsgUsrError,"Missing subject!");     return (CMfailed); }
 			subject = argv[argPos];
-			if(verbose) fprintf(stderr,"subject: '%s'\n",subject);
+			if(verbose) CMmsgPrint (CMmsgDebug, "subject: '%s'",subject);
 			if ((argNum = CMargShiftLeft(argPos,argv,argNum)) <= argPos) break;
 			continue;
 			}
 		if (CMargTest(argv[argPos],"-d","--domain"))
 			{
 			if ((argNum = CMargShiftLeft(argPos,argv,argNum)) <= argPos)
-				{ CMmsgPrint (CMmsgUsrError,"Missing domain!\n");      return (CMfailed); }
+				{ CMmsgPrint (CMmsgUsrError,"Missing domain!");      return (CMfailed); }
 			domain = argv[argPos];
-			if(verbose) fprintf(stderr,"domain: '%s'\n",domain);
+			if(verbose) CMmsgPrint (CMmsgDebug, "domain: '%s'",domain);
 			if ((argNum = CMargShiftLeft(argPos,argv,argNum)) <= argPos) break;
 			continue;
 			}
 		if (CMargTest(argv[argPos],"-v","--version"))
 			{
 			if ((argNum = CMargShiftLeft(argPos,argv,argNum)) <= argPos)
-				{ CMmsgPrint (CMmsgUsrError,"Missing version!\n");     return (CMfailed); }
+				{ CMmsgPrint (CMmsgUsrError,"Missing version!");     return (CMfailed); }
 			version = argv[argPos];
-			if (verbose) fprintf(stderr,"version: '%s'\n",version);
+			if (verbose) CMmsgPrint (CMmsgDebug, "version: '%s'",version);
 			if ((argNum = CMargShiftLeft(argPos,argv,argNum)) <= argPos) break;
 			continue;
 			}
@@ -186,7 +186,7 @@ int main (int argc,char *argv [])
 			continue;
 			}
 		if ((argv[argPos][0] == '-') && (strlen (argv[argPos]) > 1))
-			{ fprintf(stderr,"Unknown option: %s!\n",argv[argPos]); return (CMfailed); }
+			{ CMmsgPrint (CMmsgUsrError, "Unknown option: %s!",argv[argPos]); return (CMfailed); }
 		argPos++;
 		}
 
@@ -194,7 +194,7 @@ int main (int argc,char *argv [])
 	relateData = new DBObjData();
 	if (joinData == (DBObjData *) NULL) joinData = relateData;
 	if ((argNum > 1) && (strcmp(argv[1],"-") != 0)) relateData->Read(argv[1]);
-	else { fprintf(stderr,"WARN: reading from STDIN!\n"); relateData->Read(stdin); }
+	else { CMmsgPrint (CMmsgInfo, "WARN: reading from STDIN!"); relateData->Read(stdin); }
 
 	if (title	!= (char *) NULL) relateData->Name(title);
 	if (subject != (char *) NULL) relateData->Document(DBDocSubject,subject);
@@ -202,21 +202,21 @@ int main (int argc,char *argv [])
 	if (version != (char *) NULL) relateData->Document(DBDocVersion,version);
 
 	if((relateTable = relateData->Table(relateTableName)) == (DBObjTable *) NULL)
-		{ CMmsgPrint (CMmsgUsrError,"Invalid Relate table: %s!\n",relateTableName); delete relateData; return (CMfailed); }
+		{ CMmsgPrint (CMmsgUsrError,"Invalid Relate table: %s!",relateTableName); delete relateData; return (CMfailed); }
 	if((joinTable = joinData->Table(joinTableName)) == (DBObjTable *) NULL)
-		{ CMmsgPrint (CMmsgUsrError,"Invalid Join table: %s!\n",joinTableName); delete joinData; return (CMfailed); }
+		{ CMmsgPrint (CMmsgUsrError,"Invalid Join table: %s!",joinTableName); delete joinData; return (CMfailed); }
 	if((relateData == joinData) && (relateTable == joinTable))
-		{ fprintf(stderr,"Tables are identical!\n"); delete relateData; delete joinData; return(DBFault); }
+		{ CMmsgPrint (CMmsgUsrError, "Tables are identical!"); delete relateData; delete joinData; return(DBFault); }
 
 	for(int i = 0; i < numGrps; i++)
 		{
-		if((field = relateTable->Field(groups[i]->relate)) == (DBObjTableField *) NULL) { fprintf(stderr,"Invalid Relate Table group name: %s\n",groups[i]->relate); return (CMfailed); }
+		if((field = relateTable->Field(groups[i]->relate)) == (DBObjTableField *) NULL) { CMmsgPrint (CMmsgUsrError, "Invalid Relate Table group name: %s",groups[i]->relate); return (CMfailed); }
 		groups[i]->relateFLD = field;
-		if((field = joinTable->Field(groups[i]->join)) == (DBObjTableField *) NULL) { fprintf(stderr,"Invalid Join Table group name: %s\n",groups[i]->join); return (CMfailed); }
+		if((field = joinTable->Field(groups[i]->join)) == (DBObjTableField *) NULL) { CMmsgPrint (CMmsgUsrError, "Invalid Join Table group name: %s",groups[i]->join); return (CMfailed); }
 		groups[i]->joinFLD = field;
-		if(verbose) fprintf(stderr,"Added Group #%d: join: '%s' <-> relate: '%s'\n",i,groups[i]->join,groups[i]->relate);
+		if(verbose) CMmsgPrint (CMmsgUsrError, "Added Group #%d: join: '%s' <-> relate: '%s'",i,groups[i]->join,groups[i]->relate);
 		}
-	if(verbose) fprintf(stderr,"relateItemNum: %d joinItemNum: %d\n",relateTable->ItemNum(),joinTable->ItemNum());
+	if(verbose) CMmsgPrint (CMmsgDebug, "relateItemNum: %d joinItemNum: %d",relateTable->ItemNum(),joinTable->ItemNum());
 
 	for(int joinFieldID = 0; joinFieldID < joinTable->FieldNum();++joinFieldID)
 		{
@@ -232,7 +232,7 @@ int main (int argc,char *argv [])
 		if(relateFieldID == relateTable->FieldNum ())
 			{
 			if((fields = (Fields **) realloc(fields,(numFlds + 1) * sizeof(Fields *))) == (Fields **) NULL)
-				{ perror ("Memory allocation error!\n"); return(DBFault); }
+				{ CMmsgPrint (CMmsgSysError, "Memory allocation error in: %s %d",__FILE__,__LINE__); return(DBFault); }
 			fields[numFlds] = new Fields();
 			fields[numFlds]->joinFLD = joinField;
 			fields[numFlds]->relateFLD = new DBObjTableField (*joinField);

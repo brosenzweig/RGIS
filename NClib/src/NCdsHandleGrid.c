@@ -1,4 +1,5 @@
-#include<NCdsHandle.h>
+#include <cm.h>
+#include <NCdsHandle.h>
 
 NCstate NCdsHandleGridDefine (NCdsHandleGrid_t *grid, int *ncids, size_t n)
 {
@@ -20,14 +21,14 @@ NCstate NCdsHandleGridDefine (NCdsHandleGrid_t *grid, int *ncids, size_t n)
 	if (NCdsHandleGLayoutDefine ((NCdsHandleGLayout_t *) grid, ncids, n) == NCfailed) return (NCfailed);
 
 	if ((grid->DataType != NCtypeGCont) && (grid->DataType != NCtypeGDisc)) 
-	{ fprintf (stderr,"Invalid data in: NCDdsHanderGridDefine ()\n"); goto ABORT; }
+	{ CMmsgPrint (CMmsgAppError, "Invalid data in: %s %d",__FILE__,__LINE__); goto ABORT; }
 
 	if (((grid->TVarIds  = (int *)    calloc (n, sizeof (int)))    == (int *)    NULL) ||
 	    ((grid->LVarIds  = (int *)    calloc (n, sizeof (int)))    == (int *)    NULL) ||
 	    ((grid->NCoffset = (size_t *) calloc (n, sizeof (size_t))) == (size_t *) NULL) ||
-		 ((grid->LUnits   = (utUnit *) calloc (n, sizeof (utUnit))) == (utUnit *) NULL) ||
-		 ((grid->TUnits   = (utUnit *) calloc (n, sizeof (utUnit))) == (utUnit *) NULL))
-	{ perror ("Memory allocation error in: NCdsHandleGridDefine\n"); goto ABORT; }
+		((grid->LUnits   = (utUnit *) calloc (n, sizeof (utUnit))) == (utUnit *) NULL) ||
+		((grid->TUnits   = (utUnit *) calloc (n, sizeof (utUnit))) == (utUnit *) NULL))
+	{ CMmsgPrint (CMmsgSysError, "Memory allocation error in: %s %d",__FILE__,__LINE__); goto ABORT; }
 
 	for (i = 0;i < n; ++i) grid->TVarIds [i] = grid->LVarIds [i] = NCundefined;
 	for (i = 0;i < n; ++i)
@@ -45,7 +46,7 @@ NCstate NCdsHandleGridDefine (NCdsHandleGrid_t *grid, int *ncids, size_t n)
 		if (i == 0) grid->DoTUnit = status == NC_NOERR ? true : false;
 		if (grid->DoTUnit && (status != NC_NOERR)) grid->DoTUnit = false;
 		else if (utScan (unitstr,grid->TUnits + i) != 0)
-		{ fprintf (stderr,"Invalid time unit string [%s] in: NCdsHandleGridDefine ()\n",unitstr); grid->DoTUnit = false; }
+		{ CMmsgPrint (CMmsgAppError, "Invalid time unit string [%s] in: %s %d",__FILE__,__LINE__,unitstr); grid->DoTUnit = false; }
 		else
 		{
 			if      (strncmp (unitstr,"seconds",strlen ("seconds")) == 0) grid->TSmode = NCtimeSecond;
@@ -55,9 +56,9 @@ NCstate NCdsHandleGridDefine (NCdsHandleGrid_t *grid, int *ncids, size_t n)
 			else if (strncmp (unitstr,"months", strlen ("months"))  == 0) grid->TSmode = NCtimeMonth;
 			else if (strncmp (unitstr,"years",  strlen ("years"))   == 0) grid->TSmode = NCtimeYear;
 			if ((dateStr = strstr (unitstr,"since")) == (char *) NULL)
-			{ fprintf (stderr,"Invalid time unit string [%s] in: NCdsHandleGridDefine ()\n",unitstr); grid->DoTUnit = false; }
+			{ CMmsgPrint (CMmsgAppError, "Invalid time unit string [%s] in: %s %d",__FILE__,__LINE__,unitstr); grid->DoTUnit = false; }
 			else if (sscanf (dateStr + strlen ("since"),"%04d",&year) != 1)
-			{ fprintf (stderr,"Invalid time unit string [%s] in: NCdsHandleGridDefine ()\n",unitstr); grid->DoTUnit = false; }
+			{ CMmsgPrint (CMmsgAppError, "Invalid time unit string [%s] in: %s %d",__FILE__,__LINE__,unitstr); grid->DoTUnit = false; }
 			grid->Climatology = year == 0 ? true : false;
 		}
 
@@ -66,7 +67,7 @@ NCstate NCdsHandleGridDefine (NCdsHandleGrid_t *grid, int *ncids, size_t n)
 		{
 			if (((grid->Times    = (double *) realloc (grid->Times,    (grid->TNum + tnum) * sizeof (double))) == (double *) NULL) ||
 			    ((grid->NCindex  = (size_t *) realloc (grid->NCindex,  (grid->TNum + tnum) * sizeof (size_t))) == (size_t *) NULL))
-			{ perror ("Memory allocation error in: NCdsHandleGridDefine ()\n"); goto ABORT; }
+			{ CMmsgPrint (CMmsgSysError, "Memory allocation error in: %s %d",__FILE__,__LINE__); goto ABORT; }
 
 			if ((status = nc_get_var_double (ncids [i],grid->TVarIds [i],grid->Times + grid->TNum)) != NC_NOERR)
 			{ NCprintNCError (status,"NCdsHandleGridDefine");       goto ABORT; }
@@ -89,17 +90,17 @@ NCstate NCdsHandleGridDefine (NCdsHandleGrid_t *grid, int *ncids, size_t n)
 			{
 				grid->DoLUnit = status == NC_NOERR ? true : false;
 				if ((grid->Levels = (double *) realloc (grid->Levels, lnum * sizeof (double))) == (double *) NULL)
-				{ perror ("Memory allocation error in: NCdsHandle.h\n"); goto ABORT; }
+				{ CMmsgPrint (CMmsgSysError, "Memory allocation error in: %s %d",__FILE__,__LINE__); goto ABORT; }
 				if ((status = nc_get_var_double (ncids [i], grid->LVarIds [i], grid->Levels)) != NC_NOERR)
 				{	NCprintNCError (status,"NCdsHandleGridDefine");      goto ABORT; }
 				grid->LNum = lnum;
 			}
 			else if (grid->LNum != lnum)
-			{ fprintf (stderr,"Inconsistent NetCDF bundle in: NCdsHandleGridDefine ()\n"); goto ABORT; }
+			{ CMmsgPrint (CMmsgAppError, "Inconsistent NetCDF bundle in: %s %d",__FILE__,__LINE__); goto ABORT; }
 
 			if (grid->DoLUnit && (status != NC_NOERR)) grid->DoLUnit = false;
 			else if (utScan (unitstr,grid->LUnits + i) != 0)
-			{ fprintf (stderr,"Invalid level unit string [%s] in: NCdsHandleGridDefine ()\n",unitstr); grid->DoLUnit = false; }
+			{ CMmsgPrint (CMmsgAppError, "Invalid level unit string [%s] in: %s %d",__FILE__,__LINE__,unitstr); grid->DoLUnit = false; }
 		}
 		else grid->LNum = 1;
 
@@ -114,12 +115,12 @@ NCstate NCdsHandleGridDefine (NCdsHandleGrid_t *grid, int *ncids, size_t n)
 			if (grid->DoTUnit && ((j = grid->NCindex [i]) != 0))
 			{
 				if (utConvert (grid->TUnits + j,grid->TUnits, &scale, &offset) != 0)
-				{ fprintf (stderr,"Invalid time conversion in: NCdsHandleGridDefine ()\n"); break; }
+				{ CMmsgPrint (CMmsgAppError, "Invalid time conversion in: %s %d",__FILE__,__LINE__); break; }
 			}
 			x1 = grid->Times [i] * scale + offset;
 			if (i == 1) delta = x1 - x0;
 			else if (NCmathEqualValues (delta, x1 - x0) != true)
-			{ fprintf (stderr,"Irregular time step in: NCdsHandleGridDefine ()\n"); break; }
+			{ CMmsgPrint (CMmsgAppError, "Irregular time step in: %s %d",__FILE__,__LINE__); break; }
 			x0 = x1;
 		}
 	}
@@ -134,12 +135,12 @@ NCstate NCdsHandleGridDefine (NCdsHandleGrid_t *grid, int *ncids, size_t n)
 			if (grid->DoLUnit && ((j = grid->NCindex [i]) != 0))
 			{
 				if (utConvert (grid->LUnits + j,grid->LUnits, &scale, &offset) != 0)
-				{ fprintf (stderr,"Invalid level conversion in: NCdsHandleGridDefine ()\n"); break; }
+				{ CMmsgPrint (CMmsgAppError, "Invalid level conversion in: %s %d",__FILE__,__LINE__); break; }
 			}
 			x1 = grid->Levels [i] * scale + offset;
 			if (i == 1) delta = x1 - x0;
 			else if (NCmathEqualValues (delta,x1 - x0) != true)
-			{ fprintf (stderr,"Irregular time step in: NCdsHandleGridDefine ()\n"); break; }
+			{ CMmsgPrint (CMmsgAppError, "Irregular time step in: %s %d",__FILE__,__LINE__); break; }
 			x0 = x1;
 		}
 	}
@@ -173,13 +174,13 @@ NCstate NCdsHandleGridGetTime (const NCdsHandleGrid_t *grid, size_t layerID, utU
 		if (grid->TSmode > NCtimeMonth)
 		{
 			if (utConvert (grid->TUnits,tUnit, &scale, &offset) != 0)
-			{ fprintf (stderr,"Unit conversion error in: NCdsHandleGridGetStartTime ()\n"); return (NCfailed); }
+			{ CMmsgPrint (CMmsgAppError, "Unit conversion error in: %s %d",__FILE__,__LINE__); return (NCfailed); }
 			*time = grid->Times [layerID] * scale + offset;
 		}
 		else
 		{
 			if (utCalendar ((double) 0.0,grid->TUnits, &year, &month, &day, &hour, &minute, &second) != 0)
-			{ fprintf (stderr,"Unit conversion error in: NCdsHandleGridGetStartTime ()\n"); return (NCfailed); }
+			{ CMmsgPrint (CMmsgAppError, "Unit conversion error in: %s %d",__FILE__,__LINE__); return (NCfailed); }
 			if (grid->TSmode == NCtimeYear)
 			{
 				*time = (double) year + grid->Times [layerID];
@@ -196,7 +197,7 @@ NCstate NCdsHandleGridGetTime (const NCdsHandleGrid_t *grid, size_t layerID, utU
 			minute = 0;	
 			second = 0.0;
 			if (utInvCalendar (year, month, day, hour, minute, second, tUnit, time) != 0)
-			{ fprintf (stderr,"Unit conversion error in: NCdsHandleGridGetStartTime ()\n"); return (NCfailed); }
+			{ CMmsgPrint (CMmsgAppError, "Unit conversion error in: %s %d",__FILE__,__LINE__); return (NCfailed); }
 		}
 	}
 	else *time = grid->Times [layerID];
@@ -216,35 +217,35 @@ int NCdsHandleGridGetTimeStep (const NCdsHandleGrid_t *grid, size_t layerID, utU
 		if (grid->TSmode == NCtimeMonth)
 		{
 			if (utCalendar ((double) 0.0,grid->TUnits, &year, &month, &day, &hour, &minute, &second) != 0)
-			{ fprintf (stderr,"Unit conversion error in: NCdsHandleGridGetTimeStep ()\n"); return (NCfailed); }
+			{ CMmsgPrint (CMmsgAppError, "Unit conversion error in: %s %d",__FILE__,__LINE__); return (NCfailed); }
 			nMonths = year * 12 + month - 1 + (int) grid->Times [layerID];
 			year    = nMonths / 12;
 			month   = nMonths % 12 + 1;
 			if (utInvCalendar (year, month, day, hour, minute, second, tUnit, &time) != 0)
-			{ fprintf (stderr,"Unit conversion error in: NCdsHandleGridGetTimeStep ()\n"); return (NCfailed); }
+			{ CMmsgPrint (CMmsgAppError, "Unit conversion error in: %s %d",__FILE__,__LINE__); return (NCfailed); }
 			nMonths += 1;
 			year    = nMonths / 12;
 			month   = nMonths % 12 + 1;
 			if (utInvCalendar (year, month, day, hour, minute, second, tUnit, tStep) != 0)
-			{ fprintf (stderr,"Unit conversion error in: NCdsHandleGridGetTimeStep ()\n"); return (NCfailed); }
+			{ CMmsgPrint (CMmsgAppError, "Unit conversion error in: %s %d",__FILE__,__LINE__); return (NCfailed); }
 			*tStep -= time;
 		}
 		else if (grid->TSmode == NCtimeYear)
 		{
 			if (utCalendar ((double) 0.0,grid->TUnits, &year, &month, &day, &hour, &minute, &second) != 0)
-			{ fprintf (stderr,"Unit conversion error in: NCdsHandleGridGetTimeStep ()\n"); return (NCfailed); }
+			{ CMmsgPrint (CMmsgAppError, "Unit conversion error in: %s %d",__FILE__,__LINE__); return (NCfailed); }
 
 			year += (int) grid->Times [layerID];
 			if (utInvCalendar (year, month, day, hour, minute, second, tUnit, &time) != 0)
-			{ fprintf (stderr,"Unit conversion error in: NCdsHandleGridGetTimeStep ()\n"); return (NCfailed); }
+			{ CMmsgPrint (CMmsgAppError, "Unit conversion error in: %s %d",__FILE__,__LINE__); return (NCfailed); }
 			if (utInvCalendar (year + 1, month, day, hour, minute, second, tUnit, tStep) != 0)
-			{ fprintf (stderr,"Unit conversion error in: NCdsHandleGridGetTimeStep ()\n"); return (NCfailed); }
+			{ CMmsgPrint (CMmsgAppError, "Unit conversion error in: %s %d",__FILE__,__LINE__); return (NCfailed); }
 			*tStep -= time;
 		}
 		else
 		{
 			if (utConvert (grid->TUnits,tUnit, &scale, &offset) != 0)
-			{ fprintf (stderr,"Unit conversion error in: NCdsHandleGridGetTimeStep ()\n"); return (NCfailed); }
+			{ CMmsgPrint (CMmsgAppError, "Unit conversion error in: %s %d",__FILE__,__LINE__); return (NCfailed); }
 			*tStep = (grid->Times [1] - grid->Times [0]) * scale;
 		}
 	}
@@ -266,16 +267,16 @@ int NCdsHandleGridGetTLayerID (const NCdsHandleGrid_t *grid, utUnit *tUnit, doub
 		if (grid->TSmode > NCtimeMonth)
 		{
 			if (utConvert (tUnit, grid->TUnits, &scale, &offset) != 0)
-			{ fprintf (stderr,"Unit conversion error in: NCdsHandleGridGetTLayerID ()\n"); return (NCfailed); }
+			{ CMmsgPrint (CMmsgAppError, "Unit conversion error in: %s %d",__FILE__,__LINE__); return (NCfailed); }
 			time = time * scale + offset;
 		}
 		else
 		{
 			if (utCalendar ((double) 0.0,grid->TUnits, &year, &month, &day, &hour, &minute, &second) != 0)
-			{ fprintf (stderr,"Unit conversion error in: NCdsHandleGridGetTLayerID ()\n"); return (NCfailed); }
+			{ CMmsgPrint (CMmsgAppError, "Unit conversion error in: %s %d",__FILE__,__LINE__); return (NCfailed); }
 			offset = grid->TSmode == NCtimeYear ? year : year * 12 + month - 1;
 			if (utCalendar (time, tUnit, &year, &month, &day, &hour, &minute, &second) != 0)
-			{ fprintf (stderr,"Unit conversion error in: NCdsHandleGridGetTLayerID ()\n"); return (NCfailed); }
+			{ CMmsgPrint (CMmsgAppError, "Unit conversion error in: %s %d",__FILE__,__LINE__); return (NCfailed); }
 			time = grid->TSmode == NCtimeYear ? year - offset : year * 12 + month - 1 - offset;
 		}
 	}

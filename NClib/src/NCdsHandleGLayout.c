@@ -1,4 +1,5 @@
-#include<NCdsHandle.h>
+#include <cm.h>
+#include <NCdsHandle.h>
 
 NCstate NCdsHandleGLayoutDefine (NCdsHandleGLayout_t *glt, int *ncids, size_t n)
 {
@@ -13,10 +14,10 @@ NCstate NCdsHandleGLayoutDefine (NCdsHandleGLayout_t *glt, int *ncids, size_t n)
 	glt->GVarIds = (int *) NULL;
 
 	if ((glt->DataType != NCtypeGCont) && (glt->DataType != NCtypeGDisc) && (glt->DataType != NCtypeNetwork))
-	{ fprintf (stderr,"Invalid data in: NCdsHandleGLayoutDefine ()\n"); goto ABORT; }
+	{ CMmsgPrint (CMmsgAppError, "Invalid data in: %s %d",__FILE__,__LINE__); goto ABORT; }
 
 	if ((glt->GVarIds = (int *) calloc (n, sizeof (int))) == (int *) NULL)
-	{ perror ("Memory allocation Error in: NCdsHandleGLayoutDefine ()"); goto ABORT; }
+	{ CMmsgPrint (CMmsgSysError, "Memory allocation Error in: %s %d",__FILE__,__LINE__); goto ABORT; }
 
 	for (i = 0;i < n;++i)
 		{
@@ -51,7 +52,7 @@ NCstate NCdsHandleGLayoutDefine (NCdsHandleGLayout_t *glt, int *ncids, size_t n)
 			if (i == 0)
 			{
 				if ((glt->XCoords = (double *) calloc (xdim + 1, sizeof (double))) == (double *) NULL)
-				{ perror ("Memory allocation error in: NCdsHandleGLayoutDefine ()\n"); goto ABORT; }
+				{ CMmsgPrint (CMmsgSysError, "Memory allocation error in: %s %d",__FILE__,__LINE__); goto ABORT; }
 
 				if ((status = nc_get_var_double (ncids [i],xvarid,glt->XCoords)) != NC_NOERR) 
 				{ NCprintNCError (status,"NCdsHandleGLayoutDefine"); goto ABORT; }
@@ -63,7 +64,7 @@ NCstate NCdsHandleGLayoutDefine (NCdsHandleGLayout_t *glt, int *ncids, size_t n)
 				if (glt->Extent.UpperRight.X < glt->XCoords [xdim]) glt->Extent.UpperRight.X = glt->XCoords [xdim];
 
 				if ((glt->YCoords = (double *) calloc (ydim + 1, sizeof (double))) == (double *) NULL)
-				{ perror ("Memory allocation error in: NCdsHandleGLayoutDefine ()\n"); goto ABORT; }
+				{ CMmsgPrint (CMmsgSysError, "Memory allocation error in: %s %d",__FILE__,__LINE__); goto ABORT; }
 
 				if ((status = nc_get_var_double (ncids [i],yvarid,glt->YCoords)) != NC_NOERR) 
 				{ NCprintNCError (status,"NCdsHandleGLayoutDefine"); goto ABORT; }
@@ -79,7 +80,7 @@ NCstate NCdsHandleGLayoutDefine (NCdsHandleGLayout_t *glt, int *ncids, size_t n)
 				glt->RowNum = ydim;
 			}
 			else if ((glt->GType != gtype) || (glt->ColNum != xdim) || (glt->RowNum != ydim))
-			{ fprintf (stderr,"Inconsistent NetCDF bundle in: NCdsHandleGLayoutDefine ()\n"); goto ABORT; }
+			{ CMmsgPrint (CMmsgAppError, "Inconsistent NetCDF bundle in: %s %d",__FILE__,__LINE__); goto ABORT; }
 		}
 	return (NCsucceeded);
 

@@ -10,9 +10,9 @@ balazs.fekete@unh.edu
 
 *******************************************************************************/
 
+#include<cm.h>
 #include<DB.H>
 #include<DBif.H>
-#include<cm.h>
 #include<MF.h>
 
 DBInt RGlibRGIS2DataStream (DBObjData *grdData,DBObjData *tmplData,char *fieldName,FILE *outFile)
@@ -38,7 +38,7 @@ DBInt RGlibRGIS2DataStream (DBObjData *grdData,DBObjData *tmplData,char *fieldNa
 
 		if (fieldName == (char *) NULL) fieldName = DBrNGridValue;
 		if ((fieldPTR = itemTable->Field (fieldName)) == (DBObjTableField *) NULL)
-			{ fprintf (stderr,"Error: Invalid field [%s] in: RGlibRGIS2DataStream ()!\n",fieldName); return (DBFault); }
+			{ CMmsgPrint (CMmsgAppError, "Error: Invalid field [%s] in: %s %d",fieldName,__FILE__,__LINE__); return (DBFault); }
 		itemSize = fieldPTR->Length ();
 		switch (fieldPTR->Type ())
 			{
@@ -65,7 +65,7 @@ DBInt RGlibRGIS2DataStream (DBObjData *grdData,DBObjData *tmplData,char *fieldNa
 		}
 	else
 		{
-		if (fieldName != (char *) NULL) fprintf (stderr,"Warning: Fieldname ignored for continuous grid!\n");
+		if (fieldName != (char *) NULL) CMmsgPrint (CMmsgUsrError, "Warning: Fieldname ignored for continuous grid!");
 		itemSize = gridIF->ValueSize ();
 		switch (gridIF->ValueType ())
 			{
@@ -116,7 +116,7 @@ DBInt RGlibRGIS2DataStream (DBObjData *grdData,DBObjData *tmplData,char *fieldNa
 		}
 	if ((data = (void *) calloc (varHeader.ItemNum,itemSize)) == (void *) NULL)
 		{
-		fprintf (stderr,"Error! Allocating %d items of %d size in: RGlibRGIS2DataStream!\n",varHeader.ItemNum,itemSize);
+		CMmsgPrint (CMmsgSysError, "Error! Allocating %d items of %d size in: %s %d",varHeader.ItemNum,itemSize,__FILE__,__LINE__);
 		return (DBFault);
 		}
 
@@ -160,9 +160,9 @@ DBInt RGlibRGIS2DataStream (DBObjData *grdData,DBObjData *tmplData,char *fieldNa
 						}
 					}
 				if ((DBInt) fwrite (&varHeader,sizeof (MFVarHeader_t),1,outFile) != 1)
-					{ perror ("Error: Writing record header in: RGlibRGIS2DataStream ()\n");	ret = DBFault; break; }
+					{ CMmsgPrint (CMmsgSysError, "Error: Writing record header in: %s %d",__FILE__,__LINE__);	ret = DBFault; break; }
 				if ((DBInt) fwrite (data,itemSize,varHeader.ItemNum,outFile) != varHeader.ItemNum)
-					{ perror ("Error: Writing data in: RGlibRGIS2DataStream ()\n");				ret = DBFault; break; }
+					{ CMmsgPrint (CMmsgSysError, "Error: Writing data in: %s %d",__FILE__,__LINE__);				ret = DBFault; break; }
 				}
 			}
 		else
@@ -195,9 +195,9 @@ DBInt RGlibRGIS2DataStream (DBObjData *grdData,DBObjData *tmplData,char *fieldNa
 						}
 					}
 				if ((DBInt) fwrite (&varHeader,sizeof (MFVarHeader_t),1,outFile) != 1)
-					{ perror ("Error: Writing record header in: RGlibRGIS2DataStream ()\n");	ret = DBFault; break; }
+					{ CMmsgPrint (CMmsgSysError, "Error: Writing record header in: %s %d",__FILE__,__LINE__);	ret = DBFault; break; }
 				if ((DBInt) fwrite (data,itemSize,varHeader.ItemNum,outFile) != varHeader.ItemNum)
-					{ perror ("Error: Writing data in: RGlibRGIS2DataStream ()\n");				ret = DBFault; break; }
+					{ CMmsgPrint (CMmsgSysError, "Error: Writing data in: %s %d",__FILE__,__LINE__);				ret = DBFault; break; }
 				}
 			}
 		delete tmplPntIF;
@@ -260,9 +260,9 @@ DBInt RGlibRGIS2DataStream (DBObjData *grdData,DBObjData *tmplData,char *fieldNa
 							}
 						}
 				if ((DBInt) fwrite (&varHeader,sizeof (MFVarHeader_t),1,outFile) != 1)
-					{ perror ("Error: Writing record header in: RGlibRGIS2DataStream ()\n");	ret = DBFault; break; }
+					{ CMmsgPrint (CMmsgSysError, "Error: Writing record header in: %s %d",__FILE__,__LINE__);	ret = DBFault; break; }
 				if ((DBInt) fwrite (data,itemSize,varHeader.ItemNum,outFile) != varHeader.ItemNum)
-					{ perror ("Error: Writing data in: RGlibRGIS2DataStream ()\n");				ret = DBFault; break; }
+					{ CMmsgPrint (CMmsgSysError, "Error: Writing data in: %s %d",__FILE__,__LINE__);				ret = DBFault; break; }
 				}
 			}
 		else
@@ -301,9 +301,9 @@ DBInt RGlibRGIS2DataStream (DBObjData *grdData,DBObjData *tmplData,char *fieldNa
 							}
 						}
 				if ((DBInt) fwrite (&varHeader,sizeof (MFVarHeader_t),1,outFile) != 1)
-					{ perror ("Error: Writing record header in: RGlibRGIS2DataStream ()\n");	ret = DBFault; break; }
+					{ CMmsgPrint (CMmsgSysError, "Error: Writing record header in: %s %d",__FILE__,__LINE__);	ret = DBFault; break; }
 				if ((DBInt) fwrite (data,itemSize,varHeader.ItemNum,outFile) != varHeader.ItemNum)
-					{ perror ("Error: Writing data in: RGlibRGIS2DataStream ()\n");				ret = DBFault; break; }
+					{ CMmsgPrint (CMmsgSysError, "Error: Writing data in: %s %d",__FILE__,__LINE__);				ret = DBFault; break; }
 				}
 			}
 		if (tmplGrdIF != gridIF) delete tmplGrdIF;
@@ -348,9 +348,9 @@ DBInt RGlibRGIS2DataStream (DBObjData *grdData,DBObjData *tmplData,char *fieldNa
 						}
 					}
 				if ((DBInt) fwrite (&varHeader,sizeof (MFVarHeader_t),1,outFile) != 1)
-					{ perror ("Error: Writing record header in: RGlibRGIS2DataStream ()\n");	ret = DBFault; break; }
+					{ CMmsgPrint (CMmsgSysError, "Error: Writing record header in: %s %d",__FILE__,__LINE__);	ret = DBFault; break; }
 				if ((DBInt) fwrite (data,itemSize,varHeader.ItemNum,outFile) != varHeader.ItemNum)
-					{ perror ("Error: Writing data in: RGlibRGIS2DataStream ()\n");				ret = DBFault; break; }
+					{ CMmsgPrint (CMmsgSysError, "Error: Writing data in: %s %d",__FILE__,__LINE__);				ret = DBFault; break; }
 				}
 			}
 		else
@@ -383,9 +383,9 @@ DBInt RGlibRGIS2DataStream (DBObjData *grdData,DBObjData *tmplData,char *fieldNa
 						}
 					}
 				if ((DBInt) fwrite (&varHeader,sizeof (MFVarHeader_t),1,outFile) != 1)
-					{ perror ("Error: Writing record header in: RGlibRGIS2DataStream ()\n");	ret = DBFault; break; }
+					{ CMmsgPrint (CMmsgSysError, "Error: Writing record header in: %s %d",__FILE__,__LINE__);	ret = DBFault; break; }
 				if ((DBInt) fwrite (data,itemSize,varHeader.ItemNum,outFile) != varHeader.ItemNum)
-					{ perror ("Error: Writing data in: RGlibRGIS2DataStream ()\n");				ret = DBFault; break; }
+					{ CMmsgPrint (CMmsgSysError, "Error: Writing data in: %s %d",__FILE__,__LINE__);				ret = DBFault; break; }
 				}
 			}
 		delete tmplNetIF;
@@ -423,12 +423,12 @@ DBInt RGlibDataStream2RGIS (DBObjData *outData,DBObjData *tmplData, FILE *inFile
 			while (MFVarReadHeader (&header,inFile))
 				{
 				if (header.ItemNum != pntIF->ItemNum ())
-					{ fprintf (stderr,"Error: Datastream inconsistency %d %d!\n",header.ItemNum,pntIF->ItemNum ()); return (DBFault); }
+					{ CMmsgPrint (CMmsgUsrError, "Error: Datastream inconsistency %d %d!",header.ItemNum,pntIF->ItemNum ()); return (DBFault); }
 				if (data == (void *) NULL)
 					{
 					itemSize = MFVarItemSize (header.DataType);
 					if ((data = (void *) realloc (data,header.ItemNum * itemSize)) == (void *) NULL)
-						{ perror ("Memory allocation error in: RGlibDataStream2RGIS ()"); return (DBFault); }
+						{ CMmsgPrint (CMmsgSysError, "Memory allocation error in: %s %d",__FILE__,__LINE__); return (DBFault); }
 					switch (header.DataType)
 						{
 						case MFByte:	valField = new DBObjTableField ("Value", DBTableFieldInt,     "%2d", sizeof (char),     false);
@@ -440,7 +440,7 @@ DBInt RGlibDataStream2RGIS (DBObjData *outData,DBObjData *tmplData, FILE *inFile
 					itemTable->AddField (valField);
 					}
 				if ((int) fread (data,itemSize,header.ItemNum,inFile) != header.ItemNum)
-					{ fprintf (stderr,"Error: Data stream read in: RGlibDataStream2rgis ()"); return (DBFault); }
+					{ CMmsgPrint (CMmsgSysError, "Error: Data stream read in: %s %d",__FILE__,__LINE__); return (DBFault); }
 				for (itemID = 0;itemID < header.ItemNum;++itemID)
 					{
 					record = itemTable->Add (header.Date);
@@ -468,12 +468,12 @@ DBInt RGlibDataStream2RGIS (DBObjData *outData,DBObjData *tmplData, FILE *inFile
 			while (MFVarReadHeader (&header,inFile))
 				{
 				if (header.ItemNum != gridIF->RowNum () * gridIF->ColNum ())
-					{ fprintf (stderr,"Error: Datastream inconsistency!\n"); return (DBFault); }
+					{ CMmsgPrint (CMmsgUsrError, "Error: Datastream inconsistency!"); return (DBFault); }
 				if (layerID == 0)
 					{
 					itemSize = MFVarItemSize (header.DataType);
 					if ((data = (void *) realloc (data,header.ItemNum * itemSize)) == (void *) NULL)
-						{ perror ("Memory allocation error in: RGlibDataStream2RGIS ()"); return (DBFault); }
+						{ CMmsgPrint (CMmsgSysError, "Memory allocation error in: %s %d",__FILE__,__LINE__); return (DBFault); }
 					record = gridIF->Layer (layerID);
 					gridIF->RenameLayer (header.Date);
 					}
@@ -488,7 +488,7 @@ DBInt RGlibDataStream2RGIS (DBObjData *outData,DBObjData *tmplData, FILE *inFile
 					case MFDouble:	gridIF->MissingValue (record,header.Missing.Float); break;
 					}
 				if ((int) fread (data,itemSize,header.ItemNum,inFile) != header.ItemNum)
-					{ fprintf (stderr,"Error: Data stream read in: RGlibDataStream2rgis ()"); return (DBFault); }
+					{ CMmsgPrint (CMmsgSysError, "Error: Data stream read in: %s %d",__FILE__,__LINE__); return (DBFault); }
 
 				for (pos.Row = 0;pos.Row < gridIF->RowNum ();++pos.Row)
 					for (pos.Col = 0;pos.Col < gridIF->ColNum ();++pos.Col)
@@ -516,18 +516,18 @@ DBInt RGlibDataStream2RGIS (DBObjData *outData,DBObjData *tmplData, FILE *inFile
 			while (MFVarReadHeader (&header,inFile))
 				{
 				if (header.ItemNum != netIF->CellNum ())
-					{ fprintf (stderr,"Error: Datastream inconsistency!\n"); return (DBFault); }
+					{ CMmsgPrint (CMmsgUsrError, "Error: Datastream inconsistency!"); return (DBFault); }
 				if (layerID == 0)
 					{
 					itemSize = MFVarItemSize (header.DataType);
 					if ((data = (void *) realloc (data,header.ItemNum * itemSize)) == (void *) NULL)
-						{ perror ("Memory allocation error in: RGlibDataStream2RGIS ()"); return (DBFault); }
+						{ CMmsgPrint (CMmsgSysError, "Memory allocation error in: %s %d",__FILE__,__LINE__); return (DBFault); }
 					record = gridIF->Layer (layerID);
 					gridIF->RenameLayer (header.Date);
 					}
 				else record = gridIF->AddLayer (header.Date);
 				if ((int) fread (data,itemSize,header.ItemNum,inFile) != header.ItemNum)
-					{ fprintf (stderr,"Error: Data stream read in: RGlibDataStream2rgis ()"); delete netIF; return (DBFault); }
+					{ CMmsgPrint (CMmsgSysError, "Error: Data stream read in: %s %d",__FILE__,__LINE__); delete netIF; return (DBFault); }
 
 				for (pos.Row = 0;pos.Row < gridIF->RowNum ();++pos.Row)
 					for (pos.Col = 0;pos.Col < gridIF->ColNum ();++pos.Col)

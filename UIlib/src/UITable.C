@@ -804,7 +804,7 @@ static void _UITableLoadSelectionCBK (Widget widget,UITable *uiTable,XmAnyCallba
 	if ((field = table->Field (selection)) == (DBObjTableField *) NULL) return;
 	if ((selection = UIFileSelection (_UITableSelectionFileSelect,false)) == NULL) return;
 	if ((inFile = fopen (selection,"r")) == (FILE *) NULL)
-		{ perror ("File Opening Error in: _UITableLoadSelectionCBK ()"); return; }
+		{ CMmsgPrint (CMmsgSysError, "File Opening Error in:%s %d",__FILE__,__LINE__); return; }
 	for (record = table->First ();record != (DBObjRecord *) NULL;record = table->Next ())
 		if ((record->Flags () & DBObjectFlagSelected) == DBObjectFlagSelected)
 			record->Flags (DBObjectFlagSelected,false);
@@ -848,7 +848,7 @@ static void _UITableSaveSelectionCBK (Widget widget,UITable *uiTable,XmAnyCallba
 	if ((field = table->Field (selection)) == (DBObjTableField *) NULL) return;
 	if ((selection = UIFileSelection (_UITableSelectionFileSelect,false)) == NULL) return;
 	if ((outFile = fopen (selection,"w")) == (FILE *) NULL)
-		{ perror ("File Opening Error in: _UITableSaveSelectionCBK ()"); return; }
+		{ CMmsgPrint (CMmsgSysError, "File Opening Error in:%s %d",__FILE__,__LINE__); return; }
 	for (record = table->First ();record != (DBObjRecord *) NULL;record = table->Next ())
 		{
 		if ((record->Flags () & DBObjectFlagSelected) == DBObjectFlagSelected)

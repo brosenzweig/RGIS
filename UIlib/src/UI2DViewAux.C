@@ -144,7 +144,7 @@ void UI2DView::Size ()
 		else XDestroyImage (Image);
 		}
 	if ((data = (char *) malloc (xwa.width * xwa.height * (bitmap_pad >> 0x03))) == (char *) NULL)
-		{ perror ("Memory Allocation Error in: UI2DView::Size ()"); return; }
+		{ CMmsgPrint (CMmsgSysError, "Memory Allocation Error in: %s %d",__FILE__,__LINE__); return; }
 	Image = XCreateImage(XtDisplay(DrawingAreaW),xwa.visual,xwa.depth,ZPixmap,0,data,xwa.width,xwa.height,bitmap_pad,0);
 	if (FullRegion != NULL) XDestroyRegion (FullRegion);
 	poly [0].x = poly [1].x = 0; poly [2].x = poly [3].x = xwa.width; 

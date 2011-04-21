@@ -231,7 +231,7 @@ void _UIColorInitialize (Widget shell)
 Pixel UIColor (int colorSet,int color)
 
 	{
-	if (color < 0) { fprintf (stderr,"Color out of Range in: UIColor ()\n"); return ((Pixel) NULL);}
+	if (color < 0) { CMmsgPrint (CMmsgUsrError, "Color [%d] out of Range!",color); return ((Pixel) NULL);}
 	switch (colorSet)
 		{
 		case UIColorStandard:
@@ -250,7 +250,7 @@ Pixel UIColor (int colorSet,int color)
 			if (color < _UIColorNum(_UIBlueColors)) return (_UIBlueColors [color].pixel);
 			else return ((Pixel) NULL);
 		case UIColorTrueColor:
-		default: fprintf (stderr,"Invalid colorset in: UIColor ()\n"); return ((Pixel) NULL);
+		default: CMmsgPrint (CMmsgUsrError, "Invalid colorset [%d]!",colorSet); return ((Pixel) NULL);
 		}
 	}
 
@@ -258,7 +258,7 @@ char *UIStandardColorName (int color)
 
 	{
 	if ((color < 0) && (color >= _UIColorNum (_UIStandardColors)))
-		{	fprintf (stderr,"Color out of Range in: UIStandardColorName ()\n"); return (NULL);}
+		{	CMmsgPrint (CMmsgUsrError, "Color [%d] out of Range!",color); return (NULL);}
 	return (_UIStdColorNames [color]);
 	}
 
@@ -273,6 +273,6 @@ int UIColorNum (int colorSet)
 		case UIColorBlueScale:		return (_UIColorNum (_UIBlueColors));
 		case UIColorRedScale:		return (_UIColorNum (_UIRedColors));
 		case UIColorTrueColor:
-		default:			 fprintf (stderr,"Invalid colorset in: UIColorNum ()\n"); return (UIFault);
+		default:			 CMmsgPrint (CMmsgUsrError, "Invalid colorset [%d]!",colorSet); return (UIFault);
 		}
 	}

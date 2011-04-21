@@ -1,38 +1,39 @@
+#include <cm.h>
 #include <NCmathEqtn.h>
 #include <NCtable.h>
 #include <stdio.h>
 
 void do_help(char *progName)
 {
-	fprintf(stderr,"Usage: %s [OPTIONS] \"<expression>\"\n",progName);
-	fprintf(stderr,"  Flags:\n");
-	fprintf(stderr,"  -d,--debug                        => initiate debug output\n");
-	fprintf(stderr,"  -l,--lisp                         => use more parentheses when echoing expression\n");
-	fprintf(stderr,"  -h,--help                         => print this message\n");
-	fprintf(stderr,"  -f,--file <FILENAME>              => specify a tab-delimited or NetCDF file to read data from\n");
-	fprintf(stderr,"  -o,--output <FILENAME>            => specify the output file, which will always be ASCII tab-delimited!\n");
-	fprintf(stderr,"    If -o is not supplied, then it will write back to the original NetCDF file,\n");
-	fprintf(stderr,"    or to stdout as an ASCII tab-delimited table.\n");
-	fprintf(stderr,"  -v,--variable <VARNAME>=<double>  => define a static variable to be used in the expression\n");
-	fprintf(stderr,"  -r,--rename <COLNAME>             => give a name for results column will be put in (default: \"RESULT\")\n");
-	fprintf(stderr,"  -e,--expression \"<expression>\"    => specify the equation to calculate\n");
-	fprintf(stderr,"\nThe BNF for an expression is the following:\n");
-	fprintf(stderr,"<expression>: <func><WS>(<WS><double><WS>) | <expression><WS><INEQ><WS><expression>\n");
-	fprintf(stderr,"              <expression><WS><OP><WS><expression> | <double>\n");
-	fprintf(stderr,"<func> = 'abs' | 'sin' | 'cos' | 'tan' | 'ln' | 'log' | 'floor' | 'ceil' |\n");
-	fprintf(stderr,"         'asin' | 'acos' | 'atan'\n");
-	fprintf(stderr,"<OP> = '+' | '-' | '*' | '/' | '^'\n");
-	fprintf(stderr,"<INEQ> = '&&' | '||' | '<' | '<=' | '==' | '!=' | '<>' | '>=' | '>'\n");
-	fprintf(stderr,"<WS> = ' '*\n");
-	fprintf(stderr,"<double> = <int>*'.'<int>*\n");
-	fprintf(stderr,"<int> = 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 0\n");
-	fprintf(stderr,"\nexample expressions: ");
-	fprintf(stderr,"<expression>  = 2 * sin (2 + 3)\n");
-	fprintf(stderr,"<expression> != 2 * sin(2 + 3) <=== invalid!\n");
-	fprintf(stderr,"<expression>  = 2 * sin ( 2 + 3)\n");
-	fprintf(stderr,"<expression>  = 2 * sin (2 + 3 )\n");
-	fprintf(stderr,"<expression>  = 2 * sin (    2   +   3   )\n");
-	fprintf(stderr,"<expression> != 2*sin(2+3)     <=== invalid!\n");
+	CMmsgPrint (CMmsgUsrError, "Usage: %s [OPTIONS] \"<expression>\"",progName);
+	CMmsgPrint (CMmsgUsrError, "  Flags:");
+	CMmsgPrint (CMmsgUsrError, "  -d,--debug                        => initiate debug output");
+	CMmsgPrint (CMmsgUsrError, "  -l,--lisp                         => use more parentheses when echoing expression");
+	CMmsgPrint (CMmsgUsrError, "  -h,--help                         => print this message");
+	CMmsgPrint (CMmsgUsrError, "  -f,--file <FILENAME>              => specify a tab-delimited or NetCDF file to read data from");
+	CMmsgPrint (CMmsgUsrError, "  -o,--output <FILENAME>            => specify the output file, which will always be ASCII tab-delimited!");
+	CMmsgPrint (CMmsgUsrError, "    If -o is not supplied, then it will write back to the original NetCDF file,");
+	CMmsgPrint (CMmsgUsrError, "    or to stdout as an ASCII tab-delimited table.");
+	CMmsgPrint (CMmsgUsrError, "  -v,--variable <VARNAME>=<double>  => define a static variable to be used in the expression");
+	CMmsgPrint (CMmsgUsrError, "  -r,--rename <COLNAME>             => give a name for results column will be put in (default: \"RESULT\")");
+	CMmsgPrint (CMmsgUsrError, "  -e,--expression \"<expression>\"    => specify the equation to calculate");
+	CMmsgPrint (CMmsgUsrError, "The BNF for an expression is the following:");
+	CMmsgPrint (CMmsgUsrError, "<expression>: <func><WS>(<WS><double><WS>) | <expression><WS><INEQ><WS><expression>");
+	CMmsgPrint (CMmsgUsrError, "              <expression><WS><OP><WS><expression> | <double>");
+	CMmsgPrint (CMmsgUsrError, "<func> = 'abs' | 'sin' | 'cos' | 'tan' | 'ln' | 'log' | 'floor' | 'ceil' |");
+	CMmsgPrint (CMmsgUsrError, "         'asin' | 'acos' | 'atan'");
+	CMmsgPrint (CMmsgUsrError, "<OP> = '+' | '-' | '*' | '/' | '^'");
+	CMmsgPrint (CMmsgUsrError, "<INEQ> = '&&' | '||' | '<' | '<=' | '==' | '!=' | '<>' | '>=' | '>'");
+	CMmsgPrint (CMmsgUsrError, "<WS> = ' '*");
+	CMmsgPrint (CMmsgUsrError, "<double> = <int>*'.'<int>*");
+	CMmsgPrint (CMmsgUsrError, "<int> = 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 0");
+	CMmsgPrint (CMmsgUsrError, "example expressions: ");
+	CMmsgPrint (CMmsgUsrError, "<expression>  = 2 * sin (2 + 3)");
+	CMmsgPrint (CMmsgUsrError, "<expression> != 2 * sin(2 + 3) <=== invalid!");
+	CMmsgPrint (CMmsgUsrError, "<expression>  = 2 * sin ( 2 + 3)");
+	CMmsgPrint (CMmsgUsrError, "<expression>  = 2 * sin (2 + 3 )");
+	CMmsgPrint (CMmsgUsrError, "<expression>  = 2 * sin (    2   +   3   )");
+	CMmsgPrint (CMmsgUsrError, "<expression> != 2*sin(2+3)     <=== invalid!");
 }
 
 typedef struct Files
@@ -62,13 +63,13 @@ void NCcloseFile(Files_t *file)
 	if(file->ncTYPE)
 	{
 		if(nc_close(file->ncid) != NC_NOERR)
-			{ fprintf(stderr,"Error closing file: %s!\n",file->fname); abort(); }
+			{ CMmsgPrint (CMmsgUsrError, "Error closing file: %s!",file->fname); abort(); }
 		NCtableClose(file->tbl);
 		file->tbl = (NCtable_t *) NULL;
 		return;
 	}
 	else if((file->file == (FILE *) NULL) || (file->file == stdout)) return;
-	else if(fclose(file->file) != 0) { fprintf(stderr,"Error closing file: %s!\n",file->fname); abort(); }
+	else if(fclose(file->file) != 0) { CMmsgPrint (CMmsgUsrError, "Error closing file: %s!",file->fname); abort(); }
 	free(file->curRow);
 }
 
@@ -106,7 +107,7 @@ int main(int argc, char* argv[])
 		if (NCcmArgTest(argv[argPos],"-t","--table"))
 		{
 			NCcmArgShiftLeft(argPos,argv,argc); argNum--;
-			if((inFile.ncTYPE != false) && (inFile.file != (FILE *) NULL)) { fprintf(stderr,"-t flag must precede -f flag!\n"); cleanup(NCfailed); }
+			if((inFile.ncTYPE != false) && (inFile.file != (FILE *) NULL)) { CMmsgPrint (CMmsgUsrError, "-t flag must precede -f flag!"); cleanup(NCfailed); }
 			tablename = argv[argPos];
 			NCcmArgShiftLeft(argPos,argv,argc); argNum--;
 			continue;
@@ -114,24 +115,24 @@ int main(int argc, char* argv[])
 		if (NCcmArgTest(argv[argPos],"-f","--file"))
 		{
 			NCcmArgShiftLeft(argPos,argv,argc); argNum--;
-			if((inFile.ncTYPE != false) && (inFile.file != (FILE *) NULL)) { fprintf(stderr,"multiple -f flags!\n"); cleanup(NCfailed); }
+			if((inFile.ncTYPE != false) && (inFile.file != (FILE *) NULL)) { CMmsgPrint (CMmsgUsrError, "multiple -f flags!"); cleanup(NCfailed); }
 			inFile.fname = argv[argPos];
 			if(nc_open(inFile.fname,NC_WRITE,&i) == NC_NOERR)
 			{
 				inFile.ncTYPE = true;
 				inFile.ncid = i;
 				if((inFile.tbl = NCtableOpen(i,tablename)) == (NCtable_t *) NULL)
-					{ fprintf(stderr,"Error encountered!\n"); cleanup(NCfailed); }
+					{ CMmsgPrint (CMmsgUsrError, "Error encountered!"); cleanup(NCfailed); }
 			} else if((inFile.file = fopen(inFile.fname,"r")) != (FILE *) NULL)
 			{
 				inFile.ncTYPE = false;
 				inFile.curRow = (char *) NULL;
-				getline(&(inFile.curRow),&i,inFile.file);
-				if (inFile.curRow == (char *) NULL) { fprintf(stderr,"Empty File '%s'",inFile.fname); cleanup(NCfailed); }
+				inFile.curRow = CMbufGetLine(inFile.curRow,&i,inFile.file);
+				if (inFile.curRow == (char *) NULL) { CMmsgPrint (CMmsgUsrError, "Empty File '%s'",inFile.fname); cleanup(NCfailed); }
 				else { i = strlen(inFile.curRow); (inFile.curRow)[i - 1] = '\0'; }
 				inFile.row = (char **) NULL;
 				inFile.numCol = NCstringTokenize(inFile.curRow, &(inFile.row),'\t');
-			} else { fprintf(stderr,"Cannot open file '%s'!\n",inFile.fname); cleanup(NCfailed); }
+			} else { CMmsgPrint (CMmsgUsrError, "Cannot open file '%s'!",inFile.fname); cleanup(NCfailed); }
 			NCcmArgShiftLeft(argPos,argv,argc); argNum--;
 			continue;
 		}
@@ -140,7 +141,7 @@ int main(int argc, char* argv[])
 			NCcmArgShiftLeft(argPos,argv,argc); argNum--;
 			if(strcmp(argv[argPos],"-") == 0) outFile = stdout;
 			else if ((outFile = fopen(argv[argPos],"w")) == (FILE *) NULL)
-				{ fprintf(stderr,"Error opening file '%s' for writing!\n",argv[argPos]); cleanup(NCfailed); }
+				{ CMmsgPrint (CMmsgUsrError, "Error opening file '%s' for writing!",argv[argPos]); cleanup(NCfailed); }
 			NCcmArgShiftLeft(argPos,argv,argc); argNum--;
 			continue;
 		}
@@ -150,7 +151,7 @@ int main(int argc, char* argv[])
 	for(argPos = 1; argPos < argNum;) {
 		if (NCcmArgTest(argv[argPos],"-v","--variable"))
 		{ // constant variable
-			if(NCstringMatch(argv[argPos + 1],0,"VAR")) { fprintf(stderr,"Variable names cannot start with 'VAR'!\n"); cleanup(NCfailed); }
+			if(NCstringMatch(argv[argPos + 1],0,"VAR")) { CMmsgPrint (CMmsgUsrError, "Variable names cannot start with 'VAR'!"); cleanup(NCfailed); }
 			NCcmArgShiftLeft(argPos,argv,argc); argNum--;
 			i = strlen(argv[argPos]);
 			for(j = 0; (j < i) && (argv[argPos][j] != '='); j++);
@@ -158,7 +159,7 @@ int main(int argc, char* argv[])
 			tmp = NCstringSubstr(argv[argPos],j + 1,i);
 			if((k = NCmathAddVar(-1,name,false)) == NCfailed) cleanup(NCfailed);
 			if(NCmathIsNumber(tmp)) NCmathSetVarVal(k,atof(tmp));
-			else { fprintf(stderr,"%s is not a <double>!\n",tmp); cleanup(NCfailed); }
+			else { CMmsgPrint (CMmsgUsrError, "%s is not a <double>!",tmp); cleanup(NCfailed); }
 			free(tmp);
 			free(name);
 			NCcmArgShiftLeft(argPos,argv,argc); argNum--;
@@ -167,9 +168,9 @@ int main(int argc, char* argv[])
 		if (NCcmArgTest(argv[argPos],"-e","--expression"))
 		{
 			NCcmArgShiftLeft(argPos,argv,argc); argNum--;
-			if(input != (char *) NULL) { fprintf(stderr,"Expression defined twice!\n"); cleanup(NCfailed); }
+			if(input != (char *) NULL) { CMmsgPrint (CMmsgUsrError, "Expression defined twice!"); cleanup(NCfailed); }
 			if((input = malloc((strlen(argv[argPos]) + 1) * sizeof(char))) == NULL)
-				{ perror("Memory Allocation error in: NCtblCalculate ()\n"); cleanup(NCfailed); }
+				{ CMmsgPrint (CMmsgSysError, "Memory Allocation error in: %s %d",__FILE__,__LINE__); cleanup(NCfailed); }
 			strcpy(input,argv[argPos]);
 			NCcmArgShiftLeft(argPos,argv,argc); argNum--;
 			continue;
@@ -180,48 +181,48 @@ int main(int argc, char* argv[])
 			if(fieldname == (char *) NULL)
 			{
 				if((fieldname = malloc(sizeof(char) * (strlen(argv[argPos]) + 1))) == NULL)
-					{ perror("Memory Allocation error in: NCtblCalculate ()\n"); cleanup(NCfailed); }
+					{ CMmsgPrint (CMmsgSysError, "Memory Allocation error in: %s %d",__FILE__,__LINE__); cleanup(NCfailed); }
 				strcpy(fieldname,argv[argPos]);
 			}
-			else { fprintf(stderr,"Output field name defined twice!\n"); cleanup(NCfailed); }
+			else { CMmsgPrint (CMmsgUsrError, "Output field name defined twice!"); cleanup(NCfailed); }
 			NCcmArgShiftLeft(argPos,argv,argc); argNum--;
 			continue;
 		}
 		if ((argv[argPos][0] == '-') && (strlen (argv[argPos]) > 1))
-			{ fprintf(stderr,"Unknown option: %s!\n",argv[argPos]); cleanup(NCfailed); }
+			{ CMmsgPrint (CMmsgUsrError, "Unknown option: %s!",argv[argPos]); cleanup(NCfailed); }
 		// if nothing else it must be an equation
 		if(input == (char *) NULL) {
 			if((input = malloc((strlen(argv[argPos]) + 1) * sizeof(char))) == NULL)
-			 { perror("Memory Allocation error in: NCtblCalculate ()\n"); cleanup(NCfailed); }
+			 { CMmsgPrint (CMmsgSysError, "Memory Allocation error in: %s %d",__FILE__,__LINE__); cleanup(NCfailed); }
 			strcpy(input,argv[argPos]);
 			NCcmArgShiftLeft(argPos,argv,argc); argNum--;
 			continue;
 		}
-		fprintf(stderr,"Unknown option: %s!\n",argv[argPos]);
+		CMmsgPrint (CMmsgUsrError, "Unknown option: %s!",argv[argPos]);
 		cleanup(NCfailed);
 //		argPos++;
 	}
 
-	if(GetDebug()) fprintf(stderr,"Checking expression...\n");
+	if(GetDebug()) CMmsgPrint (CMmsgUsrError, "Checking expression...");
 	if(input == (char *) NULL)
 	{
-		fprintf(stderr,"Missing <expression>\n\n");
+		CMmsgPrint (CMmsgUsrError, "Missing <expression>");
 		do_help(NCcmProgName(argv[0]));
 		cleanup(NCfailed);
-/*		fprintf(stderr,"\n<expression> =? ");
-		getline(&input,&inLen,stdin);
+/*		CMmsgPrint (CMmsgUsrError, "<expression> =? ");
+		CMbufGetLine(&input,&inLen,stdin);
 		cons++;
-		if(GetDebug()) Dprint(stderr,"Main(): malloc(%p)\n",input);
+		if(GetDebug()) Dprint(stderr,"Main(): malloc(%p)",input);
 		input[strlen(input) - 1] = '\0';*/
 	}
-	if(strcmp(input,"") == 0) { printf("Nothing to do\n"); cleanup(NCsucceeded); }
+	if(strcmp(input,"") == 0) { printf("Nothing to do"); cleanup(NCsucceeded); }
 
 	while(NCstringStripch(&input, ' ') || NCstringStripbr(&input));
 	i = 0;
 	if(fieldname == (char *) NULL)
 	{
 		if((fieldname = malloc(sizeof(char) * (strlen("Results") + 1))) == NULL)
-			{ perror("Memory Allocation error in: NCtblCalculate ()\n"); cleanup(NCfailed); }
+			{ CMmsgPrint (CMmsgSysError, "Memory Allocation error in: %s %d",__FILE__,__LINE__); cleanup(NCfailed); }
 		strcpy(fieldname,"Results");
 	}
 	while(i < strlen(input))
@@ -237,7 +238,7 @@ int main(int argc, char* argv[])
 					if(strcmp(((inFile.tbl)->Fields)[k].Name,tmp) == 0)
 					{
 						if(colnum != -1)
-							{ fprintf(stderr,"Multiple matches for column '%s'!\n",tmp); free(tmp); free(input); cleanup(NCfailed); }
+							{ CMmsgPrint (CMmsgUsrError, "Multiple matches for column '%s'!",tmp); free(tmp); free(input); cleanup(NCfailed); }
 						colnum = k;
 					}
 				if(colnum == -1) { 
@@ -246,12 +247,12 @@ int main(int argc, char* argv[])
 						if(strcmp(((inFile.tbl)->Fields)[k].Name,tmp) == 0)
 						{
 							if(colnum != -1)
-								{ printf("Multiple matches for column '%s'!\n",tmp); free(tmp); free(input); cleanup(NCfailed); }
+								{ printf("Multiple matches for column '%s'!",tmp); free(tmp); free(input); cleanup(NCfailed); }
 							colnum = k;
 						}
-					if(colnum == -1) { fprintf(stderr,"Missing column '%s'!",tmp); free(tmp); free(input); cleanup(NCfailed); }
+					if(colnum == -1) { CMmsgPrint (CMmsgUsrError, "Missing column '%s'!",tmp); free(tmp); free(input); cleanup(NCfailed); }
 				}
-			} else if(inFile.file == (FILE *) NULL) { fprintf(stderr,"No input file given!\n"); cleanup(NCfailed);
+			} else if(inFile.file == (FILE *) NULL) { CMmsgPrint (CMmsgUsrError, "No input file given!"); cleanup(NCfailed);
 			} else
 			{
 				colnum = -1;
@@ -259,7 +260,7 @@ int main(int argc, char* argv[])
 					if(strcmp((inFile.row)[k],tmp) == 0)
 					{
 						if(colnum != -1)
-							{ fprintf(stderr,"Multiple matches for column '%s'!\n",tmp); free(tmp); free(input); cleanup(NCfailed); }
+							{ CMmsgPrint (CMmsgUsrError, "Multiple matches for column '%s'!",tmp); free(tmp); free(input); cleanup(NCfailed); }
 						colnum = k;
 					}
 				if(colnum == -1)
@@ -269,17 +270,17 @@ int main(int argc, char* argv[])
 						if(strcmp((inFile.row)[k],tmp) == 0)
 						{
 							if(colnum != -1)
-								{ fprintf(stderr,"Multiple matches for column '%s'!\n",tmp); free(tmp); free(input); cleanup(NCfailed); }
+								{ CMmsgPrint (CMmsgUsrError, "Multiple matches for column '%s'!",tmp); free(tmp); free(input); cleanup(NCfailed); }
 							colnum = k;
 						}
-					if(colnum == -1) { fprintf(stderr,"Missing column '%s'!",tmp); free(tmp); free(input); cleanup(NCfailed); }
+					if(colnum == -1) { CMmsgPrint (CMmsgUsrError, "Missing column '%s'!",tmp); free(tmp); free(input); cleanup(NCfailed); }
 				}
 			}
 			free(tmp);
 			if((name = malloc(sizeof(char) * 6)) == NULL)
-				{ perror("Memory Allocation error in: NCtblCalculate ()\n"); cleanup(NCfailed); }
+				{ CMmsgPrint (CMmsgSysError, "Memory Allocation error in: %s %d",__FILE__,__LINE__); cleanup(NCfailed); }
 			strcpy(name,"VAR");
-			if((tmp = malloc(sizeof(char) * 3)) == NULL) { perror("Memory Allocation error in: NCtblCalculate ()\n"); cleanup(NCfailed); }
+			if((tmp = malloc(sizeof(char) * 3)) == NULL) { CMmsgPrint (CMmsgSysError, "Memory Allocation error in: %s %d",__FILE__,__LINE__); cleanup(NCfailed); }
 			sprintf(tmp,"%.2d",NCmathGetVarNum() + 1);
 			tmp[2] = '\0';
 			strcat(name,tmp);
@@ -293,11 +294,11 @@ int main(int argc, char* argv[])
 	}
 	if(GetDebug())
 	{
-		fprintf(stderr,"echo: '%s' strlen=%d\n",input,strlen(input));
+		CMmsgPrint (CMmsgUsrError, "echo: '%s' strlen=%d",input,strlen(input));
 		for(i = 0; i < NCmathGetVarNum(); i++)
 		{
-			if(NCmathGetVarVary(i)) fprintf(stderr,"%s = colnum(%d)\n",NCmathGetVarName(i),NCmathGetVarColNum(i));
-			else fprintf(stderr,"%s = %f\n",NCmathGetVarName(i),NCmathGetVarVal(i));
+			if(NCmathGetVarVary(i)) CMmsgPrint (CMmsgUsrError, "%s = colnum(%d)",NCmathGetVarName(i),NCmathGetVarColNum(i));
+			else CMmsgPrint (CMmsgUsrError, "%s = %f",NCmathGetVarName(i),NCmathGetVarVal(i));
 		}
 	}
 
@@ -311,12 +312,12 @@ int main(int argc, char* argv[])
 	{
 		iHead = mkTreeI(input);
 		NCmathEqtnFixTreeI(iHead);
-		if(GetDebug()) { fprintf(stderr,"\nUsing equation: ("); printInorderI(iHead,stderr); fprintf(stderr,")\n"); }
+		if(GetDebug()) { CMmsgPrint (CMmsgUsrError, "Using equation: ("); printInorderI(iHead,stderr); CMmsgPrint (CMmsgUsrError, ")"); }
 	} else
 	{
 		tHead = mkTree(input);
 		NCmathEqtnFixTree(&tHead);
-		if(GetDebug()) { fprintf(stderr,"\nUsing equation: ("); printInorder(tHead,stderr); fprintf(stderr,")\n"); }
+		if(GetDebug()) { CMmsgPrint (CMmsgUsrError, "Using equation: ("); printInorder(tHead,stderr); CMmsgPrint (CMmsgUsrError, ")"); }
 	}
 
 	if(inFile.ncTYPE)
@@ -359,8 +360,8 @@ int main(int argc, char* argv[])
 			inFile.row = (char **) NULL;
 			free(inFile.curRow);
 			inFile.curRow = (char *) NULL;
-			if (getline(&(inFile.curRow),&i,inFile.file) == -1) break;
-//			if (inFile.curRow == (char *) NULL) { fprintf(stderr,"Unexpected end of file!"); cleanup(NCfailed); }
+			if ((inFile.curRow = CMbufGetLine(inFile.curRow,&i,inFile.file)) == (char *) NULL) break;
+//			if (inFile.curRow == (char *) NULL) { CMmsgPrint (CMmsgUsrError, "Unexpected end of file!"); cleanup(NCfailed); }
 			else
 			{
 				i = strlen(inFile.curRow);
@@ -374,13 +375,13 @@ int main(int argc, char* argv[])
 			}
 			if(iHead)
 			{
-				if(GetDebug()) { printInorderI(iHead,stderr); fprintf(stderr," => "); }
+				if(GetDebug()) { printInorderI(iHead,stderr); CMmsgPrint (CMmsgUsrError, " => "); }
 				if(CalculateI(iHead)) fprintf(outFile,"%s\ttrue\n",inFile.curRow);
 				else fprintf(outFile,"%s\tfalse\n",inFile.curRow);
 			}
 			else
 			{
-				if(GetDebug()) { printInorder(tHead,stderr); fprintf(stderr," => "); }
+				if(GetDebug()) { printInorder(tHead,stderr); CMmsgPrint (CMmsgUsrError, " => "); }
 				output = Calculate(tHead);
 				if(NCmathEqualValues(output,(double) ((int) output))) fprintf(outFile,"%s\t%d\n",inFile.curRow,(int) output);
 				else fprintf(outFile,"%s\t%f\n",inFile.curRow,output);

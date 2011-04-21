@@ -1,3 +1,4 @@
+#include <cm.h>
 #include <stdio.h>
 #include <string.h>
 #include <math.h>
@@ -30,7 +31,7 @@ bool NCtimeLeapYear (utUnit *tUnit, double t)
 	int year, month, day, hour, minute;
 	float second;
 	if (utCalendar (t, tUnit, &year, &month, &day, &hour, &minute, &second) != 0)
-	{ fprintf (stderr,"Time Conversion error in: NCtimeLeapYear ()\n"); return (false); }
+	{ CMmsgPrint (CMmsgAppError, "Time Conversion error in: %s %d",__FILE__,__LINE__); return (false); }
 	return (NCtimeLeapYear (year));
 }
 
@@ -41,7 +42,7 @@ size_t NCtimeMonthLength (utUnit *tUnit, double t)
 	float second;
 
 	if (utCalendar (t, tUnit, &year, &month, &day, &hour, &minute, &second) != 0)
-	{ fprintf (stderr,"Time Conversion error in: NCtimeMonthLength ()\n"); return (0); }
+	{ CMmsgPrint (CMmsgAppError, "Time Conversion error in: %s %d",__FILE__,__LINE__); return (0); }
 
 	month = month - 1;
 	if (year > 0) year += (int) month / 12;
@@ -66,7 +67,7 @@ NCstate NCtimeParse (const char *timeStr, NCtimeStep timeStep, utUnit *tUnit, do
 	else if (sscanf (timeStr + 11,"%02d", &hour)  != 1)  hour   = 0;
 	else if (sscanf (timeStr + 14,"%02d", &minute) != 1) minute = 0;
 	if (utInvCalendar (year,month,day,hour,minute,second,tUnit,t) != 0)
-	{ fprintf (stderr,"Time Conversion error in: NCtimeParse ()\n"); return (NCfailed); }
+	{ CMmsgPrint (CMmsgAppError, "Time Conversion error in: %s %d",__FILE__,__LINE__); return (NCfailed); }
 	return (NCsucceeded);
 }
 
@@ -76,7 +77,7 @@ NCstate NCtimePrint (NCtimeStep timeStep, utUnit *tUnit, double t, char *timeStr
 	int year, month, day, hour, minute;
 
 	if (utCalendar (t, tUnit, &year, &month, &day, &hour, &minute, &second) != 0)
-	{ fprintf (stderr,"Time Conversion error in: NCtimePrint ()\n"); return (NCfailed); }
+	{ CMmsgPrint (CMmsgAppError, "Time Conversion error in: %s %d",__FILE__,__LINE__); return (NCfailed); }
 	switch (timeStep)
 	{
 		case NCtimeYear:   sprintf (timeStr,"%04d",                          year); break;

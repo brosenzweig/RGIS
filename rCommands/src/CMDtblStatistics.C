@@ -123,49 +123,49 @@ void doHelp(bool extended, char *arg0)
 	{
 	if(extended)
 		{
-		CMmsgPrint (CMmsgInfo,"%s [options] [field] ... <input file> ...\n",CMprgName(arg0));
-		CMmsgPrint (CMmsgInfo,"**fieldnames must match fieldnames in first line of datafile.**\nValid flags:\n");
-		CMmsgPrint (CMmsgInfo,"  -a,--table   [name]              => Set the name of the table to use.\n");
-		CMmsgPrint (CMmsgInfo,"  -c,--ascii                       => Output as ASCII\n");
-		CMmsgPrint (CMmsgInfo,"  -d,--domain  [domain]            => Specify domain of output table.\n");
-		CMmsgPrint (CMmsgInfo,"  -f,--field   [operation] [field] => Perform 'operation' on field values, where operation\n");
-		CMmsgPrint (CMmsgInfo,"     is one of the following:\n");
-		CMmsgPrint (CMmsgInfo,"       num                  = Output number of rows inside group.\n");
-		CMmsgPrint (CMmsgInfo,"       nonnull field        = Number of non-NULL field values inside group.\n");
-		CMmsgPrint (CMmsgInfo,"       min field            = Output the minimum value in the given field.\n");
-		CMmsgPrint (CMmsgInfo,"       max field            = Output the maximum value in the given field.\n");
-		CMmsgPrint (CMmsgInfo,"       sum field            = Output the sum of values in the given field.\n");
-		CMmsgPrint (CMmsgInfo,"       avg field            = Output the mean of non-NULL values in given field.\n");
-		CMmsgPrint (CMmsgInfo,"       navg field           = Output the mean of all values in given field.\n");
-		CMmsgPrint (CMmsgInfo,"       pct field percentage = Percentage function [ x : F(x) = p/100 ].\n");
-		CMmsgPrint (CMmsgInfo,"       med field            = Output the median of values in given field.\n");
-		CMmsgPrint (CMmsgInfo,"       mod field            = Output the mode of values in given field.\n");
-		CMmsgPrint (CMmsgInfo,"       dev field            = Output standard deviation of values in given field.\n");
-		CMmsgPrint (CMmsgInfo,"     Field values are assumed to be numeric.\n");
-		CMmsgPrint (CMmsgInfo,"  -g,--group  [field]              => Perform selected operations on data groups, selected\n");
-		CMmsgPrint (CMmsgInfo,"     by having the same value in the group field.  Process whole input if no group is\n");
-		CMmsgPrint (CMmsgInfo,"     given.  Select groups based on groups of fields if multiple groups are given.\n");
-		CMmsgPrint (CMmsgInfo,"  -h,--help                        => Print this usage information.\n");
-		CMmsgPrint (CMmsgInfo,"  -o,--output  [filename]          => Specify output filename, else use STDOUT\n");
-		CMmsgPrint (CMmsgInfo,"  -r,--rename  [name]              => Set the name of the operation column.\n");
-		CMmsgPrint (CMmsgInfo,"  -s,--subject [subject]           => Specify subject of output table.\n");
-		CMmsgPrint (CMmsgInfo,"  -t,--title   [title]             => Specify title of output table.\n");
-		CMmsgPrint (CMmsgInfo,"  -v,--version [version]           => Specify version of output table.\n");
+		CMmsgPrint (CMmsgInfo,"%s [options] [field] ... <input file> ...",CMprgName(arg0));
+		CMmsgPrint (CMmsgInfo,"**fieldnames must match fieldnames in first line of datafile.**Valid flags:");
+		CMmsgPrint (CMmsgInfo,"  -a,--table   [name]              => Set the name of the table to use.");
+		CMmsgPrint (CMmsgInfo,"  -c,--ascii                       => Output as ASCII");
+		CMmsgPrint (CMmsgInfo,"  -d,--domain  [domain]            => Specify domain of output table.");
+		CMmsgPrint (CMmsgInfo,"  -f,--field   [operation] [field] => Perform 'operation' on field values, where operation");
+		CMmsgPrint (CMmsgInfo,"     is one of the following:");
+		CMmsgPrint (CMmsgInfo,"       num                  = Output number of rows inside group.");
+		CMmsgPrint (CMmsgInfo,"       nonnull field        = Number of non-NULL field values inside group.");
+		CMmsgPrint (CMmsgInfo,"       min field            = Output the minimum value in the given field.");
+		CMmsgPrint (CMmsgInfo,"       max field            = Output the maximum value in the given field.");
+		CMmsgPrint (CMmsgInfo,"       sum field            = Output the sum of values in the given field.");
+		CMmsgPrint (CMmsgInfo,"       avg field            = Output the mean of non-NULL values in given field.");
+		CMmsgPrint (CMmsgInfo,"       navg field           = Output the mean of all values in given field.");
+		CMmsgPrint (CMmsgInfo,"       pct field percentage = Percentage function [ x : F(x) = p/100 ].");
+		CMmsgPrint (CMmsgInfo,"       med field            = Output the median of values in given field.");
+		CMmsgPrint (CMmsgInfo,"       mod field            = Output the mode of values in given field.");
+		CMmsgPrint (CMmsgInfo,"       dev field            = Output standard deviation of values in given field.");
+		CMmsgPrint (CMmsgInfo,"     Field values are assumed to be numeric.");
+		CMmsgPrint (CMmsgInfo,"  -g,--group  [field]              => Perform selected operations on data groups, selected");
+		CMmsgPrint (CMmsgInfo,"     by having the same value in the group field.  Process whole input if no group is");
+		CMmsgPrint (CMmsgInfo,"     given.  Select groups based on groups of fields if multiple groups are given.");
+		CMmsgPrint (CMmsgInfo,"  -h,--help                        => Print this usage information.");
+		CMmsgPrint (CMmsgInfo,"  -o,--output  [filename]          => Specify output filename, else use STDOUT");
+		CMmsgPrint (CMmsgInfo,"  -r,--rename  [name]              => Set the name of the operation column.");
+		CMmsgPrint (CMmsgInfo,"  -s,--subject [subject]           => Specify subject of output table.");
+		CMmsgPrint (CMmsgInfo,"  -t,--title   [title]             => Specify title of output table.");
+		CMmsgPrint (CMmsgInfo,"  -v,--version [version]           => Specify version of output table.");
 		}
 	else
 		{
-		CMmsgPrint (CMmsgInfo,"%s [options] [field] ... <input file> ...\n",CMprgName(arg0));
-		CMmsgPrint (CMmsgInfo,"  -a,--table   [name]\n");
-		CMmsgPrint (CMmsgInfo,"  -c,--ascii\n");
-		CMmsgPrint (CMmsgInfo,"  -d,--domain  [domain]\n");
-		CMmsgPrint (CMmsgInfo,"  -f,--field   [operation] [field]\n");
-		CMmsgPrint (CMmsgInfo,"  -g,--group   [field]\n");
-		CMmsgPrint (CMmsgInfo,"  -h,--help    => for more help type -h e, or --help extend.\n");
-		CMmsgPrint (CMmsgInfo,"  -o,--output  [filename]\n");
-		CMmsgPrint (CMmsgInfo,"  -r,--rename  [name]\n");
-		CMmsgPrint (CMmsgInfo,"  -s,--subject [subject]\n");
-		CMmsgPrint (CMmsgInfo,"  -t,--title   [title]\n");
-		CMmsgPrint (CMmsgInfo,"  -v,--version [version]\n");
+		CMmsgPrint (CMmsgInfo,"%s [options] [field] ... <input file> ...",CMprgName(arg0));
+		CMmsgPrint (CMmsgInfo,"  -a,--table   [name]");
+		CMmsgPrint (CMmsgInfo,"  -c,--ascii");
+		CMmsgPrint (CMmsgInfo,"  -d,--domain  [domain]");
+		CMmsgPrint (CMmsgInfo,"  -f,--field   [operation] [field]");
+		CMmsgPrint (CMmsgInfo,"  -g,--group   [field]");
+		CMmsgPrint (CMmsgInfo,"  -h,--help    => for more help type -h e, or --help extend.");
+		CMmsgPrint (CMmsgInfo,"  -o,--output  [filename]");
+		CMmsgPrint (CMmsgInfo,"  -r,--rename  [name]");
+		CMmsgPrint (CMmsgInfo,"  -s,--subject [subject]");
+		CMmsgPrint (CMmsgInfo,"  -t,--title   [title]");
+		CMmsgPrint (CMmsgInfo,"  -v,--version [version]");
 		}
 	exit(1);
 	}
@@ -198,35 +198,35 @@ FieldOptions* FOHierarchy(const char *funcname, const char *oldName, char *newNa
 	if(!strcmp(funcname,"num"))
 		{
 		if(FLDExists(head,"NUM",NUM,&last) && last->getPrint())
-			fprintf(stderr,"** Warning: Already have a -f %s %s specified once!\n",last->getFuncName(),last->getOldName());
+			CMmsgPrint (CMmsgWarning, "** Warning: Already have a -f %s %s specified once!",last->getFuncName(),last->getOldName());
 		if(newName == (char *) NULL) { newName = new char[4]; strcpy(newName,"NUM"); rmNew = true; }
 		last->next = new FieldOptions(NUM, "NUM", newName, last->next); last = last->next;
 		}
 	else if(!strcmp(funcname,"nonnull"))
 		{
 		if(FLDExists(head,oldName,NONNULL,&last) && last->getPrint())
-			fprintf(stderr,"** Warning: Already have a -f %s %s specified once!\n",last->getFuncName(),last->getOldName());
+			CMmsgPrint (CMmsgWarning, "** Warning: Already have a -f %s %s specified once!",last->getFuncName(),last->getOldName());
 		if(newName == (char *) NULL) { newName = new char[strlen(oldName) + 10]; sprintf(newName,"NONNULL(%s)",oldName); rmNew = true; }
 		last->next = new FieldOptions(NONNULL, oldName, newName, last->next); last = last->next;
 		}
 	else if(!strcmp(funcname,"min"))
 		{
 		if(FLDExists(head,oldName,MIN,&last) && last->getPrint())
-			fprintf(stderr,"** Warning: Already have a -f %s %s specified once!\n",last->getFuncName(),last->getOldName());
+			CMmsgPrint (CMmsgWarning, "** Warning: Already have a -f %s %s specified once!",last->getFuncName(),last->getOldName());
 		if(newName == (char *) NULL) { newName = new char[strlen(oldName) + 6]; sprintf(newName,"MIN(%s)",oldName); rmNew = true; }
 		last->next = new FieldOptions(MIN, oldName, newName, last->next); last = last->next;
 		}
 	else if(!strcmp(funcname,"max"))
 		{
 		if(FLDExists(head,oldName,MAX,&last) && last->getPrint())
-			fprintf(stderr,"** Warning: Already have a -f %s %s specified once!\n",last->getFuncName(),last->getOldName());
+			CMmsgPrint (CMmsgWarning, "** Warning: Already have a -f %s %s specified once!",last->getFuncName(),last->getOldName());
 		if(newName == (char *) NULL) { newName = new char[strlen(oldName) + 6]; sprintf(newName,"MAX(%s)",oldName); rmNew = true; }
 		last->next = new FieldOptions(MAX, oldName, newName, last->next); last = last->next;
 		}
 	else if(!strcmp(funcname,"sum"))
 		{
 		if(FLDExists(head,oldName,SUM,&last) && last->getPrint())
-			fprintf(stderr,"** Warning: Already have a -f %s %s specified once!\n",last->getFuncName(),last->getOldName());
+			CMmsgPrint (CMmsgWarning, "** Warning: Already have a -f %s %s specified once!",last->getFuncName(),last->getOldName());
 		if(newName == (char *) NULL) { newName = new char[strlen(oldName) + 6]; sprintf(newName,"SUM(%s)",oldName); rmNew = true; }
 		last->next = new FieldOptions(SUM, oldName, newName, last->next); last = last->next;
 		}
@@ -235,7 +235,7 @@ FieldOptions* FOHierarchy(const char *funcname, const char *oldName, char *newNa
 		FOHierarchy("sum", oldName, (char *) NULL,-1, head);
 		FOHierarchy("nonnull", oldName, (char *) NULL,-1, head);
 		if(FLDExists(head,oldName,AVG,&last) && last->getPrint())
-			fprintf(stderr,"** Warning: Already have a -f %s %s specified once!\n",last->getFuncName(),last->getOldName());
+			CMmsgPrint (CMmsgWarning, "** Warning: Already have a -f %s %s specified once!",last->getFuncName(),last->getOldName());
 		if(newName == (char *) NULL) { newName = new char[strlen(oldName) + 6]; sprintf(newName,"AVG(%s)",oldName); rmNew = true; }
 		last->next = new FieldOptions(AVG, oldName, newName, last->next); last = last->next;
 		}
@@ -244,14 +244,14 @@ FieldOptions* FOHierarchy(const char *funcname, const char *oldName, char *newNa
 		FOHierarchy("sum", oldName, (char *) NULL,-1, head);
 		FOHierarchy("num", oldName, (char *) NULL,-1, head);
 		if(FLDExists(head,oldName,NAVG,&last) && last->getPrint())
-			fprintf(stderr,"** Warning: Already have a -f %s %s specified once!\n",last->getFuncName(),last->getOldName());
+			CMmsgPrint (CMmsgWarning, "** Warning: Already have a -f %s %s specified once!",last->getFuncName(),last->getOldName());
 		if(newName == (char *) NULL) { newName = new char[strlen(oldName) + 7]; sprintf(newName,"NAVG(%s)",oldName); rmNew = true; }
 		last->next = new FieldOptions(NAVG, oldName, newName, last->next); last = last->next;
 		}
 	else if(!strcmp(funcname,"pct"))
 		{
 		if(FLDExists(head,oldName,PCT,&last) && last->getPrint())
-			fprintf(stderr,"** Warning: Already have a -f %s %s specified once!\n",last->getFuncName(),last->getOldName());
+			CMmsgPrint (CMmsgWarning, "** Warning: Already have a -f %s %s specified once!",last->getFuncName(),last->getOldName());
 		if(newName == (char *) NULL) { newName = new char[strlen(oldName) + 6]; sprintf(newName,"PCT(%s)",oldName); rmNew = true; }
 		last->next = new FieldOptions(PCT, oldName, newName, last->next); last = last->next;
 		last->getHead()->occur = pct;
@@ -259,7 +259,7 @@ FieldOptions* FOHierarchy(const char *funcname, const char *oldName, char *newNa
 	else if(!strcmp(funcname,"med"))
 		{
 		if(FLDExists(head,oldName,MED,&last) && last->getPrint())
-			fprintf(stderr,"** Warning: Already have a -f %s %s specified once!\n",last->getFuncName(),last->getOldName());
+			CMmsgPrint (CMmsgWarning, "** Warning: Already have a -f %s %s specified once!",last->getFuncName(),last->getOldName());
 		if(newName == (char *) NULL) { newName = new char[strlen(oldName) + 6]; sprintf(newName,"MED(%s)",oldName); rmNew = true; }
 		last->next = new FieldOptions(MED, oldName, newName, last->next); last = last->next;
 		last->getHead()->occur = 50;
@@ -267,7 +267,7 @@ FieldOptions* FOHierarchy(const char *funcname, const char *oldName, char *newNa
 	else if(!strcmp(funcname,"mod"))
 		{
 		if(FLDExists(head,oldName,MOD,&last) && last->getPrint())
-			fprintf(stderr,"** Warning: Already have a -f %s %s specified once!\n",last->getFuncName(),last->getOldName());
+			CMmsgPrint (CMmsgWarning, "** Warning: Already have a -f %s %s specified once!",last->getFuncName(),last->getOldName());
 		if(newName == (char *) NULL) { newName = new char[strlen(oldName) + 6]; sprintf(newName,"MOD(%s)",oldName); rmNew = true; }
 		last->next = new FieldOptions(MOD, oldName, newName, last->next); last = last->next;
 		}
@@ -276,12 +276,12 @@ FieldOptions* FOHierarchy(const char *funcname, const char *oldName, char *newNa
 		FOHierarchy("avg", oldName, (char *) NULL,-1, head);
 		FOHierarchy("num", oldName, (char *) NULL,-1, head);
 		if(FLDExists(head,oldName,DEV,&last) && last->getPrint())
-			fprintf(stderr,"** Warning: Already have a -f %s %s specified once!\n",last->getFuncName(),last->getOldName());
+			CMmsgPrint (CMmsgWarning, "** Warning: Already have a -f %s %s specified once!",last->getFuncName(),last->getOldName());
 		if(newName == (char *) NULL) { newName = new char[strlen(oldName) + 6]; sprintf(newName,"DEV(%s)",oldName); rmNew = true; }
 		last->next = new FieldOptions(DEV, oldName, newName, last->next); last = last->next;
 		}
 	else
-		{ fprintf(stderr,"Unknown -f function: %s!\n",funcname); exit(DBFault); }
+		{ CMmsgPrint (CMmsgUsrError, "Unknown -f function: %s!",funcname); exit(DBFault); }
 	if(rmNew) delete newName;
 	return last;
 	}
@@ -346,11 +346,11 @@ int main (int argc,char *argv [])
 		if (CMargTest(argv[argPos],"-f","--field"))
 			{
 			if ((argNum = CMargShiftLeft(argPos,argv,argNum)) <= argPos)
-				{ CMmsgPrint (CMmsgUsrError,"Missing operation and field after -f!\n"); return (CMfailed); }
+				{ CMmsgPrint (CMmsgUsrError,"Missing operation and field after -f!"); return (CMfailed); }
 			if(!strcmp(argv[argPos],"pct"))
 				{
 				if (argNum <= argPos + 2)
-					{ CMmsgPrint (CMmsgUsrError,"Missing field and/or percentage after -f pct!\n"); return (CMfailed); }
+					{ CMmsgPrint (CMmsgUsrError,"Missing field and/or percentage after -f pct!"); return (CMfailed); }
 				p = FOHierarchy(argv[argPos],argv[argPos+1],rename,atoi(argv[argPos+2]),head);
 				argNum = CMargShiftLeft(argPos,argv,argNum);
 				argNum = CMargShiftLeft(argPos,argv,argNum);
@@ -364,7 +364,7 @@ int main (int argc,char *argv [])
 			else
 				{
 				if (argNum < argPos + 1)
-					{ CMmsgPrint (CMmsgUsrError,"Missing operation or field after -f %s!\n",argv[argPos]); return (CMfailed); }
+					{ CMmsgPrint (CMmsgUsrError,"Missing operation or field after -f %s!",argv[argPos]); return (CMfailed); }
 				p = FOHierarchy(argv[argPos],argv[argPos+1],rename,-1,head);
 				argNum = CMargShiftLeft(argPos,argv,argNum);
 				}
@@ -376,9 +376,9 @@ int main (int argc,char *argv [])
 		if (CMargTest(argv[argPos],"-g","--group"))
 			{
 			if ((argNum = CMargShiftLeft(argPos,argv,argNum)) <= argPos)
-				{ CMmsgPrint (CMmsgUsrError,"Missing groupname!\n"); return (CMfailed); }
+				{ CMmsgPrint (CMmsgUsrError,"Missing groupname!"); return (CMfailed); }
 			if((groupnames = (char **) realloc(groupnames,(numGrpNames + 1) * sizeof(char *))) == (char **) NULL)
-				{ perror ("Memory allocation error!\n"); return(DBFault); }
+				{ perror ("Memory allocation error!"); return(DBFault); }
 			groupnames[numGrpNames] = argv[argPos];
 			numGrpNames++;
 			if ((argNum = CMargShiftLeft(argPos,argv,argNum)) <= argPos) break;
@@ -403,7 +403,7 @@ int main (int argc,char *argv [])
 		if (CMargTest(argv[argPos],"-a","--table"))
 			{
 			if ((argNum = CMargShiftLeft(argPos,argv,argNum)) <= argPos)
-				{ CMmsgPrint (CMmsgUsrError,"Missing table name!\n"); return (CMfailed); }
+				{ CMmsgPrint (CMmsgUsrError,"Missing table name!"); return (CMfailed); }
 			tableName = argv[argPos];
 			if ((argNum = CMargShiftLeft(argPos,argv,argNum)) <= argPos) break;
 			continue;
@@ -411,7 +411,7 @@ int main (int argc,char *argv [])
 		if (CMargTest(argv[argPos],"-r","--rename"))
 			{
 			if ((argNum = CMargShiftLeft(argPos,argv,argNum)) <= argPos)
-				{ CMmsgPrint (CMmsgUsrError,"Missing field after -r!\n"); return (CMfailed); }
+				{ CMmsgPrint (CMmsgUsrError,"Missing field after -r!"); return (CMfailed); }
 			rename = argv[argPos];
 			if ((argNum = CMargShiftLeft(argPos,argv,argNum)) <= argPos) break;
 			continue;
@@ -419,7 +419,7 @@ int main (int argc,char *argv [])
 		if (CMargTest(argv[argPos],"-o","--output"))
 			{
 			if ((argNum = CMargShiftLeft(argPos,argv,argNum)) <= argPos)
-				{ CMmsgPrint (CMmsgUsrError,"Missing output filename!\n"); return (CMfailed); }
+				{ CMmsgPrint (CMmsgUsrError,"Missing output filename!"); return (CMfailed); }
 			if((outFile = fopen(argv[argPos],"w")) == (FILE *) NULL)
 				{ CMmsgPrint (CMmsgUsrError,"Cannot open file %s",argv[argPos]); return (CMfailed); }
 			if ((argNum = CMargShiftLeft(argPos,argv,argNum)) <= argPos) break;
@@ -428,7 +428,7 @@ int main (int argc,char *argv [])
 		if (CMargTest(argv[argPos],"-t","--title"))
 			{
 			if ((argNum = CMargShiftLeft(argPos,argv,argNum)) <= argPos)
-				{ CMmsgPrint (CMmsgUsrError,"Missing title!\n"); return (CMfailed); }
+				{ CMmsgPrint (CMmsgUsrError,"Missing title!"); return (CMfailed); }
 			outData->Name(argv[argPos]);
 			if ((argNum = CMargShiftLeft(argPos,argv,argNum)) <= argPos) break;
 			continue;
@@ -436,7 +436,7 @@ int main (int argc,char *argv [])
 		if (CMargTest(argv[argPos],"-s","--subject"))
 			{
 			if ((argNum = CMargShiftLeft(argPos,argv,argNum)) <= argPos)
-				{ CMmsgPrint (CMmsgUsrError,"Missing subject!\n"); return (CMfailed); }
+				{ CMmsgPrint (CMmsgUsrError,"Missing subject!"); return (CMfailed); }
 			outData->Document(DBDocSubject,argv[argPos]);
 			if ((argNum = CMargShiftLeft(argPos,argv,argNum)) <= argPos) break;
 			continue;
@@ -444,7 +444,7 @@ int main (int argc,char *argv [])
 		if (CMargTest(argv[argPos],"-d","--domain"))
 			{
 			if ((argNum = CMargShiftLeft(argPos,argv,argNum)) <= argPos)
-				{ CMmsgPrint (CMmsgUsrError,"Missing domain!\n"); return (CMfailed); }
+				{ CMmsgPrint (CMmsgUsrError,"Missing domain!"); return (CMfailed); }
 			outData->Document(DBDocGeoDomain,argv[argPos]);
 			if ((argNum = CMargShiftLeft(argPos,argv,argNum)) <= argPos) break;
 			continue;
@@ -452,13 +452,13 @@ int main (int argc,char *argv [])
 		if (CMargTest(argv[argPos],"-v","--version"))
 			{
 			if ((argNum = CMargShiftLeft(argPos,argv,argNum)) <= argPos)
-				{ CMmsgPrint (CMmsgUsrError,"Missing version!\n"); return (CMfailed); }
+				{ CMmsgPrint (CMmsgUsrError,"Missing version!"); return (CMfailed); }
 			outData->Document(DBDocVersion,argv[argPos]);
 			if ((argNum = CMargShiftLeft(argPos,argv,argNum)) <= argPos) break;
 			continue;
 			}
 		if ((argv[argPos][0] == '-') && (strlen (argv[argPos]) > 1))
-			{ fprintf(stderr,"Unknown option: %s!\n",argv[argPos]); return (CMfailed); }
+			{ CMmsgPrint (CMmsgUsrError, "Unknown option: %s!",argv[argPos]); return (CMfailed); }
 		argPos++;
 		}
 
@@ -476,23 +476,23 @@ int main (int argc,char *argv [])
 
 	if(tableName == (char *) NULL) tableName = DBrNItems;
 	if((inTable = inData->Table(tableName)) == (DBObjTable *) NULL)
-		{ CMmsgPrint (CMmsgUsrError,"Invalid table!\n"); delete inData; return (CMfailed); }
+		{ CMmsgPrint (CMmsgUsrError,"Invalid table!"); delete inData; return (CMfailed); }
 
 	if((groups = (Groups **) malloc(numGrpNames * sizeof(Groups *))) == (Groups **) NULL)
-		{ perror("Memory allocation error!\n"); return(DBFault); }
+		{ perror("Memory allocation error!"); return(DBFault); }
 	for(i = 0; i < numGrpNames; i++)
 		{
 		if((field = inTable->Field(groupnames[i])) == (DBObjTableField *) NULL)
-			{ fprintf(stderr,"Invalid group name: %s\n",groupnames[i]); return (CMfailed); }
+			{ CMmsgPrint (CMmsgUsrError, "Invalid group name: %s",groupnames[i]); return (CMfailed); }
 		if(DBTableFieldIsCategory(field))
 			{
 			groups[i] = new Groups();
 			groups[i]->srcFLD = field;
 			groups[i]->dstFLD = new DBObjTableField(*field);
 			outTable->AddField(groups[i]->dstFLD);
-//			fprintf(stderr,"Added Group: %s\n",groups[i]->dstFLD->Name());
+//			CMmsgPrint (CMmsgUsrError, "Added Group: %s",groups[i]->dstFLD->Name());
 			}
-		else fprintf(stderr,"Group %s is not Category!\n",groupnames[i]);
+		else CMmsgPrint (CMmsgUsrError, "Group %s is not Category!",groupnames[i]);
 		}
 	delete groupnames;
 
@@ -509,7 +509,7 @@ int main (int argc,char *argv [])
 		p = p->next;
 		}
 //	p = head->next;
-//	while(p) { fprintf(stderr,"Added: o:%s n:%s p:",p->getOldName(),p->getNewName()); if(p->getPrint()) fprintf(stderr,"true\n"); else fprintf(stderr,"false\n"); p = p->next; }
+//	while(p) { CMmsgPrint (CMmsgUsrError, "Added: o:%s n:%s p:",p->getOldName(),p->getNewName()); if(p->getPrint()) CMmsgPrint (CMmsgUsrError, "true"); else CMmsgPrint (CMmsgUsrError, "false"); p = p->next; }
 
 	fields = inTable->Fields();
 	p = head->next;
@@ -526,12 +526,12 @@ int main (int argc,char *argv [])
 //			if ((field = inTable->Field(p->getOldName())) == (DBObjTableField *) NULL)
 			if (field == (DBObjTableField *) NULL)
 				{
-				fprintf(stderr,"Invalid field name: %s\n",p->getOldName());
+				CMmsgPrint (CMmsgUsrError, "Invalid field name: %s",p->getOldName());
 				return(DBFault);
 				}
 			if (!DBTableFieldIsNumeric(field))
 				{
-				fprintf(stderr,"Field is not Numeric: %s\n",p->getOldName());
+				CMmsgPrint (CMmsgUsrError, "Field is not Numeric: %s",p->getOldName());
 				return(DBFault);
 				}
 			}
@@ -751,12 +751,12 @@ int main (int argc,char *argv [])
 				case AVG:
 					if((FLDExists(head,p->getOldName(),SUM,&sum)) && (FLDExists(head,p->getOldName(),NONNULL,&num)))
 						p->field->Float(outRecord,sum->field->Float(outRecord) / (DBFloat) (num->field->Int(outRecord)));
-					else fprintf(stderr,"Program Error! Could not find SUM or NONNULL in linked list! Please contact the GHAAS developers group!\n");
+					else CMmsgPrint (CMmsgUsrError, "Program Error! Could not find SUM or NONNULL in linked list! Please contact the GHAAS developers group!");
 					break;
 				case NAVG:
 					if((FLDExists(head,p->getOldName(),SUM,&sum)) && (FLDExists(head,"NUM",NUM,&num)))
 						p->field->Float(outRecord,sum->field->Float(outRecord) / (DBFloat) (num->field->Int(outRecord)));
-					else fprintf(stderr,"Program Error! Could not find SUM or NUM in linked list! Please contact the GHAAS developers group!\n");
+					else CMmsgPrint (CMmsgUsrError, "Program Error! Could not find SUM or NUM in linked list! Please contact the GHAAS developers group!");
 					break;
 				case PCT:
 				case MED:
@@ -781,7 +781,7 @@ int main (int argc,char *argv [])
 						else if(cur->occur == occurrance) mult = true;
 						cur = cur->next;
 						}
-					if(mult) fprintf(stderr,"** Warning, multiple answers for MOD, listing first found!\n");
+					if(mult) CMmsgPrint (CMmsgUsrError, "** Warning, multiple answers for MOD, listing first found!");
 					p->field->Float(outRecord,mod);
 					break;
 				default:
@@ -816,7 +816,7 @@ int main (int argc,char *argv [])
 					p->field->Float(outRecord,sum);
 					}
 				}
-			else fprintf(stderr,"Program Error! Could not find AVG or NUM in linked list! Please contact the GHAAS developers group!\n");
+			else CMmsgPrint (CMmsgUsrError, "Program Error! Could not find AVG or NUM in linked list! Please contact the GHAAS developers group!");
 			}
 		p = p->next;
 		}
@@ -855,7 +855,7 @@ int main (int argc,char *argv [])
 				p->field->Format(DBMathFloatAutoFormat(maxval));
 				}
 			}
-//		fprintf(stderr,"Format(%s)%d,%d: '%s'\n",p->getFuncName(),p->isInt(),p->getPrint(),p->field->Format());
+//		CMmsgPrint (CMmsgUsrError, "Format(%s)%d,%d: '%s'",p->getFuncName(),p->isInt(),p->getPrint(),p->field->Format());
 		p = p->next;
 		}
 

@@ -1,4 +1,5 @@
-#include<NCdsHandle.h>
+#include <cm.h>
+#include <NCdsHandle.h>
 
 int NCGridGetPointVector (NCdsHandleGCont_t *gCont, NCreference_t *ref,double *vector)
 {
@@ -21,7 +22,7 @@ NCObjTable_t *NCGridContPointSampling (NCObjData_t *objGrid, NCObjData_t *objPoi
 	refs = (NCReference_t *) calloc (point->Vector.ItemNum,sizeof (NCReference_t *));
 	if (refs == (NCReference_t *) NULL)
 	{
-		perror ("Memory allocation error in: NCGridPointSampling ()");
+		CMmsgPrint (CMmsgSysError, "Memory allocation error in: %s %d",__FILE__,__LINE__);
 		return (NCObjTable_t *) NULL;
 	}
 	for (i = 0;i < point->Vector.ItemNum;i++) NCReferenceInitialize (refs + i);
@@ -54,7 +55,7 @@ NCstate NCGridContSampling (int inNC, int outNC)
 
 	gRefs = (NCreference_t *) calloc (outGrid->RowNum * outGrid->ColNum, sizeof (NCreference_t));
 	if (gRefs == (NCreference_t *) NULL)
-	{ perror ("Memory allocation error in: NCGridSampling ()"); goto ABORT; }
+	{ CMmsgPrint (CMmsgSysError, "Memory allocation error in: %s %d",__FILE__,__LINE__); goto ABORT; }
 
 	for (row = 0;row < outGrid->RowNum;row++)
 	{
@@ -67,12 +68,12 @@ NCstate NCGridContSampling (int inNC, int outNC)
 		}
 	}
 	if ((outGrid->TNum < inGrid->TNum) && ((outGrid->Times = (double *) realloc (outGrid->Times,inGrid->TNum * sizeof (double))) == (double *) NULL))
-	{ perror ("Memory allocation error in: NCGridSampling ()"); goto ABORT; }
+	{ CMmsgPrint (CMmsgSysError, "Memory allocation error in: %s %d",__FILE__,__LINE__); goto ABORT; }
 
 	outGrid->TNum = inGrid->TNum;
 	if (((outGrid->NCindex  = (size_t *) realloc (outGrid->NCindex,  outGrid->TNum * sizeof (size_t))) == (size_t *) NULL) ||
 	    ((outGrid->NCoffset = (size_t *) realloc (outGrid->NCoffset, outGrid->TNum * sizeof (size_t))) == (size_t *) NULL))
-	{ perror ("Memory allocation error in: NCGridSampling ()"); goto ABORT; }
+	{ CMmsgPrint (CMmsgSysError, "Memory allocation error in: %s %d",__FILE__,__LINE__); goto ABORT; }
 	for (tStep = 0;tStep < inGrid->TNum; tStep++)
 		outGrid->NCindex [tStep] = outGrid->NCoffset [tStep] = 0;
 

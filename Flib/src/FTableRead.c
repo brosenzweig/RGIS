@@ -9,6 +9,7 @@ FTableRead.c
 balazs.fekete@unh.edu
 
 *******************************************************************************/
+#include <cm.h>
 #include <Flib.h>
 
 #define BLOCKSIZE 128
@@ -22,7 +23,7 @@ char *FGetLine(char *buffer, int *size, FILE *inFile)
 		{
 		if ((buffer = (char *) malloc (BLOCKSIZE * sizeof (char))) == (char *) NULL)
 			{
-			perror ("Memory Allocation Error in: FGetLine ()");
+			CMmsgPrint (CMmsgSysError, "Memory Allocation Error in: %s %d",__FILE__,__LINE__);
 			*size = 0;
 			return ((char *) NULL);
 			}
@@ -38,7 +39,7 @@ char *FGetLine(char *buffer, int *size, FILE *inFile)
 			{
 			if ((buffer = (char *) realloc (buffer,(*size + BLOCKSIZE) * sizeof (char))) == (char *) NULL)
 				{
-				perror ("Memory Allocation Error in: FGetLine ()");
+				CMmsgPrint (CMmsgSysError, "Memory Allocation Error in: %s %d",__FILE__,__LINE__);
 				*size = 0;
 				return ((char *) NULL);
 				}
@@ -103,7 +104,7 @@ char *FGetField (char *buffer,int fieldID,char *fieldBuffer,int *fbSize)
 		{
 		if ((fieldBuffer = (char *) realloc (fieldBuffer,(b + 1) * sizeof (char))) == (char *) NULL)
 			{
-			perror ("Memory Allocation Error in: FGetField ()");
+			CMmsgPrint (CMmsgSysError, "Memory Allocation Error in: %s %d",__FILE__,__LINE__);
 			*fbSize = 0;
 			return ((char *) NULL);
 			}
