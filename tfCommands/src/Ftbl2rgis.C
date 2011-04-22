@@ -23,13 +23,13 @@ int findNearestPowerOfTwo( int x );
 
 void showUsage( char *arg0 )
 {
-	fprintf(stderr,"This function will read any ascii table from stdin, and\n");
-	fprintf(stderr,"output the RGIS table equivalent to stdout.\n");
-	fprintf(stderr,"Usage:%s [-o] <inputFileName>\n",CMprgName(arg0));
-	fprintf(stderr,"  -o,--output    = Output to specified file instead of stdout\n");
-	fprintf(stderr,"  -D,--descFile  = Read column types from this file\n");
-	fprintf(stderr,"  -p,--printDT   = Print out column types before writing output\n");
-	fprintf(stderr,"<inputFileName> := <FileName> | -\n");
+	CMmsgPrint (CMmsgInfo, "This function will read any ascii table from stdin, and");
+	CMmsgPrint (CMmsgInfo, "output the RGIS table equivalent to stdout.");
+	CMmsgPrint (CMmsgInfo, "Usage:%s [-o] <inputFileName>",CMprgName(arg0));
+	CMmsgPrint (CMmsgInfo, "  -o,--output    = Output to specified file instead of stdout");
+	CMmsgPrint (CMmsgInfo, "  -D,--descFile  = Read column types from this file");
+	CMmsgPrint (CMmsgInfo, "  -p,--printDT   = Print out column types before writing output");
+	CMmsgPrint (CMmsgInfo, "<inputFileName> := <FileName> | -");
 	exit(1);
 }
 
@@ -47,18 +47,18 @@ int main( int argc, char* argv[] )
 		if (CMargTest(argv[argPos],"-o","--output"))
 			{
 			if ((argNum = CMargShiftLeft(argPos,argv,argNum)) <= argPos)
-				{ CMmsgPrint (CMmsgUsrError,"Missing output filename!\n"); return (CMfailed); }
+				{ CMmsgPrint (CMmsgUsrError,"Missing output filename!"); return (CMfailed); }
 			if((outFile = fopen(argv[argPos],"w")) == (FILE *) NULL)
-				{ fprintf(stderr,"Cannot open file %s",argv[argPos]); return(DBFault); }
+				{ CMmsgPrint (CMmsgUsrError, "Cannot open file %s",argv[argPos]); return(DBFault); }
 			if ((argNum = CMargShiftLeft(argPos,argv,argNum)) <= argPos) break;
 			continue;
 			}
 		if (CMargTest(argv[argPos],"-D","--descfile"))
 			{
 			if ((argNum = CMargShiftLeft(argPos,argv,argNum)) <= argPos)
-				{ CMmsgPrint (CMmsgUsrError,"Missing description filename!\n"); return (CMfailed); }
+				{ CMmsgPrint (CMmsgUsrError,"Missing description filename!"); return (CMfailed); }
 			if((descFile = fopen(argv[argPos],"r")) == (FILE *) NULL)
-				{ fprintf(stderr,"Cannot open file %s",argv[argPos]); return(DBFault); }
+				{ CMmsgPrint (CMmsgUsrError, "Cannot open file %s",argv[argPos]); return(DBFault); }
 			if ((argNum = CMargShiftLeft(argPos,argv,argNum)) <= argPos) break;
 			continue;
 			}
@@ -69,7 +69,7 @@ int main( int argc, char* argv[] )
 			continue;
 			}
 		if ((argv[argPos][0] == '-') && (strlen (argv[argPos]) > 1))
-			{ fprintf(stderr,"Unknown option: %s!\n",argv[argPos]); return (CMfailed); }
+			{ CMmsgPrint (CMmsgUsrError, "Unknown option: %s!",argv[argPos]); return (CMfailed); }
 		argPos++;
 		}
 
@@ -77,7 +77,7 @@ int main( int argc, char* argv[] )
 		{
 		if (strcmp(argv[1],"-") == 0) { inFile = stdin; } else { inFile = fopen(argv[1],"r"); }
 		if(((theData = readFile( inFile , descFile, &errCheck )) == (fData *) NULL) || errCheck)
-			{ fprintf(stderr,"errors were reported, halting.\n"); return -1; }
+			{ CMmsgPrint (CMmsgUsrError, "errors were reported, halting."); return -1; }
 		}
 	else showUsage(argv[0]);
 
@@ -122,7 +122,7 @@ DBObjData* exportDBObj( const fData* theData )
 		field = new DBObjTableField(theData->fieldNames[i], DBTableFieldString, "%s",
 				findNearestPowerOfTwo( theData->types[i].sigDigits + 1 ), false);
 		break;
-		default: fprintf(stderr,"FAscii2GDBC::createRGISTable: strange things are heppening here!!\n"); break;
+		default: CMmsgPrint (CMmsgUsrError, "FAscii2GDBC::createRGISTable: strange things are heppening here!!"); break;
 		}
 		table->AddField (field);
 	}

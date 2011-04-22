@@ -198,7 +198,7 @@ int _RGISToolsNetworkExportARCInfo (DBObjData *netData,char *selection)
 		unlink (arcAttribData);
 		unlink (nodeAttribData);
 		unlink (nodeAttribDef);
-		perror ("File Creation Error in: _RGISToolsNetworkExportARCInfo ()"); 
+		CMmsgPrint (CMmsgSysError, "File Creation Error in: %s %d",__FILE__,__LINE__);
 		return (DBFault);
 		}
 

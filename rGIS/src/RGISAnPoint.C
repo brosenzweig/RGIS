@@ -406,7 +406,7 @@ void RGISAnalysePointInterStationTSCBK (Widget widget, RGISWorkspace *workspace,
 
 	if ((selection = UISelectObject (selectWidget,(DBObjectLIST<DBObject> *) relateTBL)) == (char *) NULL) return;
 	if ((relateRec = relateTBL->Item (selection)) == (DBObjRecord *) NULL)
-		{ fprintf (stderr,"Relate Record Error in: RGISAnalysePointInterfluvialTSCBK ()\n"); return; }
+		{ CMmsgPrint (CMmsgAppError, "Relate Record Error in: %s %d",__FILE__,__LINE__); return; }
 
 	relDataFLD = relateTBL->Field (DBrNRelateData);
 	relateFLD = relateTBL->Field (DBrNRelateField);
@@ -415,7 +415,7 @@ void RGISAnalysePointInterStationTSCBK (Widget widget, RGISWorkspace *workspace,
 	if ((tsData = dataset->Data (relDataFLD->String (relateRec))) == (DBObjData *) NULL)
 		{
 		if ((metaEntry = dataset->Meta (relDataFLD->String (relateRec))) == (DBObjMetaEntry *) NULL)
-			{ fprintf (stderr,"Meta Enrty Finding Error in: RGISAnalysePointInterfluvialTSCBK ()\n"); return; }
+			{ CMmsgPrint (CMmsgAppError, "Meta Enrty Finding Error in: %s %d",__FILE__,__LINE__); return; }
 		tsData = new DBObjData ();
 		if (tsData->Read (metaEntry->FileName ()) != DBSuccess) return;
 		}

@@ -32,7 +32,7 @@ int main (int argc,char *argv [])
 		if (CMargTest (argv [argPos],"-e","--elevation"))
 			{
 			if ((argNum = CMargShiftLeft (argPos,argv,argNum)) <= argPos)
-				{ CMmsgPrint (CMmsgUsrError,"Missing Elevation!\n");	return (CMfailed); }
+				{ CMmsgPrint (CMmsgUsrError,"Missing Elevation!");	return (CMfailed); }
 			elevName = argv [argPos];
 			if ((argNum = CMargShiftLeft (argPos,argv,argNum)) <= argPos) break;
 			continue;
@@ -40,18 +40,18 @@ int main (int argc,char *argv [])
 		if (CMargTest (argv [argPos],"-c","--climb"))
 			{
 			if ((argNum = CMargShiftLeft (argPos,argv,argNum)) <= argPos)
-				{ CMmsgPrint (CMmsgUsrError,"Missing climb coefficient!\n"); return (CMfailed); }
+				{ CMmsgPrint (CMmsgUsrError,"Missing climb coefficient!"); return (CMfailed); }
 			if (sscanf (argv [argPos],"%f",&climb) != 1)
-				{ CMmsgPrint (CMmsgUsrError,"Invalid climb coefficient\n");  return (CMfailed); }
+				{ CMmsgPrint (CMmsgUsrError,"Invalid climb coefficient");  return (CMfailed); }
 			if ((argNum = CMargShiftLeft (argPos,argv,argNum)) <= argPos) break;
 			continue;
 			}
 		if (CMargTest (argv [argPos],"-a","--maximum_basin"))
 			{
 			if ((argNum = CMargShiftLeft (argPos,argv,argNum)) <= argPos)
-				{ CMmsgPrint (CMmsgUsrError,"Missing maximum basin size!\n"); return (CMfailed); }
+				{ CMmsgPrint (CMmsgUsrError,"Missing maximum basin size!"); return (CMfailed); }
 			if (sscanf (argv [argPos],"%f",&maxBasin) != 1)
-				{ CMmsgPrint (CMmsgUsrError,"Invalid maximum basin size\n");  return (CMfailed); }
+				{ CMmsgPrint (CMmsgUsrError,"Invalid maximum basin size");  return (CMfailed); }
 			if ((argNum = CMargShiftLeft (argPos,argv,argNum)) <= argPos) break;
 			continue;
 			}
@@ -61,9 +61,9 @@ int main (int argc,char *argv [])
 			const char *modes [] = { "no", "yes", (char *) NULL };
 
 			if ((argNum = CMargShiftLeft (argPos,argv,argNum)) <= argPos)
-				{ CMmsgPrint (CMmsgUsrError,"Missing savesteps!\n");    return (CMfailed); }
+				{ CMmsgPrint (CMmsgUsrError,"Missing savesteps!");    return (CMfailed); }
 			if ((saveStep = CMoptLookup (modes,argv [argPos],true)) == DBFault)
-				{ CMmsgPrint (CMmsgUsrError,"Invalid savesteps mode!\n"); return (CMfailed); }
+				{ CMmsgPrint (CMmsgUsrError,"Invalid savesteps mode!"); return (CMfailed); }
 			save = saveStep == 0 ? true : false;
 			if ((argNum = CMargShiftLeft (argPos,argv,argNum)) <= argPos) break;
 			continue;
@@ -75,11 +75,11 @@ int main (int argc,char *argv [])
 			DBFloat radius [] = { 6371.2213, 6371.2213 * 0.53264, 6371.2213 * 0.94886 };
 
 			if ((argNum = CMargShiftLeft (argPos,argv,argNum)) <= argPos)
-				{ CMmsgPrint (CMmsgUsrError,"Missing planet!\n");       return (CMfailed); }
+				{ CMmsgPrint (CMmsgUsrError,"Missing planet!");       return (CMfailed); }
 			if ((planet = CMoptLookup (planets,argv [argPos],true)) == DBFault)
 				{
 				if (sscanf (argv [argPos],"%lf",radius) != 1)
-					{ CMmsgPrint (CMmsgUsrError,"Invalid planet!\n");	return (CMfailed); }
+					{ CMmsgPrint (CMmsgUsrError,"Invalid planet!");	return (CMfailed); }
 				planet = 0;
 				}
 			DBMathSetGlobeRadius (radius [planet]);
@@ -89,7 +89,7 @@ int main (int argc,char *argv [])
 		if (CMargTest (argv [argPos],"-t","--title"))
 			{
 			if ((argNum = CMargShiftLeft (argPos,argv,argNum)) <= argPos)
-				{ CMmsgPrint (CMmsgUsrError,"Missing title!\n");        return (CMfailed); }
+				{ CMmsgPrint (CMmsgUsrError,"Missing title!");        return (CMfailed); }
 			title = argv [argPos];
 			if ((argNum = CMargShiftLeft (argPos,argv,argNum)) <= argPos) break;
 			continue;
@@ -97,7 +97,7 @@ int main (int argc,char *argv [])
 		if (CMargTest (argv [argPos],"-u","--subject"))
 			{
 			if ((argNum = CMargShiftLeft (argPos,argv,argNum)) <= argPos)
-				{ CMmsgPrint (CMmsgUsrError,"Missing subject!\n");      return (CMfailed); }
+				{ CMmsgPrint (CMmsgUsrError,"Missing subject!");      return (CMfailed); }
 			subject = argv [argPos];
 			if ((argNum = CMargShiftLeft (argPos,argv,argNum)) <= argPos) break;
 			continue;
@@ -105,7 +105,7 @@ int main (int argc,char *argv [])
 		if (CMargTest (argv [argPos],"-d","--domain"))
 			{
 			if ((argNum = CMargShiftLeft (argPos,argv,argNum)) <= argPos)
-				{ CMmsgPrint (CMmsgUsrError,"Missing domain!\n");       return (CMfailed); }
+				{ CMmsgPrint (CMmsgUsrError,"Missing domain!");       return (CMfailed); }
 			domain  = argv [argPos];
 			if ((argNum = CMargShiftLeft (argPos,argv,argNum)) <= argPos) break;
 			continue;
@@ -113,7 +113,7 @@ int main (int argc,char *argv [])
 		if (CMargTest (argv [argPos],"-v","--version"))
 			{
 			if ((argNum = CMargShiftLeft (argPos,argv,argNum)) <= argPos)
-				{ CMmsgPrint (CMmsgUsrError,"Missing version!\n");      return (CMfailed); }
+				{ CMmsgPrint (CMmsgUsrError,"Missing version!");      return (CMfailed); }
 			version  = argv [argPos];
 			if ((argNum = CMargShiftLeft (argPos,argv,argNum)) <= argPos) break;
 			continue;
@@ -126,29 +126,29 @@ int main (int argc,char *argv [])
 			}
 		if (CMargTest (argv [argPos],"-h","--help"))
 			{
-			CMmsgPrint (CMmsgInfo,"%s [options] <input network> <output network>\n",CMprgName(argv[0]));
-			CMmsgPrint (CMmsgInfo,"     -e,--elevation   [elevation coverage]\n");
-			CMmsgPrint (CMmsgInfo,"     -c,--climb       [climb coefficient]\n");
-			CMmsgPrint (CMmsgInfo,"     -a,--maximum_basin [maximum basin size]\n");
-			CMmsgPrint (CMmsgInfo,"     -P, --planet     [Earth|Mars|Venus|radius]\n");
-			CMmsgPrint (CMmsgInfo,"     -t,--title       [dataset title]\n");
-			CMmsgPrint (CMmsgInfo,"     -u,--subject     [subject]\n");
-			CMmsgPrint (CMmsgInfo,"     -d,--domain      [domain]\n");
-			CMmsgPrint (CMmsgInfo,"     -v,--version     [version]\n");
-			CMmsgPrint (CMmsgInfo,"     -V,--verbose\n");
-			CMmsgPrint (CMmsgInfo,"     -h,--help\n");
+			CMmsgPrint (CMmsgInfo,"%s [options] <input network> <output network>",CMprgName(argv[0]));
+			CMmsgPrint (CMmsgInfo,"     -e,--elevation   [elevation coverage]");
+			CMmsgPrint (CMmsgInfo,"     -c,--climb       [climb coefficient]");
+			CMmsgPrint (CMmsgInfo,"     -a,--maximum_basin [maximum basin size]");
+			CMmsgPrint (CMmsgInfo,"     -P, --planet     [Earth|Mars|Venus|radius]");
+			CMmsgPrint (CMmsgInfo,"     -t,--title       [dataset title]");
+			CMmsgPrint (CMmsgInfo,"     -u,--subject     [subject]");
+			CMmsgPrint (CMmsgInfo,"     -d,--domain      [domain]");
+			CMmsgPrint (CMmsgInfo,"     -v,--version     [version]");
+			CMmsgPrint (CMmsgInfo,"     -V,--verbose");
+			CMmsgPrint (CMmsgInfo,"     -h,--help");
 			return (DBSuccess);
 			}
 		if ((argv [argPos][0] == '-') && (strlen (argv [argPos]) > 1))
-			{ CMmsgPrint (CMmsgUsrError,"Unknown option: %s!\n",argv [argPos]); return (CMfailed); }
+			{ CMmsgPrint (CMmsgUsrError,"Unknown option: %s!",argv [argPos]); return (CMfailed); }
 		argPos++;
 		}
 
-	if (argNum > 3) { CMmsgPrint (CMmsgUsrError,"Extra arguments!\n"); return (CMfailed); }
+	if (argNum > 3) { CMmsgPrint (CMmsgUsrError,"Extra arguments!"); return (CMfailed); }
 	if (verbose) RGlibPauseOpen (argv[0]);
 
 	if (elevName == (char *) NULL)
-		{ CMmsgPrint (CMmsgUsrError,"Elevation is not specified\n"); return (CMfailed); }
+		{ CMmsgPrint (CMmsgUsrError,"Elevation is not specified"); return (CMfailed); }
 
 	grdData = new DBObjData ();
 	if ((grdData->Read (elevName) == DBFault) || (grdData->Type () != DBTypeGridContinuous))
@@ -197,11 +197,11 @@ DBInt RGlibNetworkDefragment (DBObjData *netData, DBObjData *elevData,DBFloat ma
 	DBGridIF    *gridIF = new DBGridIF (elevData);
 
 	if ((basinIDs  = (DBInt *)   calloc (netIF->BasinNum (),sizeof (DBInt)))   == (DBInt *)   NULL)
-		{ perror ("Memory allocation erron in: RGlibNetworkDefragment ()"); return (CMfailed); }
+		{ CMmsgPrint (CMmsgSysError, "Memory allocation erron in: %s %d",__FILE__,__LINE__); return (CMfailed); }
 	if ((_RGlibNetworkBasinIDX  = (DBInt *)   calloc (netIF->BasinNum (),sizeof (DBInt)))   == (DBInt *)   NULL)
-		{ perror ("Memory allocation erron in: RGlibNetworkDefragment ()"); free (basinIDs); return (CMfailed); }
+		{ CMmsgPrint (CMmsgSysError, "Memory allocation erron in: %s %d",__FILE__,__LINE__); free (basinIDs); return (CMfailed); }
 	if ((_RGlibNetworkBasinElev = (DBFloat *) calloc (netIF->BasinNum (),sizeof (DBFloat))) == (DBFloat *) NULL)
-		{ perror ("Memory allocation erron in: RGlibNetworkDefragment ()"); free (basinIDs); free (_RGlibNetworkBasinIDX); return (CMfailed); }
+		{ CMmsgPrint (CMmsgSysError, "Memory allocation erron in: %s %d",__FILE__,__LINE__); free (basinIDs); free (_RGlibNetworkBasinIDX); return (CMfailed); }
 	layerRec = gridIF->Layer (0);
 	for (basin = 0;basin < netIF->BasinNum ();basin++)
 		{

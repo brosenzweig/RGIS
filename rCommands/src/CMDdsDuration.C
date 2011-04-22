@@ -41,7 +41,7 @@ int main(int argc,char *argv []) {
 		if (CMargTest(argv[argPos],"-b","--bins")) {
 			if ((argNum = CMargShiftLeft(argPos,argv,argNum)) <= argPos) break;
 			if (sscanf (argv [argPos],"%d", &binNum) != 1) {
-				CMmsgPrint (CMmsgUsrError,"Ilformed bin number!\n");
+				CMmsgPrint (CMmsgUsrError,"Ilformed bin number!");
 				goto Stop;
 			}
 			if ((argNum = CMargShiftLeft(argPos,argv,argNum)) <= argPos) break;
@@ -53,40 +53,38 @@ int main(int argc,char *argv []) {
 			const char *modes [] = { "percent", "value", (char *) NULL };
 
 			if ((argNum = CMargShiftLeft (argPos,argv,argNum)) <= argPos)
-				{ CMmsgPrint (CMmsgUsrError,"Missing savesteps!\n");    return (CMfailed); }
+				{ CMmsgPrint (CMmsgUsrError,"Missing savesteps!");    return (CMfailed); }
 			if ((mode = CMoptLookup (modes,argv [argPos],true)) == CMfailed)
-				{ CMmsgPrint (CMmsgUsrError,"Invalid savesteps mode!\n"); return (CMfailed); }
+				{ CMmsgPrint (CMmsgUsrError,"Invalid savesteps mode!"); return (CMfailed); }
 			valueMode = mode == 1 ? true : false;
 			if ((argNum = CMargShiftLeft (argPos,argv,argNum)) <= argPos) break;
 			continue;
 			}
 		if (CMargTest(argv[argPos],"-h","--help")) {
 			if ((argNum = CMargShiftLeft(argPos,argv,argNum)) < argPos) break;
-Help:		CMmsgPrint (CMmsgUsrError,"%s [options] <out datastream>\n",CMprgName(argv[0]));
-			CMmsgPrint (CMmsgUsrError,"  -i, --input [input datastream]\n");
-			CMmsgPrint (CMmsgUsrError,"  -b, --bins  [# of bins]\n");
-			CMmsgPrint (CMmsgUsrError,"  -m, --mode  [percent|value]\n");
-			CMmsgPrint (CMmsgUsrError,"  -h,--help\n");
+Help:		CMmsgPrint (CMmsgUsrError,"%s [options] <out datastream>",CMprgName(argv[0]));
+			CMmsgPrint (CMmsgUsrError,"  -i, --input [input datastream]");
+			CMmsgPrint (CMmsgUsrError,"  -b, --bins  [# of bins]");
+			CMmsgPrint (CMmsgUsrError,"  -m, --mode  [percent|value]");
+			CMmsgPrint (CMmsgUsrError,"  -h,--help");
 			ret = CMsucceeded;
 			goto Stop;
 		}
 		if ((argv [argPos][0] == '-') && (strlen (argv [argPos]) > 1)) {
-			CMmsgPrint (CMmsgUsrError,"Unknown option: %s!\n",argv [argPos]);
+			CMmsgPrint (CMmsgUsrError,"Unknown option: %s!",argv [argPos]);
 			return (CMfailed);
 		}
       argPos++;
 	}
-	if (argNum > 2) { CMmsgPrint (CMmsgUsrError,"Extra arguments!\n"); goto Stop; }
+	if (argNum > 2) { CMmsgPrint (CMmsgUsrError,"Extra arguments!"); goto Stop; }
 
-	if (fileName == (char *) NULL) { CMmsgPrint (CMmsgUsrError, "Missing input file!\n"); goto Stop; }
+	if (fileName == (char *) NULL) { CMmsgPrint (CMmsgUsrError, "Missing input file!"); goto Stop; }
   	if ((outFile = (argNum > 2) && (strcmp (argv [1],"-") != 0) ? fopen (argv [1],"w") : stdout) == (FILE *) NULL) {
-		CMmsgPrint (CMmsgAppError, "Output file opening error\n");
-		perror (":");
+		CMmsgPrint (CMmsgSysError, "Output file opening error in: %s %d",__FILE__,__LINE__);
 		goto Stop;
 	}
 	if ((inFile = fopen (fileName,"r")) == (FILE *) NULL) {
-		CMmsgPrint (CMmsgAppError, "Input file opening error\n");
-		perror (":");
+		CMmsgPrint (CMmsgSysError, "Input file opening error in: %s %d",__FILE__,__LINE__);
 		goto Stop;
 	}
 
@@ -94,28 +92,23 @@ Help:		CMmsgPrint (CMmsgUsrError,"%s [options] <out datastream>\n",CMprgName(arg
 		if (items == (void *) NULL) {
 			itemSize = MFVarItemSize(header.DataType);
 			if ((items  = (void *)   calloc (header.ItemNum,         itemSize))         == (void *)   NULL) {
-				CMmsgPrint (CMmsgSysError, "Memory allocation error in: %s:%d\n",__FILE__,__LINE__);
-				perror (":");
+				CMmsgPrint (CMmsgSysError, "Memory allocation error in: %s:%d",__FILE__,__LINE__);
 				goto Stop;
 			}
 			if ((max    = (double *) calloc (header.ItemNum,          sizeof (double))) == (double *) NULL) {
-				CMmsgPrint (CMmsgSysError, "Memory allocation error in: %s:%d\n",__FILE__,__LINE__);
-				perror (":");
+				CMmsgPrint (CMmsgSysError, "Memory allocation error in: %s:%d",__FILE__,__LINE__);
 				goto Stop;
 			}
 			if ((min    = (double *) calloc (header.ItemNum,          sizeof (double))) == (double *) NULL) {
-				CMmsgPrint (CMmsgSysError, "Memory allocation error in: %s:%d\n",__FILE__,__LINE__);
-				perror (":");
+				CMmsgPrint (CMmsgSysError, "Memory allocation error in: %s:%d",__FILE__,__LINE__);
 				goto Stop;
 			}
 			if ((output = (float *) calloc (header.ItemNum,          sizeof (float)))   == (float *)  NULL) {
-				CMmsgPrint (CMmsgSysError, "Memory allocation error in: %s:%d\n",__FILE__,__LINE__);
-				perror (":");
+				CMmsgPrint (CMmsgSysError, "Memory allocation error in: %s:%d",__FILE__,__LINE__);
 				goto Stop;
 			}
 			if ((bins   = (int *)    calloc (header.ItemNum * binNum, sizeof (int)))    == (int *)   NULL) {
-				CMmsgPrint (CMmsgSysError, "Memory allocation error in: %s:%d\n",__FILE__,__LINE__);
-				perror (":");
+				CMmsgPrint (CMmsgSysError, "Memory allocation error in: %s:%d",__FILE__,__LINE__);
 				goto Stop;
 			}
 			for(i = 0; i < header.ItemNum; i++) {
@@ -129,8 +122,7 @@ Help:		CMmsgPrint (CMmsgUsrError,"%s [options] <out datastream>\n",CMprgName(arg
 			outHeader.Missing.Float = MFDefaultMissingFloat;
 		}
 		if ((int) fread (items,itemSize,header.ItemNum,inFile) != header.ItemNum) {
-			CMmsgPrint (CMmsgSysError, "Input reading error in: %s:%d\n",__FILE__,__LINE__);
-			perror (":");
+			CMmsgPrint (CMmsgSysError, "Input reading error in: %s:%d",__FILE__,__LINE__);
 			goto Stop;
 		}
 		switch (header.DataType) {
@@ -183,8 +175,7 @@ Help:		CMmsgPrint (CMmsgUsrError,"%s [options] <out datastream>\n",CMprgName(arg
 	rewind (inFile);
 	while (MFVarReadHeader (&header,inFile)) {
 		if ((int) fread (items,itemSize,header.ItemNum,inFile) != header.ItemNum) {
-			CMmsgPrint (CMmsgSysError, "Input reading error in: %s:%d\n",__FILE__,__LINE__);
-			perror (":");
+			CMmsgPrint (CMmsgSysError, "Input reading error in: %s:%d",__FILE__,__LINE__);
 			goto Stop;
 		}
 		switch (header.DataType) {
@@ -262,13 +253,11 @@ Help:		CMmsgPrint (CMmsgUsrError,"%s [options] <out datastream>\n",CMprgName(arg
 			}
 			sprintf (outHeader.Date,"%3d", percent + 1);
 			if (MFVarWriteHeader (&outHeader,outFile) == false) {
-				CMmsgPrint (CMmsgSysError, "Output writing error in: %s:%d\n",__FILE__,__LINE__);
-				perror (":");
+				CMmsgPrint (CMmsgSysError, "Output writing error in: %s:%d",__FILE__,__LINE__);
 				goto Stop;
 			}
 			if ((int) fwrite (output,sizeof (float),outHeader.ItemNum,outFile) != outHeader.ItemNum) {
-				CMmsgPrint (CMmsgSysError, "Output reading error in: %s:%d\n",__FILE__,__LINE__);
-				perror (":");
+				CMmsgPrint (CMmsgSysError, "Output reading error in: %s:%d",__FILE__,__LINE__);
 				goto Stop;
 			}
 		}
@@ -278,8 +267,7 @@ Help:		CMmsgPrint (CMmsgUsrError,"%s [options] <out datastream>\n",CMprgName(arg
 		rewind (inFile);
 		while (MFVarReadHeader (&header,inFile)) {
 			if ((int) fread (items,itemSize,header.ItemNum,inFile) != header.ItemNum) {
-				CMmsgPrint (CMmsgSysError, "Input reading error in: %s:%d\n",__FILE__,__LINE__);
-				perror (":");
+				CMmsgPrint (CMmsgSysError, "Input reading error in: %s:%d",__FILE__,__LINE__);
 				goto Stop;
 			}
 			switch (header.DataType) {
@@ -345,13 +333,11 @@ Help:		CMmsgPrint (CMmsgUsrError,"%s [options] <out datastream>\n",CMprgName(arg
 			}
 			strcpy (outHeader.Date,header.Date);
 			if (MFVarWriteHeader (&outHeader,outFile) == false) {
-				CMmsgPrint (CMmsgSysError, "Output writing error in: %s:%d\n",__FILE__,__LINE__);
-				perror (":");
+				CMmsgPrint (CMmsgSysError, "Output writing error in: %s:%d",__FILE__,__LINE__);
 				goto Stop;
 			}
 			if ((int) fwrite (output,sizeof (float),outHeader.ItemNum,outFile) != outHeader.ItemNum) {
-				CMmsgPrint (CMmsgSysError, "Output reading error in: %s:%d\n",__FILE__,__LINE__);
-				perror (":");
+				CMmsgPrint (CMmsgSysError, "Output reading error in: %s:%d",__FILE__,__LINE__);
 				goto Stop;
 			}
 		}

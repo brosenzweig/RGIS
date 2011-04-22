@@ -321,7 +321,7 @@ void RGISAnalyseFieldSetValueCBK (Widget widget,void *data,XmAnyCallbackStruct *
 	if ((selection = UISelectObject (selectWidget,(DBObjectLIST<DBObject> *) table->Fields (),DBTableFieldIsNumeric)) == NULL)
 		return;
 	if ((dstFLD = table->Field (selection)) == (DBObjTableField *) NULL)
-		{ fprintf (stderr,"Corrupt Table in: _RGISAnalyseFieldCalcSetValueCBK ()\n"); return; }
+		{ CMmsgPrint (CMmsgAppError, "Corrupt Table in: %s %d",__FILE__,__LINE__); return; }
 	if (dstFLD->Required ()) { UIMessage ((char *) "Protected Field!"); return; }
 	XtVaSetValues (srcTextF,XmNuserData,table->Fields (),NULL);
 	cont = false;

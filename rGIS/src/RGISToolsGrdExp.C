@@ -52,7 +52,7 @@ int _RGISToolsGridExportARCInfo (DBObjData *data,char *selection)
 			unlink (asciiGrid);
 			}
 		if (data->Type () == DBTypeGridDiscrete) { unlink (attribDef); unlink (attribData); }
-		fprintf (stderr,"Aml File Creation Error in: RGISToolsPointExportARCInfo ()\n");
+		CMmsgPrint (CMmsgAppError, "Aml File Creation Error in: %s %d",__FILE__,__LINE__);
 		return (DBFault);
 		}
 	fprintf (file,"&workspace %s\n",selection);

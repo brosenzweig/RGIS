@@ -172,7 +172,7 @@ static void _RGISEditJoinTableCBK (Widget widget,void *data,XmAnyCallbackStruct 
 	selection = UISelectObject (tableSelect,(DBObjectLIST<DBObject> *) lnkData->Tables ());
 	if (selection == (char *) NULL)	return;
 	if ((joinTable = lnkData->Table (selection)) == (DBObjTable *) NULL)
-		{ fprintf (stderr,"Invalid Table in: _RGISEditJoinTableCBK ()\n"); return; }
+		{ CMmsgPrint (CMmsgAppError, "Invalid Table in: %s %d",__FILE__,__LINE__); return; }
 
 	XtVaSetValues (field0TextF,XmNuserData, itemTable->Fields (), NULL);
 	XtVaSetValues (field1TextF,XmNuserData, joinTable->Fields (), NULL);
@@ -190,7 +190,7 @@ static void _RGISEditJoinTableCBK (Widget widget,void *data,XmAnyCallbackStruct 
 				case DBTableFieldInt:
 					XtVaSetValues (field1Button,	XmNuserData, DBTableFieldIsInteger, NULL); break;
 				default:
-					fprintf (stderr,"Invalid Data Type in: _RGISEditJoinTableCBK ()\n"); break;
+					CMmsgPrint (CMmsgAppError, "Invalid Data Type in: %s %d",__FILE__,__LINE__); break;
 				}
 		else	XtVaSetValues (field1Button,	XmNuserData, DBTableFieldIsCategory, NULL);
 
@@ -202,7 +202,7 @@ static void _RGISEditJoinTableCBK (Widget widget,void *data,XmAnyCallbackStruct 
 				case DBTableFieldInt:
 					XtVaSetValues (field0Button,	XmNuserData, DBTableFieldIsInteger, NULL); break;
 				default:
-					fprintf (stderr,"Invalid Data Type in: _RGISEditJoinTableCBK ()\n"); break;
+					CMmsgPrint (CMmsgAppError, "Invalid Data Type in: %s %d",__FILE__,__LINE__); break;
 				}
 		else	XtVaSetValues (field0Button,	XmNuserData, DBTableFieldIsCategory, NULL);
 
@@ -257,7 +257,7 @@ static void _RGISEditRedefineFieldCBK (Widget widget,void *data,XmAnyCallbackStr
 	selection = UISelectObject (tableSelect,(DBObjectLIST<DBObject> *) dbData->Tables ());
 	if (selection == (char *) NULL)	return;
 	if ((table = dbData->Table (selection)) == (DBObjTable *) NULL)
-		{ fprintf (stderr,"Invalid Table in: _RGISEditFieldsCBK ()\n"); return; }
+		{ CMmsgPrint (CMmsgAppError, "Invalid Table in: %s %d",__FILE__,__LINE__); return; }
 
 	if ((UITableRedefineFields (table) == DBFault) &&
 		 ((tableCLS = (UITable *) dbData->Display (UITableName (dbData,table))) != (UITable *) NULL))

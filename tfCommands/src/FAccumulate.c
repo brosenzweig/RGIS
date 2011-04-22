@@ -42,17 +42,17 @@ int main (int argc, char *argv [])
 		if (CMargTest (argv [argPos],"-a","--avg"))
 			{
 			if ((argNum = CMargShiftLeft(argPos,argv,argNum)) <= argPos)
-				{ CMmsgPrint (CMmsgUsrError,"Missing title!\n");       return (CMfailed); }
+				{ CMmsgPrint (CMmsgUsrError,"Missing title!");       return (CMfailed); }
 			argStr = argv [argPos];
 			if ((name = (char *) realloc (name, strlen(argStr)+3)) == (char *) NULL)
                {
-               perror ("Memory Allocation Error in: main ()");
+               CMmsgPrint (CMmsgSysError, "Memory Allocation Error in: %s %d",__FILE__,__LINE__);
                break;
                }
 			sprintf (name,"\"%s\"",argStr);
 			if ((fieldID = FGetFieldID (buffer, name)) == FFault)
 				{
-				CMmsgPrint (CMmsgUsrError,"###Invalid Field Name: %s creating RowNumbers!###\n",name);
+				CMmsgPrint (CMmsgUsrError,"###Invalid Field Name: %s creating RowNumbers!###",name);
 				count = 1;
 				if (rename == (char *) NULL) { rename = "RowNum"; }
 				break;
@@ -64,17 +64,17 @@ int main (int argc, char *argv [])
 		if (CMargTest (argv [argPos],"-s","--sum"))
 			{
 			if ((argNum = CMargShiftLeft(argPos,argv,argNum)) <= argPos)
-				{ CMmsgPrint (CMmsgUsrError,"Missing subject!\n");     return (CMfailed); }
+				{ CMmsgPrint (CMmsgUsrError,"Missing subject!");     return (CMfailed); }
 			argStr = argv [argPos];
 			if ((name = (char *) realloc (name, strlen(argStr)+3)) == (char *) NULL)
                {
-               perror ("Memory Allocation Error in: main ()");
+               CMmsgPrint (CMmsgSysError, "Memory Allocation Error in: %s %d",__FILE__,__LINE__);
                break;
                }
             sprintf (name,"\"%s\"",argStr);
 				if ((fieldID = FGetFieldID (buffer, name)) == FFault)
 					{
-					CMmsgPrint (CMmsgUsrError,"###Invalid Field Name: %s creating RowNumbers!###\n",name);
+					CMmsgPrint (CMmsgUsrError,"###Invalid Field Name: %s creating RowNumbers!###",name);
 					count = 1;
 					if (rename == (char *) NULL) { rename = "RowNum"; }
 					break;
@@ -85,7 +85,7 @@ int main (int argc, char *argv [])
 		if (CMargTest (argv [argPos],"-r","--rename"))
 			{
 			if ((argNum = CMargShiftLeft(argPos,argv,argNum)) <= argPos)
-				{ CMmsgPrint (CMmsgUsrError,"Missing subject!\n");     return (CMfailed); }
+				{ CMmsgPrint (CMmsgUsrError,"Missing subject!");     return (CMfailed); }
 			rename = argv [argPos];
 			if ((argNum = CMargShiftLeft(argPos,argv,argNum)) <= argPos) break;
 			continue;
@@ -110,13 +110,13 @@ int main (int argc, char *argv [])
 			}
 		if (CMargTest (argv [argPos],"-h","--help")) goto Usage;
 		if (argv [argPos][0] == '-')
-			{ CMmsgPrint (CMmsgUsrError,"Unknown option: %s!\n",argv [argPos]); return (CMfailed); }
+			{ CMmsgPrint (CMmsgUsrError,"Unknown option: %s!",argv [argPos]); return (CMfailed); }
 		argPos++;
 		}
 
 	if ((buffer = FGetLine (buffer,&bSize,stdin)) == (char *) NULL) 
 		{
-		perror ("Empty File in: main ()");
+		CMmsgPrint (CMmsgSysError, "Empty File in: %s %d",__FILE__,__LINE__);
 		return (CMfailed);
 		}
 
@@ -190,7 +190,7 @@ int main (int argc, char *argv [])
 				if (force) { Type = force; }
 				if (Type == 3)
 					{
-					CMmsgPrint (CMmsgUsrError,"String (or two decimal points) found where Integer or Float was expected in main()!\nfield: \'%s\', row#: %d, col#: %d.\n",fieldBuffer,rowNum,fieldID+1);
+					CMmsgPrint (CMmsgUsrError,"String (or two decimal points) found where Integer or Float was expected in main()!\nfield: \'%s\', row#: %d, col#: %d.",fieldBuffer,rowNum,fieldID+1);
 					exit(1);
 					}
 				}
@@ -231,18 +231,18 @@ int main (int argc, char *argv [])
 			rowNum++;
 			}
 		}
-	if (typerr) { CMmsgPrint (CMmsgUsrError,"##Warning!##> The type of the field has changed, you might\nwant to use the \'i\' and \'f\' flags to force the type of the field!\n"); } 
+	if (typerr) { CMmsgPrint (CMmsgUsrError,"##Warning!##> The type of the field has changed, you might\nwant to use the \'i\' and \'f\' flags to force the type of the field!"); }
 	return (FSuccess);
 
 	Usage:
-		printf("Usage: %s [-raf ... < [inputfile] ...\n",argv[0]);
-		printf ("Where fieldnames must match fieldnames in first line of the datafile.\n If it doesn't match, then it creates writes the RowNumber in a new\nfield, which can be defined with '-r', by default it's called 'RowNum'.\n");
-		printf ("-s, --sum field\n\tSpecifies field (column) to add.\n");
-		printf ("-a, --avg field\n\tSpecifies field (column) to average.\n");
-		printf ("-r, --rename name\n\tRenames field.\n");
-		printf ("-i, --int\n\tForce input type to integer.\n");
-		printf ("-f, --float\n\tForce input type to float.\n");
-		printf ("-b, --begin\n\tPuts results in beginning of table. Default is at the end.\n");
-		printf ("-h, --help\n\tPrints out this help.\n\n");
+		printf("Usage: %s [-raf ... < [inputfile] ...",argv[0]);
+		printf ("Where fieldnames must match fieldnames in first line of the datafile.\n If it doesn't match, then it creates writes the RowNumber in a new\nfield, which can be defined with '-r', by default it's called 'RowNum'.");
+		printf ("-s, --sum field\n\tSpecifies field (column) to add.");
+		printf ("-a, --avg field\n\tSpecifies field (column) to average.");
+		printf ("-r, --rename name\n\tRenames field.");
+		printf ("-i, --int\n\tForce input type to integer.");
+		printf ("-f, --float\n\tForce input type to float.");
+		printf ("-b, --begin\n\tPuts results in beginning of table. Default is at the end.");
+		printf ("-h, --help\n\tPrints out this help.");
 	return (FSuccess);
 	}

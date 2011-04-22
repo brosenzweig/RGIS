@@ -34,13 +34,13 @@ int main(int argc,char *argv []) {
 	for (argPos = 1;argPos < argNum;) {
 		if (CMargTest(argv[argPos],"-e","--step")) {
 			if ((argNum = CMargShiftLeft(argPos,argv,argNum)) <= argPos) break;
-			if (step != CMfailed) CMmsgPrint (CMmsgUsrError,"Skipping aggregate step that is previously set!\n");
+			if (step != CMfailed) CMmsgPrint (CMmsgUsrError,"Skipping aggregate step that is previously set!");
 			else {
 				const char *options [] = { "year", "month", "day", (char *) NULL };
 				int codes [] = { YEAR, MONTH, DAY }, code;
 
 				if ((code = CMoptLookup (options,argv [argPos],false)) == CMfailed) {
-					CMmsgPrint (CMmsgWarning,"Ignoring illformed step option [%s]!\n",argv [argPos]);
+					CMmsgPrint (CMmsgWarning,"Ignoring illformed step option [%s]!",argv [argPos]);
 				}
 				else step = codes [code];
 			}
@@ -49,13 +49,13 @@ int main(int argc,char *argv []) {
 		}
 		if (CMargTest(argv[argPos],"-a","--aggregate")) {
 			if ((argNum = CMargShiftLeft(argPos,argv,argNum)) <= argPos) break;
-			if (mode != CMfailed) CMmsgPrint (CMmsgUsrError,"Skipping aggregate mode that is previously set!\n");
+			if (mode != CMfailed) CMmsgPrint (CMmsgUsrError,"Skipping aggregate mode that is previously set!");
 			else {
 				const char *options [] = { "avg", "sum", (char *) NULL };
 				int codes [] = { AVG, SUM }, code;
 
 				if ((code = CMoptLookup (options,argv [argPos],false)) == CMfailed) {
-					CMmsgPrint (CMmsgWarning,"Ignoring illformed step option [%s]!\n",argv [argPos]);
+					CMmsgPrint (CMmsgWarning,"Ignoring illformed step option [%s]!",argv [argPos]);
 				}
 				else mode = codes [code];
 			}
@@ -64,32 +64,30 @@ int main(int argc,char *argv []) {
 		}
 Help:	if (CMargTest(argv[argPos],"-h","--help")) {
 			if ((argNum = CMargShiftLeft(argPos,argv,argNum)) < argPos) break;
-			CMmsgPrint (CMmsgUsrError,"%s [options] <in datastream> <out datastream>\n",CMprgName(argv[0]));
-			CMmsgPrint (CMmsgUsrError,"  -e, --step [year|month|day]\n");
-			CMmsgPrint (CMmsgUsrError,"  -a, --aggregate [avg|sum]\n");
-			CMmsgPrint (CMmsgUsrError,"  -h,--help\n");
+			CMmsgPrint (CMmsgUsrError,"%s [options] <in datastream> <out datastream>",CMprgName(argv[0]));
+			CMmsgPrint (CMmsgUsrError,"  -e, --step [year|month|day]");
+			CMmsgPrint (CMmsgUsrError,"  -a, --aggregate [avg|sum]");
+			CMmsgPrint (CMmsgUsrError,"  -h,--help");
 			ret = CMsucceeded;
 			goto Stop;
 		}
 		if ((argv [argPos][0] == '-') && (strlen (argv [argPos]) > 1)) {
-			CMmsgPrint (CMmsgUsrError,"Unknown option: %s!\n",argv [argPos]);
+			CMmsgPrint (CMmsgUsrError,"Unknown option: %s!",argv [argPos]);
 			return (CMfailed);
 		}
       argPos++;
 	}
-	if (argNum > 3) { CMmsgPrint (CMmsgUsrError,"Extra arguments!\n"); return (CMfailed); }
+	if (argNum > 3) { CMmsgPrint (CMmsgUsrError,"Extra arguments!"); return (CMfailed); }
 
 	if (mode == CMfailed) mode = AVG;
 	if (step == CMfailed) mode = DAY;
 
    if ((inFile  = (argNum > 1) && (strcmp (argv [1],"-") != 0) ? fopen (argv [1],"r") : stdin)  == (FILE *) NULL) {
-		CMmsgPrint (CMmsgAppError, "Input file opening error\n");
-		perror (":");
+		CMmsgPrint (CMmsgSysError, "Input file opening error in: %s %d",__FILE__,__LINE__);
 		goto Stop;
 	}
   	if ((outFile = (argNum > 2) && (strcmp (argv [2],"-") != 0) ? fopen (argv [2],"w") : stdout) == (FILE *) NULL) {
-		CMmsgPrint (CMmsgAppError, "Output file opening error\n");
-		perror (":");
+		CMmsgPrint (CMmsgSysError, "Output file opening error in: %s %d",__FILE__,__LINE__);
 		goto Stop;
 	}
 
@@ -98,23 +96,19 @@ Help:	if (CMargTest(argv[argPos],"-h","--help")) {
 			if (items == (void *) NULL) {
 				itemSize = MFVarItemSize(header.DataType);
 				if ((items  = (void *)   calloc (header.ItemNum, itemSize))        == (void *)   NULL) {
-					CMmsgPrint (CMmsgSysError, "Memory allocation error in: %s:%d\n",__FILE__,__LINE__);
-					perror (":");
+					CMmsgPrint (CMmsgSysError, "Memory allocation error in: %s:%d",__FILE__,__LINE__);
 					goto Stop;
 				}
 				if ((array  = (double *) calloc (header.ItemNum, sizeof (double))) == (double *) NULL) {
-					CMmsgPrint (CMmsgSysError, "Memory allocation error in: %s:%d\n",__FILE__,__LINE__);
-					perror (":");
+					CMmsgPrint (CMmsgSysError, "Memory allocation error in: %s:%d",__FILE__,__LINE__);
 					goto Stop;
 				}
 				if ((record = (float *)  calloc (header.ItemNum, sizeof (float)))  == (float *) NULL) {
-					CMmsgPrint (CMmsgSysError, "Memory allocation error in: %s:%d\n",__FILE__,__LINE__);
-					perror (":");
+					CMmsgPrint (CMmsgSysError, "Memory allocation error in: %s:%d",__FILE__,__LINE__);
 					goto Stop;
 				}
 				if ((obsNum = (int *)    calloc (header.ItemNum, sizeof (int)))    == (int *)    NULL) {
-					CMmsgPrint (CMmsgSysError, "Memory allocation error in: %s:%d\n",__FILE__,__LINE__);
-					perror (":");
+					CMmsgPrint (CMmsgSysError, "Memory allocation error in: %s:%d",__FILE__,__LINE__);
 					goto Stop;
 				}
 				outHeader.Swap = 1;
@@ -135,8 +129,7 @@ Help:	if (CMargTest(argv[argPos],"-h","--help")) {
 				outHeader.Date [step] = '\0';
 				if (MFVarWriteHeader (&outHeader, outFile)) {
 					if ((int) fwrite (record,sizeof (float),outHeader.ItemNum,outFile) != outHeader.ItemNum) {
-						CMmsgPrint (CMmsgSysError, "Output writing error in: %s:%d\n",__FILE__,__LINE__);
-						perror (":");
+						CMmsgPrint (CMmsgSysError, "Output writing error in: %s:%d",__FILE__,__LINE__);
 						goto Stop;
 					}
 				}
@@ -148,8 +141,7 @@ Help:	if (CMargTest(argv[argPos],"-h","--help")) {
 			date [step] = '\0';
 		}
 		if ((int) fread (items,itemSize,header.ItemNum,inFile) != header.ItemNum) {
-			CMmsgPrint (CMmsgSysError, "Input reading error in: %s:%d\n",__FILE__,__LINE__);
-			perror (":");
+			CMmsgPrint (CMmsgSysError, "Input reading error in: %s:%d",__FILE__,__LINE__);
 			goto Stop;
 		}
 		for(i = 0; i < header.ItemNum; i++) {
@@ -205,8 +197,7 @@ Help:	if (CMargTest(argv[argPos],"-h","--help")) {
 	outHeader.Date [step] = '\0';
 	if (MFVarWriteHeader (&outHeader, outFile)) {
 		if ((int) fwrite (record,sizeof (float),outHeader.ItemNum,outFile) != outHeader.ItemNum) {
-			CMmsgPrint (CMmsgSysError, "Output writing error in: %s:%d\n",__FILE__,__LINE__);
-			perror (":");
+			CMmsgPrint (CMmsgSysError, "Output writing error in: %s:%d",__FILE__,__LINE__);
 			goto Stop;
 		}
 	}

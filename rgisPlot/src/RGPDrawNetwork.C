@@ -117,7 +117,7 @@ DBInt RGPDrawNetwork (DBInt mode, DBInt *entryNum, DBObjData *netData)
 								lValues = legendNum > 0 ? (float *) realloc (lValues,(legendNum + 1) * sizeof (float)) :
 																  (float *) calloc (1,sizeof (float));
 								if (lValues  == (float *) NULL)
-									{ perror ("Memory Allocation Error in: RGPDrawNetwork ()"); return (DBFault); }
+									{ CMmsgPrint (CMmsgAppError, "Memory Allocation Error in: %s %d",__FILE__,__LINE__); return (DBFault); }
 								lValues[legendNum++] = wValue;
 								}
 							else	break;

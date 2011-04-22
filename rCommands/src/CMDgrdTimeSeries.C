@@ -33,7 +33,7 @@ int main (int argc,char *argv [])
 		if (CMargTest (argv [argPos],"-g","--grid"))
 			{
 			if ((argNum = CMargShiftLeft (argPos,argv,argNum)) <= argPos)
-				{ CMmsgPrint (CMmsgUsrError,"Missing grid!\n");         return (CMfailed); }
+				{ CMmsgPrint (CMmsgUsrError,"Missing grid!");         return (CMfailed); }
 			gridName = argv [argPos];
 			if ((argNum = CMargShiftLeft (argPos,argv,argNum)) <= argPos) break;
 			continue;
@@ -41,7 +41,7 @@ int main (int argc,char *argv [])
 		if (CMargTest (argv [argPos],"-r","--relate"))
 			{
 			if ((argNum = CMargShiftLeft (argPos,argv,argNum)) <= argPos)
-				{ CMmsgPrint (CMmsgUsrError,"Missing relate field!\n"); return (CMfailed); }
+				{ CMmsgPrint (CMmsgUsrError,"Missing relate field!"); return (CMfailed); }
 			relateName = argv [argPos];
 			if ((argNum = CMargShiftLeft (argPos,argv,argNum)) <= argPos) break;
 			continue;
@@ -49,7 +49,7 @@ int main (int argc,char *argv [])
 		if (CMargTest (argv [argPos],"-j","--join"))
 			{
 			if ((argNum = CMargShiftLeft (argPos,argv,argNum)) <= argPos)
-				{ CMmsgPrint (CMmsgUsrError,"Missing join field!\n");   return (CMfailed); }
+				{ CMmsgPrint (CMmsgUsrError,"Missing join field!");   return (CMfailed); }
 			joinName = argv [argPos];
 			if ((argNum = CMargShiftLeft (argPos,argv,argNum)) <= argPos) break;
 			continue;
@@ -57,7 +57,7 @@ int main (int argc,char *argv [])
 		if (CMargTest (argv [argPos],"-i","--variable"))
 			{
 			if ((argNum = CMargShiftLeft (argPos,argv,argNum)) <= argPos)
-				{ CMmsgPrint (CMmsgUsrError,"Missing variable field!\n"); return (CMfailed); }
+				{ CMmsgPrint (CMmsgUsrError,"Missing variable field!"); return (CMfailed); }
 			varName = argv [argPos];
 			if ((argNum = CMargShiftLeft (argPos,argv,argNum)) <= argPos) break;
 			continue;
@@ -65,7 +65,7 @@ int main (int argc,char *argv [])
 		if (CMargTest (argv [argPos],"-a","--date"))
 			{
 			if ((argNum = CMargShiftLeft (argPos,argv,argNum)) <= argPos)
-				{ CMmsgPrint (CMmsgUsrError,"Missing date field!\n");   return (CMfailed); }
+				{ CMmsgPrint (CMmsgUsrError,"Missing date field!");   return (CMfailed); }
 			dateName = argv [argPos];
 			if ((argNum = CMargShiftLeft (argPos,argv,argNum)) <= argPos) break;
 			continue;
@@ -73,7 +73,7 @@ int main (int argc,char *argv [])
 		if (CMargTest (argv [argPos],"-t","--title"))
 			{
 			if ((argNum = CMargShiftLeft (argPos,argv,argNum)) <= argPos)
-				{ CMmsgPrint (CMmsgUsrError,"Missing title!\n");        return (CMfailed); }
+				{ CMmsgPrint (CMmsgUsrError,"Missing title!");        return (CMfailed); }
 			title = argv [argPos];
 			if ((argNum = CMargShiftLeft (argPos,argv,argNum)) <= argPos) break;
 			continue;
@@ -81,7 +81,7 @@ int main (int argc,char *argv [])
 		if (CMargTest (argv [argPos],"-u","--subject"))
 			{
 			if ((argNum = CMargShiftLeft (argPos,argv,argNum)) <= argPos)
-				{ CMmsgPrint (CMmsgUsrError,"Missing subject!\n");      return (CMfailed); }
+				{ CMmsgPrint (CMmsgUsrError,"Missing subject!");      return (CMfailed); }
 			subject = argv [argPos];
 			if ((argNum = CMargShiftLeft (argPos,argv,argNum)) <= argPos) break;
 			continue;
@@ -89,7 +89,7 @@ int main (int argc,char *argv [])
 		if (CMargTest (argv [argPos],"-d","--domain"))
 			{
 			if ((argNum = CMargShiftLeft (argPos,argv,argNum)) <= argPos)
-				{ CMmsgPrint (CMmsgUsrError,"Missing domain!\n");       return (CMfailed); }
+				{ CMmsgPrint (CMmsgUsrError,"Missing domain!");       return (CMfailed); }
 			domain  = argv [argPos];
 			if ((argNum = CMargShiftLeft (argPos,argv,argNum)) <= argPos) break;
 			continue;
@@ -97,7 +97,7 @@ int main (int argc,char *argv [])
 		if (CMargTest (argv [argPos],"-v","--version"))
 			{
 			if ((argNum = CMargShiftLeft (argPos,argv,argNum)) <= argPos)
-				{ CMmsgPrint (CMmsgUsrError,"Missing version!\n");      return (CMfailed); }
+				{ CMmsgPrint (CMmsgUsrError,"Missing version!");      return (CMfailed); }
 			version  = argv [argPos];
 			if ((argNum = CMargShiftLeft (argPos,argv,argNum)) <= argPos) break;
 			continue;
@@ -112,9 +112,9 @@ int main (int argc,char *argv [])
 			const char *shadeSets [] = {	"standard","grey","blue","blue-to-red","elevation", (char *) NULL };
 
 			if ((argNum = CMargShiftLeft (argPos,argv,argNum)) <= argPos)
-				{ CMmsgPrint (CMmsgUsrError,"Missing shadeset!\n");     return (CMfailed); }
+				{ CMmsgPrint (CMmsgUsrError,"Missing shadeset!");     return (CMfailed); }
 			if ((shadeSet = CMoptLookup (shadeSets,argv [argPos],true)) == DBFault)
-				{ CMmsgPrint (CMmsgUsrError,"Invalid shadeset!\n");     return (CMfailed); }
+				{ CMmsgPrint (CMmsgUsrError,"Invalid shadeset!");     return (CMfailed); }
 			shadeSet = shadeCodes [shadeSet];
 			if ((argNum = CMargShiftLeft (argPos,argv,argNum)) <= argPos) break;
 			continue;
@@ -127,36 +127,36 @@ int main (int argc,char *argv [])
 			}
 		if (CMargTest (argv [argPos],"-h","--help"))
 			{
-			CMmsgPrint (CMmsgInfo,"%s [options] <input table> <output grid>\n",CMprgName(argv[0]));
-			CMmsgPrint (CMmsgInfo,"     -g,--grid      [discrete grid coverage]\n");
-			CMmsgPrint (CMmsgInfo,"     -r,--relate    [relate field]\n");
-			CMmsgPrint (CMmsgInfo,"     -j,--join      [join field]\n");
-			CMmsgPrint (CMmsgInfo,"     -i,--variable  [variable field]\n");
-			CMmsgPrint (CMmsgInfo,"     -a,--date      [date field]\n");
-			CMmsgPrint (CMmsgInfo,"     -u,--subject   [subject]\n");
-			CMmsgPrint (CMmsgInfo,"     -d,--domain    [domain]\n");
-			CMmsgPrint (CMmsgInfo,"     -v,--version   [version]\n");
-			CMmsgPrint (CMmsgInfo,"     -s,--shadeset  [standard|grey|blue|blue-to-red|elevation]\n");
-			CMmsgPrint (CMmsgInfo,"     -V,--verbose\n");
-			CMmsgPrint (CMmsgInfo,"     -h,--help\n");
+			CMmsgPrint (CMmsgInfo,"%s [options] <input table> <output grid>",CMprgName(argv[0]));
+			CMmsgPrint (CMmsgInfo,"     -g,--grid      [discrete grid coverage]");
+			CMmsgPrint (CMmsgInfo,"     -r,--relate    [relate field]");
+			CMmsgPrint (CMmsgInfo,"     -j,--join      [join field]");
+			CMmsgPrint (CMmsgInfo,"     -i,--variable  [variable field]");
+			CMmsgPrint (CMmsgInfo,"     -a,--date      [date field]");
+			CMmsgPrint (CMmsgInfo,"     -u,--subject   [subject]");
+			CMmsgPrint (CMmsgInfo,"     -d,--domain    [domain]");
+			CMmsgPrint (CMmsgInfo,"     -v,--version   [version]");
+			CMmsgPrint (CMmsgInfo,"     -s,--shadeset  [standard|grey|blue|blue-to-red|elevation]");
+			CMmsgPrint (CMmsgInfo,"     -V,--verbose");
+			CMmsgPrint (CMmsgInfo,"     -h,--help");
 			return (DBSuccess);
 			}
 		if ((argv [argPos][0] == '-') && (strlen (argv [argPos]) > 1))
-			{ CMmsgPrint (CMmsgUsrError,"Unknown option: %s!\n",argv [argPos]); return (CMfailed); }
+			{ CMmsgPrint (CMmsgUsrError,"Unknown option: %s!",argv [argPos]); return (CMfailed); }
 		argPos++;
 		}
 
-	if (argNum > 3) { CMmsgPrint (CMmsgUsrError,"Extra arguments!\n"); return (CMfailed); }
+	if (argNum > 3) { CMmsgPrint (CMmsgUsrError,"Extra arguments!"); return (CMfailed); }
 	if (verbose) RGlibPauseOpen (argv[0]);
 
-	if (gridName   == (char *) NULL) { CMmsgPrint (CMmsgUsrError,"Discrete grid is mandatory\n");		return (CMfailed); }
-	if (relateName == (char *) NULL) { CMmsgPrint (CMmsgUsrError,"Relate field is mandatory\n"); 		return (CMfailed); }
-	if (joinName   == (char *) NULL) { CMmsgPrint (CMmsgUsrError,"Join field is mandatory\n");			return (CMfailed); }
-	if (varName    == (char *) NULL) { CMmsgPrint (CMmsgUsrError,"Variable field is mandatory\n");	return (CMfailed); }
+	if (gridName   == (char *) NULL) { CMmsgPrint (CMmsgUsrError,"Discrete grid is mandatory");		return (CMfailed); }
+	if (relateName == (char *) NULL) { CMmsgPrint (CMmsgUsrError,"Relate field is mandatory"); 		return (CMfailed); }
+	if (joinName   == (char *) NULL) { CMmsgPrint (CMmsgUsrError,"Join field is mandatory");			return (CMfailed); }
+	if (varName    == (char *) NULL) { CMmsgPrint (CMmsgUsrError,"Variable field is mandatory");	return (CMfailed); }
 
 	grdData = new DBObjData ();
 	if ((grdData->Read (gridName) != DBSuccess) || (grdData->Type () != DBTypeGridDiscrete))
-		{ delete grdData; CMmsgPrint (CMmsgUsrError,"Grid File Reading Error!\n"); return (CMfailed); }
+		{ delete grdData; CMmsgPrint (CMmsgUsrError,"Grid File Reading Error!"); return (CMfailed); }
 
 	tabData = new DBObjData ();
 	ret = (argNum > 1) && (strcmp (argv [1],"-") != 0) ? tabData->Read (argv [1]) : tabData->Read (stdin);

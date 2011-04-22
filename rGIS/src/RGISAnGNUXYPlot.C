@@ -166,14 +166,14 @@ void RGISAnGNUXYPlotCBK (Widget widget,RGISWorkspace *workspace,XmAnyCallbackStr
 
 		XtFree (f0Text);	XtFree (f1Text);
 		if ((field0 == (DBObjTableField *) NULL) || (field1 == (DBObjTableField *) NULL))
-			{ fprintf (stderr,"Invalid Compare Fields in: _RGISEditCompareFieldsCBK ()\n");	return; }
+			{ CMmsgPrint (CMmsgAppError, "Invalid Compare Fields in: %s %d",__FILE__,__LINE__);	return; }
 
 		strcpy (fileName,"ghaasXXXXXX");
 		if ((fd = mkstemp (fileName)) == DBFault)
-			{ perror ("File Opening Error in: RGISAnGNUXYPlotCBK ()"); return; }
+			{ CMmsgPrint (CMmsgSysError, "File Opening Error in: %s %d",__FILE__,__LINE__); return; }
 
 		if ((file = fdopen (fd,"w")) == (FILE *) NULL)
-			{ perror ("File Opening Error in: RGISAnGNUXYPlotCBK ()"); return; }
+			{ CMmsgPrint (CMmsgSysError, "File Opening Error in: %s %d",__FILE__,__LINE__); return; }
 
 		fprintf (file,"\"GHAASId\"\t\"RecordName\"\t\"Selected\"\t\"%s\"\t\"%s\"\n",field0->Name (),field1->Name ());
 		for (rowID = 0;rowID < itemTable->ItemNum ();++rowID)

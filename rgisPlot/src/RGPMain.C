@@ -40,9 +40,9 @@ int main (int argc,char **argv)
 			const char *modes [] = { "interactive", "batch", (char *) NULL };
 
 			if ((argNum = CMargShiftLeft (argPos,argv,argNum)) <= argPos)
-				{ CMmsgPrint (CMmsgUsrError,"Missing mode!\n");    return (CMfailed); }
+				{ CMmsgPrint (CMmsgUsrError,"Missing mode!");    return (CMfailed); }
 			if ((mode = CMoptLookup (modes,argv [argPos],true)) == DBFault)
-				{ CMmsgPrint (CMmsgUsrError,"Invalid mode %s\n",argv [argPos]); goto Usage; }
+				{ CMmsgPrint (CMmsgUsrError,"Invalid mode %s",argv [argPos]); goto Usage; }
 			if ((argNum = CMargShiftLeft (argPos,argv,argNum)) <= argPos) break;
 			continue;
 			}
@@ -51,18 +51,18 @@ int main (int argc,char **argv)
 			const char *devices [] = { "screen", "file", (char *) NULL };
 
 			if ((argNum = CMargShiftLeft (argPos,argv,argNum)) <= argPos)
-				{ CMmsgPrint (CMmsgUsrError,"Missing device!\n");  return (CMfailed); }
+				{ CMmsgPrint (CMmsgUsrError,"Missing device!");  return (CMfailed); }
 			if ((device = CMoptLookup (devices,argv [argPos],true)) == DBFault)
-				{ CMmsgPrint (CMmsgUsrError,"Invalid device %s\n",argv [argPos]); goto Usage; }
+				{ CMmsgPrint (CMmsgUsrError,"Invalid device %s",argv [argPos]); goto Usage; }
 			if ((argNum = CMargShiftLeft (argPos,argv,argNum)) <= argPos) break;
 			continue;
 			}
 		if (CMargTest (argv [argPos],"-p","--psize"))
 			{
 			if ((argNum = CMargShiftLeft (argPos,argv,argNum)) <= argPos)
-				{ CMmsgPrint (CMmsgUsrError,"Missing psize!\n");   return (CMfailed); }
+				{ CMmsgPrint (CMmsgUsrError,"Missing psize!");   return (CMfailed); }
 			if ((argv [argPos] == (char *) NULL) || (sscanf (argv [argPos],"%f,%f",&pWidth,&pHeight) != 2))
-				{ CMmsgPrint (CMmsgUsrError,"Invalid page size %s\n",argv [argPos]); goto Usage; }
+				{ CMmsgPrint (CMmsgUsrError,"Invalid page size %s",argv [argPos]); goto Usage; }
 			if ((argNum = CMargShiftLeft (argPos,argv,argNum)) <= argPos) break;
 			continue;
 			}
@@ -71,9 +71,9 @@ int main (int argc,char **argv)
 			const char *formats [] = { "eps", "gif", "ppm", (char *) NULL };
 
 			if ((argNum = CMargShiftLeft (argPos,argv,argNum)) <= argPos)
-				{ CMmsgPrint (CMmsgUsrError,"Missing format!\n");  return (CMfailed); }
+				{ CMmsgPrint (CMmsgUsrError,"Missing format!");  return (CMfailed); }
 			if ((format = CMoptLookup (formats,argv [argPos],true)) == DBFault)
-				{ CMmsgPrint (CMmsgUsrError,"Invalid format %s\n",argv [argPos]); goto Usage; }
+				{ CMmsgPrint (CMmsgUsrError,"Invalid format %s",argv [argPos]); goto Usage; }
 			if ((argNum = CMargShiftLeft (argPos,argv,argNum)) <= argPos) break;
 			continue;
 			}
@@ -82,18 +82,18 @@ int main (int argc,char **argv)
 			const char *layouts [] = { "portrait","landscape", (char *) NULL };
 
 			if ((argNum = CMargShiftLeft (argPos,argv,argNum)) <= argPos)
-				{ CMmsgPrint (CMmsgUsrError,"Missing layout!\n");  return (CMfailed); }
+				{ CMmsgPrint (CMmsgUsrError,"Missing layout!");  return (CMfailed); }
 			if ((layout = CMoptLookup (layouts,argv [argPos],true)) == DBFault)
-				{ CMmsgPrint (CMmsgUsrError,"Invalid layout %s\n",argv [argPos]); goto Usage; }
+				{ CMmsgPrint (CMmsgUsrError,"Invalid layout %s",argv [argPos]); goto Usage; }
 			if ((argNum = CMargShiftLeft (argPos,argv,argNum)) <= argPos) break;
 			continue;
 			}
 		if (CMargTest (argv [argPos],"-o","--output"))
 			{
 			if ((argNum = CMargShiftLeft (argPos,argv,argNum)) <= argPos)
-				{ CMmsgPrint (CMmsgUsrError,"Missing output!\n");  return (CMfailed); }
+				{ CMmsgPrint (CMmsgUsrError,"Missing output!");  return (CMfailed); }
 			if (argv [argPos] == (char *) NULL)
-				{ CMmsgPrint (CMmsgUsrError,"Invalid output file\n"); goto Usage; }
+				{ CMmsgPrint (CMmsgUsrError,"Invalid output file"); goto Usage; }
 			outFile = argv [argPos];
 			if ((argNum = CMargShiftLeft (argPos,argv,argNum)) <= argPos) break;
 			continue;
@@ -101,18 +101,18 @@ int main (int argc,char **argv)
 		if (CMargTest (argv [argPos],"-h","--help"))
 			{
 			Usage:
-			CMmsgPrint (CMmsgUsrError,"Usage: rgisPlot [-m <>] [-d <>] [-f <>] [-l <>] [-o <>] -h\n");
-			CMmsgPrint (CMmsgUsrError,"                 -m, --mode <interactive | batch>\n");
-			CMmsgPrint (CMmsgUsrError,"                 -d, --device <screen | file>\n");
-			CMmsgPrint (CMmsgUsrError,"                 -p, --psize width,height\n");
-			CMmsgPrint (CMmsgUsrError,"                 -f, --format <eps | gif>\n");
-			CMmsgPrint (CMmsgUsrError,"                 -l, --layout <landscape | portrait>\n");
-			CMmsgPrint (CMmsgUsrError,"                 -o, --output <filename>\n");
+			CMmsgPrint (CMmsgUsrError,"Usage: rgisPlot [-m <>] [-d <>] [-f <>] [-l <>] [-o <>] -h");
+			CMmsgPrint (CMmsgUsrError,"                 -m, --mode <interactive | batch>");
+			CMmsgPrint (CMmsgUsrError,"                 -d, --device <screen | file>");
+			CMmsgPrint (CMmsgUsrError,"                 -p, --psize width,height");
+			CMmsgPrint (CMmsgUsrError,"                 -f, --format <eps | gif>");
+			CMmsgPrint (CMmsgUsrError,"                 -l, --layout <landscape | portrait>");
+			CMmsgPrint (CMmsgUsrError,"                 -o, --output <filename>");
 			argNum = CMargShiftLeft (argPos,argv,argNum);
 			return (DBSuccess);
 			}
 		if ((argv [argPos][0] == '-') && (strlen (argv [argPos]) > 1))
-			{ CMmsgPrint (CMmsgUsrError,"Unknown option: %s!\n",argv [argPos]); return (CMfailed); }
+			{ CMmsgPrint (CMmsgUsrError,"Unknown option: %s!",argv [argPos]); return (CMfailed); }
 		argPos++;
 
 		}
@@ -199,7 +199,7 @@ int main (int argc,char **argv)
 						case DBTypeNetwork:
 							if ((ret = RGPDrawNetwork (mode, &entryNum, dbData)) == DBFault) goto Stop;
 							break;
-						default: CMmsgPrint (CMmsgUsrError,"Invalid data type\n"); dataNum--; break;
+						default: CMmsgPrint (CMmsgUsrError,"Invalid data type"); dataNum--; break;
 						}
 					delete dbData;
 					}

@@ -255,7 +255,7 @@ void RGISAnalyseLineMSampleGridCBK (Widget widget, RGISWorkspace *workspace,XmAn
 		if ((layerRec->Flags () & DBObjectFlagIdle) != DBObjectFlagIdle) ++layerNum;
 		}
 	if (layerNum < 1)
-		{ fprintf (stderr,"No Layer to Process in RGISAnalyseLineMSampleGridCBK ()\n"); delete gridIF; return; }
+		{ CMmsgPrint (CMmsgAppError, "No Layer to Process in: %s %d",__FILE__,__LINE__); delete gridIF; return; }
 
 
 	tblData  = new DBObjData ("",DBTypeTable);

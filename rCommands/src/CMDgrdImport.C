@@ -343,7 +343,7 @@ int main(int argc, char* argv[])
 			itemSize = sizeof (DBFloat);
 			break;
 		default:
-			perror ("Invalid Data Type in: DBNetworkToGrid 	()");
+			CMmsgPrint (CMmsgAppError, "Invalid Data Type in: %s %d",__FILE__,__LINE__);
 			delete grdData;
 			return 0;
 		}
@@ -354,7 +354,7 @@ int main(int argc, char* argv[])
 		{
 		if ((lstFILE = fopen (listFileName,"r")) == (FILE *) NULL)
 			{
-			perror ("List File Openining Error in: RGISToolsImportGridCBK ()");
+			CMmsgPrint (CMmsgSysError, "List File Openining Error in: %s %d",__FILE__,__LINE__);
 			delete grdData;
 			return 0;
 			}
@@ -382,7 +382,7 @@ int main(int argc, char* argv[])
 			}
 
 		if ((inFILE = fopen (fileName,"r")) == (FILE *) NULL)
-			{ perror ("File Openining Error in: RGISToolsImportGridCBK ()"); delete grdData; return 0; }
+			{ CMmsgPrint (CMmsgSysError, "File Openining Error in: %s %d",__FILE__,__LINE__); delete grdData; return 0; }
 		if (fileType == RGISGridBinary)
 			{
 			int skip = skipHeader;
@@ -391,7 +391,7 @@ int main(int argc, char* argv[])
 				chunk = skip < (int) sizeof (buffer) ? skip : (int) sizeof (buffer);
 				if (fread (buffer,chunk,1,inFILE) != 1)
 					{
-					perror ("File Reading Error in: RGISToolsImportGridCBK ()");
+					CMmsgPrint (CMmsgSysError, "File Reading Error in: %s %d",__FILE__,__LINE__);
 					fclose (inFILE);
 					delete grdData;
 					}
@@ -423,7 +423,7 @@ int main(int argc, char* argv[])
 				valueTypeFLD->Int (layerRec,DBTableFieldFloat);
 				break;
 			default:
-				perror ("Invalid Data Type in: DBNetworkToGrid 	()");
+				CMmsgPrint (CMmsgAppError, "Invalid Data Type in: %s %d",__FILE__,__LINE__);
 				fclose (inFILE); delete grdData;
 				return 0;
 			}
@@ -562,7 +562,7 @@ int main(int argc, char* argv[])
 					{
 					if ((itemRec = itemTable->Add (buffer)) == (DBObjRecord *) NULL)
 						{
-						perror ("Item Object Creation Error in: RGISToolsImportGridCBK ()");
+						CMmsgPrint (CMmsgAppError, "Item Object Creation Error in: %s %d",__FILE__,__LINE__);
 						delete gridIF; delete grdData;
 						return 0;
 						}
@@ -598,20 +598,20 @@ int main(int argc, char* argv[])
 }
 
 void showUsage(char progName[]){
-	fprintf(stdout,"%s - imports data files into ghdb format\n",progName);
-	fprintf(stdout,"  options:\n");
-	fprintf(stdout,"    -b,--batch (optional) turns the prompt for information off\n");
-	fprintf(stdout,"    -h,--help (optional) shows usage\n");
-	fprintf(stdout,"    <filename> (optional) grdimport will attempt to automatically\n");
-	fprintf(stdout,"    read the standard header from an ascii file.\n");
-	fprintf(stdout,"  examples:\n");
-	fprintf(stdout,"    grdImport.Linux -b < completeInputFile.txt\n");
-	fprintf(stdout,"      Don't prompt for information, just read completeFile.txt for arguments\n");
-	fprintf(stdout,"    grdImport.Linux -b someFile.asc < partialInputFile.txt\n");
-	fprintf(stdout,"      Don't prompt for information, just read the header of the ascii file and\n");
-	fprintf(stdout,"      partialInputFile.txt for all of the arguments.\n");
-	fprintf(stdout,"    grdImport.Linux <--prompt for all information step by step\n");
-	fprintf(stdout,"      grdImport.Linux someFile.asc <--get as much info as you can out of\n");
-	fprintf(stdout,"      the header, and prompt for whatever else is needed.\n\n");
+	CMmsgPrint (CMmsgInfo, "%s - imports data files into ghdb format",progName);
+	CMmsgPrint (CMmsgInfo, "  options:");
+	CMmsgPrint (CMmsgInfo, "    -b,--batch (optional) turns the prompt for information off");
+	CMmsgPrint (CMmsgInfo, "    -h,--help (optional) shows usage");
+	CMmsgPrint (CMmsgInfo, "    <filename> (optional) grdimport will attempt to automatically");
+	CMmsgPrint (CMmsgInfo, "    read the standard header from an ascii file.");
+	CMmsgPrint (CMmsgInfo, "  examples:");
+	CMmsgPrint (CMmsgInfo, "    grdImport.Linux -b < completeInputFile.txt");
+	CMmsgPrint (CMmsgInfo, "      Don't prompt for information, just read completeFile.txt for arguments");
+	CMmsgPrint (CMmsgInfo, "    grdImport.Linux -b someFile.asc < partialInputFile.txt");
+	CMmsgPrint (CMmsgInfo, "      Don't prompt for information, just read the header of the ascii file and");
+	CMmsgPrint (CMmsgInfo, "      partialInputFile.txt for all of the arguments.");
+	CMmsgPrint (CMmsgInfo, "    grdImport.Linux <--prompt for all information step by step");
+	CMmsgPrint (CMmsgInfo, "      grdImport.Linux someFile.asc <--get as much info as you can out of");
+	CMmsgPrint (CMmsgInfo, "      the header, and prompt for whatever else is needed.");
 	exit(0);
 }

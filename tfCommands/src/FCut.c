@@ -44,7 +44,7 @@ int main (int argc, char *argv [])
 		if (CMargTest (argv [argPos],"-f","--field"))
 			{
 			if ((argNum = CMargShiftLeft(argPos,argv,argNum)) <= argPos)
-				{ CMmsgPrint (CMmsgUsrError,"Missing field!\n");       return (CMfailed); }
+				{ CMmsgPrint (CMmsgUsrError,"Missing field!");       return (CMfailed); }
 			optarg = argv [argPos];
 			if ((qname = (char *) realloc (qname, strlen(optarg)+3)) == (char *) NULL)
 				{ perror ("Memory Allocation Error in: main ()"); return (CMfailed); }
@@ -53,7 +53,7 @@ int main (int argc, char *argv [])
 			if ((fieldID = FGetFieldID (buffer, qname)) == FFault)
 				{
 				if ((fieldID = FGetFieldID (buffer, optarg)) == FFault)
-					{ CMmsgPrint (CMmsgUsrError,"Invalid Field Name: %s\n",optarg); return (CMfailed); }
+					{ CMmsgPrint (CMmsgUsrError,"Invalid Field Name: %s",optarg); return (CMfailed); }
 				else name = optarg;
 				}
 			else name = qname;
@@ -73,7 +73,7 @@ int main (int argc, char *argv [])
 		if (CMargTest (argv [argPos],"-r","--rename"))
 			{
 			if ((argNum = CMargShiftLeft(argPos,argv,argNum)) <= argPos)
-				{ CMmsgPrint (CMmsgUsrError,"Missing New Name!\n");    return (CMfailed); }
+				{ CMmsgPrint (CMmsgUsrError,"Missing New Name!");    return (CMfailed); }
 			name = argv [argPos];
 			if ((argNum = CMargShiftLeft(argPos,argv,argNum)) <= argPos) break;
 			continue;
@@ -92,7 +92,7 @@ int main (int argc, char *argv [])
 			}
 		if (CMargTest (argv [argPos],"-h","--help")) goto Usage;
 		if (argv [argPos][0] == '-')
-			{ CMmsgPrint (CMmsgUsrError,"Unknown option: %s!\n",argv [argPos]); return (CMfailed); }
+			{ CMmsgPrint (CMmsgUsrError,"Unknown option: %s!",argv [argPos]); return (CMfailed); }
 		argPos++;
 		}
 
@@ -155,14 +155,14 @@ int main (int argc, char *argv [])
 		if (firstDsc != (FieldDsc *) NULL)
 			{
 			if ((fieldBuffer = FGetField (buffer,firstDsc->ID,fieldBuffer,&fbSize)) == (char *) NULL)
-				{ CMmsgPrint (CMmsgUsrError,"Total Gebasz\n"); return (CMfailed); }
+				{ CMmsgPrint (CMmsgUsrError,"Total Gebasz"); return (CMfailed); }
 			printf ("%s",fieldBuffer);
 			fDsc = firstDsc->Next;
 			}
 		while (fDsc != (FieldDsc *) NULL)
 			{
 			if ((fieldBuffer = FGetField (buffer,fDsc->ID,fieldBuffer,&fbSize)) == (char *) NULL)
-				{ CMmsgPrint (CMmsgUsrError,"Total Gebasz\n"); return (CMfailed); }
+				{ CMmsgPrint (CMmsgUsrError,"Total Gebasz"); return (CMfailed); }
 			printf ("\t%s",fieldBuffer);
 			fDsc = fDsc->Next;
 			}
@@ -182,12 +182,12 @@ int main (int argc, char *argv [])
 	return (FSuccess);
 
 	Usage:
-		printf("Usage: %s [-hvnrf [field | name] [name]] ... < [inputfile] ...\n",argv[0]);
-		fprintf(stderr,"where fieldnames must match fieldnames in first line of the datafile.");
-		fprintf(stderr,"-f, --field  field\n\tSpecifies field (column) to display.  Repeat for multiple fields.\n");
-		fprintf(stderr,"-h, --help\n\tPrint this usage information.\n");
-		fprintf(stderr,"-r, --rename  name\n\tRename field.  Sets the field name of the next `-f' or '-n' field.\n\tIf negated operation (`-v') is requested, '-n' or '--nfield' must be used.\n");
-		fprintf(stderr,"-v, --inverse\n\tNegated operation, suppressing given fields only.  Ignored if\n\tno fields are given.\n\n");
+		printf("Usage: %s [-hvnrf [field | name] [name]] ... < [inputfile] ...",argv[0]);
+		CMmsgPrint (CMmsgInfo, "where fieldnames must match fieldnames in first line of the datafile.");
+		CMmsgPrint (CMmsgInfo, "-f, --field  field\n\tSpecifies field (column) to display.  Repeat for multiple fields.");
+		CMmsgPrint (CMmsgInfo, "-h, --help\n\tPrint this usage information.");
+		CMmsgPrint (CMmsgInfo, "-r, --rename  name\n\tRename field.  Sets the field name of the next `-f' or '-n' field.\n\tIf negated operation (`-v') is requested, '-n' or '--nfield' must be used.");
+		CMmsgPrint (CMmsgInfo, "-v, --inverse\n\tNegated operation, suppressing given fields only.  Ignored if\n\tno fields are given.");
 
 	return (FSuccess);
 	}

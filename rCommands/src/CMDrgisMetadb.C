@@ -68,6 +68,6 @@ int main (int argc,char *argv [])
 
 void Usage(char *arg0)
 	{
-	CMmsgPrint (CMmsgInfo,"%s -m [metadb file] <rgis data file> ... <rgis data file>\n",CMprgName(arg0));
-	CMmsgPrint (CMmsgInfo,"     -V,--verbose\n");
+	CMmsgPrint (CMmsgInfo,"%s -m [metadb file] <rgis data file> ... <rgis data file>",CMprgName(arg0));
+	CMmsgPrint (CMmsgInfo,"     -V,--verbose");
 	}

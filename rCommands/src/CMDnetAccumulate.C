@@ -34,7 +34,7 @@ int main (int argc,char *argv [])
 		if (CMargTest (argv [argPos],"-n","--network"))
 			{
 			if ((argNum = CMargShiftLeft (argPos,argv,argNum)) <= argPos)
-				{ CMmsgPrint (CMmsgUsrError,"Missing network!\n");      return (CMfailed); }
+				{ CMmsgPrint (CMmsgUsrError,"Missing network!");      return (CMfailed); }
 			netName = argv [argPos];
 			if ((argNum = CMargShiftLeft (argPos,argv,argNum)) <= argPos) break;
 			continue;
@@ -42,7 +42,7 @@ int main (int argc,char *argv [])
 		if (CMargTest (argv [argPos],"-a","--stations"))
 			{
 			if ((argNum = CMargShiftLeft (argPos,argv,argNum)) <= argPos)
-				{ CMmsgPrint (CMmsgUsrError,"Missing monitoring stations!\n"); return (CMfailed); }
+				{ CMmsgPrint (CMmsgUsrError,"Missing monitoring stations!"); return (CMfailed); }
 			stnName = argv [argPos];
 			if ((argNum = CMargShiftLeft (argPos,argv,argNum)) <= argPos) break;
 			continue;
@@ -50,7 +50,7 @@ int main (int argc,char *argv [])
 		if (CMargTest (argv [argPos],"-i","--timeseries"))
 			{
 			if ((argNum = CMargShiftLeft (argPos,argv,argNum)) <= argPos)
-				{ CMmsgPrint (CMmsgUsrError,"Missing time series!\n");  return (CMfailed); }
+				{ CMmsgPrint (CMmsgUsrError,"Missing time series!");  return (CMfailed); }
 			tsName = argv [argPos];
 			if ((argNum = CMargShiftLeft (argPos,argv,argNum)) <= argPos) break;
 			continue;
@@ -58,7 +58,7 @@ int main (int argc,char *argv [])
 		if (CMargTest (argv [argPos],"-r","--relate"))
 			{
 			if ((argNum = CMargShiftLeft (argPos,argv,argNum)) <= argPos)
-				{ CMmsgPrint (CMmsgUsrError,"Missing relate field!\n"); return (CMfailed); }
+				{ CMmsgPrint (CMmsgUsrError,"Missing relate field!"); return (CMfailed); }
 			fields [0] = argv [argPos];
 			if ((argNum = CMargShiftLeft (argPos,argv,argNum)) <= argPos) break;
 			continue;
@@ -66,7 +66,7 @@ int main (int argc,char *argv [])
 		if (CMargTest (argv [argPos],"-x","--nextstation"))
 			{
 			if ((argNum = CMargShiftLeft (argPos,argv,argNum)) <= argPos)
-				{ CMmsgPrint (CMmsgUsrError,"Missing next station field!\n"); return (CMfailed); }
+				{ CMmsgPrint (CMmsgUsrError,"Missing next station field!"); return (CMfailed); }
 			fields [1] = argv [argPos];
 			if ((argNum = CMargShiftLeft (argPos,argv,argNum)) <= argPos) break;
 			continue;
@@ -74,7 +74,7 @@ int main (int argc,char *argv [])
 		if (CMargTest (argv [argPos],"-j","--join"))
 			{
 			if ((argNum = CMargShiftLeft (argPos,argv,argNum)) <= argPos)
-				{ CMmsgPrint (CMmsgUsrError,"Missing join field!\n");   return (CMfailed); }
+				{ CMmsgPrint (CMmsgUsrError,"Missing join field!");   return (CMfailed); }
 			fields [2] = argv [argPos];
 			if ((argNum = CMargShiftLeft (argPos,argv,argNum)) <= argPos) break;
 			continue;
@@ -82,7 +82,7 @@ int main (int argc,char *argv [])
 		if (CMargTest (argv [argPos],"-e","--date"))
 			{
 			if ((argNum = CMargShiftLeft (argPos,argv,argNum)) <= argPos)
-				{ CMmsgPrint (CMmsgUsrError,"Missing date field!\n");   return (CMfailed); }
+				{ CMmsgPrint (CMmsgUsrError,"Missing date field!");   return (CMfailed); }
 			fields [3] = argv [argPos];
 			if ((argNum = CMargShiftLeft (argPos,argv,argNum)) <= argPos) break;
 			continue;
@@ -90,7 +90,7 @@ int main (int argc,char *argv [])
 		if (CMargTest (argv [argPos],"-g","--discharge"))
 			{
 			if ((argNum = CMargShiftLeft (argPos,argv,argNum)) <= argPos)
-				{ CMmsgPrint (CMmsgUsrError,"Missing discharge field!\n"); return (CMfailed); }
+				{ CMmsgPrint (CMmsgUsrError,"Missing discharge field!"); return (CMfailed); }
 			fields [4] = argv [argPos];
 			if ((argNum = CMargShiftLeft (argPos,argv,argNum)) <= argPos) break;
 			continue;
@@ -101,9 +101,9 @@ int main (int argc,char *argv [])
 			const char *corModes [] = {	"on", "off", (char *) NULL };
 
 			if ((argNum = CMargShiftLeft (argPos,argv,argNum)) <= argPos)
-				{ CMmsgPrint (CMmsgUsrError,"Missing correcition mode!\n"); return (CMfailed); }
+				{ CMmsgPrint (CMmsgUsrError,"Missing correcition mode!"); return (CMfailed); }
 			if ((correction = CMoptLookup (corModes,argv [argPos],true)) == DBFault)
-				{ CMmsgPrint (CMmsgUsrError,"Invalid correction mode!\n");  return (CMfailed); }
+				{ CMmsgPrint (CMmsgUsrError,"Invalid correction mode!");  return (CMfailed); }
 			correction = corCodes [correction];
 			if ((argNum = CMargShiftLeft (argPos,argv,argNum)) <= argPos) break;
 			continue;
@@ -114,9 +114,9 @@ int main (int argc,char *argv [])
 			const char *modes [] = {	"rate", "volume", (char *) NULL };
 
 			if ((argNum = CMargShiftLeft (argPos,argv,argNum)) <= argPos)
-				{ CMmsgPrint (CMmsgUsrError,"Missing accumulation mode!\n"); return (CMfailed); }
+				{ CMmsgPrint (CMmsgUsrError,"Missing accumulation mode!"); return (CMfailed); }
 			if ((areaMult = CMoptLookup (modes,argv [argPos],true)) == DBFault)
-				{ CMmsgPrint (CMmsgUsrError,"Invalid accumulation mode!\n"); return (CMfailed); }
+				{ CMmsgPrint (CMmsgUsrError,"Invalid accumulation mode!"); return (CMfailed); }
 			areaMult = modeCodes [areaMult];
 			if ((argNum = CMargShiftLeft (argPos,argv,argNum)) <= argPos) break;
 			continue;
@@ -124,9 +124,9 @@ int main (int argc,char *argv [])
 		if (CMargTest (argv [argPos],"-f","--coefficient"))
 			{
 			if ((argNum = CMargShiftLeft (argPos,argv,argNum)) <= argPos)
-				{ CMmsgPrint (CMmsgUsrError,"Missing coefficient!\n");  return (CMfailed); }
+				{ CMmsgPrint (CMmsgUsrError,"Missing coefficient!");  return (CMfailed); }
 			if (sscanf (argv [argPos],"%f",&coeff) != 1)
-				{ CMmsgPrint (CMmsgUsrError,"Invalid coefficient\n");   return (CMfailed); }
+				{ CMmsgPrint (CMmsgUsrError,"Invalid coefficient");   return (CMfailed); }
 			if ((argNum = CMargShiftLeft (argPos,argv,argNum)) <= argPos) break;
 			continue;
 			}
@@ -136,9 +136,9 @@ int main (int argc,char *argv [])
 			const char *modes [] = {	"allow", "eliminate", (char *) NULL };
 
 			if ((argNum = CMargShiftLeft (argPos,argv,argNum)) <= argPos)
-				{ CMmsgPrint (CMmsgUsrError,"Missing negative mode!\n"); return (CMfailed); }
+				{ CMmsgPrint (CMmsgUsrError,"Missing negative mode!"); return (CMfailed); }
 			if ((allowNegative = CMoptLookup (modes,argv [argPos],true)) == DBFault)
-				{ CMmsgPrint (CMmsgUsrError,"Invalid negative mode!\n"); return (CMfailed); }
+				{ CMmsgPrint (CMmsgUsrError,"Invalid negative mode!"); return (CMfailed); }
 			allowNegative = negCodes [allowNegative];
 			if ((argNum = CMargShiftLeft (argPos,argv,argNum)) <= argPos) break;
 			continue;
@@ -146,7 +146,7 @@ int main (int argc,char *argv [])
 		if (CMargTest (argv [argPos],"-t","--title"))
 			{
 			if ((argNum = CMargShiftLeft (argPos,argv,argNum)) <= argPos)
-				{ CMmsgPrint (CMmsgUsrError,"Missing title!\n");        return (CMfailed); }
+				{ CMmsgPrint (CMmsgUsrError,"Missing title!");        return (CMfailed); }
 			title = argv [argPos];
 			if ((argNum = CMargShiftLeft (argPos,argv,argNum)) <= argPos) break;
 			continue;
@@ -154,7 +154,7 @@ int main (int argc,char *argv [])
 		if (CMargTest (argv [argPos],"-u","--subject"))
 			{
 			if ((argNum = CMargShiftLeft (argPos,argv,argNum)) <= argPos)
-				{ CMmsgPrint (CMmsgUsrError,"Missing subject!\n");      return (CMfailed); }
+				{ CMmsgPrint (CMmsgUsrError,"Missing subject!");      return (CMfailed); }
 			subject = argv [argPos];
 			if ((argNum = CMargShiftLeft (argPos,argv,argNum)) <= argPos) break;
 			continue;
@@ -162,7 +162,7 @@ int main (int argc,char *argv [])
 		if (CMargTest (argv [argPos],"-d","--domain"))
 			{
 			if ((argNum = CMargShiftLeft (argPos,argv,argNum)) <= argPos)
-				{ CMmsgPrint (CMmsgUsrError,"Missing domain!\n");       return (CMfailed); }
+				{ CMmsgPrint (CMmsgUsrError,"Missing domain!");       return (CMfailed); }
 			domain  = argv [argPos];
 			if ((argNum = CMargShiftLeft (argPos,argv,argNum)) <= argPos) break;
 			continue;
@@ -170,7 +170,7 @@ int main (int argc,char *argv [])
 		if (CMargTest (argv [argPos],"-v","--version"))
 			{
 			if ((argNum = CMargShiftLeft (argPos,argv,argNum)) <= argPos)
-				{ CMmsgPrint (CMmsgUsrError,"Missing version!\n");      return (CMfailed); }
+				{ CMmsgPrint (CMmsgUsrError,"Missing version!");      return (CMfailed); }
 			version  = argv [argPos];
 			if ((argNum = CMargShiftLeft (argPos,argv,argNum)) <= argPos) break;
 			continue;
@@ -185,9 +185,9 @@ int main (int argc,char *argv [])
 			const char *shadeSets [] = {	"standard","grey","blue","blue-to-red","elevation", (char *) NULL };
 
 			if ((argNum = CMargShiftLeft (argPos,argv,argNum)) <= argPos)
-				{ CMmsgPrint (CMmsgUsrError,"Missing shadeset!\n");     return (CMfailed); }
+				{ CMmsgPrint (CMmsgUsrError,"Missing shadeset!");     return (CMfailed); }
 			if ((shadeSet = CMoptLookup (shadeSets,argv [argPos],true)) == DBFault)
-				{ CMmsgPrint (CMmsgUsrError,"Invalid shadeset!\n");     return (CMfailed); }
+				{ CMmsgPrint (CMmsgUsrError,"Invalid shadeset!");     return (CMfailed); }
 			shadeSet = shadeCodes [shadeSet];
 			if ((argNum = CMargShiftLeft (argPos,argv,argNum)) <= argPos) break;
 			continue;
@@ -200,42 +200,42 @@ int main (int argc,char *argv [])
 			}
 		if (CMargTest (argv [argPos],"-h","--help"))
 			{
-			CMmsgPrint (CMmsgInfo,"%s [options] <input grid> <output grid>\n",CMprgName(argv[0]));
-			CMmsgPrint (CMmsgInfo,"     -n,--network     [network coverage]\n");
-			CMmsgPrint (CMmsgInfo,"     -a,--stations    [station coverage]\n");
-			CMmsgPrint (CMmsgInfo,"     -i,--timeseries  [time series data]\n");
-			CMmsgPrint (CMmsgInfo,"     -r,--relate      [relate field]\n");
-			CMmsgPrint (CMmsgInfo,"     -j,--join        [join field]\n");
-			CMmsgPrint (CMmsgInfo,"     -e,--date        [date field]\n");
-			CMmsgPrint (CMmsgInfo,"     -x,--nextstation [next station field]\n");
-			CMmsgPrint (CMmsgInfo,"     -g,--discharge   [discharge field]\n");
-			CMmsgPrint (CMmsgInfo,"     -c,--correction  [on|off (default is off)]\n");
-			CMmsgPrint (CMmsgInfo,"     -m,--mode        [rate|volume]\n");
-			CMmsgPrint (CMmsgInfo,"     -f,--coefficient [conversion coefficient]\n");
-			CMmsgPrint (CMmsgInfo,"     -l,--negative    [allow|eliminate]\n");
-			CMmsgPrint (CMmsgInfo,"     -t,--title       [dataset title]\n");
-			CMmsgPrint (CMmsgInfo,"     -u,--subject     [subject]\n");
-			CMmsgPrint (CMmsgInfo,"     -d,--domain      [domain]\n");
-			CMmsgPrint (CMmsgInfo,"     -v,--version     [version]\n");
-			CMmsgPrint (CMmsgInfo,"     -s,--shadeset    [standard|grey|blue|blue-to-red|elevation]\n");
-			CMmsgPrint (CMmsgInfo,"     -V,--verbose\n");
-			CMmsgPrint (CMmsgInfo,"     -h,--help\n");
+			CMmsgPrint (CMmsgInfo,"%s [options] <input grid> <output grid>",CMprgName(argv[0]));
+			CMmsgPrint (CMmsgInfo,"     -n,--network     [network coverage]");
+			CMmsgPrint (CMmsgInfo,"     -a,--stations    [station coverage]");
+			CMmsgPrint (CMmsgInfo,"     -i,--timeseries  [time series data]");
+			CMmsgPrint (CMmsgInfo,"     -r,--relate      [relate field]");
+			CMmsgPrint (CMmsgInfo,"     -j,--join        [join field]");
+			CMmsgPrint (CMmsgInfo,"     -e,--date        [date field]");
+			CMmsgPrint (CMmsgInfo,"     -x,--nextstation [next station field]");
+			CMmsgPrint (CMmsgInfo,"     -g,--discharge   [discharge field]");
+			CMmsgPrint (CMmsgInfo,"     -c,--correction  [on|off (default is off)]");
+			CMmsgPrint (CMmsgInfo,"     -m,--mode        [rate|volume]");
+			CMmsgPrint (CMmsgInfo,"     -f,--coefficient [conversion coefficient]");
+			CMmsgPrint (CMmsgInfo,"     -l,--negative    [allow|eliminate]");
+			CMmsgPrint (CMmsgInfo,"     -t,--title       [dataset title]");
+			CMmsgPrint (CMmsgInfo,"     -u,--subject     [subject]");
+			CMmsgPrint (CMmsgInfo,"     -d,--domain      [domain]");
+			CMmsgPrint (CMmsgInfo,"     -v,--version     [version]");
+			CMmsgPrint (CMmsgInfo,"     -s,--shadeset    [standard|grey|blue|blue-to-red|elevation]");
+			CMmsgPrint (CMmsgInfo,"     -V,--verbose");
+			CMmsgPrint (CMmsgInfo,"     -h,--help");
 			return (DBSuccess);
 			}
 		if ((argv [argPos][0] == '-') && (strlen (argv [argPos]) > 1))
-			{ CMmsgPrint (CMmsgUsrError,"Unknown option: %s!\n",argv [argPos]); return (CMfailed); }
+			{ CMmsgPrint (CMmsgUsrError,"Unknown option: %s!",argv [argPos]); return (CMfailed); }
 		argPos++;
 		}
 
-	if (argNum > 3) { CMmsgPrint (CMmsgUsrError,"Extra arguments!\n"); return (CMfailed); }
+	if (argNum > 3) { CMmsgPrint (CMmsgUsrError,"Extra arguments!"); return (CMfailed); }
 	if (verbose) RGlibPauseOpen (argv[0]);
 
 	if (netName == (char *) NULL)
-		{ CMmsgPrint (CMmsgUsrError,"Network is not specified\n"); return (CMfailed); }
+		{ CMmsgPrint (CMmsgUsrError,"Network is not specified"); return (CMfailed); }
 	if ((stnName == (char *) NULL) && (tsName != (char *) NULL))
-		{ CMmsgPrint (CMmsgUsrError,"Missing station coverage!\n"); return (CMfailed); }
+		{ CMmsgPrint (CMmsgUsrError,"Missing station coverage!"); return (CMfailed); }
 	if ((stnName != (char *) NULL) && (tsName == (char *) NULL))
-		{ CMmsgPrint (CMmsgUsrError,"Missing time series data!\n"); return (CMfailed); }
+		{ CMmsgPrint (CMmsgUsrError,"Missing time series data!"); return (CMfailed); }
 
 	netData = new DBObjData ();
 	if ((netData->Read (netName) == DBFault) || (netData->Type () != DBTypeNetwork))

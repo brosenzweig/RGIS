@@ -182,7 +182,7 @@ static void _RGISWorkspaceSetCurrentDataCBK (Widget widget, RGISWorkspace *workS
 	widget = widget;
 	XmStringGetLtoR (callData->item,UICharSetNormal,&dataName);
 	if ((data = dataset->Data (dataName)) == (DBObjData *) NULL)
-		{ fprintf (stderr,"Data not found in : _RGISMainSetCurrentDataCBK ()\n"); return; }
+		{ CMmsgPrint (CMmsgAppError, "Data not found in: %s %d",__FILE__,__LINE__); return; }
 	workSpace->CurrentData (data);
 	}
 

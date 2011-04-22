@@ -35,7 +35,7 @@ int main (int argc,char *argv [])
 		if (CMargTest (argv [argPos],"-a","--table"))
 			{
 			if ((argNum = CMargShiftLeft (argPos,argv,argNum)) < argPos)
-				{ CMmsgPrint (CMmsgUsrError,"Missing table name!\n");  return (CMfailed); }
+				{ CMmsgPrint (CMmsgUsrError,"Missing table name!");  return (CMfailed); }
 			tableName = argv [argPos];
 			if ((argNum = CMargShiftLeft (argPos,argv,argNum)) < argPos) break;
 			continue;
@@ -44,17 +44,17 @@ int main (int argc,char *argv [])
 			{
 			tmpVar = CMargTest (argv [argPos],"-t","--tmpfield") ? true : false;
 			if ((argNum = CMargShiftLeft (argPos,argv,argNum)) < argPos)
-				{ CMmsgPrint (CMmsgUsrError,"Missing field name!\n");  return (CMfailed); }
+				{ CMmsgPrint (CMmsgUsrError,"Missing field name!");  return (CMfailed); }
 			fieldName = argv [argPos];
 			if ((argNum = CMargShiftLeft (argPos,argv,argNum)) < argPos)
-				{ CMmsgPrint (CMmsgUsrError,"Missing expression!\n");  return (CMfailed); }
+				{ CMmsgPrint (CMmsgUsrError,"Missing expression!");  return (CMfailed); }
 			expressions = expNum < 1 ? (CMDExpression **) calloc (1,sizeof (CMDExpression *)) :
 								(CMDExpression **) realloc (expressions,(expNum + 1) * sizeof (CMDExpression *));
 			if (expressions == (CMDExpression **) NULL)
-				{ perror ("Memory Allocation error!"); return (CMfailed); }
+				{ CMmsgPrint (CMmsgSysError, "Memory Allocation error in: %s %d",__FILE__,__LINE__); return (CMfailed); }
 			expressions [expNum] = new CMDExpression (fieldName, argv [argPos],tmpVar);
 			if ((expressions [expNum])->Expand (variables) == DBFault)
-				{ CMmsgPrint (CMmsgUsrError,"Invalid Expression!\n"); return (CMfailed); }
+				{ CMmsgPrint (CMmsgUsrError,"Invalid Expression!"); return (CMfailed); }
 			expNum++;
 			if ((argNum = CMargShiftLeft (argPos,argv,argNum)) < argPos) break;
 			continue;
@@ -67,34 +67,34 @@ int main (int argc,char *argv [])
 			}
 		if (CMargTest (argv [argPos],"-h","--help"))
 			{
-			CMmsgPrint (CMmsgInfo,"%s [options] <input file> <output file>\n",CMprgName(argv[0]));
-			CMmsgPrint (CMmsgInfo,"     -a,--table     [table name]\n");
-			CMmsgPrint (CMmsgInfo,"     -f,--field     [fieldname] [expression]\n");
-			CMmsgPrint (CMmsgInfo,"     -t,--tmpfield  [fieldname] [expression]\n");
-			CMmsgPrint (CMmsgInfo,"     -V,--verbose\n");
-			CMmsgPrint (CMmsgInfo,"     -h,--help\n");
+			CMmsgPrint (CMmsgInfo,"%s [options] <input file> <output file>",CMprgName(argv[0]));
+			CMmsgPrint (CMmsgInfo,"     -a,--table     [table name]");
+			CMmsgPrint (CMmsgInfo,"     -f,--field     [fieldname] [expression]");
+			CMmsgPrint (CMmsgInfo,"     -t,--tmpfield  [fieldname] [expression]");
+			CMmsgPrint (CMmsgInfo,"     -V,--verbose");
+			CMmsgPrint (CMmsgInfo,"     -h,--help");
 			return (DBSuccess);
 			}
 		if ((argv [argPos][0] == '-') && ((int) strlen (argv [argPos]) > 1))
-			{ CMmsgPrint (CMmsgUsrError,"Unknown option: %s!\n",argv [argPos]); return (CMfailed); }
+			{ CMmsgPrint (CMmsgUsrError,"Unknown option: %s!",argv [argPos]); return (CMfailed); }
 		argPos++;
 		}
 
-	if (argNum > 3) { CMmsgPrint (CMmsgUsrError,"Extra arguments!\n"); return (CMfailed); }
+	if (argNum > 3) { CMmsgPrint (CMmsgUsrError,"Extra arguments!"); return (CMfailed); }
 	if (verbose) RGlibPauseOpen (argv[0]);
 
 	data = new DBObjData ();
 	if (((argNum > 1) && (strcmp (argv [1],"-") != 0) ? data->Read (argv [1]) : data->Read (stdin)) == DBFault)
-		{ delete data; if (argNum > 1) printf ("File error in: %s\n", argv[1]); return(DBFault); }
+		{ delete data; if (argNum > 1) CMmsgPrint (CMmsgUsrError, "File error in: %s", argv[1]); return(DBFault); }
 
 	if (tableName == (char *) NULL) tableName = DBrNItems;
 
 	if ((table = data->Table (tableName)) == (DBObjTable *) NULL)
-		{ CMmsgPrint (CMmsgUsrError,"Invalid table!\n"); delete data; return (CMfailed); }
+		{ CMmsgPrint (CMmsgUsrError,"Invalid table!"); delete data; return (CMfailed); }
 
 	for (expr = 0;expr < expNum;++expr)
 		if (expressions [expr]->Configure (table) == DBFault)
-			{ CMmsgPrint (CMmsgUsrError,"Invalid expression\n"); return (CMfailed); }
+			{ CMmsgPrint (CMmsgUsrError,"Invalid expression"); return (CMfailed); }
 	
 	for (recID = 0;recID < table->ItemNum ();++recID)
 		{

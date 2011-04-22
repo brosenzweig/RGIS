@@ -44,7 +44,7 @@ int _RGISToolsPointExportARCInfo (DBObjData *data,char *selection)
 		unlink (asciiGenerate);
 		unlink (asciiAttribDef);
 		unlink (asciiAttribData);
-		perror ("Aml File Creation Error in: RGISToolsPointExportARCInfo ()");
+		CMmsgPrint (CMmsgSysError, "Aml File Creation Error in: %s %d",__FILE__,__LINE__);
 		return (DBFault);
 		}
 	fprintf (file,"&workspace %s\n",selection);

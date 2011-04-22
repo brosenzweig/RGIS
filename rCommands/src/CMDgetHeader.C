@@ -60,7 +60,7 @@ int main(int argc, char* argv[]){
 		}
 	else
 		{
-		CMmsgPrint (CMmsgUsrError,"No data file, reading from stdin!\n");
+		CMmsgPrint (CMmsgUsrError,"No data file, reading from stdin!");
 		if (header.Read(stdin) == DBFault) { delete dbData; return(DBFault); }
 		if (dbData->Read(stdin) == DBFault) { delete dbData; return(DBFault); }
 		}
@@ -136,11 +136,11 @@ int main(int argc, char* argv[]){
 				continue;
 			}	
 			if ((argv[argPos][0] == '-') && (strlen (argv[argPos]) > 1))
-				{ CMmsgPrint (CMmsgUsrError,"Unknown option: %s!\n",argv[argPos]); return (CMfailed); }
+				{ CMmsgPrint (CMmsgUsrError,"Unknown option: %s!",argv[argPos]); return (CMfailed); }
 			argPos++;
 			}
 		}
-	if (argNum > 3) { CMmsgPrint (CMmsgUsrError,"Extra arguments!\n"); return (CMfailed); }
+	if (argNum > 3) { CMmsgPrint (CMmsgUsrError,"Extra arguments!"); return (CMfailed); }
 	if (verbose) RGlibPauseOpen (argv[0]);
 
 
@@ -160,19 +160,19 @@ int main(int argc, char* argv[]){
 }
 
 void Show_Usage(char *arg0) {
-	CMmsgPrint (CMmsgInfo,"%s [options] <RiverGIS file>\n",CMprgName(arg0));
-	CMmsgPrint (CMmsgInfo,"       => Gets RiverGIS file header informations.\n");
-	CMmsgPrint (CMmsgInfo,"       -a,--all\n");
-	CMmsgPrint (CMmsgInfo,"       -c,--comment\n");
-	CMmsgPrint (CMmsgInfo,"       -C,--citation\n");
-	CMmsgPrint (CMmsgInfo,"       -d,--domain\n");
-	CMmsgPrint (CMmsgInfo,"       -i,--institute\n");
-	CMmsgPrint (CMmsgInfo,"       -p,--person\n");
-	CMmsgPrint (CMmsgInfo,"       -s,--subject\n");
-	CMmsgPrint (CMmsgInfo,"       -S,--source\n");
-	CMmsgPrint (CMmsgInfo,"       -t,--title\n");
-	CMmsgPrint (CMmsgInfo,"       -v,--version\n");
-	CMmsgPrint (CMmsgInfo,"       -V,--verbose\n");
-	CMmsgPrint (CMmsgInfo,"       -h,--help\n");
+	CMmsgPrint (CMmsgInfo,"%s [options] <RiverGIS file>",CMprgName(arg0));
+	CMmsgPrint (CMmsgInfo,"       => Gets RiverGIS file header informations.");
+	CMmsgPrint (CMmsgInfo,"       -a,--all");
+	CMmsgPrint (CMmsgInfo,"       -c,--comment");
+	CMmsgPrint (CMmsgInfo,"       -C,--citation");
+	CMmsgPrint (CMmsgInfo,"       -d,--domain");
+	CMmsgPrint (CMmsgInfo,"       -i,--institute");
+	CMmsgPrint (CMmsgInfo,"       -p,--person");
+	CMmsgPrint (CMmsgInfo,"       -s,--subject");
+	CMmsgPrint (CMmsgInfo,"       -S,--source");
+	CMmsgPrint (CMmsgInfo,"       -t,--title");
+	CMmsgPrint (CMmsgInfo,"       -v,--version");
+	CMmsgPrint (CMmsgInfo,"       -V,--verbose");
+	CMmsgPrint (CMmsgInfo,"       -h,--help");
 	exit(0);
 }

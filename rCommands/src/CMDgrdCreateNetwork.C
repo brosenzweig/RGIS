@@ -30,14 +30,14 @@ int main (int argc,char *argv [])
 		{
 		if (CMargTest(argv[argPos],"-b","--basin_pack")) {
 			if ((argNum = CMargShiftLeft(argPos,argv,argNum)) <= argPos)
-				{ CMmsgPrint (CMmsgUsrError, "Missing basin pack filename!\n"); return (CMfailed); }
+				{ CMmsgPrint (CMmsgUsrError, "Missing basin pack filename!"); return (CMfailed); }
 			else {
 				if (basinData != (DBObjData *) NULL)
-					CMmsgPrint (CMmsgWarning,"Ignoring redefined basin pack\n");
+					CMmsgPrint (CMmsgWarning,"Ignoring redefined basin pack");
 				else {
 					basinData = new DBObjData ();
 					if (basinData->Read (argv [argPos]) == DBFault) {
-						CMmsgPrint (CMmsgUsrError, "Basin data reading error\n");
+						CMmsgPrint (CMmsgUsrError, "Basin data reading error");
 						delete basinData;
 						basinData = (DBObjData *) NULL;
 						return (CMfailed);
@@ -49,14 +49,14 @@ int main (int argc,char *argv [])
 		}
 		if (CMargTest(argv[argPos],"-g","--gradient")) {
 			if ((argNum = CMargShiftLeft(argPos,argv,argNum)) <= argPos)
-				{ CMmsgPrint (CMmsgUsrError, "Missing gradient method!\n"); return (CMfailed); }
+				{ CMmsgPrint (CMmsgUsrError, "Missing gradient method!"); return (CMfailed); }
 			else {
 				const char *options [] = { "down", "up", (char *) NULL };
 				bool methods [] = { true, false };
 				DBInt code;
 
 				if ((code = CMoptLookup (options,argv [argPos],false)) == CMfailed) {
-					CMmsgPrint (CMmsgWarning,"Ignoring illformed gradient method [%s]!\n",argv [argPos]);
+					CMmsgPrint (CMmsgWarning,"Ignoring illformed gradient method [%s]!",argv [argPos]);
 				}
 				else downhill = methods [code];
 			}
@@ -66,7 +66,7 @@ int main (int argc,char *argv [])
 		if (CMargTest (argv [argPos],"-t","--title"))
 			{
 			if ((argNum = CMargShiftLeft (argPos,argv,argNum)) <= argPos)
-				{ CMmsgPrint (CMmsgUsrError,"Missing title!\n");        return (CMfailed); }
+				{ CMmsgPrint (CMmsgUsrError,"Missing title!");        return (CMfailed); }
 			title = argv [argPos];
 			if ((argNum = CMargShiftLeft (argPos,argv,argNum)) <= argPos) break;
 			continue;
@@ -74,7 +74,7 @@ int main (int argc,char *argv [])
 		if (CMargTest (argv [argPos],"-d","--domain"))
 			{
 			if ((argNum = CMargShiftLeft (argPos,argv,argNum)) <= argPos)
-				{ CMmsgPrint (CMmsgUsrError,"Missing domain!\n");            return (CMfailed); }
+				{ CMmsgPrint (CMmsgUsrError,"Missing domain!");            return (CMfailed); }
 			domain  = argv [argPos];
 			if ((argNum = CMargShiftLeft (argPos,argv,argNum)) <= argPos) break;
 			continue;
@@ -82,7 +82,7 @@ int main (int argc,char *argv [])
 		if (CMargTest (argv [argPos],"-v","--version"))
 			{
 			if ((argNum = CMargShiftLeft (argPos,argv,argNum)) <= argPos)
-				{ CMmsgPrint (CMmsgUsrError,"Missing version!\n");      return (CMfailed); }
+				{ CMmsgPrint (CMmsgUsrError,"Missing version!");      return (CMfailed); }
 			version  = argv [argPos];
 			if ((argNum = CMargShiftLeft (argPos,argv,argNum)) <= argPos) break;
 			continue;
@@ -95,22 +95,22 @@ int main (int argc,char *argv [])
 			}
 		if (CMargTest (argv [argPos],"-h","--help"))
 			{
-			CMmsgPrint (CMmsgInfo,"%s [options] <input file> <output file>\n",CMprgName(argv[0]));
-			CMmsgPrint (CMmsgInfo,"     -b,--basin_pack [basin pack file]\n");
-			CMmsgPrint (CMmsgInfo,"     -g,--gradient   [down|up]\n");
-			CMmsgPrint (CMmsgInfo,"     -t,--title      [dataset title]\n");
-			CMmsgPrint (CMmsgInfo,"     -d,--domain     [domain]\n");
-			CMmsgPrint (CMmsgInfo,"     -v,--version    [version]\n");
-			CMmsgPrint (CMmsgInfo,"     -V,--verbose\n");
-			CMmsgPrint (CMmsgInfo,"     -h,--help\n");
+			CMmsgPrint (CMmsgInfo,"%s [options] <input file> <output file>",CMprgName(argv[0]));
+			CMmsgPrint (CMmsgInfo,"     -b,--basin_pack [basin pack file]");
+			CMmsgPrint (CMmsgInfo,"     -g,--gradient   [down|up]");
+			CMmsgPrint (CMmsgInfo,"     -t,--title      [dataset title]");
+			CMmsgPrint (CMmsgInfo,"     -d,--domain     [domain]");
+			CMmsgPrint (CMmsgInfo,"     -v,--version    [version]");
+			CMmsgPrint (CMmsgInfo,"     -V,--verbose");
+			CMmsgPrint (CMmsgInfo,"     -h,--help");
 			return (DBSuccess);
 			}
 		if ((argv [argPos][0] == '-') && ((int) strlen (argv [argPos]) > 1))
-			{ CMmsgPrint (CMmsgUsrError,"Unknown option: %s!\n",argv [argPos]); return (CMfailed); }
+			{ CMmsgPrint (CMmsgUsrError,"Unknown option: %s!",argv [argPos]); return (CMfailed); }
 		argPos++;
 		}
 
-	if (argNum > 3) { CMmsgPrint (CMmsgUsrError,"Extra arguments!\n"); return (CMfailed); }
+	if (argNum > 3) { CMmsgPrint (CMmsgUsrError,"Extra arguments!"); return (CMfailed); }
 
 	if (verbose) RGlibPauseOpen (argv[0]);
 
@@ -129,7 +129,7 @@ int main (int argc,char *argv [])
 	outData->Document (DBDocVersion,version);
 
 	if (DBGridCont2Network (inData,outData, downhill) == DBFault) {
-		CMmsgPrint (CMmsgUsrError,"Grid create network failed!\n");
+		CMmsgPrint (CMmsgUsrError,"Grid create network failed!");
 		ret = DBFault;
 		goto Stop;
 	}

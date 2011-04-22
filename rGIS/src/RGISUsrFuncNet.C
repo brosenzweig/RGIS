@@ -27,7 +27,7 @@ void _RGISUserFuncionNetwork (DBObjData *data,UI2DView *view,XEvent *event)
 
 	if (event->type != ButtonPress) return;
 	if (DBTypeNetwork != data->Type ())
-		{ fprintf (stderr,"Invalid data Type in: _RGISUserFuncionNetwork ()\n"); }
+		{ CMmsgPrint (CMmsgAppError, "Invalid data Type in: %s %d",__FILE__,__LINE__); }
 
 	sX = event->xbutton.x;
 	sY = event->xbutton.y;

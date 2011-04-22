@@ -98,9 +98,9 @@ int main(int argc, char* argv[])
 											 DBTimeStepHour,
 											 DBTimeStepMinute };
 			if ((argNum = CMargShiftLeft (argPos,argv,argNum)) <= argPos)
-				{ CMmsgPrint (CMmsgUsrError,"Time step variable step is not defined!\n"); return (CMfailed); }
+				{ CMmsgPrint (CMmsgUsrError,"Time step variable step is not defined!"); return (CMfailed); }
 			if ((timeStep = CMoptLookup (timeStepStr,argv[argPos],true)) == DBFault)
-				{ printf("Invalid timeStep %s\n",argv[argPos]); return DBFault; }
+				{ printf("Invalid timeStep %s",argv[argPos]); return DBFault; }
 			timeStep = timeStepCodes [timeStep];
 			if ((argNum = CMargShiftLeft (argPos,argv,argNum)) <= argPos) break;
 			continue;
@@ -108,18 +108,18 @@ int main(int argc, char* argv[])
 		if (CMargTest (argv [argPos],"-y","--year"))
 			{
 			if ((argNum = CMargShiftLeft (argPos,argv,argNum)) <= argPos)
-				{ CMmsgPrint (CMmsgUsrError,"Missing Year!\n");         return (CMfailed); }
+				{ CMmsgPrint (CMmsgUsrError,"Missing Year!");         return (CMfailed); }
 			if (sscanf (argv[argPos],"%d",&startYear) != 1)
-				{ CMmsgPrint (CMmsgUsrError,"Invalid year!\n");         return (CMfailed); }
+				{ CMmsgPrint (CMmsgUsrError,"Invalid year!");         return (CMfailed); }
 			if ((argNum = CMargShiftLeft (argPos,argv,argNum)) <= argPos) break;
 			continue;
 			}
 		if (CMargTest (argv [argPos],"-m","--month"))
 			{
 			if ((argNum = CMargShiftLeft (argPos,argv,argNum)) <= argPos)
-				{ CMmsgPrint (CMmsgUsrError,"Missing Month!\n");        return (CMfailed); }
+				{ CMmsgPrint (CMmsgUsrError,"Missing Month!");        return (CMfailed); }
 			if (sscanf (argv[argPos],"%d",&startMonth) != 1)
-				{ CMmsgPrint (CMmsgUsrError,"Invalid Month!\n");        return (CMfailed); }
+				{ CMmsgPrint (CMmsgUsrError,"Invalid Month!");        return (CMfailed); }
 			startMonth--;
 			if ((argNum = CMargShiftLeft (argPos,argv,argNum)) <= argPos) break;
 			continue;
@@ -127,9 +127,9 @@ int main(int argc, char* argv[])
 		if (CMargTest (argv [argPos],"-d","--day"))
 			{
 			if ((argNum = CMargShiftLeft (argPos,argv,argNum)) <= argPos)
-				{ CMmsgPrint (CMmsgUsrError,"Missing Day!\n");          return (CMfailed); }
+				{ CMmsgPrint (CMmsgUsrError,"Missing Day!");          return (CMfailed); }
 			if (sscanf (argv[argPos],"%d",&startDay) != 1)
-				{ CMmsgPrint (CMmsgUsrError,"Invalid day!\n");          return (CMfailed); }
+				{ CMmsgPrint (CMmsgUsrError,"Invalid day!");          return (CMfailed); }
 			startDay--;
 			if ((argNum = CMargShiftLeft (argPos,argv,argNum)) <= argPos) break;
 			continue;
@@ -137,27 +137,27 @@ int main(int argc, char* argv[])
 		if (CMargTest (argv [argPos],"-r","--hour"))
 			{
 			if ((argNum = CMargShiftLeft (argPos,argv,argNum)) <= argPos)
-				{ CMmsgPrint (CMmsgUsrError,"Missing Hour!\n");         return (CMfailed); }
+				{ CMmsgPrint (CMmsgUsrError,"Missing Hour!");         return (CMfailed); }
 			if (sscanf (argv[argPos],"%d",&startHour) != 1)
-				{ CMmsgPrint (CMmsgUsrError,"Invalid hour!\n");         return (CMfailed); }
+				{ CMmsgPrint (CMmsgUsrError,"Invalid hour!");         return (CMfailed); }
 			if ((argNum = CMargShiftLeft (argPos,argv,argNum)) <= argPos) break;
 			continue;
 			}
 		if (CMargTest (argv [argPos],"-i","--minute"))
 			{
 			if ((argNum = CMargShiftLeft (argPos,argv,argNum)) <= argPos)
-				{ CMmsgPrint (CMmsgUsrError,"Missing Minute!\n");       return (CMfailed); }
+				{ CMmsgPrint (CMmsgUsrError,"Missing Minute!");       return (CMfailed); }
 			if (sscanf (argv[argPos],"%d",&startMinute) != 1)
-				{ CMmsgPrint (CMmsgUsrError,"Invalid minute!\n");       return (CMfailed); }
+				{ CMmsgPrint (CMmsgUsrError,"Invalid minute!");       return (CMfailed); }
 			if ((argNum = CMargShiftLeft (argPos,argv,argNum)) <= argPos) break;
 			continue;
 			}
 		if (CMargTest (argv [argPos],"-n","--number"))
 			{
 			if ((argNum = CMargShiftLeft (argPos,argv,argNum)) <= argPos)
-				{ CMmsgPrint (CMmsgUsrError,"Missing Number!\n");       return (CMfailed); }
+				{ CMmsgPrint (CMmsgUsrError,"Missing Number!");       return (CMfailed); }
 			if (sscanf (argv[argPos],"%d",&timeInterval) != 1)
-				{ CMmsgPrint (CMmsgUsrError,"Invalid interval!\n");     return (CMfailed); }
+				{ CMmsgPrint (CMmsgUsrError,"Invalid interval!");     return (CMfailed); }
 			if ((argNum = CMargShiftLeft (argPos,argv,argNum)) <= argPos) break;
 			continue;
 			}
@@ -171,9 +171,9 @@ int main(int argc, char* argv[])
 			const char *shadeSets [] = { "standard","grey","blue","blue-to-red","elevation", (char *) NULL };
 
 			if ((argNum = CMargShiftLeft (argPos,argv,argNum)) <= argPos)
-				{ CMmsgPrint (CMmsgUsrError,"Missing shadeset!\n");     return (CMfailed); }
+				{ CMmsgPrint (CMmsgUsrError,"Missing shadeset!");     return (CMfailed); }
 			if ((shadeSet = CMoptLookup (shadeSets,argv [argPos],true)) == CMfailed)
-				{ CMmsgPrint (CMmsgUsrError,"Invalid shadeset!\n");     return (CMfailed); }
+				{ CMmsgPrint (CMmsgUsrError,"Invalid shadeset!");     return (CMfailed); }
 			shadeSet = shadeCodes [shadeSet];
 			changeShadeSet = true;
 			if ((argNum = CMargShiftLeft (argPos,argv,argNum)) <= argPos) break;
@@ -181,27 +181,27 @@ int main(int argc, char* argv[])
 			}
 		if (CMargTest (argv [argPos],"-h","--help"))
 			{
-			CMmsgPrint (CMmsgInfo,"%s [options] <input grid> <output grid>\n",CMprgName(argv[0]));
-			CMmsgPrint (CMmsgInfo,"     -y,--year      [beginning year]\n");
-			CMmsgPrint (CMmsgInfo,"     -m,--month     [beginning month]\n");
-			CMmsgPrint (CMmsgInfo,"     -d,--day       [beginning day]\n");
-			CMmsgPrint (CMmsgInfo,"     -r,--hour      [beginning hour]\n");
-			CMmsgPrint (CMmsgInfo,"     -i,--minute    [beginning minute]\n");
-			CMmsgPrint (CMmsgInfo,"     -e,--step      [year|month|day|hour|minute]\n");
-			CMmsgPrint (CMmsgInfo,"     -s,--shadeset  [standard|grey|blue|blue-to-red|elevation]\n");
-			CMmsgPrint (CMmsgInfo,"     -n,--number    [number of intervals]\n");
-			CMmsgPrint (CMmsgInfo,"     -V,--verbose\n");
-			CMmsgPrint (CMmsgInfo,"     -h,--help\n");
+			CMmsgPrint (CMmsgInfo,"%s [options] <input grid> <output grid>",CMprgName(argv[0]));
+			CMmsgPrint (CMmsgInfo,"     -y,--year      [beginning year]");
+			CMmsgPrint (CMmsgInfo,"     -m,--month     [beginning month]");
+			CMmsgPrint (CMmsgInfo,"     -d,--day       [beginning day]");
+			CMmsgPrint (CMmsgInfo,"     -r,--hour      [beginning hour]");
+			CMmsgPrint (CMmsgInfo,"     -i,--minute    [beginning minute]");
+			CMmsgPrint (CMmsgInfo,"     -e,--step      [year|month|day|hour|minute]");
+			CMmsgPrint (CMmsgInfo,"     -s,--shadeset  [standard|grey|blue|blue-to-red|elevation]");
+			CMmsgPrint (CMmsgInfo,"     -n,--number    [number of intervals]");
+			CMmsgPrint (CMmsgInfo,"     -V,--verbose");
+			CMmsgPrint (CMmsgInfo,"     -h,--help");
 			return (DBSuccess);
 			}
 		if ((argv [argPos][0] == '-') && (strlen (argv [argPos]) > 1))
-			{ CMmsgPrint (CMmsgUsrError,"Unknown option: %s!\n",argv [argPos]); return (CMfailed); }
+			{ CMmsgPrint (CMmsgUsrError,"Unknown option: %s!",argv [argPos]); return (CMfailed); }
 			argPos++;
 			}
 
 	switch (timeStep)
 		{
-		case DBFault: CMmsgPrint (CMmsgUsrError,"Missing time step!\n"); return (CMfailed);
+		case DBFault: CMmsgPrint (CMmsgUsrError,"Missing time step!"); return (CMfailed);
 		case DBTimeStepMinute:	if (startMinute == DBDefaultMissingIntVal) startMinute = 0;
 		case DBTimeStepHour:		if (startHour   == DBDefaultMissingIntVal) startHour   = 0;
 		case DBTimeStepDay:		if (startDay    == DBDefaultMissingIntVal) startDay    = 0;
@@ -209,7 +209,7 @@ int main(int argc, char* argv[])
 		default:	break;
 		}
 
-	if (argNum > 3) { CMmsgPrint (CMmsgUsrError,"Extra arguments!\n"); return (CMfailed); }
+	if (argNum > 3) { CMmsgPrint (CMmsgUsrError,"Extra arguments!"); return (CMfailed); }
 	if (verbose) RGlibPauseOpen (argv[0]);
 
 	dbData = new DBObjData ();

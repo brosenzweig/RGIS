@@ -45,7 +45,7 @@ int main (int argc,char *argv [])
 		if (CMargTest (argv [argPos],"-a","--table"))
 			{
 			if ((argNum = CMargShiftLeft (argPos,argv,argNum)) <=argPos)
-				{ CMmsgPrint (CMmsgUsrError,"Missing table name!\n");  return (CMfailed); }
+				{ CMmsgPrint (CMmsgUsrError,"Missing table name!");  return (CMfailed); }
 			tableName = argv [argPos];
 			if ((argNum = CMargShiftLeft (argPos,argv,argNum)) <=argPos) break;
 			continue;
@@ -53,7 +53,7 @@ int main (int argc,char *argv [])
 		if (CMargTest (argv [argPos],"-n","--name"))
 			{
 			if ((argNum = CMargShiftLeft (argPos,argv,argNum)) <=argPos)
-				{ CMmsgPrint (CMmsgUsrError,"Missing next field name!\n"); return (CMfailed); }
+				{ CMmsgPrint (CMmsgUsrError,"Missing next field name!"); return (CMfailed); }
 			nameSTR = argv [argPos];
 			if ((argNum = CMargShiftLeft (argPos,argv,argNum)) <=argPos) break;
 			continue;
@@ -61,7 +61,7 @@ int main (int argc,char *argv [])
 		if (CMargTest (argv [argPos],"-x","--xcoord"))
 			{
 			if ((argNum = CMargShiftLeft (argPos,argv,argNum)) <=argPos)
-				{ CMmsgPrint (CMmsgUsrError,"Missing source field name!\n"); return (CMfailed); }
+				{ CMmsgPrint (CMmsgUsrError,"Missing source field name!"); return (CMfailed); }
 			xcoordSTR = argv [argPos];
 			if ((argNum = CMargShiftLeft (argPos,argv,argNum)) <=argPos) break;
 			continue;
@@ -69,7 +69,7 @@ int main (int argc,char *argv [])
 		if (CMargTest (argv [argPos],"-y","--ycoord"))
 			{
 			if ((argNum = CMargShiftLeft (argPos,argv,argNum)) <=argPos)
-				{ CMmsgPrint (CMmsgUsrError,"Missing target field name!\n"); return (CMfailed); }
+				{ CMmsgPrint (CMmsgUsrError,"Missing target field name!"); return (CMfailed); }
 			ycoordSTR = argv [argPos];
 			if ((argNum = CMargShiftLeft (argPos,argv,argNum)) <=argPos) break;
 			continue;
@@ -77,7 +77,7 @@ int main (int argc,char *argv [])
 		if (CMargTest (argv [argPos],"-t","--title"))
 			{
 			if ((argNum = CMargShiftLeft (argPos,argv,argNum)) <= argPos)
-				{ CMmsgPrint (CMmsgUsrError,"Missing title!\n");        return (CMfailed); }
+				{ CMmsgPrint (CMmsgUsrError,"Missing title!");        return (CMfailed); }
 			title = argv [argPos];
 			if ((argNum = CMargShiftLeft (argPos,argv,argNum)) <= argPos) break;
 			continue;
@@ -85,7 +85,7 @@ int main (int argc,char *argv [])
 		if (CMargTest (argv [argPos],"-u","--subject"))
 			{
 			if ((argNum = CMargShiftLeft (argPos,argv,argNum)) <= argPos)
-				{ CMmsgPrint (CMmsgUsrError,"Missing subject!\n");      return (CMfailed); }
+				{ CMmsgPrint (CMmsgUsrError,"Missing subject!");      return (CMfailed); }
 			subject = argv [argPos];
 			if ((argNum = CMargShiftLeft (argPos,argv,argNum)) <= argPos) break;
 			continue;
@@ -93,7 +93,7 @@ int main (int argc,char *argv [])
 		if (CMargTest (argv [argPos],"-d","--domain"))
 			{
 			if ((argNum = CMargShiftLeft (argPos,argv,argNum)) <= argPos)
-				{ CMmsgPrint (CMmsgUsrError,"Missing domain!\n");       return (CMfailed); }
+				{ CMmsgPrint (CMmsgUsrError,"Missing domain!");       return (CMfailed); }
 			domain  = argv [argPos];
 			if ((argNum = CMargShiftLeft (argPos,argv,argNum)) <= argPos) break;
 			continue;
@@ -106,41 +106,41 @@ int main (int argc,char *argv [])
 			}
 		if (CMargTest (argv [argPos],"-h","--help"))
 			{
-			CMmsgPrint (CMmsgInfo,"%s [options] <input file> <output file>\n",CMprgName(argv[0]));
-			CMmsgPrint (CMmsgInfo,"     -a,--table     [table name]\n");
-			CMmsgPrint (CMmsgInfo,"     -n,--name      [name field]\n");
-			CMmsgPrint (CMmsgInfo,"     -x,--xcoord    [xcoord field]\n");
-			CMmsgPrint (CMmsgInfo,"     -y,--ycoord    [ycoord field]\n");
-			CMmsgPrint (CMmsgInfo,"     -t,--title     [dataset title]\n");
-			CMmsgPrint (CMmsgInfo,"     -u,--subject   [subject]\n");
-			CMmsgPrint (CMmsgInfo,"     -d,--domain    [domain]\n");
-			CMmsgPrint (CMmsgInfo,"     -V,--verbose\n");
-			CMmsgPrint (CMmsgInfo,"     -h,--help\n");
+			CMmsgPrint (CMmsgInfo,"%s [options] <input file> <output file>",CMprgName(argv[0]));
+			CMmsgPrint (CMmsgInfo,"     -a,--table     [table name]");
+			CMmsgPrint (CMmsgInfo,"     -n,--name      [name field]");
+			CMmsgPrint (CMmsgInfo,"     -x,--xcoord    [xcoord field]");
+			CMmsgPrint (CMmsgInfo,"     -y,--ycoord    [ycoord field]");
+			CMmsgPrint (CMmsgInfo,"     -t,--title     [dataset title]");
+			CMmsgPrint (CMmsgInfo,"     -u,--subject   [subject]");
+			CMmsgPrint (CMmsgInfo,"     -d,--domain    [domain]");
+			CMmsgPrint (CMmsgInfo,"     -V,--verbose");
+			CMmsgPrint (CMmsgInfo,"     -h,--help");
 			return (DBSuccess);
 			}
 		if ((argv [argPos][0] == '-') && ((int) strlen (argv [argPos]) > 1))
-			{ CMmsgPrint (CMmsgUsrError,"Unknown option: %s!\n",argv [argPos]); return (CMfailed); }
+			{ CMmsgPrint (CMmsgUsrError,"Unknown option: %s!",argv [argPos]); return (CMfailed); }
 		argPos++;
 		}
 
 	if (tableName == (char *) NULL) tableName = DBrNItems;
 
-	if (argNum > 3) { CMmsgPrint (CMmsgUsrError,"Extra arguments!\n"); return (CMfailed); }
+	if (argNum > 3) { CMmsgPrint (CMmsgUsrError,"Extra arguments!"); return (CMfailed); }
 	if (verbose) RGlibPauseOpen (argv[0]);
 
 	data = new DBObjData ();
 	if (((argNum > 1) && (strcmp (argv [1],"-") != 0) ? data->Read (argv [1]) : data->Read (stdin)) == DBFault)
-		{ delete data; if (argNum > 1) printf ("File error in: %s\n", argv[1]); return(DBFault); }
+		{ delete data; if (argNum > 1) printf ("File error in: %s", argv[1]); return(DBFault); }
 
 	if ((table = data->Table (tableName)) == (DBObjTable *) NULL)
-		{ CMmsgPrint (CMmsgUsrError,"Invalid table!\n"); delete data; return (CMfailed); }
+		{ CMmsgPrint (CMmsgUsrError,"Invalid table!"); delete data; return (CMfailed); }
 	if (nameSTR == (char *) NULL) nField = (DBObjTableField *) NULL;
 	else if ((nField = table->Field (nameSTR)) == ((DBObjTableField *) NULL))
-		{ CMmsgPrint (CMmsgUsrError,"Name field!\n");   delete data; return (CMfailed); }
+		{ CMmsgPrint (CMmsgUsrError,"Name field!");   delete data; return (CMfailed); }
 	if ((xField = table->Field (xcoordSTR)) == (DBObjTableField *) NULL)
-		{ CMmsgPrint (CMmsgUsrError,"XCoord field!\n"); delete data; return (CMfailed); }
+		{ CMmsgPrint (CMmsgUsrError,"XCoord field!"); delete data; return (CMfailed); }
 	if ((yField = table->Field (ycoordSTR)) == (DBObjTableField *) NULL)
-		{ CMmsgPrint (CMmsgUsrError,"YCoord field!\n"); delete data; return (CMfailed); }
+		{ CMmsgPrint (CMmsgUsrError,"YCoord field!"); delete data; return (CMfailed); }
 
 	pntData = new DBObjData ("",DBTypeVectorPoint);
 	if (title	== (char *) NULL)  title  = (char *) "Converted Point coverage";

@@ -40,7 +40,7 @@ int main (int argc,char *argv [])
 		if (CMargTest (argv [argPos],"-a","--table"))
 			{
 			if ((argNum = CMargShiftLeft (argPos,argv,argNum)) <= argPos)
-				{ CMmsgPrint (CMmsgUsrError,"Missing table name!\n");   return (CMfailed); }
+				{ CMmsgPrint (CMmsgUsrError,"Missing table name!");   return (CMfailed); }
 			tableName = argv [argPos];
 			if ((argNum = CMargShiftLeft (argPos,argv,argNum)) <= argPos) break;
 			continue;
@@ -48,7 +48,7 @@ int main (int argc,char *argv [])
 		if (CMargTest (argv [argPos],"-f","--field"))
 			{
 			if ((argNum = CMargShiftLeft (argPos,argv,argNum)) <= argPos)
-				{ CMmsgPrint (CMmsgUsrError,"Missing field name!\n");   return (CMfailed); }
+				{ CMmsgPrint (CMmsgUsrError,"Missing field name!");   return (CMfailed); }
 			fieldName = argv [argPos];
 			if ((argNum = CMargShiftLeft (argPos,argv,argNum)) <= argPos) break;
 			continue;
@@ -56,7 +56,7 @@ int main (int argc,char *argv [])
 		if (CMargTest (argv [argPos],"-d","--degree"))
 			{
 			if ((argNum = CMargShiftLeft (argPos,argv,argNum)) <= argPos)
-				{ CMmsgPrint (CMmsgUsrError,"Missing degree field name!\n"); return (CMfailed); }
+				{ CMmsgPrint (CMmsgUsrError,"Missing degree field name!"); return (CMfailed); }
 			degFieldName = argv [argPos];
 			if ((argNum = CMargShiftLeft (argPos,argv,argNum)) <= argPos) break;
 			continue;
@@ -64,7 +64,7 @@ int main (int argc,char *argv [])
 		if (CMargTest (argv [argPos],"-m","--minute"))
 			{
 			if ((argNum = CMargShiftLeft (argPos,argv,argNum)) <= argPos)
-				{ CMmsgPrint (CMmsgUsrError,"Missing minutefield name!\n"); return (CMfailed); }
+				{ CMmsgPrint (CMmsgUsrError,"Missing minutefield name!"); return (CMfailed); }
 			minFieldName = argv [argPos];
 			if ((argNum = CMargShiftLeft (argPos,argv,argNum)) <= argPos) break;
 			continue;
@@ -72,7 +72,7 @@ int main (int argc,char *argv [])
 		if (CMargTest (argv [argPos],"-s","--second"))
 			{
 			if ((argNum = CMargShiftLeft (argPos,argv,argNum)) <= argPos)
-				{ CMmsgPrint (CMmsgUsrError,"Missing second field name!\n"); return (CMfailed); }
+				{ CMmsgPrint (CMmsgUsrError,"Missing second field name!"); return (CMfailed); }
 			secFieldName = argv [argPos];
 			if ((argNum = CMargShiftLeft (argPos,argv,argNum)) <= argPos) break;
 			continue;
@@ -85,22 +85,22 @@ int main (int argc,char *argv [])
 			}
 		if (CMargTest (argv [argPos],"-h","--help"))
 			{
-			CMmsgPrint (CMmsgInfo,"%s [options] <input file> <output file>\n",CMprgName(argv[0]));
-			CMmsgPrint (CMmsgInfo,"     -a,--table     [table name]\n");
-			CMmsgPrint (CMmsgInfo,"     -f,--field     [field name]\n");
-			CMmsgPrint (CMmsgInfo,"     -d,--degree    [degree field]\n");
-			CMmsgPrint (CMmsgInfo,"     -m,--minute    [minute field]\n");
-			CMmsgPrint (CMmsgInfo,"     -s,--second    [secon field]\n");
-			CMmsgPrint (CMmsgInfo,"     -V,--verbose\n");
-			CMmsgPrint (CMmsgInfo,"     -h,--help\n");
+			CMmsgPrint (CMmsgInfo,"%s [options] <input file> <output file>",CMprgName(argv[0]));
+			CMmsgPrint (CMmsgInfo,"     -a,--table     [table name]");
+			CMmsgPrint (CMmsgInfo,"     -f,--field     [field name]");
+			CMmsgPrint (CMmsgInfo,"     -d,--degree    [degree field]");
+			CMmsgPrint (CMmsgInfo,"     -m,--minute    [minute field]");
+			CMmsgPrint (CMmsgInfo,"     -s,--second    [secon field]");
+			CMmsgPrint (CMmsgInfo,"     -V,--verbose");
+			CMmsgPrint (CMmsgInfo,"     -h,--help");
 			return (DBSuccess);
 			}
 		if ((argv [argPos][0] == '-') && ((int) strlen (argv [argPos]) > 1))
-			{ CMmsgPrint (CMmsgUsrError,"Unknown option: %s!\n",argv [argPos]); return (CMfailed); }
+			{ CMmsgPrint (CMmsgUsrError,"Unknown option: %s!",argv [argPos]); return (CMfailed); }
 		argPos++;
 		}
 
-	if (argNum > 3) { CMmsgPrint (CMmsgUsrError,"Extra arguments!\n"); return (CMfailed); }
+	if (argNum > 3) { CMmsgPrint (CMmsgUsrError,"Extra arguments!"); return (CMfailed); }
 	if (verbose) RGlibPauseOpen (argv[0]);
 
 	data = new DBObjData ();
@@ -110,24 +110,24 @@ int main (int argc,char *argv [])
 	if (tableName == (char *) NULL) tableName = DBrNItems;
 
 	if ((table = data->Table (tableName)) == (DBObjTable *) NULL)
-		{ CMmsgPrint (CMmsgUsrError,"Invalid table!\n"); delete data; return (CMfailed); }
+		{ CMmsgPrint (CMmsgUsrError,"Invalid table!"); delete data; return (CMfailed); }
 
 	if (degFieldName != (char *) NULL)
 		{
 		if ((degField = table->Field (degFieldName)) == (DBObjTableField *) NULL)
-			{ CMmsgPrint (CMmsgUsrError,"Invalid degree field [%s]!\n",degFieldName); delete data; return (CMfailed); }
+			{ CMmsgPrint (CMmsgUsrError,"Invalid degree field [%s]!",degFieldName); delete data; return (CMfailed); }
 		}
 
 	if (minFieldName != (char *) NULL)
 		{
 		if ((minField = table->Field (minFieldName)) == (DBObjTableField *) NULL)
-			{ CMmsgPrint (CMmsgUsrError,"Invalid min field [%s]!\n",minFieldName); delete data; return (CMfailed); }
+			{ CMmsgPrint (CMmsgUsrError,"Invalid min field [%s]!",minFieldName); delete data; return (CMfailed); }
 		}
 
 	if (secFieldName != (char *) NULL)
 		{
 		if (minField == (DBObjTableField *) NULL)
-			{ CMmsgPrint (CMmsgUsrError,"Minute field is not set!\n"); delete data; return (CMfailed); }
+			{ CMmsgPrint (CMmsgUsrError,"Minute field is not set!"); delete data; return (CMfailed); }
 		if ((secField = table->Field (secFieldName)) == (DBObjTableField *) NULL)
 			{ CMmsgPrint (CMmsgUsrError,"Invalid second field [%s]",secFieldName); delete data; return (CMfailed); }
 		}

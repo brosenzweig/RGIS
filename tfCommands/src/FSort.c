@@ -40,9 +40,9 @@ static int _Compare (const void *ptr0, const void *ptr1)
 	for (fDsc = firstDsc;fDsc != NULL; fDsc = fDsc->Next)
 		{
 		if ((field0 = FGetField (line0,fDsc->ID,field0,&fbSize0)) == (char *) NULL)
-			{ CMmsgPrint (CMmsgUsrError,"Invalid Field in line %s\n",line0); break; }
+			{ CMmsgPrint (CMmsgUsrError,"Invalid Field in line %s",line0); break; }
 		if ((field1 = FGetField (line1, fDsc->ID,field1,&fbSize1)) == (char *) NULL)
-			{ CMmsgPrint (CMmsgUsrError,"Invalid Field in line %s\n",line1); break; }
+			{ CMmsgPrint (CMmsgUsrError,"Invalid Field in line %s",line1); break; }
 		switch (fDsc->Type)
 			{
 			case 1:
@@ -63,7 +63,7 @@ static int _Compare (const void *ptr0, const void *ptr1)
 				ret = strcmp (field0,field1);
 				break;
 			default:
-				CMmsgPrint (CMmsgUsrError,"Cannot define column!\n");
+				CMmsgPrint (CMmsgUsrError,"Cannot define column!");
 				exit(1);
 				break;
 			}
@@ -85,15 +85,15 @@ int main (int argc, char *argv [])
 
 	if ((argNum == 1) || ((argNum == 2) && (CMargTest(argv[1],"-h","--help"))))
 		{
-		printf("Usage: %s [-hvnrf [field | name] [name]] ... < [inputfile] ...\n",argv[0]);
-		printf ("Where fieldnames must match fieldnames in first line of the datafile.\n");
-		printf ("-a, --ascending field\n\tPrescribes ascending sort order on field \'field\'.\n\tRepeat for multiple fields.\n");
-		printf ("-c, --calculate *NOT IMPLEMENTED*\n\tInhibits printing of input columns, printing only enumerated\n\tsort columns.\n");
-		printf ("-d, --descending field\n\tPrescribes descending sort order on field \'field\'. \n\tRepeat for multiple fields\n");
-		printf ("-s, --string\n\tForce the next sort field to sort as string.\n\tEx: %s -sa field1.\n",argv[0]);
-		printf ("-n, --numeric\n\tForce next sort field to sort on numeric values.\n\tEx: %s -nd field2.\n",argv[0]);
-		printf ("-i, --integer\n\tForce next sort field to sort as integer.\n\t Ex: %s -id field1.\n",argv[0]);
-		printf ("-h, --help\n\tPrint this usage information.\n");
+		CMmsgPrint (CMmsgInfo, "Usage: %s [-hvnrf [field | name] [name]] ... < [inputfile] ...",argv[0]);
+		CMmsgPrint (CMmsgInfo, "Where fieldnames must match fieldnames in first line of the datafile.");
+		CMmsgPrint (CMmsgInfo, "-a, --ascending field\n\tPrescribes ascending sort order on field \'field\'.\n\tRepeat for multiple fields.");
+		CMmsgPrint (CMmsgInfo, "-c, --calculate *NOT IMPLEMENTED*\n\tInhibits printing of input columns, printing only enumerated\n\tsort columns.");
+		CMmsgPrint (CMmsgInfo, "-d, --descending field\n\tPrescribes descending sort order on field \'field\'. \n\tRepeat for multiple fields");
+		CMmsgPrint (CMmsgInfo, "-s, --string\n\tForce the next sort field to sort as string.\n\tEx: %s -sa field1.",argv[0]);
+		CMmsgPrint (CMmsgInfo, "-n, --numeric\n\tForce next sort field to sort on numeric values.\n\tEx: %s -nd field2.",argv[0]);
+		CMmsgPrint (CMmsgInfo, "-i, --integer\n\tForce next sort field to sort as integer.\n\t Ex: %s -id field1.",argv[0]);
+		CMmsgPrint (CMmsgInfo, "-h, --help\n\tPrint this usage information.");
 		exit(0);
 		}
 
@@ -106,15 +106,15 @@ int main (int argc, char *argv [])
 		{
 		if (CMargTest (argv [argPos],"-h","--help"))
 			{
-			printf("Usage: %s [-hvnrf [field | name] [name]] ... < [inputfile] ...\n",argv[0]);
-			printf ("Where fieldnames must match fieldnames in first line of the datafile.\n");
-			printf ("-a, --ascending field\n\tPrescribes ascending sort order on field \'field\'.\n\tRepeat for multiple fields.\n");
-			printf ("-c, --calculate *NOT IMPLEMENTED*\n\tInhibits printing of input columns, printing only enumerated\n\tsort columns.\n");
-			printf ("-d, --descending field\n\tPrescribes descending sort order on field \'field\'. \n\tRepeat for multiple fields\n");
-			printf ("-s, --string\n\tForce the next sort field to sort as string.\n\tEx: %s -sa field1.\n",argv[0]);
-			printf ("-n, --numeric\n\tForce next sort field to sort on numeric values.\n\tEx: %s -nd field2.\n",argv[0]);
-			printf ("-i, --integer\n\tForce next sort field to sort as integer.\n\t Ex: %s -id field1.\n",argv[0]);
-			printf ("-h, --help\n\tPrint this usage information.\n");
+			CMmsgPrint (CMmsgInfo, "Usage: %s [-hvnrf [field | name] [name]] ... < [inputfile] ...",argv[0]);
+			CMmsgPrint (CMmsgInfo, "Where fieldnames must match fieldnames in first line of the datafile.");
+			CMmsgPrint (CMmsgInfo, "-a, --ascending field\n\tPrescribes ascending sort order on field \'field\'.\n\tRepeat for multiple fields.");
+			CMmsgPrint (CMmsgInfo, "-c, --calculate *NOT IMPLEMENTED*\n\tInhibits printing of input columns, printing only enumerated\n\tsort columns.");
+			CMmsgPrint (CMmsgInfo, "-d, --descending field\n\tPrescribes descending sort order on field \'field\'. \n\tRepeat for multiple fields");
+			CMmsgPrint (CMmsgInfo, "-s, --string\n\tForce the next sort field to sort as string.\n\tEx: %s -sa field1.",argv[0]);
+			CMmsgPrint (CMmsgInfo, "-n, --numeric\n\tForce next sort field to sort on numeric values.\n\tEx: %s -nd field2.",argv[0]);
+			CMmsgPrint (CMmsgInfo, "-i, --integer\n\tForce next sort field to sort as integer.\n\t Ex: %s -id field1.",argv[0]);
+			CMmsgPrint (CMmsgInfo, "-h, --help\n\tPrint this usage information.");
 			exit(0);
 			}
 		}
@@ -123,7 +123,7 @@ int main (int argc, char *argv [])
 		if (CMargTest (argv [argPos],"-a","--ascending"))
 			{
 			if ((argNum = CMargShiftLeft(argPos,argv,argNum)) <= argPos)
-				{ CMmsgPrint (CMmsgUsrError,"Missing title!\n");       return (CMfailed); }
+				{ CMmsgPrint (CMmsgUsrError,"Missing title!");       return (CMfailed); }
 			argStr = argv [argPos];
 			if ((qname = (char *) realloc (qname, strlen(argStr)+3)) == (char *) NULL)
             {
@@ -135,7 +135,7 @@ int main (int argc, char *argv [])
             {
             if ((fieldID = FGetFieldID (buffer, argStr)) == FFault)
                {
-               CMmsgPrint (CMmsgUsrError,"Invalid Field Name: %s\n",argStr);
+               CMmsgPrint (CMmsgUsrError,"Invalid Field Name: %s",argStr);
                break;
                }
                else { name = argStr; }
@@ -161,7 +161,7 @@ int main (int argc, char *argv [])
 		if (CMargTest (argv [argPos],"-d","--descending"))
 			{
 			if ((argNum = CMargShiftLeft(argPos,argv,argNum)) <= argPos)
-				{ CMmsgPrint (CMmsgUsrError,"Missing subject!\n");     return (CMfailed); }
+				{ CMmsgPrint (CMmsgUsrError,"Missing subject!");     return (CMfailed); }
 			argStr = argv [argPos];
 			if ((qname = (char *) realloc (qname, strlen(argStr)+3)) == (char *) NULL)
             {
@@ -173,7 +173,7 @@ int main (int argc, char *argv [])
             {
             if ((fieldID = FGetFieldID (buffer, argStr)) == FFault)
                {
-               CMmsgPrint (CMmsgUsrError,"Invalid Field Name: %s\n",argStr);
+               CMmsgPrint (CMmsgUsrError,"Invalid Field Name: %s",argStr);
                break;
                }
                else { name = argStr; }
@@ -215,7 +215,7 @@ int main (int argc, char *argv [])
 			continue;
 			}
 		if (argv [argPos][0] == '-')
-			{ CMmsgPrint (CMmsgUsrError,"Unknown option: %s!\n",argv [argPos]); return (CMfailed); }
+			{ CMmsgPrint (CMmsgUsrError,"Unknown option: %s!",argv [argPos]); return (CMfailed); }
 		}
 
 	printf ("%s\n",buffer); 
@@ -234,7 +234,7 @@ int main (int argc, char *argv [])
 		while (fDsc != (FieldDsc *) NULL)
 			{
 			if ((fieldBuffer = FGetField (lines[i],fDsc->ID,fieldBuffer,&fbSize)) == (char *) NULL)
-				{ CMmsgPrint (CMmsgUsrError,"Invalid Field in line# %d\n",i); break; }
+				{ CMmsgPrint (CMmsgUsrError,"Invalid Field in line# %d",i); break; }
 			if (fDsc->Type == 0)
 				{
 				for (a = 0;a < (int) strlen (fieldBuffer);++a)

@@ -72,7 +72,7 @@ void _RGISUserFuncionQuery (DBObjData *dbData,UI2DView *view,XEvent *event)
 					delete netIF;
 					} break;
 				default:
-					fprintf (stderr,"Invalid Data Type in: _RGISUserFuncionQuery ()\n"); break;
+					CMmsgPrint (CMmsgAppError, "Invalid Data Type in: %s %d",__FILE__,__LINE__); break;
 				}
 			}
 		}

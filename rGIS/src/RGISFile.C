@@ -31,7 +31,7 @@ static void _RGISFileProjectLoadCBK (Widget widget,RGISWorkspace *workspace,XmAn
 
 	if ((fileName = UIFileSelection (_RGISProjectSelect,true)) == NULL) return;
 	if ((listFile = fopen (fileName,"r")) == (FILE *) NULL)
-		{ perror ("Project File Opening Error in: _RGISFileProjectLoadCBK ()"); return; }
+		{ CMmsgPrint (CMmsgSysError, "Project File Opening Error in: %s %d",__FILE__,__LINE__); return; }
 	strncpy (_RGISProjectFile,fileName,sizeof (_RGISProjectFile) - 1);
 	_RGISProjectFileState = true;
 	while (fgets (buffer,sizeof (buffer) - 2,listFile) == buffer)
@@ -67,7 +67,7 @@ static void _RGISFileProjectSaveCBK (Widget widget,RGISWorkspace *workspace,XmAn
 		_RGISProjectFileState = true;
 		}
 	if ((listFile = fopen (_RGISProjectFile,"w")) == (FILE *) NULL)
-		{ perror ("Project File Opening Error in: _RGISFileProjectSaveCBK ()"); return; }
+		{ CMmsgPrint (CMmsgSysError, "Project File Opening Error in: %s %d",__FILE__,__LINE__); return; }
 	for (data = dataset->FirstData ();data != (DBObjData *) NULL;data = dataset->NextData ())
 		if (strlen (data->FileName ()) > 0) fprintf (listFile,"%s\n",data->FileName ());
 	fclose (listFile);
@@ -89,7 +89,7 @@ static void _RGISFileProjectSaveAsCBK (Widget widget,RGISWorkspace *workspace,Xm
 	_RGISProjectFileState = true;
 
 	if ((listFile = fopen (_RGISProjectFile,"w")) == (FILE *) NULL)
-		{ perror ("Project File Opening Error in: _RGISFileProjectSaveCBK ()"); return; }
+		{ CMmsgPrint (CMmsgSysError, "Project File Opening Error in: %s %d",__FILE__,__LINE__); return; }
 	for (data = dataset->FirstData ();data != (DBObjData *) NULL;data = dataset->NextData ())
 		if (strlen (data->FileName ()) > 0) fprintf (listFile,"%s\n",data->FileName ());
 	fclose (listFile);

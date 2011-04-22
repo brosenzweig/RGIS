@@ -33,7 +33,7 @@ int main (int argc,char *argv [])
 		if (CMargTest (argv [argPos],"-a","--table"))
 			{
 			if ((argNum = CMargShiftLeft (argPos,argv,argNum)) <= argPos)
-				{ CMmsgPrint (CMmsgUsrError,"Missing table name!\n");   return (CMfailed); }
+				{ CMmsgPrint (CMmsgUsrError,"Missing table name!");   return (CMfailed); }
 			tableName = argv [argPos];
 			if ((argNum = CMargShiftLeft (argPos,argv,argNum)) <= argPos) break;
 			continue;
@@ -41,8 +41,8 @@ int main (int argc,char *argv [])
 		if (CMargTest (argv [argPos],"-c","--condition"))
 			{
 			if ((argNum = CMargShiftLeft (argPos,argv,argNum)) <= argPos)
-				{ CMmsgPrint (CMmsgUsrError,"Missing expression!\n");   return (CMfailed); }
-			if (expr != (char *) NULL) { CMmsgPrint (CMmsgUsrError,"Expression is already set\n"); return (CMfailed); } 
+				{ CMmsgPrint (CMmsgUsrError,"Missing expression!");   return (CMfailed); }
+			if (expr != (char *) NULL) { CMmsgPrint (CMmsgUsrError,"Expression is already set"); return (CMfailed); }
 			expr = argv [argPos];
 			if ((argNum = CMargShiftLeft (argPos,argv,argNum)) <= argPos) break;
 			continue;
@@ -61,20 +61,20 @@ int main (int argc,char *argv [])
 			}
 		if (CMargTest (argv [argPos],"-h","--help"))
 			{
-			CMmsgPrint (CMmsgInfo,"%s [options] <input file> <output file>\n",CMprgName(argv[0]));
-			CMmsgPrint (CMmsgInfo,"     -a,--table     [table name]\n");
-			CMmsgPrint (CMmsgInfo,"     -c,--condition [expression]\n");
-			CMmsgPrint (CMmsgInfo,"     -s,--selection\n");
-			CMmsgPrint (CMmsgInfo,"     -V,--verbose\n");
-			CMmsgPrint (CMmsgInfo,"     -h,--help\n");
+			CMmsgPrint (CMmsgInfo,"%s [options] <input file> <output file>",CMprgName(argv[0]));
+			CMmsgPrint (CMmsgInfo,"     -a,--table     [table name]");
+			CMmsgPrint (CMmsgInfo,"     -c,--condition [expression]");
+			CMmsgPrint (CMmsgInfo,"     -s,--selection");
+			CMmsgPrint (CMmsgInfo,"     -V,--verbose");
+			CMmsgPrint (CMmsgInfo,"     -h,--help");
 			return (DBSuccess);
 			}
 		if ((argv [argPos][0] == '-') && ((int) strlen (argv [argPos]) > 1))
-			{ CMmsgPrint (CMmsgUsrError,"Unknown option: %s!\n",argv [argPos]); return (CMfailed); }
+			{ CMmsgPrint (CMmsgUsrError,"Unknown option: %s!",argv [argPos]); return (CMfailed); }
 		argPos++;
 		}
 
-	if (argNum > 3) { CMmsgPrint (CMmsgUsrError,"Extra arguments!\n"); return (CMfailed); }
+	if (argNum > 3) { CMmsgPrint (CMmsgUsrError,"Extra arguments!"); return (CMfailed); }
 	if (verbose) RGlibPauseOpen (argv[0]);
 
 	if (expr != (char *) NULL)
@@ -90,7 +90,7 @@ int main (int argc,char *argv [])
 	if (tableName == (char *) NULL) tableName = DBrNItems;
 
 	if ((table = data->Table (tableName)) == (DBObjTable *) NULL)
-		{ CMmsgPrint (CMmsgUsrError,"Invalid table!\n"); delete data; delete operand; return (CMfailed); }
+		{ CMmsgPrint (CMmsgUsrError,"Invalid table!"); delete data; delete operand; return (CMfailed); }
 
 	saveTable = new DBObjTable (*table);
 	table->DeleteAll ();

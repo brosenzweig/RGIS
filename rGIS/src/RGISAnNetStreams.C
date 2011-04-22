@@ -78,7 +78,7 @@ void RGISAnNetworkStreamLinesCBK (Widget widget,RGISWorkspace *workspace,XmAnyCa
 	if ((selection = UISelectObject (fieldSelect,(DBObjectLIST<DBObject> *) cellTable->Fields (),DBTableFieldIsInteger)) == (char *) NULL)
 		return;
 	if ((_RGISAnNetOrderField = cellTable->Field (selection)) == (DBObjTableField *) NULL)
-		{ fprintf (stderr,"Field Selection Error in: _RGISAnNetworkStreamLinesCBK ()\n"); return; }
+		{ CMmsgPrint (CMmsgAppError, "Field Selection Error in: %s %d",__FILE__,__LINE__); return; }
 	arcData->Document (DBDocGeoDomain,netData->Document (DBDocGeoDomain));
 	arcData->Document (DBDocSubject,"Stream Lines");
 	if (UIDataHeaderForm (arcData))
@@ -118,7 +118,7 @@ void RGISAnNetworkStreamLinesCBK (Widget widget,RGISWorkspace *workspace,XmAnyCa
 		cellID = netIF->CellNum () - 1;
 		cellRec = netIF->Cell (cellID);
 		if (lineIF->NewSymbol ("Default Symbol") == (DBObjRecord *) NULL)
-			{ fprintf (stderr,"Symbol Creation Error in: _RGISAnNetworkStreamLines ()\n"); return; }
+			{ CMmsgPrint (CMmsgAppError, "Symbol Creation Error in: %s %d",__FILE__,__LINE__); return; }
 
 		for (;cellID >= 0;--cellID)
 			{
@@ -130,7 +130,7 @@ void RGISAnNetworkStreamLinesCBK (Widget widget,RGISWorkspace *workspace,XmAnyCa
 				if (UIPause ((netIF->CellNum () - cellRec->RowID ()) * 100 / netIF->CellNum ())) goto Stop;
 				sprintf (objName,"Line: %5d",_RGISAnNetStreamID + 1);
 				if ((lineRec = lineIF->NewItem (objName)) == (DBObjRecord *) NULL)
-					{ fprintf (stderr,"Line Insertion Error in: _RGISAnNetworkStreamLines ()\n"); return; }
+					{ CMmsgPrint (CMmsgAppError, "Line Insertion Error in: %s %d",__FILE__,__LINE__); return; }
 				nextFLD->Int (lineRec,toCellRec == (DBObjRecord *) NULL ? 0 : _RGISAnNetStreamIDFLD->Int (toCellRec) + 1);
 				basinFLD->Int (lineRec,netIF->CellBasinID (cellRec));
 				fieldFLD->Int (lineRec,_RGISAnNetOrderField->Int (cellRec));
@@ -147,7 +147,7 @@ void RGISAnNetworkStreamLinesCBK (Widget widget,RGISWorkspace *workspace,XmAnyCa
 						{
 						_RGISAnNetCoord = (DBCoordinate *) realloc (_RGISAnNetCoord,(_RGISAnNetVertex - 1) * sizeof (DBCoordinate));
 						if (_RGISAnNetCoord == (DBCoordinate *) NULL)
-							{ perror ("Memory Allocation Error in: _RGISAnNetworkStreamLines ()"); return; }
+							{ CMmsgPrint (CMmsgSysError, "Memory Allocation Error in: %s %d",__FILE__,__LINE__); return; }
 						}
 					_RGISAnNetVertex = 0;
 					netIF->DownStreamSearch (netIF->ToCell (_RGISAnNetworkCellRec),(DBNetworkACTION) _RGISAnNetworkDownStreamAction);

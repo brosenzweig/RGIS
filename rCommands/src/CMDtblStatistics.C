@@ -378,7 +378,7 @@ int main (int argc,char *argv [])
 			if ((argNum = CMargShiftLeft(argPos,argv,argNum)) <= argPos)
 				{ CMmsgPrint (CMmsgUsrError,"Missing groupname!"); return (CMfailed); }
 			if((groupnames = (char **) realloc(groupnames,(numGrpNames + 1) * sizeof(char *))) == (char **) NULL)
-				{ perror ("Memory allocation error!"); return(DBFault); }
+				{ CMmsgPrint (CMmsgSysError, "Memory allocation error in: %s %d",__FILE__,__LINE__); return(DBFault); }
 			groupnames[numGrpNames] = argv[argPos];
 			numGrpNames++;
 			if ((argNum = CMargShiftLeft(argPos,argv,argNum)) <= argPos) break;
@@ -479,7 +479,7 @@ int main (int argc,char *argv [])
 		{ CMmsgPrint (CMmsgUsrError,"Invalid table!"); delete inData; return (CMfailed); }
 
 	if((groups = (Groups **) malloc(numGrpNames * sizeof(Groups *))) == (Groups **) NULL)
-		{ perror("Memory allocation error!"); return(DBFault); }
+		{ CMmsgPrint (CMmsgSysError, "Memory allocation error in: %s %d",__FILE__,__LINE__); return(DBFault); }
 	for(i = 0; i < numGrpNames; i++)
 		{
 		if((field = inTable->Field(groupnames[i])) == (DBObjTableField *) NULL)

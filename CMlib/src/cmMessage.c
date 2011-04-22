@@ -107,6 +107,7 @@ int CMmsgPrint (CMmsgType msgType, const char *format, ...) {
 		for (i = 0;i < _CMmsgIndentLevel[msgType]; ++i) fprintf (fp, "   ");
 		va_start (ap, format);
 		ret = vfprintf (fp, format, ap);
+		fprintf (fp,"\n");
 		va_end (ap);
 		fflush (fp);
 	}

@@ -28,7 +28,7 @@ int main (int argc,char *argv [])
 		if (CMargTest (argv [argPos],"-m","--template"))
 			{
 			if ((argNum = CMargShiftLeft (argPos,argv,argNum)) <= argPos)
-				{ CMmsgPrint (CMmsgUsrError,"Missing network!\n");      return (CMfailed); }
+				{ CMmsgPrint (CMmsgUsrError,"Missing network!");      return (CMfailed); }
 			tmplName = argv [argPos];
 			if ((argNum = CMargShiftLeft (argPos,argv,argNum)) <= argPos) break;
 			continue;
@@ -36,29 +36,29 @@ int main (int argc,char *argv [])
 		if (CMargTest (argv [argPos],"-f","--field"))
 			{
 			if ((argNum = CMargShiftLeft (argPos,argv,argNum)) <= argPos)
-				{ CMmsgPrint (CMmsgUsrError,"Missing fieldname!\n");    return (CMfailed); }
+				{ CMmsgPrint (CMmsgUsrError,"Missing fieldname!");    return (CMfailed); }
 			fieldName = argv [argPos];
 			if ((argNum = CMargShiftLeft (argPos,argv,argNum)) <= argPos) break;
 			continue;
 			}
 		if (CMargTest (argv [argPos],"-h","--help"))
 			{
-			CMmsgPrint (CMmsgInfo,"%s [options] <input grid> <output datastream>\n",CMprgName(argv[0]));
-			CMmsgPrint (CMmsgInfo,"     -m,--template     [template coverage]\n");
-			CMmsgPrint (CMmsgInfo,"     -f,--field        [fieldname]\n");
-			CMmsgPrint (CMmsgInfo,"     -h,--help\n");
+			CMmsgPrint (CMmsgInfo,"%s [options] <input grid> <output datastream>",CMprgName(argv[0]));
+			CMmsgPrint (CMmsgInfo,"     -m,--template     [template coverage]");
+			CMmsgPrint (CMmsgInfo,"     -f,--field        [fieldname]");
+			CMmsgPrint (CMmsgInfo,"     -h,--help");
 			return (DBSuccess);
 			}
 		if ((argv [argPos][0] == '-') && (strlen (argv [argPos]) > 1))
-			{ CMmsgPrint (CMmsgUsrError,"Unknown option: %s!\n",argv [argPos]); return (CMfailed); }
+			{ CMmsgPrint (CMmsgUsrError,"Unknown option: %s!",argv [argPos]); return (CMfailed); }
 		argPos++;
 		}
 
-	if (argNum > 3) { CMmsgPrint (CMmsgUsrError,"Extra arguments!\n"); return (CMfailed); }
+	if (argNum > 3) { CMmsgPrint (CMmsgUsrError,"Extra arguments!"); return (CMfailed); }
 
 	outFile = (argNum > 2) && (strcmp (argv [2],"-") != 0) ? fopen (argv [2],"w") : stdout;
 	if (outFile == (FILE *) NULL)
-		{ perror ("Output file Opening error in: rgis2ds"); exit (DBFault); }
+		{ CMmsgPrint (CMmsgSysError, "Output file Opening error in: %s %d",__FILE__,__LINE__); exit (DBFault); }
 
 	grdData = new DBObjData ();
 	ret = (argNum > 1) && (strcmp (argv [1],"-") != 0) ? grdData->Read (argv [1]) : grdData->Read (stdin);

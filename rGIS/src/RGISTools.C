@@ -33,9 +33,9 @@ static void _RGISToolsImportASCIITableCBK (Widget widget,RGISWorkspace *workspac
 		DBTableIF *tableIF;
 		if ((fileName = UIFileSelection (fileSelect,true)) == NULL) { delete data; return; }
 		if ((inFile = fopen (fileName,"r")) == (FILE *) NULL)
-			{ perror ("File Openning Error in: _RGISToolsImportASCIINewCBK ()"); delete data; return; }
+			{ CMmsgPrint (CMmsgSysError, "File Openning Error in: %s %d",__FILE__,__LINE__); delete data; return; }
 		if (fgets (buffer,sizeof (buffer) - 1,inFile) == NULL)
-			{ perror ("File Reading Error in: _RGISToolsImportASCIINewCBK ()"); fclose (inFile); delete data; return; }
+			{ CMmsgPrint (CMmsgSysError, "File Reading Error in: %s %d",__FILE__,__LINE__); fclose (inFile); delete data; return; }
 
 		bufferLength = strlen (buffer);
 		while ((buffer [bufferLength - 1] == '\n') || (buffer [bufferLength - 1] == '\r'))
@@ -188,19 +188,19 @@ static void _RGISToolsExportNetworkCBK (Widget widget,RGISWorkspace *workspace,X
 	if ((selection = UIFileSelection (dirSelect,False)) == NULL) return;
 
 	if ((outFILE = fopen (selection,"w")) == (FILE *) NULL)
-		{ perror ("File Opening Error in: _RGISToolsExportNetworkCBK ()"); return; }
+		{ CMmsgPrint (CMmsgSysError, "File Opening Error in: %s %d",__FILE__,__LINE__); return; }
 	fprintf (outFILE,"\"CellID\"\t\"XCoord\"\t\"YCoord\"\t\"BasinID\"\t\"ToCell\"\t\"CellArea\"\t\"CellLength\"");
 	for (fieldID = 0;fieldID < cellTable->FieldNum (); fieldID++)
 		{
 		if ((field = cellTable->Field (fieldID)) == (DBObjTableField *) NULL)
 			{
 			if (fields != (DBObjTableField **) NULL) free (fields);
-			perror ("Invalid field in: _RGISToolsExportNetworkCBK ()");
+			CMmsgPrint (CMmsgSysError, "Invalid field in: %s %d",__FILE__,__LINE__);
 			return;
 			}
 		if (field->Required ()) continue;
 		if ((fields = (DBObjTableField **) realloc (fields,(fieldNum + 1) * sizeof (DBObjTableField *))) == (DBObjTableField **) NULL)
-			{ perror ("Memory allocation error in: _RGISToolsExportNetworkCBK ()"); return; }
+			{ CMmsgPrint (CMmsgSysError, "Memory allocation error in: %s %d",__FILE__,__LINE__); return; }
 		fields [fieldNum] = field;
 		fprintf (outFILE,"\t\"%s\"",field->Name ());
 		fieldNum++;
@@ -265,7 +265,7 @@ static void _RGISToolsNetBasinMouthCBK (Widget widget,RGISWorkspace *workspace,X
 	widget = widget; callData = callData;
 
 	if (netData == (DBObjData *) NULL)
-		{ fprintf (stderr,"Null Data in: _RGISToolsNetBasinMouthCBK ()\n"); return; }
+		{ CMmsgPrint (CMmsgAppError, "Null Data in: %s %d",__FILE__,__LINE__); return; }
 	netIF = new DBNetworkIF (netData);
 
 	if (UIDataHeaderForm (pntData = new DBObjData ("",DBTypeVectorPoint)))

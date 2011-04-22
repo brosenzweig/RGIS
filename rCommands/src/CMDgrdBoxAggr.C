@@ -39,22 +39,22 @@ int main (int argc,char *argv [])
 		if (CMargTest (argv [argPos],"-z","--size"))
 			{
 			if ((argNum = CMargShiftLeft (argPos,argv,argNum)) <= argPos)
-				{ CMmsgPrint (CMmsgUsrError,"Missing kernel size!\n");  return (CMfailed); }
+				{ CMmsgPrint (CMmsgUsrError,"Missing kernel size!");  return (CMfailed); }
 			if (sscanf (argv [argPos],"%d", &kernelSize) != 1)
-				{ CMmsgPrint (CMmsgUsrError, "Invalid kernel size!\n"); return (CMfailed); }
+				{ CMmsgPrint (CMmsgUsrError, "Invalid kernel size!"); return (CMfailed); }
 			if ((argNum = CMargShiftLeft (argPos,argv,argNum)) <= argPos) break;
 			continue;
 			}
 		if (CMargTest(argv[argPos],"-m","--method")) {
 			if ((argNum = CMargShiftLeft(argPos,argv,argNum)) <= argPos)
-				{ CMmsgPrint (CMmsgUsrError, "Missing aggregate method!\n"); return (CMfailed); }
+				{ CMmsgPrint (CMmsgUsrError, "Missing aggregate method!"); return (CMfailed); }
 			else {
 				const char *options [] = { "average", "minimum", "maximum", "sum", (char *) NULL };
 				CMDboxMethod methods [] = { CMDboxAverage, CMDboxMinimum, CMDboxMaximum , CMDboxSum };
 				DBInt code;
 
 				if ((code = CMoptLookup (options,argv [argPos],false)) == CMfailed) {
-					CMmsgPrint (CMmsgWarning,"Ignoring illformed aggregate method [%s]!\n",argv [argPos]);
+					CMmsgPrint (CMmsgWarning,"Ignoring illformed aggregate method [%s]!",argv [argPos]);
 				}
 				else method = methods [code];
 			}
@@ -64,7 +64,7 @@ int main (int argc,char *argv [])
 		if (CMargTest (argv [argPos],"-t","--title"))
 			{
 			if ((argNum = CMargShiftLeft (argPos,argv,argNum)) <= argPos)
-				{ CMmsgPrint (CMmsgUsrError,"Missing title!\n");        return (CMfailed); }
+				{ CMmsgPrint (CMmsgUsrError,"Missing title!");        return (CMfailed); }
 			title = argv [argPos];
 			if ((argNum = CMargShiftLeft (argPos,argv,argNum)) <= argPos) break;
 			continue;
@@ -72,7 +72,7 @@ int main (int argc,char *argv [])
 		if (CMargTest (argv [argPos],"-u","--subject"))
 			{
 			if ((argNum = CMargShiftLeft (argPos,argv,argNum)) <= argPos)
-				{ CMmsgPrint (CMmsgUsrError,"Missing subject!\n");      return (CMfailed); }
+				{ CMmsgPrint (CMmsgUsrError,"Missing subject!");      return (CMfailed); }
 			subject = argv [argPos];
 			if ((argNum = CMargShiftLeft (argPos,argv,argNum)) <= argPos) break;
 			continue;
@@ -80,7 +80,7 @@ int main (int argc,char *argv [])
 		if (CMargTest (argv [argPos],"-d","--domain"))
 			{
 			if ((argNum = CMargShiftLeft (argPos,argv,argNum)) <= argPos)
-				{ CMmsgPrint (CMmsgUsrError,"Missing domain!\n");            return (CMfailed); }
+				{ CMmsgPrint (CMmsgUsrError,"Missing domain!");            return (CMfailed); }
 			domain  = argv [argPos];
 			if ((argNum = CMargShiftLeft (argPos,argv,argNum)) <= argPos) break;
 			continue;
@@ -88,7 +88,7 @@ int main (int argc,char *argv [])
 		if (CMargTest (argv [argPos],"-v","--version"))
 			{
 			if ((argNum = CMargShiftLeft (argPos,argv,argNum)) <= argPos)
-				{ CMmsgPrint (CMmsgUsrError,"Missing version!\n");      return (CMfailed); }
+				{ CMmsgPrint (CMmsgUsrError,"Missing version!");      return (CMfailed); }
 			version  = argv [argPos];
 			if ((argNum = CMargShiftLeft (argPos,argv,argNum)) <= argPos) break;
 			continue;
@@ -103,9 +103,9 @@ int main (int argc,char *argv [])
 			const char *shadeSets [] = { "standard","grey","blue","blue-to-red","elevation", (char *) NULL };
 
 			if ((argNum = CMargShiftLeft (argPos,argv,argNum)) <= argPos)
-				{ CMmsgPrint (CMmsgUsrError,"Missing shadeset!\n");     return (CMfailed); }
+				{ CMmsgPrint (CMmsgUsrError,"Missing shadeset!");     return (CMfailed); }
 			if ((shadeSet = CMoptLookup (shadeSets,argv [argPos],true)) == CMfailed)
-				{ CMmsgPrint (CMmsgUsrError,"Invalid shadeset!\n");     return (CMfailed); }
+				{ CMmsgPrint (CMmsgUsrError,"Invalid shadeset!");     return (CMfailed); }
 			shadeSet = shadeCodes [shadeSet];
 			if ((argNum = CMargShiftLeft (argPos,argv,argNum)) <= argPos) break;
 			continue;
@@ -118,24 +118,24 @@ int main (int argc,char *argv [])
 			}
 		if (CMargTest (argv [argPos],"-h","--help"))
 			{
-			CMmsgPrint (CMmsgInfo,"%s [options] <input file> <output file>\n",CMprgName(argv[0]));
-			CMmsgPrint (CMmsgInfo,"     -z,--size      [box size]\n");
-			CMmsgPrint (CMmsgInfo,"     -m,--method    [average|minimum|maximum|sum]\n");
-			CMmsgPrint (CMmsgInfo,"     -t,--title     [dataset title]\n");
-			CMmsgPrint (CMmsgInfo,"     -u,--subject   [subject]\n");
-			CMmsgPrint (CMmsgInfo,"     -d,--domain    [domain]\n");
-			CMmsgPrint (CMmsgInfo,"     -v,--version   [version]\n");
-			CMmsgPrint (CMmsgInfo,"     -s,--shadeset  [standard|grey|blue|blue-to-red|elevation]\n");
-			CMmsgPrint (CMmsgInfo,"     -V,--verbose\n");
-			CMmsgPrint (CMmsgInfo,"     -h,--help\n");
+			CMmsgPrint (CMmsgInfo,"%s [options] <input file> <output file>",CMprgName(argv[0]));
+			CMmsgPrint (CMmsgInfo,"     -z,--size      [box size]");
+			CMmsgPrint (CMmsgInfo,"     -m,--method    [average|minimum|maximum|sum]");
+			CMmsgPrint (CMmsgInfo,"     -t,--title     [dataset title]");
+			CMmsgPrint (CMmsgInfo,"     -u,--subject   [subject]");
+			CMmsgPrint (CMmsgInfo,"     -d,--domain    [domain]");
+			CMmsgPrint (CMmsgInfo,"     -v,--version   [version]");
+			CMmsgPrint (CMmsgInfo,"     -s,--shadeset  [standard|grey|blue|blue-to-red|elevation]");
+			CMmsgPrint (CMmsgInfo,"     -V,--verbose");
+			CMmsgPrint (CMmsgInfo,"     -h,--help");
 			return (DBSuccess);
 			}
 		if ((argv [argPos][0] == '-') && ((int) strlen (argv [argPos]) > 1))
-			{ CMmsgPrint (CMmsgUsrError,"Unknown option: %s!\n",argv [argPos]); return (CMfailed); }
+			{ CMmsgPrint (CMmsgUsrError,"Unknown option: %s!",argv [argPos]); return (CMfailed); }
 		argPos++;
 		}
 
-	if (argNum > 3) { CMmsgPrint (CMmsgUsrError,"Extra arguments!\n"); return (CMfailed); }
+	if (argNum > 3) { CMmsgPrint (CMmsgUsrError,"Extra arguments!"); return (CMfailed); }
 
 	if (verbose) RGlibPauseOpen (argv[0]);
 
@@ -164,11 +164,11 @@ int main (int argc,char *argv [])
 	outGridIF = new DBGridIF (outData);
 	outGridIF->MissingValue (inGridIF->MissingValue ());
 	if ((sumArea = (DBFloat *) calloc (outGridIF->ColNum () * outGridIF->RowNum (), sizeof (DBFloat))) == (DBFloat *)   NULL)
-		{ CMmsgPrint (CMmsgSysError, "Memory allocation error in %s:%d\n",__FILE__,__LINE__); return (CMfailed); }
+		{ CMmsgPrint (CMmsgSysError, "Memory allocation error in %s:%d",__FILE__,__LINE__); return (CMfailed); }
 	if ((misArea = (DBFloat *) calloc (outGridIF->ColNum () * outGridIF->RowNum (), sizeof (DBFloat))) == (DBFloat *)   NULL)
-		{ CMmsgPrint (CMmsgSysError, "Memory allocation error in %s:%d\n",__FILE__,__LINE__); return (CMfailed); }
+		{ CMmsgPrint (CMmsgSysError, "Memory allocation error in %s:%d",__FILE__,__LINE__); return (CMfailed); }
 	if ((array   = (DBFloat *) calloc (outGridIF->ColNum () * outGridIF->RowNum (), sizeof (DBFloat))) == (DBFloat *) NULL)
-		{ CMmsgPrint (CMmsgSysError, "Memory allocation error in %s:%d\n",__FILE__,__LINE__); return (CMfailed); }
+		{ CMmsgPrint (CMmsgSysError, "Memory allocation error in %s:%d",__FILE__,__LINE__); return (CMfailed); }
 
 	for (layerID = 0;layerID < inGridIF->LayerNum ();++layerID)
 		{

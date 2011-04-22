@@ -76,7 +76,7 @@ void RGISAnGDiscUniformRunoffCBK (Widget widget,RGISWorkspace *workspace,XmAnyCa
 
 	if ((selection = UISelectObject (selectWidget,(DBObjectLIST<DBObject> *) relateTBL)) == (char *) NULL) return;
 	if ((relateRec = relateTBL->Item (selection)) == (DBObjRecord *) NULL)
-		{ fprintf (stderr,"Relate Record Error in: RGISAnGDiscUniRunoffCBK ()\n"); return; }
+		{ CMmsgPrint (CMmsgAppError, "Relate Record Error in: %s %d",__FILE__,__LINE__); return; }
 
 	relDataFLD	 = relateTBL->Field (DBrNRelateData);
 	grdRelateFLD = relateTBL->Field (DBrNRelateField);
@@ -85,7 +85,7 @@ void RGISAnGDiscUniformRunoffCBK (Widget widget,RGISWorkspace *workspace,XmAnyCa
 	if ((tsData = dataset->Data (relDataFLD->String (relateRec))) == (DBObjData *) NULL)
 		{
 		if ((metaEntry = dataset->Meta (relDataFLD->String (relateRec))) == (DBObjMetaEntry *) NULL)
-			{ fprintf (stderr,"Meta Enrty Finding Error in: RGISAnGDiscUniRunoffCBK ()\n"); return; }
+			{ CMmsgPrint (CMmsgAppError, "Meta Enrty Finding Error in: %s %d",__FILE__,__LINE__); return; }
 		tsData = new DBObjData ();
 		if (tsData->Read (metaEntry->FileName ()) != DBSuccess) return;
 		}
@@ -100,12 +100,12 @@ void RGISAnGDiscUniformRunoffCBK (Widget widget,RGISWorkspace *workspace,XmAnyCa
 		selection = UISelectObject (selectWidget,(DBObjectLIST<DBObject> *) tsTBL->Fields (), DBTableFieldIsString);
 		if (selection == (char *) NULL) return;
 		if ((tsTimeFLD = tsTBL->Field (selection)) == (DBObjTableField *) NULL)
-			{ fprintf (stderr,"Invalid time step field in: RGISAnGDiscUniformRunoffCBK ()\\nn"); return; }
+			{ CMmsgPrint (CMmsgAppError, "Invalid time step field in: %s %d",__FILE__,__LINE__); return; }
 		}
 
 	if ((selection = UISelectObject (valueWidget,(DBObjectLIST<DBObject> *) tsTBL->Fields (),DBTableFieldIsNumeric)) == (char *) NULL) return;
 	if ((tsValueFLD = tsTBL->Field (selection)) == (DBObjTableField *) NULL)
-		{ fprintf (stderr,"Corrupt Value Field in: RGISAnGDiscUniRunoffCBK ()\n"); return; }
+		{ CMmsgPrint (CMmsgAppError, "Corrupt Value Field in: %s %d",__FILE__,__LINE__); return; }
 
 	if ((runoffData = DBGridToGrid (gridData,DBTypeGridContinuous)) == (DBObjData *) NULL) return;
 	runoffData->Document (DBDocSubject,GHAASSubjRunoff);
@@ -138,7 +138,7 @@ void RGISAnGDiscReclassDiscreteCBK (Widget widget,RGISWorkspace *workspace,XmAny
 	if ((selection = UISelectObject (selectWidget,(DBObjectLIST<DBObject> *) (srcItemTable->Fields ()),DBTableFieldIsCategory)) == (char *) NULL)
 		return;
 	if ((dstData = DBGridToGrid (srcData,DBTypeGridDiscrete)) == (DBObjData *) NULL)
-		{ fprintf (stderr,"Grid Creation Error in: RGISAnGDiscReclassDiscreteCBK ()\n"); return; }
+		{ CMmsgPrint (CMmsgAppError, "Grid Creation Error in: %s %d",__FILE__,__LINE__); return; }
 	if (UIDataHeaderForm (dstData))
 		{
 		UIPauseDialogOpen ((char *) "Reclassing Grid");
@@ -164,7 +164,7 @@ void RGISAnGDiscReclassContinuousCBK (Widget widget,RGISWorkspace *workspace,XmA
 	if ((selection = UISelectObject (selectWidget,(DBObjectLIST<DBObject> *) (srcItemTable->Fields ()),DBTableFieldIsNumeric)) == (char *) NULL)
 		return;
 	if ((dstData = DBGridToGrid (srcData,DBTypeGridContinuous)) == (DBObjData *) NULL)
-		{ fprintf (stderr,"Grid Creation Error in: RGISAnGDiscReclassDiscreteCBK ()\n"); return; }
+		{ CMmsgPrint (CMmsgAppError, "Grid Creation Error in: %s %d",__FILE__,__LINE__); return; }
 
 	if (UIDataHeaderForm (dstData))
 		{
@@ -253,13 +253,13 @@ void RGISAnGContPitsCBK (Widget widget,RGISWorkspace *workspace,XmAnyCallbackStr
 	widget = widget; callData = callData;
 
 	if (gridData == (DBObjData *) NULL)
-		{ fprintf (stderr,"Null Data in: _RGISAnGContPitsCBK ()\n"); return; }
+		{ CMmsgPrint (CMmsgAppError, "Null Data in: %s %d",__FILE__,__LINE__); return; }
 
 	if ((netData = gridData->LinkedData ()) == (DBObjData *) NULL)
-		{ fprintf (stderr,"Null Linked Data in: _RGISAnGContPitsCBK ()\n"); return; }
+		{ CMmsgPrint (CMmsgAppError, "Null Linked Data in: %s %d",__FILE__,__LINE__); return; }
 
 	if ((cellTable = netData->Table (DBrNCells)) == (DBObjTable *) NULL)
-		{ fprintf (stderr,"Corrupt Linked Data in: _RGISAnGContPitsCBK ()\n"); return; }
+		{ CMmsgPrint (CMmsgAppError, "Corrupt Linked Data in: %s %d",__FILE__,__LINE__); return; }
 	if ((pourIDFLD =  cellTable->Field (RGISPourID)) == (DBObjTableField  *) NULL)
 		{
 		pourIDFLD = new DBObjTableField (RGISPourID,DBTableFieldInt,"%6d",sizeof (int));
@@ -432,10 +432,10 @@ void RGISAnGContPourCBK (Widget widget,RGISWorkspace *workspace,XmAnyCallbackStr
 
 	widget = widget; workspace = workspace; callData = callData;
 
-	if (gridData == (DBObjData *) NULL) { fprintf (stderr,"Null Data in: _RGISAnGContPourCBK ()\n"); return; }
+	if (gridData == (DBObjData *) NULL) { CMmsgPrint (CMmsgAppError, "Null Data in: %s %d",__FILE__,__LINE__); return; }
 
 	if ((netData = gridData->LinkedData ()) == (DBObjData *) NULL)
-		{ fprintf (stderr,"Null Linked Data in: _RGISAnGContPourPointsCBK ()\n"); return; }
+		{ CMmsgPrint (CMmsgAppError, "Null Linked Data in: %s %d",__FILE__,__LINE__); return; }
 
 	_RGISAnnGContPourGridIF = new DBGridIF (gridData);
 	netIF = new DBNetworkIF (netData);
@@ -761,7 +761,7 @@ void RGISAnGContMakeDiscreteLoadButtonCBK (Widget button, Widget textField, XmAn
 	if ((fileName = UIFileSelection (fileSelect,true)) == NULL) return;
 
 	if ((inFile = fopen (fileName,"r")) == (FILE *)  NULL)
-		{ perror ("File Opening Error in: RGISAnGContMakeDiscreteLoadButtonCBK ()"); return; }
+		{ CMmsgPrint (CMmsgSysError, "File Opening Error in: %s %d",__FILE__,__LINE__); return; }
 
 	XmListDeleteAllItems (list);
 	for (i = 0;fgets (fText,sizeof (fText) - 1,inFile) != (char *) NULL; i++)
@@ -791,7 +791,7 @@ void RGISAnGContMakeDiscreteSaveButtonCBK (Widget button, Widget textField, XmAn
 	if ((fileName = UIFileSelection (fileSelect,false)) == NULL) return;
 
 	if ((outFile = fopen (fileName,"w")) == (FILE *)  NULL)
-		{ perror ("File Opening Error in: RGISAnGContMakeDiscreteSaveButtonCBK ()"); return; }
+		{ CMmsgPrint (CMmsgSysError, "File Opening Error in: %s %d",__FILE__,__LINE__); return; }
 
 	for (i = 0;i < itemCount;i++)
 		{
@@ -1017,7 +1017,7 @@ void RGISAnGContMakeDiscreteCBK (Widget widget,RGISWorkspace *workspace,XmAnyCal
 		if (UIDataHeaderForm (dstData))
 			{
 			if ((binValues = (float *) calloc (itemCount, sizeof (float))) == (float *) NULL)
-				{ perror ("Memory allocation error in: RGISAnGContMakeDiscreteCBK ()"); return; }
+				{ CMmsgPrint (CMmsgSysError, "Memory allocation error in: %s %d",__FILE__,__LINE__); return; }
 			for (item = 0;item < itemCount;++item)
 				{
 				XmStringGetLtoR (items [item],UICharSetNormal,&fText);

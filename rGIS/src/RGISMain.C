@@ -45,7 +45,7 @@ int main (int argc,char **argv)
 		if (CMargTest (argv [argPos],"-m","--metadb"))
 			{
 			if ((argNum = CMargShiftLeft (argPos,argv,argc)) <= argPos)
-				{ CMmsgPrint (CMmsgUsrError, "Missing metadb argument!\n"); return (CMfailed); }
+				{ CMmsgPrint (CMmsgUsrError, "Missing metadb argument!"); return (CMfailed); }
 			metaDB = argv [argPos];
 			if ((argNum = CMargShiftLeft (argPos,argv,argc)) <= argPos) break;
 			continue;
@@ -53,9 +53,9 @@ int main (int argc,char **argv)
 		if (CMargTest (argv [argPos],"-p","--progress"))
 			{
 			if ((argNum = CMargShiftLeft (argPos,argv,argc)) <= argPos)
-				{ CMmsgPrint (CMmsgUsrError,"Missing progress mode!\n");   return (CMfailed); }
+				{ CMmsgPrint (CMmsgUsrError,"Missing progress mode!");   return (CMfailed); }
 			if ((progress = CMoptLookup (modes,argv [argPos],true)) == DBFault)
-				{ CMmsgPrint (CMmsgUsrError,"Invalid progress mode!\n");   return (CMfailed); }
+				{ CMmsgPrint (CMmsgUsrError,"Invalid progress mode!");   return (CMfailed); }
 			progress = codes [progress];
 			if ((argNum = CMargShiftLeft (argPos,argv,argc)) <= argPos) break;
 			continue;
@@ -63,9 +63,9 @@ int main (int argc,char **argv)
 		if (CMargTest (argv [argPos],"-s","--spin"))
 			{
 			if ((argNum = CMargShiftLeft (argPos,argv,argc)) <= argPos)
-				{ CMmsgPrint (CMmsgUsrError,"Missing spin mode!\n");       return (CMfailed); }
+				{ CMmsgPrint (CMmsgUsrError,"Missing spin mode!");       return (CMfailed); }
 			if ((spin = CMoptLookup (modes,argv [argPos],true)) == DBFault)
-				{ CMmsgPrint (CMmsgUsrError,"Invalid spin mode!\n");	     return (CMfailed); }
+				{ CMmsgPrint (CMmsgUsrError,"Invalid spin mode!");	     return (CMfailed); }
 			spin = codes [spin];
 			if ((argNum = CMargShiftLeft (argPos,argv,argc)) <= argPos) break;
 			continue;
@@ -77,11 +77,11 @@ int main (int argc,char **argv)
 			DBFloat radius [] = { 6371.2213, 6371.2213 * 0.53264, 6371.2213 * 0.94886 };
 
 			if ((argNum = CMargShiftLeft (argPos,argv,argc)) <= argPos)
-				{ CMmsgPrint (CMmsgUsrError,"Missing planet!\n");	       return (CMfailed); }
+				{ CMmsgPrint (CMmsgUsrError,"Missing planet!");	       return (CMfailed); }
 			if ((planet = CMoptLookup (planets,argv [argPos],true)) == DBFault)
 				{
 				if (sscanf (argv [argPos],"%lf",radius) != 1)
-					{ CMmsgPrint (CMmsgUsrError,"Invalid planet!\n");      return (CMfailed); }
+					{ CMmsgPrint (CMmsgUsrError,"Invalid planet!");      return (CMfailed); }
 				planet = 0;
 				}
 			DBMathSetGlobeRadius (radius [planet]);
@@ -90,16 +90,16 @@ int main (int argc,char **argv)
 			}
 		if (CMargTest (argv [argPos],"-h","--help"))
 			{
-			fprintf (stderr,"rgis [options]\n");
-			fprintf (stderr,"     -m, --metadb   [meta database]\n");
-			fprintf (stderr,"     -p, --progress [yes|no]\n");
-			fprintf (stderr,"     -s, --spin     [yes|no]\n");
-			fprintf (stderr,"     -P, --planet   [Earth|Mars|Venus|radius]\n");
-			fprintf (stderr,"     -h, --help\n");
+			CMmsgPrint (CMmsgInfo, "rgis [options]");
+			CMmsgPrint (CMmsgInfo, "     -m, --metadb   [meta database]");
+			CMmsgPrint (CMmsgInfo, "     -p, --progress [yes|no]");
+			CMmsgPrint (CMmsgInfo, "     -s, --spin     [yes|no]");
+			CMmsgPrint (CMmsgInfo, "     -P, --planet   [Earth|Mars|Venus|radius]");
+			CMmsgPrint (CMmsgInfo, "     -h, --help");
 			return (DBSuccess);
 			}
 		if ((argv [argPos][0] == '-') && (strlen (argv [argPos]) > 1))
-			{ fprintf (stderr,"Unknown option: %s!\n",argv [argPos]); return (DBFault); }
+			{ CMmsgPrint (CMmsgUsrError, "Unknown option: %s!",argv [argPos]); return (DBFault); }
 		argPos++;
 		}
 

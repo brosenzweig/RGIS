@@ -51,7 +51,7 @@ void RGISToolsConvertToPointCBK (Widget widget,RGISWorkspace *workspace,XmAnyCal
 	selection = UISelectObject (tableSelect,(DBObjectLIST<DBObject> *) dbData->Tables ());
 	if (selection == (char *) NULL) return;
 	if ((itemTable = dbData->Table (selection)) == (DBObjTable *) NULL)
-		{ fprintf (stderr,"Invalid Table in: RGISToolsConvertToPointCBK ()\n"); return; }
+		{ CMmsgPrint (CMmsgAppError, "Invalid Table in: %s %d",__FILE__,__LINE__); return; }
 
 	_RGISToolsConvertToPointFields = itemTable->Fields ();
 	if (dShell == (Widget) NULL)
@@ -260,7 +260,7 @@ void RGISToolsConvertToPointCBK (Widget widget,RGISWorkspace *workspace,XmAnyCal
 							case DBTableFieldInt:		pntFLD->Int		(pntRec,tblFLD->Int (tblRec));		break;
 							case DBTableFieldFloat:		pntFLD->Float	(pntRec,tblFLD->Float (tblRec));		break;
 							case DBTableFieldDate:		pntFLD->Date	(pntRec,tblFLD->Date (tblRec));		break;
-							default: fprintf (stderr,"Invalid Field Type in: RGISToolsConvertToPointCBK ()\n");		break;
+							default: CMmsgPrint (CMmsgAppError, "Invalid Field Type in: %s %d",__FILE__,__LINE__);		break;
 							}
 						pntRec = pntTable->Next ();
 						}

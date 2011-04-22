@@ -116,7 +116,7 @@ int main (int argc,char *argv [])
 
 	inFile = (argNum > 1) && (strcmp (argv [1],"-") != 0) ? fopen (argv [1],"r") : stdin;
 	if (inFile == (FILE *) NULL)
-		{ perror ("Input data stream opening error in: ds2rgis"); return (DBFault); }
+		{ CMmsgPrint (CMmsgSysError, "Input data stream opening error in: %s %d",__FILE__,__LINE__); return (DBFault); }
 
 	tmpData = new DBObjData ();
 	if (tmpData->Read (tmpName) == DBFault)

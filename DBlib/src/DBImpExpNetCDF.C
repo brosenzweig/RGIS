@@ -508,7 +508,7 @@ static DBInt _DBExportNetCDFTimeDefine (DBObjData *dbData,int ncid,int dimids []
 		{
 		CMmsgPrint (CMmsgUsrError, "Time converter error!n");
 		switch (ut_get_status ()) {
-			case UT_BAD_ARG:         CMmsgPrint (CMmsgUsrError, "unit1 or unit2 is NULL.\n");                         break;
+			case UT_BAD_ARG:         CMmsgPrint (CMmsgUsrError, "unit1 or unit2 is NULL.");                         break;
 			case UT_NOT_SAME_SYSTEM: CMmsgPrint (CMmsgUsrError, "unit1 and unit2 belong to different unit-systems."); break;
 			default:                 CMmsgPrint (CMmsgUsrError, "Conversion between the units is not possible.");     break;
 			}
@@ -735,7 +735,7 @@ static DBInt _DBExportNetCDFTable (DBObjTable *table,int ncid)
 					}
 				else
 					{
-					CMmsgPrint (CMmsgUsrError, "Skipping variable :%s\n", fieldName);
+					CMmsgPrint (CMmsgUsrError, "Skipping variable :%s", fieldName);
 					CMmsgPrint (CMmsgAppError, "NC Error '%s' in: %s %d", nc_strerror(status),__FILE__,__LINE__);
 					}
 				} break;
@@ -815,7 +815,7 @@ static DBInt _DBExportNetCDFTable (DBObjTable *table,int ncid)
 					}
 				else
 					{
-					CMmsgPrint (CMmsgAppError, "Skipping variable :%s\n", fieldName);
+					CMmsgPrint (CMmsgAppError, "Skipping variable :%s", fieldName);
 					CMmsgPrint (CMmsgAppError, "NC Error '%s' in: %s %d", nc_strerror(status),__FILE__,__LINE__);
 					}
 				} break;

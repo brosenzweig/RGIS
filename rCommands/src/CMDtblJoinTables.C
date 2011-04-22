@@ -33,7 +33,7 @@ int main (int argc,char *argv [])
 		if (CMargTest (argv [argPos],"-a","--dataset"))
 			{
 			if ((argNum = CMargShiftLeft (argPos,argv,argNum)) <= argPos)
-				{ CMmsgPrint (CMmsgUsrError,"Missing join dataset!\n"); return (CMfailed); }
+				{ CMmsgPrint (CMmsgUsrError,"Missing join dataset!"); return (CMfailed); }
 			joinDataName = argv [argPos];
 			if ((argNum = CMargShiftLeft (argPos,argv,argNum)) <= argPos) break;
 			continue;
@@ -41,7 +41,7 @@ int main (int argc,char *argv [])
 		if (CMargTest (argv [argPos],"-e","--relate"))
 			{
 			if ((argNum = CMargShiftLeft (argPos,argv,argNum)) <= argPos)
-				{ CMmsgPrint (CMmsgUsrError,"Missing relate table name!\n"); return (CMfailed); }
+				{ CMmsgPrint (CMmsgUsrError,"Missing relate table name!"); return (CMfailed); }
 			relateTableName = argv [argPos];
 			if ((argNum = CMargShiftLeft (argPos,argv,argNum)) <= argPos) break;
 			continue;
@@ -49,7 +49,7 @@ int main (int argc,char *argv [])
 		if (CMargTest (argv [argPos],"-o","--join"))
 			{
 			if ((argNum = CMargShiftLeft (argPos,argv,argNum)) <= argPos)
-				{ CMmsgPrint (CMmsgUsrError,"Missing join table name!\n"); return (CMfailed); }
+				{ CMmsgPrint (CMmsgUsrError,"Missing join table name!"); return (CMfailed); }
 			joinTableName = argv [argPos];
 			if ((argNum = CMargShiftLeft (argPos,argv,argNum)) <= argPos) break;
 			continue;
@@ -57,7 +57,7 @@ int main (int argc,char *argv [])
 		if (CMargTest (argv [argPos],"-r","--rfield"))
 			{
 			if ((argNum = CMargShiftLeft (argPos,argv,argNum)) <= argPos)
-				{ CMmsgPrint (CMmsgUsrError,"Missing relate field name!\n"); return (CMfailed); }
+				{ CMmsgPrint (CMmsgUsrError,"Missing relate field name!"); return (CMfailed); }
 			relateFieldName = argv [argPos];
 			if ((argNum = CMargShiftLeft (argPos,argv,argNum)) <= argPos) break;
 			continue;
@@ -65,7 +65,7 @@ int main (int argc,char *argv [])
 		if (CMargTest (argv [argPos],"-j","--jfield"))
 			{
 			if ((argNum = CMargShiftLeft (argPos,argv,argNum)) <= argPos)
-				{ CMmsgPrint (CMmsgUsrError,"Missing join field name!\n"); return (CMfailed); }
+				{ CMmsgPrint (CMmsgUsrError,"Missing join field name!"); return (CMfailed); }
 			joinFieldName = argv [argPos];
 			if ((argNum = CMargShiftLeft (argPos,argv,argNum)) <= argPos) break;
 			continue;
@@ -73,7 +73,7 @@ int main (int argc,char *argv [])
 		if (CMargTest (argv [argPos],"-t","--title"))
 			{
 			if ((argNum = CMargShiftLeft (argPos,argv,argNum)) <= argPos)
-				{ CMmsgPrint (CMmsgUsrError,"Missing title!\n");        return (CMfailed); }
+				{ CMmsgPrint (CMmsgUsrError,"Missing title!");        return (CMfailed); }
 			title = argv [argPos];
 			if ((argNum = CMargShiftLeft (argPos,argv,argNum)) <= argPos) break;
 			continue;
@@ -81,7 +81,7 @@ int main (int argc,char *argv [])
 		if (CMargTest (argv [argPos],"-u","--subject"))
 			{
 			if ((argNum = CMargShiftLeft (argPos,argv,argNum)) <= argPos)
-				{ CMmsgPrint (CMmsgUsrError,"Missing subject!\n");      return (CMfailed); }
+				{ CMmsgPrint (CMmsgUsrError,"Missing subject!");      return (CMfailed); }
 			subject = argv [argPos];
 			if ((argNum = CMargShiftLeft (argPos,argv,argNum)) <= argPos) break;
 			continue;
@@ -89,7 +89,7 @@ int main (int argc,char *argv [])
 		if (CMargTest (argv [argPos],"-d","--domain"))
 			{
 			if ((argNum = CMargShiftLeft (argPos,argv,argNum)) <= argPos)
-				{ CMmsgPrint (CMmsgUsrError,"Missing domain!\n");       return (CMfailed); }
+				{ CMmsgPrint (CMmsgUsrError,"Missing domain!");       return (CMfailed); }
 			domain  = argv [argPos];
 			if ((argNum = CMargShiftLeft (argPos,argv,argNum)) <= argPos) break;
 			continue;
@@ -97,7 +97,7 @@ int main (int argc,char *argv [])
 		if (CMargTest (argv [argPos],"-v","--version"))
 			{
 			if ((argNum = CMargShiftLeft (argPos,argv,argNum)) <= argPos)
-				{ CMmsgPrint (CMmsgUsrError,"Missing version!\n");      return (CMfailed); }
+				{ CMmsgPrint (CMmsgUsrError,"Missing version!");      return (CMfailed); }
 			version  = argv [argPos];
 			if ((argNum = CMargShiftLeft (argPos,argv,argNum)) <= argPos) break;
 			continue;
@@ -110,26 +110,26 @@ int main (int argc,char *argv [])
 			}
 		if (CMargTest (argv [argPos],"-h","--help"))
 			{
-			CMmsgPrint (CMmsgInfo,"%s [options] <input file> <output file>\n",CMprgName(argv[0]));
-			CMmsgPrint (CMmsgInfo,"     -a,--dataset   [join dataset]\n");
-			CMmsgPrint (CMmsgInfo,"     -e,--relate    [relate table]\n");
-			CMmsgPrint (CMmsgInfo,"     -o,--join      [join table]\n");
-			CMmsgPrint (CMmsgInfo,"     -r,--rfield    [relate field]\n");
-			CMmsgPrint (CMmsgInfo,"     -j,--jfield    [join field]\n");
-			CMmsgPrint (CMmsgInfo,"     -t,--title     [dataset title]\n");
-			CMmsgPrint (CMmsgInfo,"     -u,--subject   [subject]\n");
-			CMmsgPrint (CMmsgInfo,"     -d,--domain    [domain]\n");
-			CMmsgPrint (CMmsgInfo,"     -v,--version   [version]\n");
-			CMmsgPrint (CMmsgInfo,"     -V,--verbose\n");
-			CMmsgPrint (CMmsgInfo,"     -h,--help\n");
+			CMmsgPrint (CMmsgInfo,"%s [options] <input file> <output file>",CMprgName(argv[0]));
+			CMmsgPrint (CMmsgInfo,"     -a,--dataset   [join dataset]");
+			CMmsgPrint (CMmsgInfo,"     -e,--relate    [relate table]");
+			CMmsgPrint (CMmsgInfo,"     -o,--join      [join table]");
+			CMmsgPrint (CMmsgInfo,"     -r,--rfield    [relate field]");
+			CMmsgPrint (CMmsgInfo,"     -j,--jfield    [join field]");
+			CMmsgPrint (CMmsgInfo,"     -t,--title     [dataset title]");
+			CMmsgPrint (CMmsgInfo,"     -u,--subject   [subject]");
+			CMmsgPrint (CMmsgInfo,"     -d,--domain    [domain]");
+			CMmsgPrint (CMmsgInfo,"     -v,--version   [version]");
+			CMmsgPrint (CMmsgInfo,"     -V,--verbose");
+			CMmsgPrint (CMmsgInfo,"     -h,--help");
 			return (DBSuccess);
 			}
 		if ((argv [argPos][0] == '-') && (strlen (argv [argPos]) > 1))
-			{ CMmsgPrint (CMmsgUsrError,"Unknown option: %s!\n",argv [argPos]); return (CMfailed); }
+			{ CMmsgPrint (CMmsgUsrError,"Unknown option: %s!",argv [argPos]); return (CMfailed); }
 		argPos++;
 		}
 
-	if (argNum > 3) { CMmsgPrint (CMmsgUsrError,"Extra arguments!\n"); return (CMfailed); }
+	if (argNum > 3) { CMmsgPrint (CMmsgUsrError,"Extra arguments!"); return (CMfailed); }
 	if (verbose) RGlibPauseOpen (argv[0]);
 
 	data = new DBObjData ();
@@ -146,14 +146,14 @@ int main (int argc,char *argv [])
 		{
 		joinData = new DBObjData ();
 		if (joinData->Read (joinDataName) == DBFault)
-			{ CMmsgPrint (CMmsgUsrError,"Invalid join dataset!\n"); delete data; delete joinData; return (CMfailed); }
+			{ CMmsgPrint (CMmsgUsrError,"Invalid join dataset!"); delete data; delete joinData; return (CMfailed); }
 		}
 
 	if (relateTableName == (char *) NULL) relateTableName = DBrNItems;
 	if (joinTableName   == (char *) NULL) joinTableName   = DBrNItems;
 	if ((data == joinData) && (strcmp (relateTableName,joinTableName) == 0))
 		{
-		CMmsgPrint (CMmsgUsrError,"Join tables are identical\n");
+		CMmsgPrint (CMmsgUsrError,"Join tables are identical");
 		if (joinData != data) delete joinData,
 		delete data;
 		return (CMfailed);
@@ -161,7 +161,7 @@ int main (int argc,char *argv [])
 
 	if ((relateTable = data->Table (relateTableName)) == (DBObjTable *) NULL)
 		{
-		CMmsgPrint (CMmsgUsrError,"Invalid relate table: %s\n",relateTableName);
+		CMmsgPrint (CMmsgUsrError,"Invalid relate table: %s",relateTableName);
 		if (joinData != data) delete joinData;
 		delete data;
 		return (CMfailed);
@@ -169,7 +169,7 @@ int main (int argc,char *argv [])
 
 	if ((joinTable = joinData->Table (joinTableName)) == (DBObjTable *) NULL)
 		{
-		CMmsgPrint (CMmsgUsrError,"Invalid join table: %s!\n",joinTableName);
+		CMmsgPrint (CMmsgUsrError,"Invalid join table: %s!",joinTableName);
 		if (joinData != data) delete joinData;
 		delete data;
 		return (CMfailed);
@@ -179,7 +179,7 @@ int main (int argc,char *argv [])
 		{
 		if ((relateField = relateTable->Field (relateFieldName)) == (DBObjTableField *) NULL)
 			{
-			CMmsgPrint (CMmsgUsrError,"Invalid relate field: %s!\n",relateFieldName);
+			CMmsgPrint (CMmsgUsrError,"Invalid relate field: %s!",relateFieldName);
 			if (joinData != data) delete joinData;
 			delete data;
 			return (CMfailed);
@@ -191,7 +191,7 @@ int main (int argc,char *argv [])
 		{
 		if ((joinField = joinTable->Field (joinFieldName)) == (DBObjTableField *) NULL)
 			{
-			CMmsgPrint (CMmsgUsrError,"Invalid join field: %s!\n",joinFieldName);
+			CMmsgPrint (CMmsgUsrError,"Invalid join field: %s!",joinFieldName);
 			if (joinData != data) delete joinData;
 			delete data;
 			return (CMfailed);

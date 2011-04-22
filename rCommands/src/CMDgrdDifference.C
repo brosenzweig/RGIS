@@ -33,16 +33,16 @@ int main (int argc,char *argv [])
 			const char *modes [] = { "absolute", "relative", (char *) NULL };
 
 			if ((argNum = CMargShiftLeft (argPos,argv,argNum)) <= argPos)
-				{ CMmsgPrint (CMmsgUsrError,"Missing differnce method!\n");  return (CMfailed); }
+				{ CMmsgPrint (CMmsgUsrError,"Missing differnce method!");  return (CMfailed); }
 			if ((mode = CMoptLookup (modes,argv [argPos],true)) == DBFault)
-				{ CMmsgPrint (CMmsgUsrError,"Invalid difference method!\n"); return (CMfailed); }
+				{ CMmsgPrint (CMmsgUsrError,"Invalid difference method!"); return (CMfailed); }
 			if ((argNum = CMargShiftLeft (argPos,argv,argNum)) <= argPos) break;
 			continue;
 			}
 		if (CMargTest (argv [argPos],"-g","--grid"))
 			{
 			if ((argNum = CMargShiftLeft (argPos,argv,argNum)) <= argPos)
-				{ CMmsgPrint (CMmsgUsrError,"Missing grid!\n");         return (CMfailed); }
+				{ CMmsgPrint (CMmsgUsrError,"Missing grid!");         return (CMfailed); }
 			gridName = argv [argPos];
 			if ((argNum = CMargShiftLeft (argPos,argv,argNum)) <= argPos) break;
 			continue;
@@ -50,7 +50,7 @@ int main (int argc,char *argv [])
 		if (CMargTest (argv [argPos],"-t","--title"))
 			{
 			if ((argNum = CMargShiftLeft (argPos,argv,argNum)) <= argPos)
-				{ CMmsgPrint (CMmsgUsrError,"Missing title!\n");        return (CMfailed); }
+				{ CMmsgPrint (CMmsgUsrError,"Missing title!");        return (CMfailed); }
 			title = argv [argPos];
 			if ((argNum = CMargShiftLeft (argPos,argv,argNum)) <= argPos) break;
 			continue;
@@ -58,7 +58,7 @@ int main (int argc,char *argv [])
 		if (CMargTest (argv [argPos],"-u","--subject"))
 			{
 			if ((argNum = CMargShiftLeft (argPos,argv,argNum)) <= argPos)
-				{ CMmsgPrint (CMmsgUsrError,"Missing subject!\n");      return (CMfailed); }
+				{ CMmsgPrint (CMmsgUsrError,"Missing subject!");      return (CMfailed); }
 			subject = argv [argPos];
 			if ((argNum = CMargShiftLeft (argPos,argv,argNum)) <= argPos) break;
 			continue;
@@ -66,7 +66,7 @@ int main (int argc,char *argv [])
 		if (CMargTest (argv [argPos],"-d","--domain"))
 			{
 			if ((argNum = CMargShiftLeft (argPos,argv,argNum)) <= argPos)
-				{ CMmsgPrint (CMmsgUsrError,"Missing domain!\n");       return (CMfailed); }
+				{ CMmsgPrint (CMmsgUsrError,"Missing domain!");       return (CMfailed); }
 			domain  = argv [argPos];
 			if ((argNum = CMargShiftLeft (argPos,argv,argNum)) <= argPos) break;
 			continue;
@@ -74,7 +74,7 @@ int main (int argc,char *argv [])
 		if (CMargTest (argv [argPos],"-v","--version"))
 			{
 			if ((argNum = CMargShiftLeft (argPos,argv,argNum)) <= argPos)
-				{ CMmsgPrint (CMmsgUsrError,"Missing version!\n");      return (CMfailed); }
+				{ CMmsgPrint (CMmsgUsrError,"Missing version!");      return (CMfailed); }
 			version  = argv [argPos];
 			if ((argNum = CMargShiftLeft (argPos,argv,argNum)) <= argPos) break;
 			continue;
@@ -89,9 +89,9 @@ int main (int argc,char *argv [])
 			const char *shadeSets [] = {	"standard","grey","blue","blue-to-red","elevation", (char *) NULL };
 
 			if ((argNum = CMargShiftLeft (argPos,argv,argNum)) <= argPos)
-				{ CMmsgPrint (CMmsgUsrError,"Missing shadeset!\n");     return (CMfailed); }
+				{ CMmsgPrint (CMmsgUsrError,"Missing shadeset!");     return (CMfailed); }
 			if ((shadeSet = CMoptLookup (shadeSets,argv [argPos],true)) == DBFault)
-				{ CMmsgPrint (CMmsgUsrError,"Invalid shadeset!\n");     return (CMfailed); }
+				{ CMmsgPrint (CMmsgUsrError,"Invalid shadeset!");     return (CMfailed); }
 			shadeSet = shadeCodes [shadeSet];
 			if ((argNum = CMargShiftLeft (argPos,argv,argNum)) <= argPos) break;
 			continue;
@@ -104,28 +104,28 @@ int main (int argc,char *argv [])
 			}
 		if (CMargTest (argv [argPos],"-h","--help"))
 			{
-			CMmsgPrint (CMmsgInfo,"%s [options] <input grid> <output grid>\n",CMprgName(argv[0]));
-			CMmsgPrint (CMmsgInfo,"     -g,--grid       [continuous grid coverage]\n");
-			CMmsgPrint (CMmsgInfo,"     -i,--difference	[absolute|relative]\n");
-			CMmsgPrint (CMmsgInfo,"     -t,--title      [dataset title]\n");
-			CMmsgPrint (CMmsgInfo,"     -u,--subject    [subject]\n");
-			CMmsgPrint (CMmsgInfo,"     -d,--domain     [domain]\n");
-			CMmsgPrint (CMmsgInfo,"     -v,--version    [version]\n");
-			CMmsgPrint (CMmsgInfo,"     -s,--shadeset   [standard|grey|blue|blue-to-red|elevation]\n");
-			CMmsgPrint (CMmsgInfo,"     -V,--verbose\n");
-			CMmsgPrint (CMmsgInfo,"     -h,--help\n");
+			CMmsgPrint (CMmsgInfo,"%s [options] <input grid> <output grid>",CMprgName(argv[0]));
+			CMmsgPrint (CMmsgInfo,"     -g,--grid       [continuous grid coverage]");
+			CMmsgPrint (CMmsgInfo,"     -i,--difference	[absolute|relative]");
+			CMmsgPrint (CMmsgInfo,"     -t,--title      [dataset title]");
+			CMmsgPrint (CMmsgInfo,"     -u,--subject    [subject]");
+			CMmsgPrint (CMmsgInfo,"     -d,--domain     [domain]");
+			CMmsgPrint (CMmsgInfo,"     -v,--version    [version]");
+			CMmsgPrint (CMmsgInfo,"     -s,--shadeset   [standard|grey|blue|blue-to-red|elevation]");
+			CMmsgPrint (CMmsgInfo,"     -V,--verbose");
+			CMmsgPrint (CMmsgInfo,"     -h,--help");
 			return (DBSuccess);
 			}
 		if ((argv [argPos][0] == '-') && (strlen (argv [argPos]) > 1))
-			{ CMmsgPrint (CMmsgUsrError,"Unknown option: %s!\n",argv [argPos]); return (CMfailed); }
+			{ CMmsgPrint (CMmsgUsrError,"Unknown option: %s!",argv [argPos]); return (CMfailed); }
 		argPos++;
 		}
 
-	if (argNum > 3) { CMmsgPrint (CMmsgUsrError,"Extra arguments!\n"); return (CMfailed); }
+	if (argNum > 3) { CMmsgPrint (CMmsgUsrError,"Extra arguments!"); return (CMfailed); }
 	if (verbose) RGlibPauseOpen (argv[0]);
 
 	rightData = new DBObjData ();
-	if (gridName == (char *) NULL) { CMmsgPrint (CMmsgUsrError,"Missing operand grid\n"); return (CMfailed); }
+	if (gridName == (char *) NULL) { CMmsgPrint (CMmsgUsrError,"Missing operand grid"); return (CMfailed); }
 
 	if ((ret = rightData->Read (gridName)) || (rightData->Type () != DBTypeGridContinuous))
 		{ delete rightData; return (CMfailed); }

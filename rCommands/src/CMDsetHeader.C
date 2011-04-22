@@ -44,7 +44,7 @@ void CMDgetInfoInteractive(char **in, char *prompt, bool useMultipleLines)
 	size_t len = 2;
 	printf("%s ",prompt);
 	if ((*in = (char *) realloc (*in,sizeof(char) * len)) == (char *) NULL)
-		{ perror ("Memory allocation error in: CMDsetHeader()"); exit(-1); }
+		{ CMmsgPrint (CMmsgSysError, "Memory allocation error in: %s %d",__FILE__,__LINE__); exit(-1); }
 
 	if(useMultipleLines)
 	{

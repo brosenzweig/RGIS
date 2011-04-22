@@ -35,7 +35,7 @@ int main (int argc,char *argv [])
 		if (CMargTest (argv [argPos],"-a","--table"))
 			{
 			if ((argNum = CMargShiftLeft (argPos,argv,argNum)) <= argPos)
-				{ CMmsgPrint (CMmsgUsrError,"Missing table name!\n");  return (CMfailed); }
+				{ CMmsgPrint (CMmsgUsrError,"Missing table name!");  return (CMfailed); }
 			tableName = argv [argPos];
 			if ((argNum = CMargShiftLeft (argPos,argv,argNum)) <= argPos) break;
 			continue;
@@ -43,7 +43,7 @@ int main (int argc,char *argv [])
 		if (CMargTest (argv [argPos],"-f","--field"))
 			{
 			if ((argNum = CMargShiftLeft (argPos,argv,argNum)) <= argPos)
-				{ CMmsgPrint (CMmsgUsrError,"Missing field name!\n"); return (CMfailed); }
+				{ CMmsgPrint (CMmsgUsrError,"Missing field name!"); return (CMfailed); }
 			srcName = argv [argPos];
 			if ((argNum = CMargShiftLeft (argPos,argv,argNum)) <= argPos) break;
 			continue;
@@ -51,7 +51,7 @@ int main (int argc,char *argv [])
 		if (CMargTest (argv [argPos],"-o","--outfield"))
 			{
 			if ((argNum = CMargShiftLeft (argPos,argv,argNum)) <= argPos)
-				{ CMmsgPrint (CMmsgUsrError,"Missing output field name!\n"); return (CMfailed); }
+				{ CMmsgPrint (CMmsgUsrError,"Missing output field name!"); return (CMfailed); }
 			dstName = argv [argPos];
 			if ((argNum = CMargShiftLeft (argPos,argv,argNum)) <= argPos) break;
 			continue;
@@ -62,9 +62,9 @@ int main (int argc,char *argv [])
 			const char *optStrs [] = { "year", "month", (char *) NULL };
 
 			if ((argNum = CMargShiftLeft (argPos,argv,argNum)) <= argPos)
-				{ CMmsgPrint (CMmsgUsrError,"Missing mode!\n");       return (CMfailed); }
+				{ CMmsgPrint (CMmsgUsrError,"Missing mode!");       return (CMfailed); }
 			if ((mode = CMoptLookup (optStrs,argv [argPos],true)) == DBFault)
-				{ CMmsgPrint (CMmsgUsrError,"Invalid decimal date method!\n");	return (CMfailed); }
+				{ CMmsgPrint (CMmsgUsrError,"Invalid decimal date method!");	return (CMfailed); }
 			mode = optCodes [mode];
 			if ((argNum = CMargShiftLeft (argPos,argv,argNum)) <= argPos) break;
 			continue;
@@ -77,21 +77,21 @@ int main (int argc,char *argv [])
 			}
 		if (CMargTest (argv [argPos],"-h","--help"))
 			{
-			CMmsgPrint (CMmsgInfo,"%s [options] <input file> <output file>\n",CMprgName(argv[0]));
-			CMmsgPrint (CMmsgInfo,"     -a,--table     [table name]\n");
-			CMmsgPrint (CMmsgInfo,"     -f,--field     [field name]\n");
-			CMmsgPrint (CMmsgInfo,"     -o,--outfield  [output field]\n");
-			CMmsgPrint (CMmsgInfo,"     -m,--mode      [year|month]\n");
-			CMmsgPrint (CMmsgInfo,"     -V,--verbose\n");
-			CMmsgPrint (CMmsgInfo,"     -h,--help\n");
+			CMmsgPrint (CMmsgInfo,"%s [options] <input file> <output file>",CMprgName(argv[0]));
+			CMmsgPrint (CMmsgInfo,"     -a,--table     [table name]");
+			CMmsgPrint (CMmsgInfo,"     -f,--field     [field name]");
+			CMmsgPrint (CMmsgInfo,"     -o,--outfield  [output field]");
+			CMmsgPrint (CMmsgInfo,"     -m,--mode      [year|month]");
+			CMmsgPrint (CMmsgInfo,"     -V,--verbose");
+			CMmsgPrint (CMmsgInfo,"     -h,--help");
 			return (DBSuccess);
 			}
 		if ((argv [argPos][0] == '-') && ((int) strlen (argv [argPos]) > 1))
-			{ CMmsgPrint (CMmsgUsrError,"Unknown option: %s!\n",argv [argPos]); return (CMfailed); }
+			{ CMmsgPrint (CMmsgUsrError,"Unknown option: %s!",argv [argPos]); return (CMfailed); }
 		argPos++;
 		}
 
-	if (argNum > 3) { CMmsgPrint (CMmsgUsrError,"Extra arguments!\n"); return (CMfailed); }
+	if (argNum > 3) { CMmsgPrint (CMmsgUsrError,"Extra arguments!"); return (CMfailed); }
 	if (verbose) RGlibPauseOpen (argv[0]);
 
 	data = new DBObjData ();
@@ -101,14 +101,14 @@ int main (int argc,char *argv [])
 	if (tableName == (char *) NULL) tableName = DBrNItems;
 
 	if ((table = data->Table (tableName)) == (DBObjTable *) NULL)
-		{ CMmsgPrint (CMmsgUsrError,"Invalid table!\n"); delete data; return (CMfailed); }
+		{ CMmsgPrint (CMmsgUsrError,"Invalid table!"); delete data; return (CMfailed); }
 
 	if (srcName == (char *) NULL) srcName = (char *) "Date";
 	if ((srcField = table->Field (srcName)) == (DBObjTableField *) NULL)
-		{ CMmsgPrint (CMmsgUsrError,"Missing date field!\n"); delete data; return (CMfailed); }
+		{ CMmsgPrint (CMmsgUsrError,"Missing date field!"); delete data; return (CMfailed); }
 	if ((srcField->Type () != DBTableFieldString) &&
 		 (srcField->Type () != DBTableFieldDate))
-		{ CMmsgPrint (CMmsgUsrError,"Invalid date field!\n"); delete data; return (CMfailed); }
+		{ CMmsgPrint (CMmsgUsrError,"Invalid date field!"); delete data; return (CMfailed); }
 
 	if (dstName == (char *) NULL)
 		switch (mode)

@@ -14,6 +14,7 @@ pfw@unh.edu
   If you specify a dataTypes file that already exists, it will print
   out the data type conflicts to stdout.
 */
+#include <cm.h>
 #include <Flib.h>
 #include <stdio.h>
 #include <unistd.h>
@@ -62,7 +63,7 @@ int main( int argc, char* argv[] )
   theData = readFile( dataFile, dataTypesFile, &errCheck );
   
   if(errCheck)
-    fprintf(stderr,"errors were reported, but continuing anyways.\n");
+    CMmsgPrint (CMmsgUsrError, "errors were reported, but continuing anyways.");
   
   printDataTypes( *theData );
   freeFData( theData );

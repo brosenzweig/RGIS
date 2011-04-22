@@ -37,7 +37,7 @@ int main (int argc,char *argv [])
 		if (CMargTest (argv [argPos],"-a","--table"))
 			{
 			if ((argNum = CMargShiftLeft (argPos,argv,argNum)) <= argPos)
-				{ CMmsgPrint (CMmsgUsrError,"Missing table name!\n");   return (CMfailed); }
+				{ CMmsgPrint (CMmsgUsrError,"Missing table name!");   return (CMfailed); }
 			tableName = argv [argPos];
 			if ((argNum = CMargShiftLeft (argPos,argv,argNum)) <= argPos) break;
 			continue;
@@ -45,7 +45,7 @@ int main (int argc,char *argv [])
 		if (CMargTest (argv [argPos],"-f","--field"))
 			{
 			if ((argNum = CMargShiftLeft (argPos,argv,argNum)) <= argPos)
-				{ CMmsgPrint (CMmsgUsrError,"Missing field name!\n");   return (CMfailed); }
+				{ CMmsgPrint (CMmsgUsrError,"Missing field name!");   return (CMfailed); }
 			srcFieldName = argv [argPos];
 			if ((argNum = CMargShiftLeft (argPos,argv,argNum)) <= argPos) break;
 			continue;
@@ -53,7 +53,7 @@ int main (int argc,char *argv [])
 		if (CMargTest (argv [argPos],"-r","--rename"))
 			{
 			if ((argNum = CMargShiftLeft (argPos,argv,argNum)) <= argPos)
-				{ CMmsgPrint (CMmsgUsrError,"Missing second field name!\n"); return (CMfailed); }
+				{ CMmsgPrint (CMmsgUsrError,"Missing second field name!"); return (CMfailed); }
 			dstFieldName = argv [argPos];
 			if ((argNum = CMargShiftLeft (argPos,argv,argNum)) <= argPos) break;
 			continue;
@@ -66,24 +66,24 @@ int main (int argc,char *argv [])
 			}
 		if (CMargTest (argv [argPos],"-h","--help"))
 			{
-			CMmsgPrint (CMmsgInfo,"%s [options] <input file> <output file>\n",CMprgName(argv[0]));
-			CMmsgPrint (CMmsgInfo,"     -a,--table     [table name]\n");
+			CMmsgPrint (CMmsgInfo,"%s [options] <input file> <output file>",CMprgName(argv[0]));
+			CMmsgPrint (CMmsgInfo,"     -a,--table     [table name]");
 			CMmsgPrint (CMmsgInfo,"     -f,--field     [coord field name]");
-			CMmsgPrint (CMmsgInfo,"     -r,--rename    [output field]\n");
-			CMmsgPrint (CMmsgInfo,"     -V,--verbose\n");
-			CMmsgPrint (CMmsgInfo,"     -h,--help\n");
+			CMmsgPrint (CMmsgInfo,"     -r,--rename    [output field]");
+			CMmsgPrint (CMmsgInfo,"     -V,--verbose");
+			CMmsgPrint (CMmsgInfo,"     -h,--help");
 			return (DBSuccess);
 			}
 		if ((argv [argPos][0] == '-') && ((int) strlen (argv [argPos]) > 1))
-			{ CMmsgPrint (CMmsgUsrError,"Unknown option: %s!\n",argv [argPos]); return (CMfailed); }
+			{ CMmsgPrint (CMmsgUsrError,"Unknown option: %s!",argv [argPos]); return (CMfailed); }
 		argPos++;
 		}
 
-	if (argNum > 3) { CMmsgPrint (CMmsgUsrError,"Extra arguments!\n"); return (CMfailed); }
+	if (argNum > 3) { CMmsgPrint (CMmsgUsrError,"Extra arguments!"); return (CMfailed); }
 	if (verbose) RGlibPauseOpen (argv[0]);
 
 	if (srcFieldName == (char *) NULL)
-		{ CMmsgPrint (CMmsgUsrError,"Coordinate field is not set!\n"); return (CMfailed); }
+		{ CMmsgPrint (CMmsgUsrError,"Coordinate field is not set!"); return (CMfailed); }
 
 	data = new DBObjData ();
 	if (((argNum > 1) && (strcmp (argv [1],"-") != 0) ? data->Read (argv [1]) : data->Read (stdin)) == DBFault)
@@ -92,10 +92,10 @@ int main (int argc,char *argv [])
 	if (tableName == (char *) NULL) tableName = DBrNItems;
 
 	if ((table = data->Table (tableName)) == (DBObjTable *) NULL)
-		{ CMmsgPrint (CMmsgUsrError,"Invalid table!\n"); delete data; return (CMfailed); }
+		{ CMmsgPrint (CMmsgUsrError,"Invalid table!"); delete data; return (CMfailed); }
 
 	if ((srcField = table->Field (srcFieldName)) == (DBObjTableField *) NULL)
-		{ CMmsgPrint (CMmsgUsrError,"Invalid coordinate field [%s]!\n",srcFieldName); delete data; return (CMfailed); }
+		{ CMmsgPrint (CMmsgUsrError,"Invalid coordinate field [%s]!",srcFieldName); delete data; return (CMfailed); }
 
 
 	if (dstFieldName == (char *) NULL) dstFieldName = (char *) "DecimalCoord";
@@ -109,7 +109,7 @@ int main (int argc,char *argv [])
 			{
 			if (dstField->Type () != DBVariableFloat)
 				{
-				CMmsgPrint (CMmsgUsrError,"Invalid coordinate field type!\n");
+				CMmsgPrint (CMmsgUsrError,"Invalid coordinate field type!");
 				delete data;
 				return (CMfailed);
 				}

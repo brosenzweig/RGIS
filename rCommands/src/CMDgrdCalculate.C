@@ -51,7 +51,7 @@ class CMDgrdVariable
 		dataName = TargetFLD->Name ();
 
 		if ((dataName = (char *) malloc (strlen (dataName) + 1)) == (char *) NULL)
-			{ perror ("Memory allocation error in: CMDgrdVariable::Configure ()"); return (CMfailed); }
+			{ CMmsgPrint (CMmsgSysError, "Memory allocation error in: %s %d",__FILE__,__LINE__); return (CMfailed); }
 		strcpy (dataName, TargetFLD->Name ());
 
 		for (i = 0;i < (DBInt) strlen (dataName);++i)
@@ -59,7 +59,7 @@ class CMDgrdVariable
 
 		data = new DBObjData ();
 		if ((strcmp (dataName,"stdin") == 0 ? data->Read (stdin) : data->Read (dataName)) == DBFault)
-			{ CMmsgPrint (CMmsgUsrError,"%s\n",dataName); return (CMfailed); }
+			{ CMmsgPrint (CMmsgUsrError,"%s",dataName); return (CMfailed); }
 
 		if (data->Type () == DBTypeGridDiscrete)
 			{
@@ -68,7 +68,7 @@ class CMDgrdVariable
 			if (fieldName == (char *) NULL) fieldName = DBrNGridValue;
 			if ((SourceFLD = table->Field (fieldName)) == (DBObjTableField *) NULL)
 				{
-				CMmsgPrint (CMmsgUsrError,"Invalid field [%s]!\n",fieldName);
+				CMmsgPrint (CMmsgUsrError,"Invalid field [%s]!",fieldName);
 				return (CMfailed);
 				}
 			strcpy (dataName, TargetFLD->Name ());
@@ -79,7 +79,7 @@ class CMDgrdVariable
 		else
 			{
 			if (fieldName != (char *) NULL)
-				{ CMmsgPrint (CMmsgUsrError,"Continuous grid field is referenced!\n"); free (dataName); return (CMfailed); }
+				{ CMmsgPrint (CMmsgUsrError,"Continuous grid field is referenced!"); free (dataName); return (CMfailed); }
 			}
 		table->AddField (TargetFLD);
 		GridIF = new DBGridIF (data, flat);
@@ -164,7 +164,7 @@ class CMDgrdVariable
 						}
 				} break;
 			default:
-				CMmsgPrint (CMmsgUsrError,"Invalid grid type in: CMDgrdVariable:GetVariable ()\n");
+				CMmsgPrint (CMmsgUsrError,"Invalid grid type in: CMDgrdVariable:GetVariable ()");
 				break;
 			}
 		}
@@ -201,9 +201,9 @@ int main (int argc,char *argv [])
 		if (CMargTest (argv [argPos],"-c","--calculate"))
 			{
 			if ((argNum = CMargShiftLeft (argPos,argv,argNum)) <= argPos)
-				{ CMmsgPrint (CMmsgUsrError,"Missing expression!\n");   return (CMfailed); }
+				{ CMmsgPrint (CMmsgUsrError,"Missing expression!");   return (CMfailed); }
 			if (expStr != (char *) NULL)
-				{ CMmsgPrint (CMmsgUsrError,"Expression is already specified!\n"); return (CMfailed); }
+				{ CMmsgPrint (CMmsgUsrError,"Expression is already specified!"); return (CMfailed); }
 			expStr = argv [argPos];
 			if ((argNum = CMargShiftLeft (argPos,argv,argNum)) <= argPos) break;
 			continue;
@@ -212,19 +212,19 @@ int main (int argc,char *argv [])
 			{
 			char *varName;
 			if ((argNum = CMargShiftLeft (argPos,argv,argNum)) <= argPos)
-				{ CMmsgPrint (CMmsgUsrError,"Missing variable name!\n"); return (CMfailed); }
+				{ CMmsgPrint (CMmsgUsrError,"Missing variable name!"); return (CMfailed); }
 			varName = argv [argPos];
 			fieldPTR = new DBObjTableField (varName,DBVariableFloat,"%10.3f",sizeof (DBFloat),false);
 			table->AddField (fieldPTR);
 			if ((argNum = CMargShiftLeft (argPos,argv,argNum)) <= argPos)
-				{ CMmsgPrint (CMmsgUsrError,"Missing expression!\n");   return (CMfailed); }
+				{ CMmsgPrint (CMmsgUsrError,"Missing expression!");   return (CMfailed); }
 			expressions = expNum < 1 ? (CMDExpression **) calloc (1,sizeof (CMDExpression *)) :
 								(CMDExpression **) realloc (expressions,(expNum + 1) * sizeof (CMDExpression *));
 			if (expressions == (CMDExpression **) NULL)
-				{ perror ("MNemory Allocation error!"); return (CMfailed); }
+				{ CMmsgPrint (CMmsgSysError, "Memory Allocation error in: %s %d",__FILE__,__LINE__); return (CMfailed); }
 			expressions [expNum] = new CMDExpression (varName, argv [argPos]);
 			if ((expressions [expNum])->Expand (variables) == DBFault)
-				{ CMmsgPrint (CMmsgUsrError,"Invalid Expression!\n"); return (CMfailed); }
+				{ CMmsgPrint (CMmsgUsrError,"Invalid Expression!"); return (CMfailed); }
 			expNum++;
 			if ((argNum = CMargShiftLeft (argPos,argv,argNum)) <= argPos) break;
 			continue;
@@ -235,9 +235,9 @@ int main (int argc,char *argv [])
 			const char *names [] = { "minimum","maximum", (char *) NULL };
 
 			if ((argNum = CMargShiftLeft (argPos,argv,argNum)) <= argPos)
-				{ CMmsgPrint (CMmsgUsrError,"Missing extent mode!\n");     return (CMfailed); }
+				{ CMmsgPrint (CMmsgUsrError,"Missing extent mode!");     return (CMfailed); }
 			if ((ret = CMoptLookup (names,argv [argPos],true)) == CMfailed)
-				{ CMmsgPrint (CMmsgUsrError,"Invalid extent mode!\n");     return (CMfailed); }
+				{ CMmsgPrint (CMmsgUsrError,"Invalid extent mode!");     return (CMfailed); }
 			shrink = codes [ret];
 			if ((argNum = CMargShiftLeft (argPos,argv,argNum)) <= argPos) break;
 			continue;
@@ -248,9 +248,9 @@ int main (int argc,char *argv [])
 			const char *names [] = { "surface","flat", (char *) NULL };
 
 			if ((argNum = CMargShiftLeft (argPos,argv,argNum)) <= argPos)
-				{ CMmsgPrint (CMmsgUsrError,"Missing interpolation mode!\n");     return (CMfailed); }
+				{ CMmsgPrint (CMmsgUsrError,"Missing interpolation mode!");     return (CMfailed); }
 			if ((ret = CMoptLookup (names,argv [argPos],true)) == CMfailed)
-				{ CMmsgPrint (CMmsgUsrError,"Invalid interpolation mode!\n");     return (CMfailed); }
+				{ CMmsgPrint (CMmsgUsrError,"Invalid interpolation mode!");     return (CMfailed); }
 			flat = codes [ret];
 			if ((argNum = CMargShiftLeft (argPos,argv,argNum)) <= argPos) break;
 			continue;
@@ -258,7 +258,7 @@ int main (int argc,char *argv [])
 		if (CMargTest (argv [argPos],"-t","--title"))
 			{
 			if ((argNum = CMargShiftLeft (argPos,argv,argNum)) <= argPos)
-				{ CMmsgPrint (CMmsgUsrError,"Missing title!\n");        return (CMfailed); }
+				{ CMmsgPrint (CMmsgUsrError,"Missing title!");        return (CMfailed); }
 			title = argv [argPos];
 			if ((argNum = CMargShiftLeft (argPos,argv,argNum)) <= argPos) break;
 			continue;
@@ -266,7 +266,7 @@ int main (int argc,char *argv [])
 		if (CMargTest (argv [argPos],"-u","--subject"))
 			{
 			if ((argNum = CMargShiftLeft (argPos,argv,argNum)) <= argPos)
-				{ CMmsgPrint (CMmsgUsrError,"Missing subject!\n");      return (CMfailed); }
+				{ CMmsgPrint (CMmsgUsrError,"Missing subject!");      return (CMfailed); }
 			subject = argv [argPos];
 			if ((argNum = CMargShiftLeft (argPos,argv,argNum)) <= argPos) break;
 			continue;
@@ -274,7 +274,7 @@ int main (int argc,char *argv [])
 		if (CMargTest (argv [argPos],"-d","--domain"))
 			{
 			if ((argNum = CMargShiftLeft (argPos,argv,argNum)) <= argPos)
-				{ CMmsgPrint (CMmsgUsrError,"Missing domain!\n");            return (CMfailed); }
+				{ CMmsgPrint (CMmsgUsrError,"Missing domain!");            return (CMfailed); }
 			domain  = argv [argPos];
 			if ((argNum = CMargShiftLeft (argPos,argv,argNum)) <= argPos) break;
 			continue;
@@ -282,7 +282,7 @@ int main (int argc,char *argv [])
 		if (CMargTest (argv [argPos],"-v","--version"))
 			{
 			if ((argNum = CMargShiftLeft (argPos,argv,argNum)) <= argPos)
-				{ CMmsgPrint (CMmsgUsrError,"Missing version!\n");      return (CMfailed); }
+				{ CMmsgPrint (CMmsgUsrError,"Missing version!");      return (CMfailed); }
 			version  = argv [argPos];
 			if ((argNum = CMargShiftLeft (argPos,argv,argNum)) <= argPos) break;
 			continue;
@@ -297,9 +297,9 @@ int main (int argc,char *argv [])
 			const char *shadeSets [] = { "standard","grey","blue","blue-to-red","elevation", (char *) NULL };
 
 			if ((argNum = CMargShiftLeft (argPos,argv,argNum)) <= argPos)
-				{ CMmsgPrint (CMmsgUsrError,"Missing shadeset!\n");     return (CMfailed); }
+				{ CMmsgPrint (CMmsgUsrError,"Missing shadeset!");     return (CMfailed); }
 			if ((shadeSet = CMoptLookup (shadeSets,argv [argPos],true)) == CMfailed)
-				{ CMmsgPrint (CMmsgUsrError,"Invalid shadeset!\n");     return (CMfailed); }
+				{ CMmsgPrint (CMmsgUsrError,"Invalid shadeset!");     return (CMfailed); }
 			shadeSet = shadeCodes [shadeSet];
 			if ((argNum = CMargShiftLeft (argPos,argv,argNum)) <= argPos) break;
 			continue;
@@ -312,29 +312,29 @@ int main (int argc,char *argv [])
 			}
 		if (CMargTest (argv [argPos],"-h","--help"))
 			{
-			CMmsgPrint (CMmsgInfo,"%s [options] <output file>\n",CMprgName(argv[0]));
-			CMmsgPrint (CMmsgInfo,"     -c,--calculate   [expression]\n");
-			CMmsgPrint (CMmsgInfo,"     -r,--variable    [variable expression]\n");
-			CMmsgPrint (CMmsgInfo,"     -n,--interpolate [surface|flat]\n");
-			CMmsgPrint (CMmsgInfo,"     -x,--extent      [maximum minimum]\n");
-			CMmsgPrint (CMmsgInfo,"     -t,--title       [dataset title]\n");
-			CMmsgPrint (CMmsgInfo,"     -u,--subject     [subject]\n");
-			CMmsgPrint (CMmsgInfo,"     -d,--domain      [domain]\n");
-			CMmsgPrint (CMmsgInfo,"     -v,--version     [version]\n");
-			CMmsgPrint (CMmsgInfo,"     -s,--shadeset    [standard|grey|blue|blue-to-red|elevation]\n");
-			CMmsgPrint (CMmsgInfo,"     -V,--verbose\n");
-			CMmsgPrint (CMmsgInfo,"     -h,--help\n");
+			CMmsgPrint (CMmsgInfo,"%s [options] <output file>",CMprgName(argv[0]));
+			CMmsgPrint (CMmsgInfo,"     -c,--calculate   [expression]");
+			CMmsgPrint (CMmsgInfo,"     -r,--variable    [variable expression]");
+			CMmsgPrint (CMmsgInfo,"     -n,--interpolate [surface|flat]");
+			CMmsgPrint (CMmsgInfo,"     -x,--extent      [maximum minimum]");
+			CMmsgPrint (CMmsgInfo,"     -t,--title       [dataset title]");
+			CMmsgPrint (CMmsgInfo,"     -u,--subject     [subject]");
+			CMmsgPrint (CMmsgInfo,"     -d,--domain      [domain]");
+			CMmsgPrint (CMmsgInfo,"     -v,--version     [version]");
+			CMmsgPrint (CMmsgInfo,"     -s,--shadeset    [standard|grey|blue|blue-to-red|elevation]");
+			CMmsgPrint (CMmsgInfo,"     -V,--verbose");
+			CMmsgPrint (CMmsgInfo,"     -h,--help");
 			return (DBSuccess);
 			}
 		if ((argv [argPos][0] == '-') && ((int) strlen (argv [argPos]) > 1))
-			{ CMmsgPrint (CMmsgUsrError,"Unknown option: %s!\n",argv [argPos]); return (CMfailed); }
+			{ CMmsgPrint (CMmsgUsrError,"Unknown option: %s!",argv [argPos]); return (CMfailed); }
 		argPos++;
 		}
 
 	if (expStr == (char *) NULL)
-		{ CMmsgPrint (CMmsgUsrError,"Missing expression!\n"); return (CMfailed); }
+		{ CMmsgPrint (CMmsgUsrError,"Missing expression!"); return (CMfailed); }
 
-	if (argNum > 2) { CMmsgPrint (CMmsgUsrError,"Extra arguments!\n"); return (CMfailed); }
+	if (argNum > 2) { CMmsgPrint (CMmsgUsrError,"Extra arguments!"); return (CMfailed); }
 	if (verbose) RGlibPauseOpen (argv[0]);
 
 	operand = new DBMathOperand (expStr);
@@ -347,7 +347,8 @@ int main (int argc,char *argv [])
 		if ((fieldPTR = table->Field (obj->Name ())) != (DBObjTableField *) NULL) continue;
 
 		grdVar = (CMDgrdVariable **) realloc (grdVar,sizeof (CMDgrdVariable *) * (varNum + 1));
-		if (grdVar == (CMDgrdVariable **) NULL) { perror ("Memory Allocation Error!\n"); return (CMfailed); }
+		if (grdVar == (CMDgrdVariable **) NULL)
+			{ CMmsgPrint (CMmsgSysError, "Memory Allocation Error in: %s %d",__FILE__,__LINE__); return (CMfailed); }
 		grdVar [varNum] = new CMDgrdVariable (obj->Name ());
 		if (grdVar [varNum]->Configure (table,flat) == DBFault)
 			{
@@ -370,12 +371,12 @@ int main (int argc,char *argv [])
 	if ((record = table->Add ("TEMPRecord")) == (DBObjRecord *) NULL) return (CMfailed);
 //	for (i = 0;i < expNum;++i) expressions [i]->Evaluate (record);
 
-//	TODO CMmsgPrint (CMmsgDebug, ,"%f %f %f %f\n",extent.LowerLeft.X, extent.LowerLeft.Y, extent.UpperRight.X, extent.UpperRight.Y);
+//	TODO CMmsgPrint (CMmsgDebug, ,"%f %f %f %f",extent.LowerLeft.X, extent.LowerLeft.Y, extent.UpperRight.X, extent.UpperRight.Y);
 	if (shrink) for (i = 0;i < varNum;++i)	{
-//	TODO	CMmsgPrint (CMmsgDebug, ,"%f %f %f %f\n",grdVar [i]->Extent ().LowerLeft.X, grdVar [i]->Extent ().LowerLeft.Y, grdVar [i]->Extent ().UpperRight.X, grdVar [i]->Extent ().UpperRight.Y);
+//	TODO	CMmsgPrint (CMmsgDebug, ,"%f %f %f %f",grdVar [i]->Extent ().LowerLeft.X, grdVar [i]->Extent ().LowerLeft.Y, grdVar [i]->Extent ().UpperRight.X, grdVar [i]->Extent ().UpperRight.Y);
 		extent.Shrink (grdVar [i]->Extent ());
 	}
-// TODO	CMmsgPrint (CMmsgDebug, ,"%f %f %f %f\n",extent.LowerLeft.X, extent.LowerLeft.Y, extent.UpperRight.X, extent.UpperRight.Y);
+// TODO	CMmsgPrint (CMmsgDebug, ,"%f %f %f %f",extent.LowerLeft.X, extent.LowerLeft.Y, extent.UpperRight.X, extent.UpperRight.Y);
 
 	if (title	== (char *) NULL)	title = (char *) "Grid Calculate Result";
 	if (subject == (char *) NULL) subject = (char *) "GridCalc";

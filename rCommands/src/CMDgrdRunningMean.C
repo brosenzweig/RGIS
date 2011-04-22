@@ -34,10 +34,10 @@ int main(int argc, char* argv[])
 		if (CMargTest (argv [argPos],"-k","--kernelsize"))
 			{
 			if ((argNum = CMargShiftLeft (argPos,argv,argNum)) <= argPos)
-				{ CMmsgPrint (CMmsgUsrError,"Missing kernel size!\n"); return (CMfailed); }
+				{ CMmsgPrint (CMmsgUsrError,"Missing kernel size!"); return (CMfailed); }
 			if (sscanf (argv[argPos],"%d",&kernel) != 1)
 				{
-				CMmsgPrint (CMmsgUsrError,"Invalid kernel size!\n");
+				CMmsgPrint (CMmsgUsrError,"Invalid kernel size!");
 				return (CMfailed);
 				}
 			if ((argNum = CMargShiftLeft (argPos,argv,argNum)) <= argPos) break;
@@ -46,10 +46,10 @@ int main(int argc, char* argv[])
 		if (CMargTest (argv [argPos],"-f","--kerneloffset"))
 			{
 			if ((argNum = CMargShiftLeft (argPos,argv,argNum)) <= argPos)
-				{ CMmsgPrint (CMmsgUsrError,"Missing kernel offset!\n"); return (CMfailed); }
+				{ CMmsgPrint (CMmsgUsrError,"Missing kernel offset!"); return (CMfailed); }
 			if (sscanf (argv[argPos],"%d",&offset) != 1)
 				{
-				CMmsgPrint (CMmsgUsrError,"Invalid kernel offset!\n");
+				CMmsgPrint (CMmsgUsrError,"Invalid kernel offset!");
 				return (CMfailed);
 				}
 			if ((argNum = CMargShiftLeft (argPos,argv,argNum)) <= argPos) break;
@@ -58,7 +58,7 @@ int main(int argc, char* argv[])
 		if (CMargTest (argv [argPos],"-t","--title"))
 			{
 			if ((argNum = CMargShiftLeft (argPos,argv,argNum)) <= argPos)
-				{ CMmsgPrint (CMmsgUsrError,"Missing title!\n");        return (CMfailed); }
+				{ CMmsgPrint (CMmsgUsrError,"Missing title!");        return (CMfailed); }
 			title = argv [argPos];
 			if ((argNum = CMargShiftLeft (argPos,argv,argNum)) <= argPos) break;
 			continue;
@@ -66,7 +66,7 @@ int main(int argc, char* argv[])
 		if (CMargTest (argv [argPos],"-u","--subject"))
 			{
 			if ((argNum = CMargShiftLeft (argPos,argv,argNum)) <= argPos)
-				{ CMmsgPrint (CMmsgUsrError,"Missing subject!\n");      return (CMfailed); }
+				{ CMmsgPrint (CMmsgUsrError,"Missing subject!");      return (CMfailed); }
 			subject = argv [argPos];
 			if ((argNum = CMargShiftLeft (argPos,argv,argNum)) <= argPos) break;
 			continue;
@@ -74,7 +74,7 @@ int main(int argc, char* argv[])
 		if (CMargTest (argv [argPos],"-d","--domain"))
 			{
 			if ((argNum = CMargShiftLeft (argPos,argv,argNum)) <= argPos)
-				{ CMmsgPrint (CMmsgUsrError,"Missing domain!\n");            return (CMfailed); }
+				{ CMmsgPrint (CMmsgUsrError,"Missing domain!");            return (CMfailed); }
 			domain  = argv [argPos];
 			if ((argNum = CMargShiftLeft (argPos,argv,argNum)) <= argPos) break;
 			continue;
@@ -82,7 +82,7 @@ int main(int argc, char* argv[])
 		if (CMargTest (argv [argPos],"-v","--version"))
 			{
 			if ((argNum = CMargShiftLeft (argPos,argv,argNum)) <= argPos)
-				{ CMmsgPrint (CMmsgUsrError,"Missing version!\n");      return (CMfailed); }
+				{ CMmsgPrint (CMmsgUsrError,"Missing version!");      return (CMfailed); }
 			version  = argv [argPos];
 			if ((argNum = CMargShiftLeft (argPos,argv,argNum)) <= argPos) break;
 			continue;
@@ -97,9 +97,9 @@ int main(int argc, char* argv[])
 			const char *shadeSets [] = { "standard","grey","blue","blue-to-red","elevation", (char *) NULL };
 
 			if ((argNum = CMargShiftLeft (argPos,argv,argNum)) <= argPos)
-				{ CMmsgPrint (CMmsgUsrError,"Missing shadeset!\n");     return (CMfailed); }
+				{ CMmsgPrint (CMmsgUsrError,"Missing shadeset!");     return (CMfailed); }
 			if ((shadeSet = CMoptLookup (shadeSets,argv [argPos],true)) == CMfailed)
-				{ CMmsgPrint (CMmsgUsrError,"Invalid shadeset!\n");     return (CMfailed); }
+				{ CMmsgPrint (CMmsgUsrError,"Invalid shadeset!");     return (CMfailed); }
 			shadeSet = shadeCodes [shadeSet];
 			if ((argNum = CMargShiftLeft (argPos,argv,argNum)) <= argPos) break;
 			continue;
@@ -112,23 +112,23 @@ int main(int argc, char* argv[])
 			}
 		if (CMargTest (argv [argPos],"-h","--help"))
 			{
-			CMmsgPrint (CMmsgInfo,"%s [options] <input grid> <output grid>\n",CMprgName(argv[0]));
-			CMmsgPrint (CMmsgInfo,"     -k,--kernelsize\n");
-			CMmsgPrint (CMmsgInfo,"     -f,--kerneloffset\n");
-			CMmsgPrint (CMmsgInfo,"     -V,--verbose\n");
-			CMmsgPrint (CMmsgInfo,"     -h,--help\n");
+			CMmsgPrint (CMmsgInfo,"%s [options] <input grid> <output grid>",CMprgName(argv[0]));
+			CMmsgPrint (CMmsgInfo,"     -k,--kernelsize");
+			CMmsgPrint (CMmsgInfo,"     -f,--kerneloffset");
+			CMmsgPrint (CMmsgInfo,"     -V,--verbose");
+			CMmsgPrint (CMmsgInfo,"     -h,--help");
 			return (DBSuccess);
 			}
 		if ((argv [argPos][0] == '-') && (strlen (argv [argPos]) > 1))
 			{
-			CMmsgPrint (CMmsgUsrError,"Unknown option: %s!\n",argv [argPos]);
+			CMmsgPrint (CMmsgUsrError,"Unknown option: %s!",argv [argPos]);
 			return (CMfailed);
 			}
 		argPos++;
 		}
 	if (argNum > 3)
 		{
-		CMmsgPrint (CMmsgUsrError,"Extra arguments!\n");
+		CMmsgPrint (CMmsgUsrError,"Extra arguments!");
 		return (CMfailed);
 		}
 	if (verbose) RGlibPauseOpen (argv[0]);

@@ -26,26 +26,26 @@ balazs.fekete@unh.edu
 
 void showUsage()
 	{
-	printf("FStat - statistical operations on a data file\n");
-	printf("USAGE: FStat <inputfile>  <option> <rownumber>\n");
-	printf("\tOPTIONS:\n");
-	printf("\t-d,--data:<filename>\tread in and verify the expected dataTypes\n");
-	printf("\t-r,--rgis:\toutput in RGISDB format\n");
-	printf("\t-g,--group:<columnNumber>\tgroup by column number\n");
-	printf("\t-n,--num:\treturn the number of rows in the column\n");
-	printf("\t-m,--min:<columnNumber>\treturn the minimum value for the column\n");
-	printf("\t-M,--max:<columnNumber>\treturn the maximum value for the column\n");
-	printf("\t-a,--avg:<columnNumber>\treturn the average value for the column\n");
-	printf("\t-s,--sum:<columnNumber>\treturn the sum value for the column\n");
-	printf("\t-p,--pct:<q1,q2,...> <columnNumber>\treturn a set of quantiles for a column\n");
-	printf("\t-p,--pct all <columnNumber>\treturns a the original table with a new column of quantiles for <columnNumber>\n");
-	printf("\t-e,--med:<columnNumber>\treturn the median value for the column\n");
-	printf("\t-o,--mod:<columnNumber>\treturn the modal value for the column\n");
-	printf("\nEXAMPLES:\n");
-	printf("%% FStat --min 0 --pct 1,5,25,50,75,95,100 5 test.txt\n");
-	printf("  -output the minimum value of column 0 and a set of quantiles for column 5 all out of \"test.txt\"\n");
-	printf("%% FStat --num --pct all 5 < test.txt\n");
-	printf("  -this will output the number of lines in \"test.txt\", and then output the table with\n   a new column of quantiles for every entry in column 5.\n");
+	CMmsgPrint (CMmsgInfo, "FStat - statistical operations on a data file");
+	CMmsgPrint (CMmsgInfo, "USAGE: FStat <inputfile>  <option> <rownumber>");
+	CMmsgPrint (CMmsgInfo, "\tOPTIONS:");
+	CMmsgPrint (CMmsgInfo, "\t-d,--data:<filename>\tread in and verify the expected dataTypes");
+	CMmsgPrint (CMmsgInfo, "\t-r,--rgis:\toutput in RGISDB format");
+	CMmsgPrint (CMmsgInfo, "\t-g,--group:<columnNumber>\tgroup by column number");
+	CMmsgPrint (CMmsgInfo, "\t-n,--num:\treturn the number of rows in the column");
+	CMmsgPrint (CMmsgInfo, "\t-m,--min:<columnNumber>\treturn the minimum value for the column");
+	CMmsgPrint (CMmsgInfo, "\t-M,--max:<columnNumber>\treturn the maximum value for the column");
+	CMmsgPrint (CMmsgInfo, "\t-a,--avg:<columnNumber>\treturn the average value for the column");
+	CMmsgPrint (CMmsgInfo, "\t-s,--sum:<columnNumber>\treturn the sum value for the column");
+	CMmsgPrint (CMmsgInfo, "\t-p,--pct:<q1,q2,...> <columnNumber>\treturn a set of quantiles for a column");
+	CMmsgPrint (CMmsgInfo, "\t-p,--pct all <columnNumber>\treturns a the original table with a new column of quantiles for <columnNumber>");
+	CMmsgPrint (CMmsgInfo, "\t-e,--med:<columnNumber>\treturn the median value for the column");
+	CMmsgPrint (CMmsgInfo, "\t-o,--mod:<columnNumber>\treturn the modal value for the column");
+	CMmsgPrint (CMmsgInfo, "\nEXAMPLES:");
+	CMmsgPrint (CMmsgInfo, "%% FStat --min 0 --pct 1,5,25,50,75,95,100 5 test.txt");
+	CMmsgPrint (CMmsgInfo, "  -output the minimum value of column 0 and a set of quantiles for column 5 all out of \"test.txt\"");
+	CMmsgPrint (CMmsgInfo, "%% FStat --num --pct all 5 < test.txt");
+	CMmsgPrint (CMmsgInfo, "  -this will output the number of lines in \"test.txt\", and then output the table with\n   a new column of quantiles for every entry in column 5.");
 	}
 
 /**********globals********/
@@ -119,7 +119,7 @@ int main( int argc, char* argv[] )
 	setInputFiles( argc,argv );
 	
 	theData = readFile( dataFile, dataTypesFile, &errCheck );
-	if(errCheck) fprintf(stderr,"errors were reported, but continuing anyway.\n");
+	if(errCheck) CMmsgPrint (CMmsgUsrError, "errors were reported, but continuing anyway.");
 	
 	/*set the data types for sorting*/
 	types = theData->types;
@@ -131,7 +131,7 @@ int main( int argc, char* argv[] )
 		if (CMargTest (argv [argPos],"-g","--group"))
 			{
 			if ((argNum = CMargShiftLeft(argPos,argv,argNum)) <= argPos)
-				{ CMmsgPrint (CMmsgUsrError, "Missing group!\n");      return (CMfailed); }
+				{ CMmsgPrint (CMmsgUsrError, "Missing group!");      return (CMfailed); }
 			groupVar = readGroupFields(theData, argv[argPos]);
 			if ((argNum = CMargShiftLeft(argPos,argv,argNum)) <= argPos) break;
 			continue;
@@ -147,7 +147,7 @@ int main( int argc, char* argv[] )
 		if (CMargTest (argv [argPos],"-m","--min"))
 			{
 			if ((argNum = CMargShiftLeft(argPos,argv,argNum)) <= argPos)
-				{ CMmsgPrint (CMmsgUsrError,"Missing MIN value!\n");   return (CMfailed); }
+				{ CMmsgPrint (CMmsgUsrError,"Missing MIN value!");   return (CMfailed); }
 			if(atoi(argv[argPos]) < theData->numCols ) min( theData, atoi(argv[argPos]) );
 			if ((argNum = CMargShiftLeft(argPos,argv,argNum)) <= argPos) break;
 			continue;
@@ -156,7 +156,7 @@ int main( int argc, char* argv[] )
 		if (CMargTest (argv [argPos],"-M","--max"))
 			{
 			if ((argNum = CMargShiftLeft(argPos,argv,argNum)) <= argPos)
-				{ CMmsgPrint (CMmsgUsrError,"Missing MAX value!\n"); return (CMfailed); }
+				{ CMmsgPrint (CMmsgUsrError,"Missing MAX value!"); return (CMfailed); }
 			if(atoi(argv[argPos]) < theData->numCols ) max( theData, atoi(argv[argPos]) ); 
 			if ((argNum = CMargShiftLeft(argPos,argv,argNum)) <= argPos) break;
 			continue;
@@ -165,7 +165,7 @@ int main( int argc, char* argv[] )
 		if (CMargTest (argv [argPos],"-a","--avg"))
 			{
 			if ((argNum = CMargShiftLeft(argPos,argv,argNum)) <= argPos)
-				{ CMmsgPrint (CMmsgUsrError,"Missing AVG value!\n");   return (CMfailed); }
+				{ CMmsgPrint (CMmsgUsrError,"Missing AVG value!");   return (CMfailed); }
 			if(atoi(argv[argPos]) < theData->numCols ) avg( theData, atoi(argv[argPos]) ); 
 			if ((argNum = CMargShiftLeft(argPos,argv,argNum)) <= argPos) break;
 			continue;
@@ -174,7 +174,7 @@ int main( int argc, char* argv[] )
 		if (CMargTest (argv [argPos],"-s","--sum"))
 			{
 			if ((argNum = CMargShiftLeft(argPos,argv,argNum)) <= argPos)
-				{ CMmsgPrint (CMmsgUsrError,"Missing SUM value!\n");   return (CMfailed); }
+				{ CMmsgPrint (CMmsgUsrError,"Missing SUM value!");   return (CMfailed); }
 			if(atoi(argv[argPos]) < theData->numCols ) sum( theData, atoi(argv[argPos]) ); 
 			if ((argNum = CMargShiftLeft(argPos,argv,argNum)) <= argPos) break;
 			continue;
@@ -183,18 +183,18 @@ int main( int argc, char* argv[] )
 		if (CMargTest (argv [argPos],"-p","--pct"))
 			{
 			if ((argNum = CMargShiftLeft(argPos,argv,argNum)) <= argPos)
-			if (argPos >= argNum) { CMmsgPrint (CMmsgUsrError,"Missing PCT value!\n"); return (CMfailed); }
+			if (argPos >= argNum) { CMmsgPrint (CMmsgUsrError,"Missing PCT value!"); return (CMfailed); }
 			if(!strcmp(argv[argPos],"all"))
 				{
 				if ((argNum = CMargShiftLeft(argPos,argv,argNum)) <= argPos)
-					{ CMmsgPrint (CMmsgUsrError,"Missing pct argument!\n");   return (CMfailed); }
+					{ CMmsgPrint (CMmsgUsrError,"Missing pct argument!");   return (CMfailed); }
 				if(atoi(argv[argPos]) > theData->numCols) break;
 				pct( theData, NULL, atoi(argv[argPos]) ); 
 				}
 			else
 				{
 				if ((argNum = CMargShiftLeft(argPos,argv,argNum)) <= argPos)
-					{ CMmsgPrint (CMmsgUsrError,"Missing pct argument!\n");   return (CMfailed); }
+					{ CMmsgPrint (CMmsgUsrError,"Missing pct argument!");   return (CMfailed); }
 				if(atoi(argv[argPos+1]) > theData->numCols) break;
 				pct( theData, readPctFields(argv[argPos]), atoi(argv[argPos+1]) );
 				}
@@ -205,7 +205,7 @@ int main( int argc, char* argv[] )
 		if (CMargTest (argv [argPos],"-e","--med"))
 			{
 			if ((argNum = CMargShiftLeft(argPos,argv,argNum)) <= argPos)
-				{ CMmsgPrint (CMmsgUsrError,"Missing MED value!\n");   return (CMfailed); }
+				{ CMmsgPrint (CMmsgUsrError,"Missing MED value!");   return (CMfailed); }
 			if(atoi(argv[argPos]) < theData->numCols ) med( theData, atoi(argv[argPos]) );
 			if ((argNum = CMargShiftLeft(argPos,argv,argNum)) <= argPos) break;
 			continue;
@@ -214,7 +214,7 @@ int main( int argc, char* argv[] )
 		if (CMargTest (argv [argPos],"-o","--mod"))
 			{
 			if ((argNum = CMargShiftLeft(argPos,argv,argNum)) <= argPos)
-				{ CMmsgPrint (CMmsgUsrError,"Missing MOD value!\n");   return (CMfailed); }
+				{ CMmsgPrint (CMmsgUsrError,"Missing MOD value!");   return (CMfailed); }
 			if(atoi(argv[argPos]) < theData->numCols ) mod( theData, atoi(argv[argPos]) ); 
 			if ((argNum = CMargShiftLeft(argPos,argv,argNum)) <= argPos) break;
 			continue;
@@ -223,13 +223,13 @@ int main( int argc, char* argv[] )
 		if (CMargTest (argv [argPos],"-d","--dev"))
 			{
 			if ((argNum = CMargShiftLeft(argPos,argv,argNum)) <= argPos)
-				{ CMmsgPrint (CMmsgUsrError,"Missing PCT value!\n");   return (CMfailed); }
+				{ CMmsgPrint (CMmsgUsrError,"Missing PCT value!");   return (CMfailed); }
 			if(atoi(argv[argPos]) < theData->numCols ) dev( theData, atoi(argv[argPos]) );
 			if ((argNum = CMargShiftLeft(argPos,argv,argNum)) <= argPos) break;
 			continue;
 			}
 		if (argv [argPos][0] == '-')
-         { CMmsgPrint (CMmsgUsrError,"Unknown option: %s!\n",argv[argPos]); return (CMfailed); }
+         { CMmsgPrint (CMmsgUsrError,"Unknown option: %s!",argv[argPos]); return (CMfailed); }
       argPos++;
 		}
 	freeFData( theData );

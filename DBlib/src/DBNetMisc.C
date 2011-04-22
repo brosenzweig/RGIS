@@ -581,7 +581,7 @@ DBInt DBNetworkIF::Build ()
 		{
 		cellRec = CellTable->Item (i);
 		if ((basinRec = Basin (cellRec)) == (DBObjRecord *) NULL)
-			{ CMmsgPrint (CMmsgAppError,"BasinID: %d CellID:%d\n",BasinFLD->Int (cellRec),cellRec->RowID ()); continue; }
+			{ CMmsgPrint (CMmsgAppError,"BasinID: %d CellID:%d",BasinFLD->Int (cellRec),cellRec->RowID ()); continue; }
 		if (basin != basinRec->RowID ())
 			{
 			basin = basinRec->RowID ();

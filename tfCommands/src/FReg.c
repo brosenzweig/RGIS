@@ -11,6 +11,7 @@ pfw@unh.edu
 *******************************************************************************/
 #define MISSINGDATA -9999
 
+#include <cm.h>
 #include <stdio.h>
 #include <string.h>
 #include <unistd.h>
@@ -43,32 +44,32 @@ int isMissingDataVal(float x){return (DBMathEqualValues(x,MISSINGDATA));}
 
 void showUsage()
 	{
-	printf("Calculates linear regression.\n");
-	printf("Usage:\n");
-	printf("regf -g [field] -x [field]] -y [field] [inputfile] ...\n\n");
-	printf("where fieldnames must match fieldnames in first line of the datafile.\n");
-	printf("Operations are:\n");
-	printf("-g, --group  field\n");
-	printf("Perform selected operations on data groups, selected by having\n");
-	printf("the same value in the group field.  Process whole\n");
-	printf("input if no group is given.  Select groups based on groups of\n");
-	printf("fields if multiple groups are given.\n");
-	printf("-x, --xField  field\n");
-	printf("x variable field\n");
-	printf("-y, --yField  field\n");
-	printf("y variable field\n");
-	printf("-w, --weight field\n");
-	printf("-h, --help\n");
-	printf("Print this usage information.\n");
-	printf("The output fields are:\n");
-	printf("b0 - Intercept;\n");
-	printf("b1 - Slope;\n");
-	printf("r  - (x,y) correlation coefficient;\n");
-	printf("R2 - squared multiple (y,yHat) correlation coefficient;\n");
-	printf("n  - number of observation;\n");
-	printf("S - square root of sum of the residuals sqrt (SSE/(n-2));\n");
-	printf("b0Bound - confidence boundary for intersept;\n");
-	printf("b1Bound - confidence boundary for slope;\n");
+	CMmsgPrint (CMmsgInfo, "Calculates linear regression.");
+	CMmsgPrint (CMmsgInfo, "Usage:");
+	CMmsgPrint (CMmsgInfo, "regf -g [field] -x [field]] -y [field] [inputfile] ...");
+	CMmsgPrint (CMmsgInfo, "where fieldnames must match fieldnames in first line of the datafile.");
+	CMmsgPrint (CMmsgInfo, "Operations are:");
+	CMmsgPrint (CMmsgInfo, "-g, --group  field");
+	CMmsgPrint (CMmsgInfo, "Perform selected operations on data groups, selected by having");
+	CMmsgPrint (CMmsgInfo, "the same value in the group field.  Process whole");
+	CMmsgPrint (CMmsgInfo, "input if no group is given.  Select groups based on groups of");
+	CMmsgPrint (CMmsgInfo, "fields if multiple groups are given.");
+	CMmsgPrint (CMmsgInfo, "-x, --xField  field");
+	CMmsgPrint (CMmsgInfo, "x variable field");
+	CMmsgPrint (CMmsgInfo, "-y, --yField  field");
+	CMmsgPrint (CMmsgInfo, "y variable field");
+	CMmsgPrint (CMmsgInfo, "-w, --weight field");
+	CMmsgPrint (CMmsgInfo, "-h, --help");
+	CMmsgPrint (CMmsgInfo, "Print this usage information.");
+	CMmsgPrint (CMmsgInfo, "The output fields are:");
+	CMmsgPrint (CMmsgInfo, "b0 - Intercept;");
+	CMmsgPrint (CMmsgInfo, "b1 - Slope;");
+	CMmsgPrint (CMmsgInfo, "r  - (x,y) correlation coefficient;");
+	CMmsgPrint (CMmsgInfo, "R2 - squared multiple (y,yHat) correlation coefficient;");
+	CMmsgPrint (CMmsgInfo, "n  - number of observation;");
+	CMmsgPrint (CMmsgInfo, "S - square root of sum of the residuals sqrt (SSE/(n-2));");
+	CMmsgPrint (CMmsgInfo, "b0Bound - confidence boundary for intersept;");
+	CMmsgPrint (CMmsgInfo, "b1Bound - confidence boundary for slope;");
 	}
 
 /* findarg is a simple serch function that finds arguments in argv[]*/
@@ -137,7 +138,7 @@ int main( int argc, char* argv[] )
   theData = readFile( dataFile, dataTypesFile, &errCheck );
   
   if(errCheck)
-    fprintf(stderr,"errors were reported, but continuing anyways.\n");
+    CMmsgPrint (CMmsgUsrError, "errors were reported, but continuing anyways.");
   
   xField = findArg(XSHORT,XLONG,argc,argv);
   yField = findArg(YSHORT,YLONG,argc,argv);
@@ -155,8 +156,8 @@ int main( int argc, char* argv[] )
 	weightField = getFieldNum( theData, argv[weightField+1] );
   else	weightField = -1;
 
-  if(xField == -1){ fprintf(stderr,"Could not get the X field\n"); return 0; }
-  if(yField == -1){ fprintf(stderr,"Could not get the Y field\n"); return 0; }
+  if(xField == -1){ CMmsgPrint (CMmsgUsrError, "Could not get the X field"); return 0; }
+  if(yField == -1){ CMmsgPrint (CMmsgUsrError, "Could not get the Y field"); return 0; }
   /*(weight field is not mandatory)*/
   
   reg( xField, yField, weightField, theData );
@@ -223,11 +224,11 @@ void reg( const int xFieldNum, const int yFieldNum, const int wFieldNum, const f
   
   /*I added this in so we dont get any "divide by zero" fatal errors*/
   if(sumW==0)
-  	{ fprintf(stderr,"I could not read the \"weight field\" as numeric values.\n"); return; }
+  	{ CMmsgPrint (CMmsgUsrError, "I could not read the \"weight field\" as numeric values."); return; }
   if(sumX==0)
-  	fprintf(stderr,"Warning: it looks like the X field is not numeric\n");
+  	CMmsgPrint (CMmsgUsrError, "Warning: it looks like the X field is not numeric");
   if(sumY==0)
-	fprintf(stderr,"Warning: it looks like the Y field is not numeric\n");
+	CMmsgPrint (CMmsgUsrError, "Warning: it looks like the Y field is not numeric");
   
 
   {

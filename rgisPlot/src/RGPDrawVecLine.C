@@ -30,9 +30,9 @@ DBInt RGPDrawVecLine (DBInt mode, DBInt *entryNum, DBObjData *lineData)
 	cpgqci (&lineColor);
 	
 	if ((xCoord = (float *) calloc (maxVertexNum, sizeof (float))) == (float *) NULL)
-		{ perror ("Memory Allocation Error in: RGPDrawLine ()"); delete lineIF; return (DBFault); }
+		{ CMmsgPrint (CMmsgAppError, "Memory Allocation Error in: %s %d",__FILE__,__LINE__); delete lineIF; return (DBFault); }
 	if ((yCoord = (float *) calloc (maxVertexNum, sizeof (float))) == (float *) NULL)
-		{ perror ("Memory Allocation Error in: RGPDrawLine ()"); free (xCoord); delete lineIF; return (DBFault); }
+		{ CMmsgPrint (CMmsgAppError, "Memory Allocation Error in: %s %d",__FILE__,__LINE__); free (xCoord); delete lineIF; return (DBFault); }
 	
 	do	{
 		RGPPrintMessage (mode,entryNum,"Symbol mode [default|uniform|custom]:");
@@ -67,9 +67,9 @@ DBInt RGPDrawVecLine (DBInt mode, DBInt *entryNum, DBObjData *lineData)
 			{
 			maxVertexNum = lineIF->VertexNum (record) + 2;
 			if ((xCoord = (float *) realloc (xCoord, maxVertexNum * sizeof (float))) == (float *) NULL)
-				{ perror ("Memory Reallocation Error in: RGPDrawLine ()"); free (yCoord); delete lineIF; return (DBFault); }
+				{ CMmsgPrint (CMmsgAppError, "Memory Reallocation Error in: %s %d",__FILE__,__LINE__); free (yCoord); delete lineIF; return (DBFault); }
 			if ((yCoord = (float *) realloc (yCoord, maxVertexNum * sizeof (float))) == (float *) NULL)
-				{ perror ("Memory Reallocation Error in: RGPDrawLine ()"); free (xCoord); delete lineIF; return (DBFault); }
+				{ CMmsgPrint (CMmsgAppError, "Memory Reallocation Error in: %s %d",__FILE__,__LINE__); free (xCoord); delete lineIF; return (DBFault); }
 			}
 		vertex = 0;
 		nodeCoord = lineIF->FromCoord (record);

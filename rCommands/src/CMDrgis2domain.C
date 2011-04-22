@@ -33,29 +33,29 @@ int main (int argc,char *argv [])
 		if (CMargTest (argv [argPos],"-l","--lengthcorrection"))
 			{
 			if ((argNum = CMargShiftLeft (argPos,argv,argNum)) <= argPos)
-				{ CMmsgPrint (CMmsgUsrError,"Missing length correction!\n");  return (CMfailed); }
+				{ CMmsgPrint (CMmsgUsrError,"Missing length correction!");  return (CMfailed); }
 			if (sscanf (argv [argPos],"%lf", &lCorrection) != 1)
-				{ CMmsgPrint (CMmsgUsrError, "Invalid length correction!\n"); return (CMfailed); }
+				{ CMmsgPrint (CMmsgUsrError, "Invalid length correction!"); return (CMfailed); }
 			if ((argNum = CMargShiftLeft (argPos,argv,argNum)) <= argPos) break;
 			continue;
 			}
 		if (CMargTest (argv [argPos],"-h","--help"))
 			{
-			CMmsgPrint (CMmsgInfo,"%s [options] <input rgisdata> <output domain>\n",CMprgName(argv[0]));
-			CMmsgPrint (CMmsgInfo,"     -l,--lengthcorrection\n");
-			CMmsgPrint (CMmsgInfo,"     -h,--help\n");
+			CMmsgPrint (CMmsgInfo,"%s [options] <input rgisdata> <output domain>",CMprgName(argv[0]));
+			CMmsgPrint (CMmsgInfo,"     -l,--lengthcorrection");
+			CMmsgPrint (CMmsgInfo,"     -h,--help");
 			return (DBSuccess);
 			}
 		if ((argv [argPos][0] == '-') && (strlen (argv [argPos]) > 1))
-			{ CMmsgPrint (CMmsgUsrError,"Unknown option: %s!\n",argv [argPos]); return (CMfailed); }
+			{ CMmsgPrint (CMmsgUsrError,"Unknown option: %s!",argv [argPos]); return (CMfailed); }
 		argPos++;
 		}
 
-	if (argNum > 3) { CMmsgPrint (CMmsgUsrError,"Extra arguments!\n"); return (CMfailed); }
+	if (argNum > 3) { CMmsgPrint (CMmsgUsrError,"Extra arguments!"); return (CMfailed); }
 
 	outFile = (argNum > 2) && (strcmp (argv [2],"-") != 0) ? fopen (argv [2],"w") : stdout;
 	if (outFile == (FILE *) NULL)
-		{ CMmsgPrint (CMmsgUsrError,"Output file Opening error in: %s\n",CMprgName(argv[0])); exit (DBFault); }
+		{ CMmsgPrint (CMmsgUsrError,"Output file Opening error in: %s",CMprgName(argv[0])); exit (DBFault); }
 
 	data = new DBObjData ();
 	ret = (argNum > 1) && (strcmp (argv [1],"-") != 0) ? data->Read (argv [1]) : data->Read (stdin);
@@ -71,7 +71,7 @@ int main (int argc,char *argv [])
 
 				domain->ObjNum = pntIF->ItemNum ();
 				if ((domain->Objects = (MFObject_t *) calloc (domain->ObjNum,sizeof (MFObject_t))) == (MFObject_t *) NULL)
-					{ perror ("Memory Allocation Error"); MFDomainFree (domain); goto Stop; }
+					{ CMmsgPrint (CMmsgSysError, "Memory Allocation Error in: %s %d",__FILE__,__LINE__); MFDomainFree (domain); goto Stop; }
 				for (objID = 0;objID < domain->ObjNum;++objID)
 					{
 					objRec = pntIF->Item (objID);
@@ -98,7 +98,7 @@ int main (int argc,char *argv [])
 				DBNetworkIF *netIF = new DBNetworkIF (data);
 				domain->ObjNum = netIF->CellNum ();
 				if ((domain->Objects = (MFObject_t *) calloc (domain->ObjNum,sizeof (MFObject_t))) == (MFObject_t *) NULL)
-					{ perror ("Memory Allocation Error"); MFDomainFree (domain); goto Stop; }
+					{ CMmsgPrint (CMmsgSysError, "Memory Allocation Error in: %s %d",__FILE__,__LINE__); MFDomainFree (domain); goto Stop; }
 				for (objID = 0;objID < domain->ObjNum;++objID)
 					{
 					domain->Objects [objID].DLinks = (size_t *) NULL;
@@ -119,7 +119,7 @@ int main (int argc,char *argv [])
 					{
 						size = (domain->Objects [objID].DLinkNum + 1) * sizeof (size_t);
 						if ((domain->Objects [objID].DLinks = (size_t *) realloc (domain->Objects [objID].DLinks,size)) == (size_t *) NULL)
-							{ perror ("Memory Allocation Error"); MFDomainFree (domain);	goto Stop; }
+							{ CMmsgPrint (CMmsgSysError, "Memory Allocation Error in: %s %d",__FILE__,__LINE__); MFDomainFree (domain);	goto Stop; }
 						domain->Objects [objID].DLinks [domain->Objects [objID].DLinkNum] = nextCell->RowID ();
 						domain->Objects [objID].DLinkNum++;
 					}
@@ -128,7 +128,7 @@ int main (int argc,char *argv [])
 							{
 							size = (domain->Objects [objID].ULinkNum + 1) * sizeof (size_t);
 							if ((domain->Objects [objID].ULinks = (size_t *) realloc (domain->Objects [objID].ULinks,size)) == (size_t *) NULL)
-								{ perror ("Memory Allocation Error"); MFDomainFree (domain);goto Stop; }
+								{ CMmsgPrint (CMmsgSysError, "Memory Allocation Error in: %s %d",__FILE__,__LINE__); MFDomainFree (domain);goto Stop; }
 							domain->Objects [objID].ULinks [domain->Objects [objID].ULinkNum] = nextCell->RowID ();
 							domain->Objects [objID].ULinkNum++;
 							}

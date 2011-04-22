@@ -143,7 +143,7 @@ static  DBObjRecord **_RGISReallocCellList (DBObjRecord **cellList,DBInt &maxCel
 	if (cellNum <= maxCellNum) return (cellList);
 	maxCellNum = cellNum;
 	if ((cellList = (DBObjRecord **) realloc (cellList, maxCellNum * sizeof (DBObjRecord *))) == (DBObjRecord **) NULL)
-		{ perror ("Memory Allocation Error in: _RGISEditAdjustNetworkCBK "); return ((DBObjRecord **) NULL); }
+		{ CMmsgPrint (CMmsgSysError, "Memory Allocation Error in: %s %d",__FILE__,__LINE__); return ((DBObjRecord **) NULL); }
 	return (cellList);
 	}
 

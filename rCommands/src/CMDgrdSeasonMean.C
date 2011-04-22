@@ -32,9 +32,9 @@ int main (int argc,char *argv [])
 			const char *sumStrs [] = { "avg", "sum", (char *) NULL };
 
 			if ((argNum = CMargShiftLeft (argPos,argv,argNum)) <= argPos)
-				{ CMmsgPrint (CMmsgUsrError,"Missing aggregation method!\n"); return (CMfailed); }
+				{ CMmsgPrint (CMmsgUsrError,"Missing aggregation method!"); return (CMfailed); }
 			if ((doSum = CMoptLookup (sumStrs,argv [argPos],true)) == DBFault)
-				{ CMmsgPrint (CMmsgUsrError,"Invalid aggregation method!\n"); return (CMfailed); }
+				{ CMmsgPrint (CMmsgUsrError,"Invalid aggregation method!"); return (CMfailed); }
 			doSum = sumCodes [doSum];
 			if ((argNum = CMargShiftLeft (argPos,argv,argNum)) <= argPos) break;
 			continue;
@@ -42,25 +42,25 @@ int main (int argc,char *argv [])
 		if (CMargTest (argv [argPos],"-o","--offset"))
 			{
 			if ((argNum = CMargShiftLeft (argPos,argv,argNum)) <= argPos)
-				{ CMmsgPrint (CMmsgUsrError,"Missing offset!\n");       return (CMfailed); }
+				{ CMmsgPrint (CMmsgUsrError,"Missing offset!");       return (CMfailed); }
 			if (sscanf (argv [argPos],"%d",&offset) != 1)
-				{ CMmsgPrint (CMmsgUsrError,"Invalid number of steps!\n");	return (CMfailed); }
+				{ CMmsgPrint (CMmsgUsrError,"Invalid number of steps!");	return (CMfailed); }
 			if ((argNum = CMargShiftLeft (argPos,argv,argNum)) <= argPos) break;
 			continue;
 			}
 		if (CMargTest (argv [argPos],"-e","--step"))
 			{
 			if ((argNum = CMargShiftLeft (argPos,argv,argNum)) <= argPos)
-				{ CMmsgPrint (CMmsgUsrError,"Missing number of steps!\n"); return (CMfailed); }
+				{ CMmsgPrint (CMmsgUsrError,"Missing number of steps!"); return (CMfailed); }
 			if (sscanf (argv [argPos],"%d",&stepNum) != 1)
-				{ CMmsgPrint (CMmsgUsrError,"Invalid number of steps!\n"); return (CMfailed); }
+				{ CMmsgPrint (CMmsgUsrError,"Invalid number of steps!"); return (CMfailed); }
 			if ((argNum = CMargShiftLeft (argPos,argv,argNum)) <= argPos) break;
 			continue;
 			}
 		if (CMargTest (argv [argPos],"-t","--title"))
 			{
 			if ((argNum = CMargShiftLeft (argPos,argv,argNum)) <= argPos)
-				{ CMmsgPrint (CMmsgUsrError,"Missing title!\n");        return (CMfailed); }
+				{ CMmsgPrint (CMmsgUsrError,"Missing title!");        return (CMfailed); }
 			title = argv [argPos];
 			if ((argNum = CMargShiftLeft (argPos,argv,argNum)) <= argPos) break;
 			continue;
@@ -68,7 +68,7 @@ int main (int argc,char *argv [])
 		if (CMargTest (argv [argPos],"-u","--subject"))
 			{
 			if ((argNum = CMargShiftLeft (argPos,argv,argNum)) <= argPos)
-				{ CMmsgPrint (CMmsgUsrError,"Missing subject!\n");      return (CMfailed); }
+				{ CMmsgPrint (CMmsgUsrError,"Missing subject!");      return (CMfailed); }
 			subject = argv [argPos];
 			if ((argNum = CMargShiftLeft (argPos,argv,argNum)) <= argPos) break;
 			continue;
@@ -76,7 +76,7 @@ int main (int argc,char *argv [])
 		if (CMargTest (argv [argPos],"-d","--domain"))
 			{
 			if ((argNum = CMargShiftLeft (argPos,argv,argNum)) <= argPos)
-				{ CMmsgPrint (CMmsgUsrError,"Missing domain!\n");       return (CMfailed); }
+				{ CMmsgPrint (CMmsgUsrError,"Missing domain!");       return (CMfailed); }
 			domain  = argv [argPos];
 			if ((argNum = CMargShiftLeft (argPos,argv,argNum)) <= argPos) break;
 			continue;
@@ -84,7 +84,7 @@ int main (int argc,char *argv [])
 		if (CMargTest (argv [argPos],"-v","--version"))
 			{
 			if ((argNum = CMargShiftLeft (argPos,argv,argNum)) <= argPos)
-				{ CMmsgPrint (CMmsgUsrError,"Missing version!\n");      return (CMfailed); }
+				{ CMmsgPrint (CMmsgUsrError,"Missing version!");      return (CMfailed); }
 			version  = argv [argPos];
 			if ((argNum = CMargShiftLeft (argPos,argv,argNum)) <= argPos) break;
 			continue;
@@ -97,24 +97,24 @@ int main (int argc,char *argv [])
 			}
 		if (CMargTest (argv [argPos],"-h","--help"))
 			{
-			CMmsgPrint (CMmsgSysError,"%s [options] <input grid> <output grid>\n",CMprgName(argv[0]));
-			CMmsgPrint (CMmsgSysError,"     -a,--aggregate [avg|sum]\n");
-			CMmsgPrint (CMmsgSysError,"     -o,--offset    [offset]\n");
-			CMmsgPrint (CMmsgSysError,"     -e,--step      [number of steps]\n");
-			CMmsgPrint (CMmsgSysError,"     -t,--title     [dataset title]\n");
-			CMmsgPrint (CMmsgSysError,"     -u,--subject   [subject]\n");
-			CMmsgPrint (CMmsgSysError,"     -d,--domain    [domain]\n");
-			CMmsgPrint (CMmsgSysError,"     -v,--version   [version]\n");
-			CMmsgPrint (CMmsgSysError,"     -V,--verbose\n");
-			CMmsgPrint (CMmsgSysError,"     -h,--help\n");
+			CMmsgPrint (CMmsgSysError,"%s [options] <input grid> <output grid>",CMprgName(argv[0]));
+			CMmsgPrint (CMmsgSysError,"     -a,--aggregate [avg|sum]");
+			CMmsgPrint (CMmsgSysError,"     -o,--offset    [offset]");
+			CMmsgPrint (CMmsgSysError,"     -e,--step      [number of steps]");
+			CMmsgPrint (CMmsgSysError,"     -t,--title     [dataset title]");
+			CMmsgPrint (CMmsgSysError,"     -u,--subject   [subject]");
+			CMmsgPrint (CMmsgSysError,"     -d,--domain    [domain]");
+			CMmsgPrint (CMmsgSysError,"     -v,--version   [version]");
+			CMmsgPrint (CMmsgSysError,"     -V,--verbose");
+			CMmsgPrint (CMmsgSysError,"     -h,--help");
 			return (DBSuccess);
 			}
 		if ((argv [argPos][0] == '-') && (strlen (argv [argPos]) > 1))
-			{ CMmsgPrint (CMmsgUsrError,"Unknown option: %s!\n",argv [argPos]); return (CMfailed); }
+			{ CMmsgPrint (CMmsgUsrError,"Unknown option: %s!",argv [argPos]); return (CMfailed); }
 		argPos++;
 		}
 
-	if (argNum > 3) { CMmsgPrint (CMmsgUsrError,"Extra arguments!\n"); return (CMfailed); }
+	if (argNum > 3) { CMmsgPrint (CMmsgUsrError,"Extra arguments!"); return (CMfailed); }
 	if (verbose) RGlibPauseOpen (argv[0]);
 
 	tsData = new DBObjData ();

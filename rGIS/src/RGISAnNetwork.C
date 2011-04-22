@@ -51,7 +51,7 @@ void RGISAnNetworkToGridCBK (Widget widget,RGISWorkspace *workspace,XmAnyCallbac
 	selection = UISelectObject (select,(DBObjectLIST<DBObject> *) (cellTable->Fields ()),DBTableFieldIsSimple);
 	if (selection == (char *) NULL) return;
 	if ((field = cellTable->Field (selection)) == (DBObjTableField *) NULL)
-		{ fprintf (stderr,"Corrupt Network Dataset in: RGISAnNetworkToGridCBK ()\n"); return; }
+		{ CMmsgPrint (CMmsgAppError,"Corrupt Network Dataset in: %s %d",__FILE__,__LINE__); return; }
 
 	if (DBTableFieldIsCategory (field) && DBTableFieldIsNumeric (field))
 		{
@@ -82,7 +82,7 @@ void RGISAnNetworkToGridCBK (Widget widget,RGISWorkspace *workspace,XmAnyCallbac
 		else if (DBTableFieldIsNumeric (field))	dataType = DBTypeGridContinuous;
 		else
 			{
-			fprintf (stderr,"Invalid field type in: RGISAnNetworkToGridCBK ()\n");
+			CMmsgPrint (CMmsgAppError,"Invalid field type in: %s %d",__FILE__,__LINE__);
 			return;
 			}
 		grdData = DBNetworkToGrid (netData,dataType);
@@ -209,7 +209,7 @@ void RGISAnNetworkAccumulateCBK (Widget widget,RGISWorkspace *workspace,XmAnyCal
 	widget = widget; callData = callData;
 
 	if ((inGridData = netData->LinkedData ()) == (DBObjData *) NULL)
-		{ fprintf (stderr,"Null Linked Data in: _RGISAnnNetworkAccumulate ()\n"); return; }
+		{ CMmsgPrint (CMmsgAppError,"Null Linked Data in: %s %d",__FILE__,__LINE__); return; }
 
 	outGridData = DBNetworkToGrid (netData,DBTypeGridContinuous);
 	outGridData->Document (DBDocSubject,inGridData->Document (DBDocSubject));
@@ -234,7 +234,7 @@ void RGISAnNetworkUpStreamAvgCBK (Widget widget,RGISWorkspace *workspace,XmAnyCa
 	widget = widget; callData = callData;
 
 	if ((inGridData = netData->LinkedData ()) == (DBObjData *) NULL)
-		{ fprintf (stderr,"Null Linked Data in: RGISAnNetworkUpStreamAvgCBK ()\n"); return; }
+		{ CMmsgPrint (CMmsgAppError,"Null Linked Data in: %s %d",__FILE__,__LINE__); return; }
 
 	outGridData = DBNetworkToGrid (netData,DBTypeGridContinuous);
 	outGridData->Document (DBDocSubject,inGridData->Document (DBDocSubject));
@@ -259,7 +259,7 @@ void RGISAnNetworkCellSlopesCBK (Widget widget,RGISWorkspace *workspace,XmAnyCal
 	widget = widget; callData = callData;
 
 	if ((inGridData = netData->LinkedData ()) == (DBObjData *) NULL)
-		{ fprintf (stderr,"Null Linked Data in: RGISAnNetworkCellSlopesCBK ()\n"); return; }
+		{ CMmsgPrint (CMmsgAppError,"Null Linked Data in: %s %d",__FILE__,__LINE__); return; }
 
 	outGridData = DBNetworkToGrid (netData,DBTypeGridContinuous);
 	outGridData->Document (DBDocGeoDomain,inGridData->Document (DBDocGeoDomain));
@@ -285,7 +285,7 @@ void RGISAnNetworkBasinProfCBK (Widget widget,RGISWorkspace *workspace,XmAnyCall
 	widget = widget; callData = callData;
 
 	if ((gridData = netData->LinkedData ()) == (DBObjData *) NULL)
-		{ fprintf (stderr,"Null Linked Data in: RGISAnNetworkBasinProfCBK ()\n"); return; }
+		{ CMmsgPrint (CMmsgAppError, "Null Linked Data in: %s %d",__FILE__,__LINE__); return; }
 
 	tblData  = new DBObjData ("",DBTypeTable);
 	tblData->Document (DBDocGeoDomain,netData->Document (DBDocGeoDomain));

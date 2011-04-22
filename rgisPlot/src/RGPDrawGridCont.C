@@ -118,7 +118,7 @@ DBInt RGPDrawGridContinuous (DBInt mode, DBInt *entryNum, DBObjData *grdData)
 		case 6:
 			colorNum = 0;
 			if ((customColors = (RGPColorMapEntry *) calloc (1,sizeof (RGPColorMapEntry))) == (RGPColorMapEntry *) NULL)
-				{ perror ("Memory Allocation Error in: RGPDrawGridContinuous ()"); delete gridIF; return (DBFault); }
+				{ CMmsgPrint (CMmsgSysError, "Memory Allocation Error in: %s %d",__FILE__,__LINE__); delete gridIF; return (DBFault); }
 			do	{
 				RGPPrintMessage (mode,entryNum,"Background Shade [red,green,blue]:");
 				if (fgets (charBuffer,sizeof (charBuffer) - 2,stdin) == (char *) NULL) { ret = DBFault; goto Stop; }
@@ -138,7 +138,7 @@ DBInt RGPDrawGridContinuous (DBInt mode, DBInt *entryNum, DBObjData *grdData)
 				if (sscanf (charBuffer,"%d,%d,%d",&r,&g,&b) == 3)
 					{
 					if ((customColors = (RGPColorMapEntry *) realloc (customColors,(colorNum + 1) * sizeof (RGPColorMapEntry))) == (RGPColorMapEntry *) NULL)
-						{ perror ("Memory Allocation Error in: RGPDrawGridContinuous ()"); delete gridIF; return (DBFault); }
+						{ CMmsgPrint (CMmsgSysError, "Memory Allocation Error in: %s %d",__FILE__,__LINE__); delete gridIF; return (DBFault); }
 					customColors [colorNum].Red = r;
 					customColors [colorNum].Green = g;
 					customColors [colorNum].Blue = b;
@@ -172,7 +172,7 @@ DBInt RGPDrawGridContinuous (DBInt mode, DBInt *entryNum, DBObjData *grdData)
 		else	if (RGPPrintError (mode,*entryNum,"Value range input error")) { ret = DBFault; goto Stop; }
 		} while (true);
 	if ((array = (float *) calloc (gridIF->RowNum () * gridIF->ColNum (),sizeof (float))) == (float *) NULL)
-		{ perror ("Memory allocation error in: RGPDrawGridContinuous ()"); ret = DBFault; goto Stop; }
+		{ CMmsgPrint (CMmsgSysError, "Memory allocation error in: %s %d",__FILE__,__LINE__); ret = DBFault; goto Stop; }
 	for (pos.Row = 0;pos.Row < gridIF->RowNum ();++pos.Row)
 		for (pos.Col = 0;pos.Col < gridIF->ColNum ();++pos.Col)
 			if (gridIF->Value (layerRec,pos,&value))

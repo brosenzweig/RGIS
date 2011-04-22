@@ -546,7 +546,7 @@ char *DBGridIF::ValueString (DBObjRecord *layerRec,DBPosition pos)
 				if (Value (layerRec,pos,&cellVal) == false) return ((char *) "");
 				sprintf (retString,ValueFormat (),cellVal);
 			} break;
-		default:	CMmsgPrint (CMmsgAppError, "Invalid Data Type in: %s %d\n",__FILE__,__LINE__); return ((char *) NULL);
+		default:	CMmsgPrint (CMmsgAppError, "Invalid Data Type in: %s %d",__FILE__,__LINE__); return ((char *) NULL);
 		}
 	return (retString);
 	}

@@ -59,16 +59,16 @@ int main(int argc, char* argv[])
 		if (CMargTest (argv [argPos],"-r","--rename"))
 			{
 			if ((argNum = CMargShiftLeft (argPos,argv,argNum)) <= argPos)
-				{ CMmsgPrint (CMmsgUsrError,"Missing layerID!\n"); return (CMfailed); }
+				{ CMmsgPrint (CMmsgUsrError,"Missing layerID!"); return (CMfailed); }
 			if (sscanf (argv[argPos],"%d",&layerID) != 1)
 				{
-				CMmsgPrint (CMmsgUsrError,"Invalid layerID!\n");
+				CMmsgPrint (CMmsgUsrError,"Invalid layerID!");
 				if (renameCLS != (RenameCLS *) NULL) { renameCLS->DeleteLink (); delete renameCLS; }
 				return (CMfailed);
 				}
 			if ((argNum = CMargShiftLeft (argPos,argv,argNum)) <= argPos)
 				{
-				CMmsgPrint (CMmsgUsrError,"Missing layername!\n");
+				CMmsgPrint (CMmsgUsrError,"Missing layername!");
 				if (renameCLS != (RenameCLS *) NULL) { renameCLS->DeleteLink (); delete renameCLS; }
 				return (CMfailed);
 				}
@@ -87,9 +87,9 @@ int main(int argc, char* argv[])
 			const char *shadeSets [] = { "standard","grey","blue","blue-to-red","elevation", (char *) NULL };
 
 			if ((argNum = CMargShiftLeft (argPos,argv,argNum)) <= argPos)
-				{ CMmsgPrint (CMmsgUsrError,"Missing shadeset!\n");     return (CMfailed); }
+				{ CMmsgPrint (CMmsgUsrError,"Missing shadeset!");     return (CMfailed); }
 			if ((shadeSet = CMoptLookup (shadeSets,argv [argPos],true)) == CMfailed)
-				{ CMmsgPrint (CMmsgUsrError,"Invalid shadeset!\n");     return (CMfailed); }
+				{ CMmsgPrint (CMmsgUsrError,"Invalid shadeset!");     return (CMfailed); }
 			shadeSet = shadeCodes [shadeSet];
 			changeShadeSet = true;
 			if ((argNum = CMargShiftLeft (argPos,argv,argNum)) <= argPos) break;
@@ -103,17 +103,17 @@ int main(int argc, char* argv[])
 			}
 		if (CMargTest (argv [argPos],"-h","--help"))
 			{
-			CMmsgPrint (CMmsgInfo,"%s [options] <input grid> <output grid>\n",CMprgName(argv[0]));
-			CMmsgPrint (CMmsgInfo,"     -r,--rename    [layerID layerName]\n");
-			CMmsgPrint (CMmsgInfo,"     -s,--shadeset  [standard|grey|blue|blue-to-red|elevation]\n");
-			CMmsgPrint (CMmsgInfo,"     -V,--verbose\n");
-			CMmsgPrint (CMmsgInfo,"     -h,--help\n");
+			CMmsgPrint (CMmsgInfo,"%s [options] <input grid> <output grid>",CMprgName(argv[0]));
+			CMmsgPrint (CMmsgInfo,"     -r,--rename    [layerID layerName]");
+			CMmsgPrint (CMmsgInfo,"     -s,--shadeset  [standard|grey|blue|blue-to-red|elevation]");
+			CMmsgPrint (CMmsgInfo,"     -V,--verbose");
+			CMmsgPrint (CMmsgInfo,"     -h,--help");
 			return (DBSuccess);
 			}
 
 		if ((argv [argPos][0] == '-') && (strlen (argv [argPos]) > 1))
 			{
-			CMmsgPrint (CMmsgUsrError,"Unknown option: %s!\n",argv [argPos]);
+			CMmsgPrint (CMmsgUsrError,"Unknown option: %s!",argv [argPos]);
 			if (renameCLS != (RenameCLS *) NULL) { renameCLS->DeleteLink (); delete renameCLS; }
 			return (CMfailed);
 			}
@@ -122,7 +122,7 @@ int main(int argc, char* argv[])
   
 	if (argNum > 3)
 		{
-		CMmsgPrint (CMmsgUsrError,"Extra arguments!\n");
+		CMmsgPrint (CMmsgUsrError,"Extra arguments!");
 		if (renameCLS != (RenameCLS *) NULL) { renameCLS->DeleteLink (); delete renameCLS; }
 		return (CMfailed);
 		}

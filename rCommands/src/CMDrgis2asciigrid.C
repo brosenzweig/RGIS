@@ -38,7 +38,7 @@ int main (int argc,char *argv [])
 		if (CMargTest (argv [argPos],"-l","--layer"))
 			{
 			if ((argNum = CMargShiftLeft (argPos,argv,argNum)) <= argPos)
-				{ CMmsgPrint (CMmsgUsrError,"Missing layerName!\n");    return (CMfailed); }
+				{ CMmsgPrint (CMmsgUsrError,"Missing layerName!");    return (CMfailed); }
 			layerName = argv [argPos];
 			if ((argNum = CMargShiftLeft (argPos,argv,argNum)) <= argPos) break;
 			continue;
@@ -51,26 +51,26 @@ int main (int argc,char *argv [])
 			}
 		if (CMargTest (argv [argPos],"-h","--help"))
 			{
-			CMmsgPrint (CMmsgInfo,"%s [options] <dm file> <rgis file>\n",CMprgName(argv[0]));
-			CMmsgPrint (CMmsgInfo,"     -a,--all\n");
-			CMmsgPrint (CMmsgInfo,"     -l,--layer [layername]\n");
-			CMmsgPrint (CMmsgInfo,"     -i,--list\n");
-			CMmsgPrint (CMmsgInfo,"     -n,--num\n");
-			CMmsgPrint (CMmsgInfo,"     -V,--verbose\n");
-			CMmsgPrint (CMmsgInfo,"     -h,--help\n");
+			CMmsgPrint (CMmsgInfo,"%s [options] <dm file> <rgis file>",CMprgName(argv[0]));
+			CMmsgPrint (CMmsgInfo,"     -a,--all");
+			CMmsgPrint (CMmsgInfo,"     -l,--layer [layername]");
+			CMmsgPrint (CMmsgInfo,"     -i,--list");
+			CMmsgPrint (CMmsgInfo,"     -n,--num");
+			CMmsgPrint (CMmsgInfo,"     -V,--verbose");
+			CMmsgPrint (CMmsgInfo,"     -h,--help");
 			return (DBSuccess);
 			}
 		if ((argv [argPos][0] == '-') && (strlen (argv [argPos]) > 1))
-			{ CMmsgPrint (CMmsgUsrError,"Unknown option: %s!\n",argv [argPos]); return (CMfailed); }
+			{ CMmsgPrint (CMmsgUsrError,"Unknown option: %s!",argv [argPos]); return (CMfailed); }
 		argPos++;
 		}
 
-	if (argNum > 3) { CMmsgPrint (CMmsgUsrError,"Extra arguments!\n"); return (CMfailed); }
+	if (argNum > 3) { CMmsgPrint (CMmsgUsrError,"Extra arguments!"); return (CMfailed); }
 	if (verbose) RGlibPauseOpen (argv[0]);
 
 	if (((doList || doNum) && (doAll || (layerName != (char *) NULL))) ||
 		 (doAll & (layerName != (char *) NULL)))
-		{ CMmsgPrint (CMmsgUsrError,"Conflicting options!\n"); return (CMfailed); }
+		{ CMmsgPrint (CMmsgUsrError,"Conflicting options!"); return (CMfailed); }
 
 	data = new DBObjData ();
 	ret = (argNum > 1) && (strcmp (argv [1],"-") != 0) ? data->Read (argv [1]) : data->Read (stdin);
@@ -79,14 +79,14 @@ int main (int argc,char *argv [])
 
 	gridIF = new DBGridIF (data);
 	if ((out = argNum > 2 ? fopen (argv [2],"w") : stdout) == (FILE *) NULL)
-		{ CMmsgPrint (CMmsgUsrError,"Output file opening error!\n"); return (CMfailed); }
+		{ CMmsgPrint (CMmsgUsrError,"Output file opening error!"); return (CMfailed); }
 
-	if (doNum) fprintf (out,"%d\n",gridIF->LayerNum ());
+	if (doNum) fprintf (out,"%d",gridIF->LayerNum ());
 	if (doList)
 		for (layerID = 0;layerID < gridIF->LayerNum ();++layerID)
 			{
 			layerRec = gridIF->Layer (layerID);
-			fprintf (out,"%s\n",layerRec->Name ());
+			fprintf (out,"%s",layerRec->Name ());
 			}
 	if (doAll)
 		for (layerID = 0;layerID < gridIF->LayerNum ();++layerID)
@@ -97,7 +97,7 @@ int main (int argc,char *argv [])
 	else if (layerName != (char *) NULL)
 		{
 		if ((layerRec = gridIF->Layer (layerName)) == (DBObjRecord *) NULL)
-			{ CMmsgPrint (CMmsgUsrError,"Wrong layername\n"); }
+			{ CMmsgPrint (CMmsgUsrError,"Wrong layername"); }
 		else	DBExportARCGridLayer (data,layerRec,out);
 		}
 

@@ -30,7 +30,7 @@ int main (int argc,char *argv [])
 		if (CMargTest (argv [argPos],"-a","--table"))
 			{
 			if ((argNum = CMargShiftLeft (argPos,argv,argNum)) <= argPos)
-				{ CMmsgPrint (CMmsgUsrError,"Missing table name!\n"); return (CMfailed); }
+				{ CMmsgPrint (CMmsgUsrError,"Missing table name!"); return (CMfailed); }
 			tableName = argv [argPos];
 			if ((argNum = CMargShiftLeft (argPos,argv,argNum)) <= argPos) break;
 			continue;
@@ -38,7 +38,7 @@ int main (int argc,char *argv [])
 		if (CMargTest (argv [argPos],"-f","--field"))
 			{
 			if ((argNum = CMargShiftLeft (argPos,argv,argNum)) <= argPos)
-				{ CMmsgPrint (CMmsgUsrError,"Missing field name!\n"); return (CMfailed); }
+				{ CMmsgPrint (CMmsgUsrError,"Missing field name!"); return (CMfailed); }
 			fieldName = argv [argPos];
 			if ((argNum = CMargShiftLeft (argPos,argv,argNum)) <= argPos) break;
 			continue;
@@ -46,7 +46,7 @@ int main (int argc,char *argv [])
 		if (CMargTest (argv [argPos],"-r","--rename"))
 			{
 			if ((argNum = CMargShiftLeft (argPos,argv,argNum)) <= argPos)
-				{ CMmsgPrint (CMmsgUsrError,"Missing new field name!\n"); return (CMfailed); }
+				{ CMmsgPrint (CMmsgUsrError,"Missing new field name!"); return (CMfailed); }
 			newName = argv [argPos];
 			if ((argNum = CMargShiftLeft (argPos,argv,argNum)) <= argPos) break;
 			continue;
@@ -57,9 +57,9 @@ int main (int argc,char *argv [])
 			const char *types [] = { "string", "int", "float", "date", (char *) NULL };
 
 			if ((argNum = CMargShiftLeft (argPos,argv,argNum)) <= argPos)
-				{ CMmsgPrint (CMmsgUsrError,"Missing field type!\n"); return (CMfailed); }
+				{ CMmsgPrint (CMmsgUsrError,"Missing field type!"); return (CMfailed); }
 			if ((type = CMoptLookup (types,argv [argPos],true)) == DBFault)
-					{ CMmsgPrint (CMmsgUsrError,"Invalid field type!\n");				return (CMfailed); }
+					{ CMmsgPrint (CMmsgUsrError,"Invalid field type!");				return (CMfailed); }
 			type = typeCodes [type];
 			if ((argNum = CMargShiftLeft (argPos,argv,argNum)) <= argPos) break;
 			continue;
@@ -67,27 +67,27 @@ int main (int argc,char *argv [])
 		if (CMargTest (argv [argPos],"-l","--length"))
 			{
 			if ((argNum = CMargShiftLeft (argPos,argv,argNum)) <= argPos)
-				{ CMmsgPrint (CMmsgUsrError,"Missing field length!\n"); return (CMfailed); }
+				{ CMmsgPrint (CMmsgUsrError,"Missing field length!"); return (CMfailed); }
 			if (sscanf (argv [argPos],"%d",&length) != 1)
-				{ CMmsgPrint (CMmsgUsrError,"Invalid field length!\n"); return (CMfailed); }
+				{ CMmsgPrint (CMmsgUsrError,"Invalid field length!"); return (CMfailed); }
 			if ((argNum = CMargShiftLeft (argPos,argv,argNum)) <= argPos) break;
 			continue;
 			}
 		if (CMargTest (argv [argPos],"-w","--width"))
 			{
 			if ((argNum = CMargShiftLeft (argPos,argv,argNum)) <= argPos)
-				{ CMmsgPrint (CMmsgUsrError,"Missing format width!\n"); return (CMfailed); }
+				{ CMmsgPrint (CMmsgUsrError,"Missing format width!"); return (CMfailed); }
 			if (sscanf (argv [argPos],"%d",&dWidth) != 1)
-				{ CMmsgPrint (CMmsgUsrError,"Invalid format width!\n"); return (CMfailed); }
+				{ CMmsgPrint (CMmsgUsrError,"Invalid format width!"); return (CMfailed); }
 			if ((argNum = CMargShiftLeft (argPos,argv,argNum)) <= argPos) break;
 			continue;
 			}
 		if (CMargTest (argv [argPos],"-e","--decimals"))
 			{
 			if ((argNum = CMargShiftLeft (argPos,argv,argNum)) <= argPos)
-				{ CMmsgPrint (CMmsgUsrError,"Missing decimals!\n");   return (CMfailed); }
+				{ CMmsgPrint (CMmsgUsrError,"Missing decimals!");   return (CMfailed); }
 			if (sscanf (argv [argPos],"%d",&dDecimals) != 1)
-				{ CMmsgPrint (CMmsgUsrError,"Invalid number of decimals!\n");	return (CMfailed); }
+				{ CMmsgPrint (CMmsgUsrError,"Invalid number of decimals!");	return (CMfailed); }
 			if ((argNum = CMargShiftLeft (argPos,argv,argNum)) <= argPos) break;
 			continue;
 			}
@@ -99,40 +99,40 @@ int main (int argc,char *argv [])
 			}
 		if (CMargTest (argv [argPos],"-h","--help"))
 			{
-			CMmsgPrint (CMmsgInfo,"%s [options] <input file> <output file>\n",CMprgName(argv[0]));
-			CMmsgPrint (CMmsgInfo,"     -a,--table     [table name]\n");
-			CMmsgPrint (CMmsgInfo,"     -f,--field     [field name]\n");
-			CMmsgPrint (CMmsgInfo,"     -r,--rename    [new field name]\n");
-			CMmsgPrint (CMmsgInfo,"     -y,--type      [string|int|float|date]\n");
-			CMmsgPrint (CMmsgInfo,"     -l,--length    [field length]\n");
-			CMmsgPrint (CMmsgInfo,"     -w,--width     [display width]\n");
-			CMmsgPrint (CMmsgInfo,"     -e,--decimals  [display decimals]\n");
-			CMmsgPrint (CMmsgInfo,"     -V,--verbose\n");
-			CMmsgPrint (CMmsgInfo,"     -h,--help\n");
+			CMmsgPrint (CMmsgInfo,"%s [options] <input file> <output file>",CMprgName(argv[0]));
+			CMmsgPrint (CMmsgInfo,"     -a,--table     [table name]");
+			CMmsgPrint (CMmsgInfo,"     -f,--field     [field name]");
+			CMmsgPrint (CMmsgInfo,"     -r,--rename    [new field name]");
+			CMmsgPrint (CMmsgInfo,"     -y,--type      [string|int|float|date]");
+			CMmsgPrint (CMmsgInfo,"     -l,--length    [field length]");
+			CMmsgPrint (CMmsgInfo,"     -w,--width     [display width]");
+			CMmsgPrint (CMmsgInfo,"     -e,--decimals  [display decimals]");
+			CMmsgPrint (CMmsgInfo,"     -V,--verbose");
+			CMmsgPrint (CMmsgInfo,"     -h,--help");
 			return (DBSuccess);
 			}
 		if ((argv [argPos][0] == '-') && (strlen (argv [argPos]) > 1))
-			{ CMmsgPrint (CMmsgUsrError,"Unknown option: %s!\n",argv [argPos]); return (CMfailed); }
+			{ CMmsgPrint (CMmsgUsrError,"Unknown option: %s!",argv [argPos]); return (CMfailed); }
 		argPos++;
 		}
 
-	if (argNum > 3) { CMmsgPrint (CMmsgUsrError,"Extra arguments!\n"); return (CMfailed); }
+	if (argNum > 3) { CMmsgPrint (CMmsgUsrError,"Extra arguments!"); return (CMfailed); }
 	if (verbose) RGlibPauseOpen (argv[0]);
 
 	if (tableName == (char *) NULL) tableName = DBrNItems;
 	if (fieldName == (char *) NULL) 
-		{ CMmsgPrint (CMmsgUsrError,"Missing field name!\n"); return (CMfailed); }
+		{ CMmsgPrint (CMmsgUsrError,"Missing field name!"); return (CMfailed); }
 
 	data = new DBObjData ();
 	if (((argNum > 1) && (strcmp (argv [1],"-") != 0) ? data->Read (argv [1]) : data->Read (stdin)) == DBFault)
 		{ delete data; return (CMfailed); }
 
 	if ((table = data->Table (tableName)) == (DBObjTable *) NULL)
-		{ CMmsgPrint (CMmsgUsrError,"Invalid table: %s!\n",tableName); delete data; return (CMfailed); }
+		{ CMmsgPrint (CMmsgUsrError,"Invalid table: %s!",tableName); delete data; return (CMfailed); }
 	if ((field = table->Field (fieldName)) == (DBObjTableField *) NULL)
-		{ CMmsgPrint (CMmsgUsrError,"Invalid field: %s!\n",fieldName); delete data; return (CMfailed); }
+		{ CMmsgPrint (CMmsgUsrError,"Invalid field: %s!",fieldName); delete data; return (CMfailed); }
 	if (DBTableFieldIsOptional (field) != true)
-		{ CMmsgPrint (CMmsgUsrError,"Required field!\n"); delete data; return (CMfailed); }
+		{ CMmsgPrint (CMmsgUsrError,"Required field!"); delete data; return (CMfailed); }
 	if (newName != (char *) NULL) field->Name (newName);
 	if ((type != DBFault) && (type != field->Type ()))
 		{
@@ -175,7 +175,7 @@ int main (int argc,char *argv [])
 		{
 		if (type != DBTableFieldFloat)
 			{
-			CMmsgPrint (CMmsgUsrError,"Invalid field type for decimals!\n");
+			CMmsgPrint (CMmsgUsrError,"Invalid field type for decimals!");
 			delete data;
 			return (CMfailed);
 			}

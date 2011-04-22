@@ -38,15 +38,15 @@ DBInt RGPDrawVecPoint (DBInt mode, DBInt *entryNum, DBObjData *pntData)
 	DBObjTableField *styleFld;
 
 	if ((symbols = pntData->Table (DBrNSymbols)) == (DBObjTable *) NULL)
-	{ fprintf (stderr,"Corrupt point coverage"); return (DBFault); }
+	{ CMmsgPrint (CMmsgUsrError, "Corrupt point coverage"); return (DBFault); }
 	if ((symbolIDFld   = symbols->Field (DBrNSymbolID))   == (DBObjTableField *) NULL)
-	{ fprintf (stderr,"Corrupt point coverage"); return (DBFault); }
+	{ CMmsgPrint (CMmsgUsrError, "Corrupt point coverage"); return (DBFault); }
 	if ((foregroundFld = symbols->Field (DBrNForeground)) == (DBObjTableField *) NULL)
-	{ fprintf (stderr,"Corrupt point coverage"); return (DBFault); }
+	{ CMmsgPrint (CMmsgUsrError, "Corrupt point coverage"); return (DBFault); }
 	if ((backgroundFld = symbols->Field (DBrNBackground)) == (DBObjTableField *) NULL)
-	{ fprintf (stderr,"Corrupt point coverage"); return (DBFault); }
+	{ CMmsgPrint (CMmsgUsrError, "Corrupt point coverage"); return (DBFault); }
 	if ((styleFld      = symbols->Field (DBrNStyle))      == (DBObjTableField *) NULL)
-	{ fprintf (stderr,"Corrupt point coverage"); return (DBFault); }
+	{ CMmsgPrint (CMmsgUsrError, "Corrupt point coverage"); return (DBFault); }
 
 	do	{
 		RGPPrintMessage (mode,entryNum,"Symbol mode [default|custom]:");
@@ -100,9 +100,9 @@ DBInt RGPDrawVecPoint (DBInt mode, DBInt *entryNum, DBObjData *pntData)
 	cpgqlw (&pntSize);
 
 	if ((xCoord = (float *) calloc (pntIF->ItemNum (),sizeof (float))) == (float *) NULL)
-		{ perror ("Memory Reallocation Error in: RGPDrawLine ()"); delete pntIF; return (DBFault); }
+		{ CMmsgPrint (CMmsgAppError, "Memory Reallocation Error in: %s %d",__FILE__,__LINE__); delete pntIF; return (DBFault); }
 	if ((yCoord = (float *) calloc (pntIF->ItemNum (),sizeof (float))) == (float *) NULL)
-		{ perror ("Memory Reallocation Error in: RGPDrawLine ()"); free (xCoord); delete pntIF; return (DBFault); }
+		{ CMmsgPrint (CMmsgAppError, "Memory Reallocation Error in: %s %d",__FILE__,__LINE__); free (xCoord); delete pntIF; return (DBFault); }
 
 	cpgslw (3);
 	for (pntID = 0;pntID < pntIF->ItemNum (); ++pntID)

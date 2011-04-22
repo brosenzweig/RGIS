@@ -688,7 +688,7 @@ void RGISToolsImportGridCBK (Widget widget,RGISWorkspace *workspace,XmAnyCallbac
 				case RGISBinTypeSingle:	itemSize = sizeof (DBFloat4);	break;
 				case RGISBinTypeDouble:	itemSize = sizeof (DBFloat);	break;
 				default:
-					fprintf (stderr,"Invalid Data Type in: DBNetworkToGrid ()\n");
+					CMmsgPrint (CMmsgAppError, "Invalid Data Type in: %s %d",__FILE__,__LINE__);
 					delete grdData;
 					return;
 				}
@@ -699,7 +699,7 @@ void RGISToolsImportGridCBK (Widget widget,RGISWorkspace *workspace,XmAnyCallbac
 				{
 				if ((lstFILE = fopen (listFileName,"r")) == (FILE *) NULL)
 					{
-					fprintf (stderr,"List File Openining Error in: RGISToolsImportGridCBK ()\n");
+					CMmsgPrint (CMmsgAppError, "List File Openining Error in: %s %d",__FILE__,__LINE__);
 					delete grdData;
 					return;
 					}
@@ -727,7 +727,7 @@ void RGISToolsImportGridCBK (Widget widget,RGISWorkspace *workspace,XmAnyCallbac
 					}
 
 				if ((inFILE = fopen (fileName,"r")) == (FILE *) NULL)
-					{ perror ("File Openining Error in: RGISToolsImportGridCBK ()"); delete grdData; return; }
+					{ CMmsgPrint (CMmsgSysError, "File Openining Error in: %s %d",__FILE__,__LINE__); delete grdData; return; }
 				if (fileType == RGISGridBinary)
 					{
 					int skip = skipHeader;
@@ -736,7 +736,7 @@ void RGISToolsImportGridCBK (Widget widget,RGISWorkspace *workspace,XmAnyCallbac
 						chunk = skip < (int) sizeof (buffer) ? skip : (int) sizeof (buffer);
 						if (fread (buffer,chunk,1,inFILE) != 1)
 							{
-							perror ("File Reading Error in: RGISToolsImportGridCBK ()");
+							CMmsgPrint (CMmsgSysError, "File Reading Error in: %s %d",__FILE__,__LINE__);
 							fclose (inFILE);
 							delete grdData;
 							}
@@ -766,7 +766,7 @@ void RGISToolsImportGridCBK (Widget widget,RGISWorkspace *workspace,XmAnyCallbac
 					case RGISBinTypeDouble:
 						valueTypeFLD->Int (layerRec,DBTableFieldFloat);	break;
 					default:
-						fprintf (stderr,"Invalid Data Type in: DBNetworkToGrid ()\n");
+						CMmsgPrint (CMmsgAppError, "Invalid Data Type in: %s %d",__FILE__,__LINE__);
 						fclose (inFILE); delete grdData;
 						return;
 					}
@@ -888,7 +888,7 @@ void RGISToolsImportGridCBK (Widget widget,RGISWorkspace *workspace,XmAnyCallbac
 							{
 							if ((itemRec = itemTable->Add (buffer)) == (DBObjRecord *) NULL)
 								{
-								fprintf (stderr,"Item Object Creation Error in: RGISToolsImportGridCBK ()\n");
+								CMmsgPrint (CMmsgAppError, "Item Object Creation Error in: %s %d",__FILE__,__LINE__);
 								delete gridIF; delete grdData;
 								return;
 								}
