@@ -167,19 +167,19 @@ int DBObjTable::Read (FILE *file,int swap)
 				case DBTableFieldPosition:
 					pos    = field->Position (record);
 					switch (field->Length ())
-					{
-					case sizeof (DBPosition):
-						 pos.Swap ();
-						break;
-					default:
-						row = pos.Row;
-						col = pos.Col;
-						DBByteOrderSwapHalfWord (&row);
-						DBByteOrderSwapHalfWord (&col);
-						pos.Row  = row;
-						pos.Col  = col;
-						break;
-					}
+						{
+						case sizeof (DBPosition):
+							pos.Swap ();
+							break;
+						default:
+							row = pos.Row;
+							col = pos.Col;
+							DBByteOrderSwapHalfWord (&row);
+							DBByteOrderSwapHalfWord (&col);
+							pos.Row  = row;
+							pos.Col  = col;
+							break;
+						}
 					field->Position (record,pos);
 					break;
 				default: break;
