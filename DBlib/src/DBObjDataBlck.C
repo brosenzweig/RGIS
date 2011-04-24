@@ -96,7 +96,7 @@ DBObjTable *_DBCreateDataBlockNetBasins ()
 
 	{
 	DBTableFieldDefinition fieldDefs [] =
-		{	DBTableFieldDefinition (DBrNMouthPos,		DBTableFieldPosition,DBHiddenField,     sizeof (DBUShortPosition),true),
+		{	DBTableFieldDefinition (DBrNMouthPos,		DBTableFieldPosition,DBHiddenField,     sizeof (DBPosition),true),
 			DBTableFieldDefinition (DBrNBasinOrder,     DBTableFieldInt,     (char *) "%2d",    sizeof (DBByte),true),
 			DBTableFieldDefinition (DBrNColor,			DBTableFieldInt,     (char *) "%2d",    sizeof (DBInt),true),
 			DBTableFieldDefinition (DBrNSymbol,			DBTableFieldTableRec,DBHiddenField,	    sizeof (DBAddress),true),
@@ -110,14 +110,14 @@ DBObjTable *_DBCreateDataBlockNetCells ()
 
 	{
 	DBTableFieldDefinition fieldDefs [] =
-		{	DBTableFieldDefinition (DBrNPosition,       DBTableFieldPosition,DBHiddenField,	    sizeof (DBUShortPosition),true),
+		{	DBTableFieldDefinition (DBrNPosition,       DBTableFieldPosition,DBHiddenField,	    sizeof (DBPosition),true),
 			DBTableFieldDefinition (DBrNToCell,         DBTableFieldInt,     (char *) "%2X",    sizeof (DBByte),true),
 			DBTableFieldDefinition (DBrNFromCell,       DBTableFieldInt,     (char *) "%2X",    sizeof (DBByte),true),
 			DBTableFieldDefinition (DBrNOrder,          DBTableFieldInt,     (char *) "%2d",    sizeof (DBByte),true),
 			DBTableFieldDefinition (DBrNBasin,          DBTableFieldInt,     (char *) "%8d",    sizeof (DBInt),true),
 			DBTableFieldDefinition (DBrNBasinCells,     DBTableFieldInt,     (char *) "%8d",    sizeof (DBInt),true),
 			DBTableFieldDefinition (DBrNTravel,         DBTableFieldInt,     (char *) "%8d",    sizeof (DBInt),true),
-			DBTableFieldDefinition (DBrNUpCellPos,      DBTableFieldPosition,DBHiddenField,     sizeof (DBUShortPosition),true),
+			DBTableFieldDefinition (DBrNUpCellPos,      DBTableFieldPosition,DBHiddenField,     sizeof (DBPosition),true),
 			DBTableFieldDefinition (DBrNCellArea,       DBTableFieldFloat,   (char *) "%10.1f", sizeof (DBFloat4),true),
 			DBTableFieldDefinition (DBrNCellLength,     DBTableFieldFloat,   (char *) "%10.1f", sizeof (DBFloat4),true),
 			DBTableFieldDefinition (DBrNSubbasinArea,   DBTableFieldFloat,   (char *) "%10.1f", sizeof (DBFloat4),true),

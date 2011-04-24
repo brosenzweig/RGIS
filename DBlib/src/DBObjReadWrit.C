@@ -126,8 +126,9 @@ int DBObjTable::Read (FILE *file,int swap)
 	DBInt id;
 	DBDate date;
 	DBCoordinate coord;
-	DBRegion region;
-	DBUShortPosition pos;
+	DBRegion     region;
+	DBPosition   pos;
+	DBUShort     row, col;
 	DBObjRecord *record;
 	DBObjTableField *field;
 
@@ -163,7 +164,24 @@ int DBObjTable::Read (FILE *file,int swap)
 				case DBTableFieldDate:     date   = field->Date (record);           date.Swap ();   field->Date (record,date);          break;
 				case DBTableFieldCoord:    coord  = field->Coordinate (record);     coord.Swap ();  field->Coordinate (record,coord);   break;
 				case DBTableFieldRegion:   region = field->Region (record);         region.Swap (); field->Region (record,region);      break;
-				case DBTableFieldPosition: pos    = field->UShortPosition (record); pos.Swap ();    field->UShortPosition (record,pos); break;
+				case DBTableFieldPosition:
+					pos    = field->Position (record);
+					switch (field->Length ())
+					{
+					case sizeof (DBPosition):
+						 pos.Swap ();
+						break;
+					default:
+						row = pos.Row;
+						col = pos.Col;
+						DBByteOrderSwapHalfWord (&row);
+						DBByteOrderSwapHalfWord (&col);
+						pos.Row  = row;
+						pos.Col  = col;
+						break;
+					}
+					field->Position (record,pos);
+					break;
 				default: break;
 				}
 			}

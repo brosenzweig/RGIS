@@ -341,17 +341,6 @@ class DBRegion
 		void Swap () { UpperRight.Swap (); LowerLeft.Swap (); }
 	};
 
-class DBUShortPosition
-	{
-	private:
-	public:
-		DBUShort Row;
-		DBUShort Col;
-		DBUShortPosition () { Row = 0; Col = 0; }
-		DBUShortPosition (const DBUShortPosition &pos) { Row = pos.Row; Col = pos.Col; }
-		void Swap () { DBByteOrderSwapHalfWord (&Row); DBByteOrderSwapHalfWord (&Col);}
-	};
-
 class DBPosition
 	{
 	private:
@@ -360,6 +349,7 @@ class DBPosition
 		DBInt Col;
 		DBPosition () { Row = 0; Col = 0; }
 		DBPosition (const DBPosition &pos) { Row = pos.Row; Col = pos.Col; }
+		void Swap () { DBByteOrderSwapWord (&Row); DBByteOrderSwapWord (&Col);}
 	};
 
 #define DBTimeStepMinute	(0x01)
@@ -1016,10 +1006,8 @@ class DBObjTableField : public DBObject
 		DBCoordinate Coordinate	(const DBObjRecord *) const;
 		void     Region (DBObjRecord *, DBRegion);
 		DBRegion Region (const DBObjRecord *) const;
-		void             Position (DBObjRecord *, DBPosition);
+		void          Position (DBObjRecord *, DBPosition);
 		DBPosition    Position (const DBObjRecord *) const;
-		void             UShortPosition (DBObjRecord *, DBUShortPosition);
-		DBUShortPosition UShortPosition (const DBObjRecord *) const;
 		int Read	 (FILE *,int);
 		int Write (FILE *);
 	};
