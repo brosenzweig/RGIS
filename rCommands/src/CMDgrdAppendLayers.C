@@ -19,20 +19,18 @@ int main (int argc,char *argv [])
 
 	{
 	int argPos, argNum = argc, ret, data, dataNum = 0, verbose = false;
-	char *title  = (char *) NULL, *subject = (char *) NULL;
-	char *domain = (char *) NULL, *version = (char *) NULL;
-	char **dataList = (char **) NULL;
+	char *title  = (char *) NULL,   *subject = (char *)  NULL;
+	char *domain = (char *) NULL,   *version = (char *)  NULL;
+	char *output = (char *) NULL, **dataList = (char **) NULL;
 	DBObjData *grdData, *appData;
 
 	for (argPos = 1;argPos < argNum; )
 		{
-		if (CMargTest (argv [argPos],"-a","--append"))
+		if (CMargTest (argv [argPos],"-o","--output"))
 			{
 			if ((argNum = CMargShiftLeft (argPos,argv,argNum)) <= argPos)
-				{ CMmsgPrint (CMmsgUsrError,"Missing append grid!");  return (CMfailed); }
-			if ((dataList = (char **) realloc (dataList,(dataNum + 1) * sizeof (char *))) == (char **) NULL)
-				{ CMmsgPrint (CMmsgSysError, "Memory allocation error in: %s %d",__FILE__,__LINE__); return (DBFault); }
-			dataList [dataNum++] = argv [argPos];
+				{ CMmsgPrint (CMmsgUsrError,"Missing output grid!");  return (CMfailed); }
+			output = argv [argPos];
 			if ((argNum = CMargShiftLeft (argPos,argv,argNum)) <= argPos) break;
 			continue;
 			}
@@ -76,8 +74,8 @@ int main (int argc,char *argv [])
 			}
 		if (CMargTest (argv [argPos],"-h","--help"))
 			{
-			CMmsgPrint (CMmsgInfo,"%s [options] <input grid> <output grid>",CMprgName(argv[0]));
-			CMmsgPrint (CMmsgInfo,"     -a,--append    [append grid]");
+			CMmsgPrint (CMmsgInfo,"%s [options] <append grid0> ..... <append gridN>",CMprgName(argv[0]));
+			CMmsgPrint (CMmsgInfo,"     -o,--output    [ouptput grid]");
 			CMmsgPrint (CMmsgInfo,"     -t,--title     [dataset title]");
 			CMmsgPrint (CMmsgInfo,"     -u,--subject   [subject]");
 			CMmsgPrint (CMmsgInfo,"     -d,--domain    [domain]");
@@ -91,11 +89,20 @@ int main (int argc,char *argv [])
 		argPos++;
 		}
 
-	if (argNum > 3) { CMmsgPrint (CMmsgUsrError,"Extra arguments!"); return (CMfailed); }
+	if (argNum < 2)	{
+		CMmsgPrint (CMmsgUsrError, "Nothing to append");
+		return (DBFault);
+	}
+	dataNum = argNum;
+	if ((dataList = (char **) realloc (dataList, dataNum * sizeof (char *))) == (char **) NULL)
+		{ CMmsgPrint (CMmsgSysError, "Memory allocation error in: %s %d",__FILE__,__LINE__); return (DBFault); }
+	for (data = 0; data < dataNum; ++data) {
+		dataList [data] = argv [data];
+	}
 	if (verbose) RGlibPauseOpen (argv[0]);
 
 	grdData = new DBObjData ();
-	ret = (argNum > 1) && (strcmp (argv [1],"-") != 0) ? grdData->Read (argv [1]) : grdData->Read (stdin);
+	ret = (strcmp (dataList [0],"-") != 0) ? grdData->Read (dataList [0]) : grdData->Read (stdin);
 	if ((ret == DBFault) || ((grdData->Type () & DBTypeGrid) != DBTypeGrid))
 		{ delete grdData; return (CMfailed); }
 
@@ -104,7 +111,7 @@ int main (int argc,char *argv [])
 	if (domain  != (char *) NULL) grdData->Document (DBDocGeoDomain,domain);
 	if (version != (char *) NULL) grdData->Document (DBDocVersion,version);
 
-	for (data = 0;data < dataNum;++data)
+	for (data = 1;data < dataNum;++data)
 		{
 		appData = new DBObjData ();
 		if (appData->Read (dataList [data]) == DBFault) { delete grdData; delete appData; return (CMfailed); }
@@ -112,7 +119,7 @@ int main (int argc,char *argv [])
 		delete appData;
 		}
 
-	ret = (argNum > 2) && (strcmp (argv [2],"-") != 0) ? grdData->Write (argv [2]) : grdData->Write (stdout);
+	ret = (output != (char *) NULL) && (strcmp (argv [2],"-") != 0) ? grdData->Write (output) : grdData->Write (stdout);
 
 	delete grdData;
 	if (verbose) RGlibPauseClose ();

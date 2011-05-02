@@ -83,7 +83,7 @@ Help:	if (CMargTest(argv[argPos],"-h","--help")) {
 			case MFShort:
 				if (header.Swap != 1) MFSwapHalfWord (((short *)  items) + itemID);
 				if (((short *)  items) [itemID] != header.Missing.Int)
-					fprintf (outFile,"\t%d\n",header.Date, (int)    ((short *)  items) [itemID]);
+					fprintf (outFile,"\t%d\n", (int)    ((short *)  items) [itemID]);
 				else
 					fprintf (outFile,"%s\t\n", header.Date);
 				break;
