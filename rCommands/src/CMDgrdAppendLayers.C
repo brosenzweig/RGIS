@@ -93,11 +93,11 @@ int main (int argc,char *argv [])
 		CMmsgPrint (CMmsgUsrError, "Nothing to append");
 		return (DBFault);
 	}
-	dataNum = argNum;
+	dataNum = argNum - 1;
 	if ((dataList = (char **) realloc (dataList, dataNum * sizeof (char *))) == (char **) NULL)
 		{ CMmsgPrint (CMmsgSysError, "Memory allocation error in: %s %d",__FILE__,__LINE__); return (DBFault); }
 	for (data = 0; data < dataNum; ++data) {
-		dataList [data] = argv [data];
+		dataList [data] = argv [data + 1];
 	}
 	if (verbose) RGlibPauseOpen (argv[0]);
 
