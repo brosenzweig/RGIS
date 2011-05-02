@@ -1050,7 +1050,7 @@ function RGISAppend ()
 	do
 		local  filename=$(RGISfile "${archive}" "${domain}" "${variable}" "${product}" "${resolution}" "TS" "${tstep}" "${year}")
 		local     files="${files}${separator}${filename}"
-		local separator=" -a "
+		local separator=" "
 	done
 
 	local filename=$(RGISfile  "${archive}" "${domain}" "${variable}" "${product}" "${resolution}" "TS" "${tstep}" "${startyear}-${endyear}")
@@ -1058,7 +1058,7 @@ function RGISAppend ()
 	local  subject=$(RGISlookupSubject  "${variable}")
    local shadeset=$(RGISlookupShadeset "${variable}")
 
-	grdAppendLayers -t "${title}" -d "${domain}" -u "${subject}" -v "${version}" ${files} "${filename}"
+	grdAppendLayers -t "${title}" -d "${domain}" -u "${subject}" -v "${version}" -o "${filename}" ${files}
 }
 
 function RGISAggregateTS ()
