@@ -306,7 +306,7 @@ NCstate NCdsHandleSetFloat (NCdsHandle_t *dsh, size_t *index, double val)
 //		case NCtypeGDisc:    return (NCdsHandleGDiscSetFloat  ((NCdsHandleGDisc_t *)  dsh, index [0], index [1], val));
 //		case NCtypePoint:    return (NCdsHandleVPoinSetFloat  ((NCdsHandleVPoint_t *) dsh, index [0], val));
 	}
-	return (FLOAT_NOVALUE);
+	return (CMfailed);
 }
 
 NCstate NCdsHandleSetFill (NCdsHandle_t *dsh, size_t *index)
@@ -318,7 +318,7 @@ NCstate NCdsHandleSetFill (NCdsHandle_t *dsh, size_t *index)
 //		case NCtypeGDisc:    return (NCdsHandleGDiscSetFloat ((NCdsHandleGDisc_t *)  dsh, index [0], index [1], val));
 //		case NCtypePoint:    return (NCdsHandleVPoinSetFloat ((NCdsHandleVPoint_t *) dsh, index [0], val));
 	}
-	return (FLOAT_NOVALUE);
+	return (CMfailed);
 }
 
 NCstate NCdsHandleGetTime (const NCdsHandle_t *dsh, size_t layerID, utUnit *tUnit, double *time)

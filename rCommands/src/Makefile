@@ -12,7 +12,7 @@ LINK   = $(UNIXCPP)
 LIBS   = -L../../CMlib/lib\
          -L../../MFlib/lib\
          -L../../DBlib/lib\
-         -L../../RGlib/lib -lRG21 -lDB21 -lMF10 -lCM10 $(UNIXLIBS)
+         -L../../RGlib/lib -lRG22 -lDB22 -lMF10 -lCM10 $(UNIXLIBS)
 
 INCLUDES = $(INC)/CMDexp.H
 

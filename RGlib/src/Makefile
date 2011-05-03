@@ -4,7 +4,7 @@ SRC    = ../src
 OBJ    = ../obj
 LIB    = ../lib
 CPP    = $(UNIXCPP) $(UNIXCPPOPS) -I$(INC) -I../../DBlib/include -I../../CMlib/include -I../../MFlib/include
-TARGET = $(LIB)/libRG21.a
+TARGET = $(LIB)/libRG22.a
 
 INCLUDES = $(INC)/RG.H
 

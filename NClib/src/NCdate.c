@@ -99,6 +99,7 @@ const char *NCtimeStepString (NCtimeStep timeStep)
 		case NCtimeDay:    return ("day");
 		case NCtimeHour:   return ("hour");
 		case NCtimeMinute: return ("minute");
+		case NCtimeSecond: return ("second");
 	}
 	return ((char *) NULL);
 }

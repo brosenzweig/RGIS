@@ -49,7 +49,8 @@ NCstate NCdataSetTextAttribute (int ncid, int varid, const char *attName, const 
 	int status;
 	bool redef;
 
-	redef = status = nc_redef (ncid) == NC_NOERR ? true : false;
+
+	redef = nc_redef (ncid) == NC_NOERR ? true : false;
 
 	status = nc_put_att_text (ncid,varid,attName,strlen (text) + 1,text);
 	if (redef) nc_enddef (ncid);
@@ -224,9 +225,8 @@ double *NCdataGetVector (int ncid, int dimid, int varid, size_t *len)
 int NCdataGetCoreVarId (int ncid)
 {
 	int status;
-	int varid;
+	int varid, nvars, ndims;
 	int dimid [4], xdim = NCundefined, ydim = NCundefined, i, j;
-	size_t nvars, ndims;
 
 	if ((status = nc_inq_nvars (ncid, &nvars)) != NC_NOERR)
 	{

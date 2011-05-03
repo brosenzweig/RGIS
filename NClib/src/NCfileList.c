@@ -46,7 +46,7 @@ char **NCfileList (const char *template, size_t *n)
 	{ CMmsgPrint (CMmsgAppError, "Regular expression error in: %s %d",__FILE__,__LINE__); goto ABORT; }
 	regexIsSet = true;	
 
-	if ((ndirents = scandir (path,&dirents,_NCfileFilter,alphasort)) < 0)
+	if ((ndirents = scandir (path, &dirents, _NCfileFilter, alphasort)) < 0)
 	{ CMmsgPrint (CMmsgSysError, "Directory scanning error in: %s %d",__FILE__,__LINE__); goto ABORT; }
 	if (ndirents < 1)
 	{ CMmsgPrint (CMmsgUsrError, "No file is matching pattern [%s]",template); goto ABORT; }

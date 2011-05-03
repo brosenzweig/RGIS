@@ -12,8 +12,8 @@ LINK   = $(UNIXCPP)
 LIBS   = -L../../CMlib/lib\
          -L../../DBlib/lib\
          -L../../RGlib/lib\
-         -L../../UIlib/lib -lUI21 -lRG21 -lDB21 -lCM10 $(UNIXLIBS)
-TARGET = rgis21
+         -L../../UIlib/lib -lUI22 -lRG22 -lDB22 -lCM10 $(UNIXLIBS)
+TARGET = rgis22
 
 INCLUDES = $(INC)/rgis.H
 

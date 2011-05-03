@@ -4,8 +4,8 @@
 NCstate NCdsHandleVectorDefine (NCdsHandleVector_t *vector, int ncid)
 {
 	NCdataType dtype;
-	char *xNames [] = { NCnameDNXCoord, NCnameDNLon, NCnameDNLongitude };
-	char *yNames [] = { NCnameDNYCoord, NCnameDNLat, NCnameDNLatitude };
+//	char *xNames [] = { NCnameDNXCoord, NCnameDNLon, NCnameDNLongitude };
+//	char *yNames [] = { NCnameDNYCoord, NCnameDNLat, NCnameDNLatitude };
 
 	vector->ItemNum = 0;
 	dtype = NCdataGetType (ncid);

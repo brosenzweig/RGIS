@@ -15,7 +15,7 @@ CPP    = $(UNIXCPP) $(UNIXCPPOPS) -I$(INC)\
 LINKCPP = $(UNIXCPP)
 LIBS   = -L../../CMlib/lib\
          -L../../Flib/lib\
-         -L../../DBlib/lib -lDB21 -lF10 -lCM10 $(UNIXLIBS)
+         -L../../DBlib/lib -lDB22 -lF10 -lCM10 $(UNIXLIBS)
 
 INCLUDES = 
 

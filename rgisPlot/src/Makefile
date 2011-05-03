@@ -8,7 +8,7 @@ CPP    = $(UNIXCPP) $(UNIXCPPOPS) -I$(INC)\
          -I../../DBlib/include
 LINK   = $(UNIXCPP)
 LIBS   = -L../../CMlib/lib\
-         -L../../DBlib/lib -lDB21 -lCM10 $(UNIXLIBS)
+         -L../../DBlib/lib -lDB22 -lCM10 $(UNIXLIBS)
 TARGET = rgisPlot
 
 INCLUDES = $(INC)/rgisPlot.H

@@ -41,11 +41,13 @@ uninstall:
 
 clean:
 	$(UNIXMAKE) -C rGIS       clean
-	$(UNIXMAKE) -C rCommands  clean
 	$(UNIXMAKE) -C rgisPlot   clean
+	$(UNIXMAKE) -C ncCommands clean
+	$(UNIXMAKE) -C rCommands  clean
 	$(UNIXMAKE) -C tfCommands clean
 	$(UNIXMAKE) -C CMlib      clean
 	$(UNIXMAKE) -C DBlib      clean
+	$(UNIXMAKE) -C NClib      clean
 	$(UNIXMAKE) -C RGlib      clean
 	$(UNIXMAKE) -C UIlib      clean
 	$(UNIXMAKE) -C MFlib      clean

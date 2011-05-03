@@ -26,7 +26,7 @@ fi
 
 export XAPPLRESDIR="$GHAAS_DIR/XResources"
 
-GHAAS_EXEC=${GHAAS_DIR}/bin/rgis21
+GHAAS_EXEC=${GHAAS_DIR}/bin/rgis22
 
 if [ -f ${GHAAS_DIR}/Messages/RGIS.msg ]; then
 	cat ${GHAAS_DIR}/Messages/RGIS.msg
