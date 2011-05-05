@@ -101,55 +101,59 @@ function RGISlookupSubject ()
 		(perennial_crop_fraction)                   # 31
 			echo "CropFraction-Perennial"
 		;;
-		(population)								# 32
+		(population)								        # 32
 			echo "Population"
 		;;
-		(population-rural)                          # 33
+		;;
+		(population_density)								  # 33
+			echo "Population-Density"
+		;;
+		(population-rural)                          # 34
 			echo "Population-Rural"
 		;;
-		(population-urban)                          # 34
+		(population-urban)                          # 35
 			echo "Population-Urban"
 		;;
-		(precipitation)                             # 35
+		(precipitation)                             # 36
 			echo "Precipitation"
 		;;
-		(rain_pet)                                  # 36
+		(rain_pet)                                  # 37
 			echo "RainPET"
 		;;
-		(reservoir_capacity)                        # 37
+		(reservoir_capacity)                        # 38
 			echo "Reservoir-Capacity"
 		;;
-		(rice_crop_fraction)                        # 38
+		(rice_crop_fraction)                        # 39
 			echo "CropFraction-Rice"
 		;;
-		(rice_percolation_rate)                     # 39
+		(rice_percolation_rate)                     # 40
 			echo "Crops-RicePercolationRate"
 		;;
-		(rooting_depth)                             # 40
+		(rooting_depth)                             # 41
 			echo "Soil-RootingDepth"
 		;;
-		(runoff)                                    # 41
+		(runoff)                                    # 42
 			echo "Runoff"
 		;;
-		(small_reservoir_coefficient)               # 42
+		(small_reservoir_coefficient)               # 43
 			echo "SmallReservoir-Coefficient"
 		;;
-		(soil_moisture)                             # 43
+		(soil_moisture)                             # 44
 			echo "SoilMoisture"
 		;;
-		(soil_moisture_change)                      # 44
+		(soil_moisture_change)                      # 45
 			echo "SoilMoistureChange"
 		;;
-		(vapor_pressure)                            # 45
+		(vapor_pressure)                            # 46
 			echo "VaporPressure"
 		;;
-		(vegetables_crop_fraction)                  # 46
+		(vegetables_crop_fraction)                  # 47
 			echo "CropFraction-Vegetables"
 		;;
-		(wilting_point)                             # 47
+		(wilting_point)                             # 48
 			echo "Soil-WiltingPoint"
 		;;
-		(wind_speed)                                # 48
+		(wind_speed)                                # 49
 			echo "WindSpeed"
 		;;
 		(*)
@@ -261,55 +265,58 @@ function _RGISlookupFullName ()
 		(perennial_crop_fraction)                   # 31
 			echo "Perennial Crop Fraction"
 		;;
-		(population)								# 32
+		(population)								        # 32
 			echo "Population"
 		;;
-		(population-rural)                          # 33
+		(population_density)     	                 # 33
+			echo "Population Density"
+		;;
+		(population-rural)                          # 34
 			echo "Rural Population"
 		;;
-		(population-urban)                          # 34
+		(population-urban)                          # 35
 			echo "Urban Population"
 		;;
-		(precipitation)                             # 35
+		(precipitation)                             # 36
 			echo "Precipitation"
 		;;
-		(rain_pet)                                  # 36
+		(rain_pet)                                  # 37
 			echo "Rain Potential ET"
 		;;
-		(reservoir_capacity)                        # 37
+		(reservoir_capacity)                        # 38
 			echo "Reservoir Capacity"
 		;;
-		(rice_crop_fraction)                        # 38
+		(rice_crop_fraction)                        # 39
 			echo "Rice Crop Fraction"
 		;;
-		(rice_percolation_rate)                     # 39
+		(rice_percolation_rate)                     # 40
 			echo "Rice Percolation Rate"
 		;;
-		(rooting_depth)                             # 40
+		(rooting_depth)                             # 41
 			echo "Rooting Depth"
 		;;
-		(runoff)                                    # 41
+		(runoff)                                    # 42
 			echo "Runoff"
 		;;
-		(small_reservoir_coefficient)               # 42
+		(small_reservoir_coefficient)               # 43
 			echo "Small-reservoir Coefficient"
 		;;
-		(soil_moisture)                             # 43
+		(soil_moisture)                             # 44
 			echo "Soil Moisture"
 		;;
-		(soil_moisture_change)                      # 44
+		(soil_moisture_change)                      # 45
 			echo "Soil Moisture Change"
 		;;
-		(vapor_pressure)                            # 45
+		(vapor_pressure)                            # 46
 			echo "Vapor Pressure"
 		;;
-		(vegetables_crop_fraction)                  # 46
+		(vegetables_crop_fraction)                  # 47
 			echo "Vegetables Crop Fraction"
 		;;
-		(wilting_point)                             # 47
+		(wilting_point)                             # 48
 			echo "Wilting Point"
 		;;
-		(wind_speed)                                # 48
+		(wind_speed)                                # 49
 			echo "Wind Speed"
 		;;
 		(*)
@@ -408,55 +415,58 @@ function RGISlookupShadeset ()
 		(perennial_crop_fraction)                   # 31
 			echo "grey"
 		;;
-		(population)								# 32
+		(population)                                # 32
 			echo "grey"
 		;;
-		(population-rural)                          # 33
+		(population_density)                        # 33
 			echo "grey"
 		;;
-		(population-urban)                          # 34
+		(population-rural)                          # 34
 			echo "grey"
 		;;
-		(precipitation)                             # 35
+		(population-urban)                          # 35
+			echo "grey"
+		;;
+		(precipitation)                             # 36
 			echo "blue"
 		;;
-		(rain_pet)                                  # 36
+		(rain_pet)                                  # 37
 			echo "grey"
 		;;
-		(reservoir_capacity)                        # 37
+		(reservoir_capacity)                        # 38
 			echo "grey"
 		;;
-		(rice_crop_fraction)                        # 38
+		(rice_crop_fraction)                        # 39
 			echo "grey"
 		;;
-		(rice_percolation_rate)                     # 39
+		(rice_percolation_rate)                     # 40
 			echo "grey"
 		;;
-		(rooting_depth)                             # 40
+		(rooting_depth)                             # 41
 			echo "grey"
 		;;
-		(runoff)                                    # 41
+		(runoff)                                    # 42
 			echo "blue"
 		;;
-		(small_reservoir_coefficient)               # 42
+		(small_reservoir_coefficient)               # 43
 			echo "grey"
 		;;
-		(soil_moisture)                             # 43
+		(soil_moisture)                             # 44
 			echo "grey"
 		;;
-		(soil_moisture_change)                      # 44
+		(soil_moisture_change)                      # 45
 			echo "blue-to-red"
 		;;
-		(vapor_pressure)                            # 45
+		(vapor_pressure)                            # 46
 			echo "blue"
 		;;
-		(vegetables_crop_fraction)                  # 46
+		(vegetables_crop_fraction)                  # 47
 			echo "grey"
 		;;
-		(wilting_point)                             # 47
+		(wilting_point)                             # 48
 			echo "grey"
 		;;
-		(wind_speed)                                # 48
+		(wind_speed)                                # 49
 			echo "grey"
 		;;
 		(*)
@@ -555,55 +565,58 @@ function RGISlookupAggrMethod ()
 		(perennial_crop_fraction)                   # 31
 			echo "avg"
 		;;
-		(population)								# 32
+		(population)                                # 32
 			echo "avg"
 		;;
-		(population-rural)                          # 33
+		(population_density)                        # 33
 			echo "avg"
 		;;
-		(population-urban)                          # 34
+		(population-rural)                          # 34
 			echo "avg"
 		;;
-		(precipitation)                             # 35
+		(population-urban)                          # 35
+			echo "avg"
+		;;
+		(precipitation)                             # 36
 			echo "sum"
 		;;
-		(rain_pet)                                  # 36
+		(rain_pet)                                  # 37
 			echo "sum"
 		;;
-		(reservoir_capacity)                        # 37
+		(reservoir_capacity)                        # 38
 			echo "avg"
 		;;
-		(rice_crop_fraction)                        # 38
+		(rice_crop_fraction)                        # 39
 			echo "avg"
 		;;
-		(rice_percolation_rate)                     # 39
+		(rice_percolation_rate)                     # 40
 			echo "avg"
 		;;
-		(rooting_depth)                             # 40
+		(rooting_depth)                             # 41
 			echo "avg"
 		;;
-		(runoff)                                    # 41
+		(runoff)                                    # 42
 			echo "sum"
 		;;
-		(small_reservoir_coefficient)               # 42
+		(small_reservoir_coefficient)               # 43
 			echo "avg"
 		;;
-		(soil_moisture)                             # 43
+		(soil_moisture)                             # 44
 			echo "avg"
 		;;
-		(soil_moisture_change)                      # 44
+		(soil_moisture_change)                      # 45
 			echo "avg"
 		;;
-		(vapor_pressure)                            # 45
+		(vapor_pressure)                            # 46
 			echo "avg"
 		;;
-		(vegetables_crop_fraction)                  # 46
+		(vegetables_crop_fraction)                  # 47
 			echo "avg"
 		;;
-		(wilting_point)                             # 47
+		(wilting_point)                             # 48
 			echo "avg"
 		;;
-		(wind_speed)                                # 48
+		(wind_speed)                                # 49
 			echo "avg"
 		;;
 		(*)
