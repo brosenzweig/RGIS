@@ -104,7 +104,6 @@ function RGISlookupSubject ()
 		(population)								        # 32
 			echo "Population"
 		;;
-		;;
 		(population_density)								  # 33
 			echo "Population-Density"
 		;;
