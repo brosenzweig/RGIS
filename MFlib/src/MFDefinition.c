@@ -19,7 +19,7 @@ static int _MFDefLevel = 0;
 void MFDefEntering (char *text) {
 	char formatStr [MFNameLength];
 
-	sprintf (formatStr,"%c%ds %cs\n",'%',_MFDefLevel * 3 + (int) strlen ("Entering"),'%');
+	sprintf (formatStr,"%c%ds %cs",'%',_MFDefLevel * 3 + (int) strlen ("Entering"),'%');
 	CMmsgPrint (CMmsgInfo,formatStr,"Entering:",text);
 	_MFDefLevel++;
 }
@@ -28,6 +28,6 @@ void MFDefLeaving (char *text) {
 	char formatStr [MFNameLength];
 
 	_MFDefLevel--;
-	sprintf (formatStr,  "%c%ds %cs\n",'%',_MFDefLevel * 3 + (int) strlen ("Entering"),'%');
+	sprintf (formatStr,  "%c%ds %cs",'%',_MFDefLevel * 3 + (int) strlen ("Entering"),'%');
 	CMmsgPrint (CMmsgInfo,formatStr,"Leaving:",text);
 }

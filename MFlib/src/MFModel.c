@@ -355,11 +355,11 @@ static int _MFModelParse (int argc, char *argv [],int argNum, int (*conf) ()) {
 	for (i = 0;i < _MFModelOutNum;++i) MFVarSetPath (_MFModelOutput [i].Name, _MFModelOutput [i].Path, MFOutput);
 	free (_MFModelOutput);
 
-	CMmsgPrint (CMmsgInfo, "ID  %10s %30s[%10s] %6s %5s NStep %3s %4s %8s Output\n",
+	CMmsgPrint (CMmsgInfo, "ID  %10s %30s[%10s] %6s %5s NStep %3s %4s %8s Output",
 			      "Start_Date", "Variable","Unit","Type", "TStep", "Set", "Flux", "Initial");
 	for (var = MFVarGetByID (varID = 1);var != (MFVariable_t *) NULL;var = MFVarGetByID (++varID))
 		if ((strncmp (var->Name,"__",2) != 0) || var->Initial)
-			CMmsgPrint (CMmsgInfo, "%3i %10s %30s[%10s] %6s %5s %5d %3s %4s %8s %6s\n",
+			CMmsgPrint (CMmsgInfo, "%3i %10s %30s[%10s] %6s %5s %5d %3s %4s %8s %6s",
 				varID,var->Header.Date,var->Name,var->Unit,MFVarTypeString (var->Header.DataType),MFDateTimeStepString (var->TStep),var->NStep,
 				CMyesNoString (var->Set),CMyesNoString (var->Flux),CMyesNoString (var->Initial), CMyesNoString (var->OutPath != (char *) NULL));
 	if (ret == CMfailed) return (CMfailed);
