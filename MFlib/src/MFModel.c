@@ -263,39 +263,39 @@ static int _MFModelParse (int argc, char *argv [],int argNum, int (*conf) ()) {
 	if (help) { MFOptionPrintList (); return (CMfailed); }
 	if (ret == CMfailed) return (CMfailed);
 	if (testOnly) {
-		CMmsgPrint (CMmsgInfo, "ID  %10s %30s[%10s] %6s %5s NStep %3s %4s %8s Output\n",
+		CMmsgPrint (CMmsgInfo, "ID  %10s %30s[%10s] %6s %5s NStep %3s %4s %8s Output",
 			      "Start_Date", "Variable","Unit","Type", "TStep", "Set", "Flux", "Initial");
 		for (var = MFVarGetByID (varID = 1);var != (MFVariable_t *) NULL;var = MFVarGetByID (++varID))
 			if ((strncmp (var->Name,"__",2) != 0) || var->Initial)
-				CMmsgPrint (CMmsgInfo, "%3i %10s %30s[%10s] %6s %5s %5d %3s %4s %8s %6s\n",
+				CMmsgPrint (CMmsgInfo, "%3i %10s %30s[%10s] %6s %5s %5d %3s %4s %8s %6s",
 					varID,var->Header.Date,var->Name,var->Unit,MFVarTypeString (var->Header.DataType),MFDateTimeStepString (var->TStep),var->NStep,
 					CMyesNoString (var->Set),CMyesNoString (var->Flux),CMyesNoString (var->Initial), CMyesNoString (var->OutPath != (char *) NULL));
 		return (CMfailed);
 	}
 
-	if ((argNum) > 2) { CMmsgPrint (CMmsgUsrError,"Extra arguments!\n");           return (CMfailed); }
-	if ((argNum) < 2) { CMmsgPrint (CMmsgUsrError,"Missing Template Coverage!\n"); return (CMfailed); }
+	if ((argNum) > 2) { CMmsgPrint (CMmsgUsrError,"Extra arguments!");           return (CMfailed); }
+	if ((argNum) < 2) { CMmsgPrint (CMmsgUsrError,"Missing Template Coverage!"); return (CMfailed); }
 
 	if ((inFile = strcmp (argv [1],"-") != 0 ? fopen (argv [1],"r") : stdin) == (FILE *) NULL) {
-		CMmsgPrint (CMmsgAppError,"%s: Template Coverage [%s] Opening error!\n",CMprgName (argv [0]),argv [1]);
+		CMmsgPrint (CMmsgAppError,"%s: Template Coverage [%s] Opening error!",CMprgName (argv [0]),argv [1]);
 		return (CMfailed);
 	}
 	if ((_MFDomain = MFDomainGet (inFile)) == (MFDomain_t *) NULL)	return (CMfailed);
 
 	for (var = MFVarGetByID (varID = 1);var != (MFVariable_t *) NULL;var = MFVarGetByID (++varID)) {
 		if (var->InStream == (MFDataStream_t *) NULL) var->TStep = MFTimeStepDay;
-		else if (!MFDateSetCurrent (var->Header.Date)) CMmsgPrint (CMmsgWarning,"Warning: Invalid date in input (%s)\n",var->Name);
+		else if (!MFDateSetCurrent (var->Header.Date)) CMmsgPrint (CMmsgWarning,"Warning: Invalid date in input (%s)",var->Name);
 		if (var->Flux) sprintf (var->Unit + strlen (var->Unit),"/%s",MFDateTimeStepUnit (var->TStep));
 	}
 	MFDateRewind ();
 
 	if (strcmp (startDate,MFDateGetCurrent ()) != 0)//zero. strings are equal
-		CMmsgPrint (CMmsgWarning,"Warning: Adjusting start date (%s,%s)!\n",startDate, MFDateGetCurrent ());
+		CMmsgPrint (CMmsgWarning,"Warning: Adjusting start date (%s,%s)!",startDate, MFDateGetCurrent ());
 
 	for (var = MFVarGetByID (varID = 1);var != (MFVariable_t *) NULL;var = MFVarGetByID (++varID)) {
 		switch (var->Header.DataType) {
 			case MFInput:
-				CMmsgPrint (CMmsgAppError, "Error: Unresolved variable (%s [%s] %s)!\n",var->Name,var->Unit, MFVarTypeString (var->Header.DataType));
+				CMmsgPrint (CMmsgAppError, "Error: Unresolved variable (%s [%s] %s)!",var->Name,var->Unit, MFVarTypeString (var->Header.DataType));
 				ret = CMfailed;
 				break;
 			case MFRoute:
@@ -306,7 +306,7 @@ static int _MFModelParse (int argc, char *argv [],int argNum, int (*conf) ()) {
 				if (var->Data == (void *) NULL) {
 					var->Header.ItemNum = _MFDomain->ObjNum;
 					if ((var->Data = (void *) calloc (var->Header.ItemNum,MFVarItemSize (var->Header.DataType))) == (void *) NULL) {
-						CMmsgPrint (CMmsgSysError,"Memory Allocation Error in: %s:%d\n",__FILE__,__LINE__);
+						CMmsgPrint (CMmsgSysError,"Memory Allocation Error in: %s:%d",__FILE__,__LINE__);
 						ret = CMfailed;
 					}
 					switch (var->Header.DataType) {
@@ -325,7 +325,7 @@ static int _MFModelParse (int argc, char *argv [],int argNum, int (*conf) ()) {
 				}
 				else {
 					if (var->Header.ItemNum != _MFDomain->ObjNum) {
-						CMmsgPrint (CMmsgAppError,"Error: Inconsistent data stream (%s [%s])!\n",var->Name,var->Unit);
+						CMmsgPrint (CMmsgAppError,"Error: Inconsistent data stream (%s [%s])!",var->Name,var->Unit);
 						ret = CMfailed;
 					}
 					else if (var->Initial) {
@@ -341,7 +341,7 @@ static int _MFModelParse (int argc, char *argv [],int argNum, int (*conf) ()) {
 					}
 				}
 				if (!var->Initial && !var->Set) {
-					CMmsgPrint (CMmsgWarning,"Warning: Ignoring unused variable (%s)!\n",var->Name);
+					CMmsgPrint (CMmsgWarning,"Warning: Ignoring unused variable (%s)!",var->Name);
 					MFDataStreamClose (var->InStream);
 					var->InPath = (char *) NULL;
 					var->InStream = (MFDataStream_t *) NULL;
@@ -381,18 +381,18 @@ static bool _MFModelReadInput (char *time)
 			do	{
 				switch (MFDataStreamRead (var)) {
 					case CMfailed:
-						CMmsgPrint (CMmsgAppError,"Error: Variable [%s] reading error!\n",var->Name);
+						CMmsgPrint (CMmsgAppError,"Error: Variable [%s] reading error!",var->Name);
 						return (MFStop);
 					case MFStop:
 						MFDataStreamClose (var->InStream);
 						if (strncmp (var->Header.Date,MFDateClimatologyStr,strlen (MFDateClimatologyStr)) != 0) {
 							var->InStream = (MFDataStream_t *) NULL;
-							CMmsgPrint (CMmsgInfo, "time is %s, HeaderDate is %s\n", time, var->Header.Date) ;
+							CMmsgPrint (CMmsgInfo, "time is %s, HeaderDate is %s", time, var->Header.Date) ;
 							CMmsgPrint (CMmsgInfo, "Variable Name %s\n", var->Name);
 							return (MFStop);
 						}
 					 	if ((var->InStream = MFDataStreamOpen (var->InPath,"r")) == (MFDataStream_t *) NULL) {
-							CMmsgPrint (CMmsgAppError,"Error: Variable [%s] reopening error!\n",var->Name);
+							CMmsgPrint (CMmsgAppError,"Error: Variable [%s] reopening error!",var->Name);
 							return (MFStop);
 						}
 					default: break;
@@ -432,7 +432,7 @@ int MFModelRun (int argc, char *argv [], int argNum, int (*conf) ()) {
 	timeCur = MFDateGetCurrent ();
 
 	time(&sec);
-	CMmsgPrint (CMmsgInfo, "Model run started at... %s  started at %.24s \n", timeCur, ctime(&sec));
+	CMmsgPrint (CMmsgInfo, "Model run started at... %s  started at %.24s", timeCur, ctime(&sec));
 	if (_MFModelReadInput (timeCur) == MFStop) {
 		CMmsgPrint (CMmsgInfo, "MFModelReadInput(%s) returned MFStop in: %s:%d",timeCur,__FILE__,__LINE__);
 		return (CMfailed);
@@ -443,7 +443,7 @@ int MFModelRun (int argc, char *argv [], int argNum, int (*conf) ()) {
 
 		team = CMthreadTeamCreate (_MFThreadsNum);
 		if ((job  = CMthreadJobCreate (team, (void *) NULL, _MFDomain->ObjNum, (CMthreadUserAllocFunc) NULL,_MFUserFunc)) == (CMthreadJob_p) NULL) {
-			CMmsgPrint (CMmsgAppError, "Job creation error in %s:%d\n",__FILE__,__LINE__);
+			CMmsgPrint (CMmsgAppError, "Job creation error in %s:%d",__FILE__,__LINE__);
 			CMthreadTeamDestroy (team);
 			return (CMfailed);
 		}
@@ -454,7 +454,7 @@ int MFModelRun (int argc, char *argv [], int argNum, int (*conf) ()) {
 			CMthreadJobTaskDependent (job, taskId, dlink);
 		}
 		do {
-			CMmsgPrint (CMmsgDebug, "Computing: %s\n", timeCur);
+			CMmsgPrint (CMmsgDebug, "Computing: %s", timeCur);
 			for (var = MFVarGetByID (varID = 1);var != (MFVariable_t *) NULL;var = MFVarGetByID (++varID))
 				if (var->Route) { for (i = 0;i < _MFDomain->ObjNum; ++i)  MFVarSetFloat (varID, i, 0.0); }
 
@@ -469,7 +469,7 @@ int MFModelRun (int argc, char *argv [], int argNum, int (*conf) ()) {
 	}
 	else // TODO Single CPU
 		do	{
-			CMmsgPrint (CMmsgDebug, "Computing: %s\n", timeCur);
+			CMmsgPrint (CMmsgDebug, "Computing: %s", timeCur);
 			for (var = MFVarGetByID (varID = 1);var != (MFVariable_t *) NULL;var = MFVarGetByID (++varID))
 				if (var->Route) { for (i = 0;i < _MFDomain->ObjNum; ++i)  MFVarSetFloat (varID, i, 0.0); }
 
