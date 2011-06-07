@@ -1,28 +1,26 @@
 UNIX=$(shell uname)
 
-ifeq ($(UNIX),Linux)
-export UNIXAR=ar -ru
-export UNIXCC=gcc
-export UNIXCCOPS=-Wall -fsigned-char -D_GNU_SOURCE
-export UNIXLIBS=-lnetcdf -lm
-export UNIXMAKE=make
-export UNIXRL=ranlib
-endif
-
 ifeq ($(UNIX),Darwin)
-export UNIXAR=ar -ru
-export UNIXCC=gcc
-export UNIXCCOPS=-Wall -fsigned-char -D_GNU_SOURCE -I/sw/include
-export UNIXLIBS=-L/sw/lib -lnetcdf -lm
-export UNIXMAKE=make
-export UNIXRL=ranlib
+ifndef ($(CUSTOM_INC))
+	CUSTOM_INC=/sw/include
+endif
+ifndef ($(CUSTOM_LIB))
+	CUSTOM_LIB=/sw/lib
+endif
 endif
 
 ifeq ($(UNIX),SunOS)
+ifndef ($(CUSTOM_INC))
+	CUSTOM_INC=/usr/local/include
+endif
+ifndef ($(CUSTOM_LIB))
+	CUSTOM_LIB=/usr/local/lib
+endif
+endif
+
 export UNIXAR=ar -ru
 export UNIXCC=gcc
-export UNIXCCOPS=-g -Wall -fsigned-char -D_GNU_SOURCE -I/usr/local/include
-export UNIXLIBS=-L/usr/local/lib -lnetcdf -lm
+export UNIXCCOPS=-Wall -fsigned-char -D_GNU_SOURCE $(CUSTOM_INC)
+export UNIXLIBS=$(CUSTOM_LIB) -lnetcdf -lm
 export UNIXMAKE=make
 export UNIXRL=ranlib
-endif

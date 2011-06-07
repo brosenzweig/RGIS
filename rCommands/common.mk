@@ -1,23 +1,26 @@
 UNIX=$(shell uname)
 
-ifeq ($(UNIX),Linux)
-export UNIXCPP=g++
-export UNIXCPPOPS=-g -Wall -fsigned-char -D_GNU_SOURCE
-export UNIXLIBS=-ludunits2 -lnetcdf -lm
-export UNIXMAKE=make
-endif
 ifeq ($(UNIX),Darwin)
-export UNIXCPP=g++
-export UNIXCPPOPS=-g -Wall -fsigned-char -D_GNU_SOURCE -I/sw/lib/pgplot
-export UNIXLIBS=-L/sw/lib -ludunits2 -lnetcdf -lm
-export UNIXMAKE=make
+ifndef ($(CUSTOM_INC))
+	CUSTOM_INC=-I/sw/lib/pgplot
+endif
+ifndef ($(CUSTOM_LIB))
+	CUSTOM_LIB=-I/sw/lib
+endif
 endif
 ifeq ($(UNIX),SunOS)
-export UNIXCPP=g++
-export UNIXCPPOPS=-g -Wall -fsigned-char -D_GNU_SOURCE
-export UNIXLIBS=-L/usr/local/netcdf/lib -L/usr/local/udunits/lib -ludunits2 -lnetcdf -lm
-export UNIXMAKE=make
+ifndef ($(CUSTOM_INC))
+	CUSTOM_INC=
 endif
+ifndef ($(CUSTOM_LIB))
+	CUSTOM_LIB=-L/usr/local/netcdf/lib -L/usr/local/udunits/lib
+endif
+endif
+
+export UNIXCPP=g++
+export UNIXCPPOPS=-g -Wall -fsigned-char -D_GNU_SOURCE $(CUSTOM_INC)
+export UNIXLIBS=$(CUSTOM_LIB) -ludunits2 -lnetcdf -lm
+export UNIXMAKE=make
 
 ifndef INSTALLDIR
 export INSTALLDIR=/usr/local/share/ghaas
