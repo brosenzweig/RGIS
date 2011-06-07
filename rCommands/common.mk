@@ -5,7 +5,7 @@ ifndef ($(CUSTOM_INC))
 	CUSTOM_INC=-I/sw/lib/pgplot
 endif
 ifndef ($(CUSTOM_LIB))
-	CUSTOM_LIB=-I/sw/lib
+	CUSTOM_LIB=-L/sw/lib
 endif
 endif
 ifeq ($(UNIX),SunOS)

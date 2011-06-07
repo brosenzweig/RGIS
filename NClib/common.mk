@@ -2,19 +2,19 @@ UNIX=$(shell uname)
 
 ifeq ($(UNIX),Darwin)
 ifndef ($(CUSTOM_INC))
-	CUSTOM_INC=/sw/include
+	CUSTOM_INC=-I/sw/include
 endif
 ifndef ($(CUSTOM_LIB))
-	CUSTOM_LIB=/sw/lib
+	CUSTOM_LIB=-L/sw/lib
 endif
 endif
 
 ifeq ($(UNIX),SunOS)
 ifndef ($(CUSTOM_INC))
-	CUSTOM_INC=/usr/local/include
+	CUSTOM_INC=-I/usr/local/include
 endif
 ifndef ($(CUSTOM_LIB))
-	CUSTOM_LIB=/usr/local/lib
+	CUSTOM_LIB=-L/usr/local/lib
 endif
 endif
 
