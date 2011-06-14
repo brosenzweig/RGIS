@@ -117,7 +117,7 @@ DBInt DBPointToGrid (DBObjData *pntData,DBObjData *netData,DBObjData *grdData)
 		{
 		if ((cellRec = _DBNetIF->Cell (_DBPntIF->Coordinate (objPair [recID].PointRec))) == (DBObjRecord *) NULL) continue;
 		_DBNetIF->UpStreamSearch (cellRec,(DBNetworkACTION) DBPointUpStreamAction,(void *) objPair [recID].ItemRec->RowID ());
-		CMmsgPrint (CMmsgInfo,"%d", recID);
+		CMmsgPrint (CMmsgInfo,"%d %d %d", recID,objPair [recID].PointRec->RowID (),objPair [recID].ItemRec->RowID ());
 		}
 	_DBGrdIF->DiscreteStats ();
 	delete _DBPntIF;
