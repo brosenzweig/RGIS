@@ -30,8 +30,8 @@ static DBInt _DBPointSort (const void *obj0,const void *obj1)
 	DBObjRecord *cellRec1 = _DBNetIF->Cell (_DBPntIF->Coordinate (((DBObjPair *) obj1)->PointRec));
 
 	if (cellRec0 == cellRec1) return (0);
-	if (_DBNetIF->CellBasinID   (cellRec0) < _DBNetIF->CellBasinID (cellRec1))   return  (1);
-	if (_DBNetIF->CellBasinID   (cellRec0) > _DBNetIF->CellBasinID (cellRec1))   return (-1);
+	if (_DBNetIF->CellBasinID   (cellRec0) < _DBNetIF->CellBasinID   (cellRec1)) return  (1);
+	if (_DBNetIF->CellBasinID   (cellRec0) > _DBNetIF->CellBasinID   (cellRec1)) return (-1);
 	if (_DBNetIF->CellBasinArea (cellRec0) > _DBNetIF->CellBasinArea (cellRec1)) return  (1);
 	if (_DBNetIF->CellBasinArea (cellRec0) < _DBNetIF->CellBasinArea (cellRec1)) return (-1);
 	return (0);
@@ -117,6 +117,7 @@ DBInt DBPointToGrid (DBObjData *pntData,DBObjData *netData,DBObjData *grdData)
 		{
 		if ((cellRec = _DBNetIF->Cell (_DBPntIF->Coordinate (objPair [recID].PointRec))) == (DBObjRecord *) NULL) continue;
 		_DBNetIF->UpStreamSearch (cellRec,(DBNetworkACTION) DBPointUpStreamAction,(void *) objPair [recID].ItemRec->RowID ());
+		CMmsgPrint (CMmsgInfo,"%d", recID);
 		}
 	_DBGrdIF->DiscreteStats ();
 	delete _DBPntIF;
