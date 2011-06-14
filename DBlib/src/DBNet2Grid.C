@@ -55,7 +55,7 @@ DBObjData *DBNetworkToGrid (DBObjData *netData,DBInt type)
 			break;
 		case DBTypeGridDiscrete:
 			valueTypeFLD->Int (layerRec,DBTableFieldInt);
-			valueSizeFLD->Int (layerRec,sizeof (DBShort));
+			valueSizeFLD->Int (layerRec,sizeof (DBInt));
 			break;
 		default:
 			CMmsgPrint (CMmsgAppError, "Invalid Data Type in: %s %d",__FILE__,__LINE__);

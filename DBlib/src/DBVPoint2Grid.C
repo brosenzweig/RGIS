@@ -13,42 +13,10 @@ balazs.fekete@unh.edu
 #include <DB.H>
 #include <DBif.H>
 
-DBVPointIF	*_DBPntIF;
-DBNetworkIF *_DBNetIF;
-DBGridIF 	*_DBGrdIF;
-
-class DBObjPair {
-	public:
-		DBObjRecord *PointRec;
-		DBObjRecord *ItemRec;
-	};
-
-static DBInt _DBPointSort (const void *obj0,const void *obj1)
-
-	{
-	DBObjRecord *cellRec0 = _DBNetIF->Cell (_DBPntIF->Coordinate (((DBObjPair *) obj0)->PointRec));
-	DBObjRecord *cellRec1 = _DBNetIF->Cell (_DBPntIF->Coordinate (((DBObjPair *) obj1)->PointRec));
-
-	if (cellRec0 == cellRec1) return (0);
-	if (_DBNetIF->CellBasinID   (cellRec0) < _DBNetIF->CellBasinID   (cellRec1)) return  (1);
-	if (_DBNetIF->CellBasinID   (cellRec0) > _DBNetIF->CellBasinID   (cellRec1)) return (-1);
-	if (_DBNetIF->CellBasinArea (cellRec0) > _DBNetIF->CellBasinArea (cellRec1)) return  (1);
-	if (_DBNetIF->CellBasinArea (cellRec0) < _DBNetIF->CellBasinArea (cellRec1)) return (-1);
-	return (0);
-	}
-
-
-static DBInt DBPointUpStreamAction (DBNetworkIF *netIF,DBObjRecord *cellRec,DBInt pntID)
-
-	{
-	_DBGrdIF->Value (netIF->CellPosition (cellRec),pntID);
-	return (true);
-	}
-
 DBInt DBPointToGrid (DBObjData *pntData,DBObjData *netData,DBObjData *grdData)
 
 	{
-	DBInt i, recID;
+	DBInt i, value;
 	DBPosition pos;
 	DBObjTable *pntTable = pntData->Table (DBrNItems);
 	DBObjTable *grdTable = grdData->Table (DBrNItems);
@@ -58,72 +26,66 @@ DBInt DBPointToGrid (DBObjData *pntData,DBObjData *netData,DBObjData *grdData)
 	DBObjTableField *grdAttribFLD;
 	DBObjTableField *grdFLD = grdTable->Field (DBrNGridValue);
 	DBObjTableField *symFLD = grdTable->Field (DBrNSymbol);
-	DBObjRecord *cellRec;
+	DBObjRecord *cellRec, *toCell, *pntRec, *itemRec;
 	DBObjRecord *symRec = symTable->First ();
-	DBObjPair *objPair;
+	DBVPointIF	*pntIF;
+	DBNetworkIF *netIF;
+	DBGridIF 	*grdIF;
 
-	_DBPntIF = new DBVPointIF(pntData);
+	pntIF = new DBVPointIF  (pntData);
+	netIF = new DBNetworkIF (netData);
+	grdIF = new DBGridIF    (grdData);
 
-	if ((objPair = (DBObjPair *) calloc (_DBPntIF->ItemNum (), sizeof (DBObjPair))) == (DBObjPair *) NULL)
-		{
-		CMmsgPrint (CMmsgAppError, "Memory Allocation Error in: %s %d",__FILE__,__LINE__);
-		delete _DBPntIF;
-		return (DBFault);
-		}
-	_DBGrdIF = new DBGridIF (grdData);
-	_DBGrdIF->RenameLayer (_DBGrdIF->Layer ((DBInt) 0),(char *) "Subbasins");
-	_DBNetIF	= new DBNetworkIF (netData);
+	grdIF->RenameLayer (grdIF->Layer ((DBInt) 0),(char *) "Subbasins");
 
-	for (pos.Row = 0;pos.Row < _DBGrdIF->RowNum ();++pos.Row)
-		for (pos.Col = 0;pos.Col < _DBGrdIF->ColNum ();++pos.Col)	_DBGrdIF->Value (pos,DBFault);
-	grdTable->AddField (new DBObjTableField (DBrNGridArea,   DBTableFieldFloat,"%10.1f",sizeof (DBFloat4)));
-	grdTable->AddField (new DBObjTableField (DBrNGridPercent,DBTableFieldFloat, "%5.1f",sizeof (DBFloat4)));
+	for (pos.Row = 0;pos.Row < grdIF->RowNum ();++pos.Row)
+		for (pos.Col = 0;pos.Col < grdIF->ColNum ();++pos.Col)	grdIF->Value (pos,DBFault);
+
 	for (pntFLD = pntFields->First ();pntFLD != (DBObjTableField *) NULL;pntFLD = pntFields->Next ())
 		if (DBTableFieldIsVisible (pntFLD)) grdTable->AddField (new DBObjTableField (*pntFLD));
 
-	recID = 0;
-	for (i = 0;i < _DBPntIF->ItemNum ();++i)
+	for (i = 0;i < pntIF->ItemNum ();++i)
 		{
-		DBPause (i * 100 / _DBPntIF->ItemNum ());
-		objPair [recID].PointRec = _DBPntIF->Item (i);
-		if ((objPair [recID].PointRec->Flags () & DBObjectFlagIdle) == DBObjectFlagIdle) continue;
-		if (_DBNetIF->Cell (_DBPntIF->Coordinate (objPair [recID].PointRec)) == (DBObjRecord *) NULL) continue;
-		objPair [recID].ItemRec = grdTable->Add (objPair [recID].PointRec->Name ());
-		grdFLD->Int (objPair [recID].ItemRec,objPair [recID].PointRec->RowID () + 1);
-		symFLD->Record (objPair [recID].ItemRec,symRec);
+		DBPause (i * 100 / pntIF->ItemNum ());
+		pntRec = pntIF->Item (i);
+		if ((pntRec->Flags () & DBObjectFlagIdle) == DBObjectFlagIdle)          continue;
+		if ((cellRec = netIF->Cell (pntIF->Coordinate (pntRec))) == (DBObjRecord *) NULL) continue;
+
+		itemRec = grdTable->Add (pntRec->Name ());
+		grdFLD->Int    (itemRec,pntRec->RowID () + 1);
+		symFLD->Record (itemRec,symRec);
+
 		for (pntFLD = pntFields->First ();pntFLD != (DBObjTableField *) NULL;pntFLD = pntFields->Next ())
 			if ((grdAttribFLD = grdTable->Field (pntFLD->Name ())) != (DBObjTableField *) NULL)
 				switch (pntFLD->Type ())
 					{
 					case DBTableFieldString:
-						grdAttribFLD->String (objPair [recID].ItemRec, pntFLD->String (objPair [recID].PointRec));
+						grdAttribFLD->String (itemRec, pntFLD->String (pntRec));
 						break;
 					case DBTableFieldInt:
-						grdAttribFLD->Int 	 (objPair [recID].ItemRec, pntFLD->Int    (objPair [recID].PointRec));
+						grdAttribFLD->Int 	 (itemRec, pntFLD->Int    (pntRec));
 						break;
 					case DBTableFieldFloat:
-						grdAttribFLD->Float  (objPair [recID].ItemRec, pntFLD->Float  (objPair [recID].PointRec));
+						grdAttribFLD->Float  (itemRec, pntFLD->Float  (pntRec));
 						break;
 					case DBTableFieldDate:
-						grdAttribFLD->Date   (objPair [recID].ItemRec, pntFLD->Date   (objPair [recID].PointRec));
+						grdAttribFLD->Date   (itemRec, pntFLD->Date   (pntRec));
 						break;
 					}
-		recID++;
+		grdIF->Value (netIF->CellPosition (cellRec),itemRec->RowID ());
 		}
 
-	qsort (objPair,recID, sizeof (DBObjPair),_DBPointSort);
-
-	for (recID = recID - 1;recID >= 0;--recID)
+	for (i = 0;i < netIF->CellNum(); ++i)
 		{
-		if ((cellRec = _DBNetIF->Cell (_DBPntIF->Coordinate (objPair [recID].PointRec))) == (DBObjRecord *) NULL) continue;
-		_DBNetIF->UpStreamSearch (cellRec,(DBNetworkACTION) DBPointUpStreamAction,(void *) objPair [recID].ItemRec->RowID ());
-		CMmsgPrint (CMmsgInfo,"%d %d %d", recID,objPair [recID].PointRec->RowID (),objPair [recID].ItemRec->RowID ());
+		if ((cellRec = netIF->Cell (i)) == (DBObjRecord *) NULL) continue;
+		if ((itemRec = grdIF->GridItem (netIF->CellPosition (cellRec))) != (DBObjRecord *) NULL) continue;
+		if ((toCell = netIF->ToCell (cellRec)) == (DBObjRecord *) NULL) continue;
+		if ((itemRec = grdIF->GridItem (netIF->CellPosition (toCell)))  != (DBObjRecord *) NULL) grdIF->Value (netIF->CellPosition (cellRec),itemRec->RowID ());
 		}
-	_DBGrdIF->DiscreteStats ();
-	delete _DBPntIF;
-	delete _DBGrdIF;
-	delete _DBNetIF;
-	free (objPair);
+	grdIF->DiscreteStats ();
+	delete pntIF;
+	delete netIF;
+	delete grdIF;
 	return (DBSuccess);
 	}
 

@@ -158,8 +158,10 @@ DBObjTable *_DBCreateDataBlockGridCategoryTable ()
 
 	{
 	DBTableFieldDefinition fieldDefs [] =
-		{	DBTableFieldDefinition (DBrNGridValue,		DBTableFieldInt,        (char *) "%3d",    sizeof (DBInt),true),
+		{	DBTableFieldDefinition (DBrNGridValue,		DBTableFieldInt,        (char *) "%3d",    sizeof (DBInt),    true),
 			DBTableFieldDefinition (DBrNSymbol,			DBTableFieldTableRec,   DBHiddenField,     sizeof (DBAddress),true),
+			DBTableFieldDefinition (DBrNGridArea,       DBTableFieldFloat,      (char *) "%10.f",  sizeof (DBFloat),  true),
+			DBTableFieldDefinition (DBrNGridPercent,    DBTableFieldFloat,      (char *) "%5.2f",  sizeof (DBFloat),  true),
 			DBTableFieldDefinition () };
 	return (new DBObjTable (DBrNItems,fieldDefs));
 	}

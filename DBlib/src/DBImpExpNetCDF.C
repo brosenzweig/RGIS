@@ -107,7 +107,7 @@ static const char *_DBExportNetCDFRename (const char *name)
 			{ DBrNStdDev,                (char *) "stddev"},
 			{ DBrNMissingValue,          (char *) "missing_value"},
 			{ DBrNGridValue,             (char *) "grid_value"},
-			{ DBrNGridArea,              (char *) "arid_area"},
+			{ DBrNGridArea,              (char *) "grid_area"},
 			{ DBrNGridPercent,           (char *) "grid_percent"},
 			{ DBrNItems,                 (char *) "items"},
 			{ DBrNSelection,             (char *) "selection"},

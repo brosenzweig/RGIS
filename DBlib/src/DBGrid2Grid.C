@@ -51,7 +51,7 @@ DBObjData *DBGridToGrid (DBObjData *srcGridData,DBInt type)
 				break;
 			case DBTypeGridDiscrete:
 				valueType = DBTableFieldInt;
-				valueSize = sizeof (DBShort);
+				valueSize = sizeof (DBInt);
 				break;
 			default:
 				CMmsgPrint (CMmsgAppError, "Invalid Data Type in: %s %d",__FILE__,__LINE__);
@@ -67,20 +67,20 @@ DBObjData *DBGridToGrid (DBObjData *srcGridData,DBInt type, DBInt valueType, DBI
 	DBObjRecord *layerRec, *dataRec;
 	DBObjTable *layerTable = grdData->Table (DBrNLayers);
 	DBObjTable *itemTable  = grdData->Table (DBrNItems);
-	DBObjTableField *rowNumFLD		= layerTable->Field (DBrNRowNum);
-	DBObjTableField *colNumFLD 	= layerTable->Field (DBrNColNum);
-	DBObjTableField *cellWidthFLD = layerTable->Field (DBrNCellWidth);
-	DBObjTableField *cellHeightFLD= layerTable->Field (DBrNCellHeight);
-	DBObjTableField *valueTypeFLD = layerTable->Field (DBrNValueType);
-	DBObjTableField *valueSizeFLD = layerTable->Field (DBrNValueSize);
-	DBObjTableField *layerFLD 		= layerTable->Field (DBrNLayer);
+	DBObjTableField *rowNumFLD     = layerTable->Field (DBrNRowNum);
+	DBObjTableField *colNumFLD     = layerTable->Field (DBrNColNum);
+	DBObjTableField *cellWidthFLD  = layerTable->Field (DBrNCellWidth);
+	DBObjTableField *cellHeightFLD = layerTable->Field (DBrNCellHeight);
+	DBObjTableField *valueTypeFLD  = layerTable->Field (DBrNValueType);
+	DBObjTableField *valueSizeFLD  = layerTable->Field (DBrNValueSize);
+	DBObjTableField *layerFLD      = layerTable->Field (DBrNLayer);
 	DBGridIF *gridIF;
 
 	grdData->Projection (srcGridData->Projection ());
 	grdData->Precision  (srcGridData->Precision ());
 	grdData->MaxScale   (srcGridData->MaxScale ());
 	grdData->MinScale   (srcGridData->MinScale ());
-	grdData->Extent  	  (srcGridData->Extent ());
+	grdData->Extent     (srcGridData->Extent ());
 	grdData->Document   (DBDocGeoDomain,srcGridData->Document (DBDocGeoDomain));
 	grdData->Document   (DBDocSubject,  srcGridData->Document (DBDocSubject));
 
@@ -119,7 +119,7 @@ DBObjData *DBGridToGrid (DBObjData *srcGridData,DBInt type, DBInt valueType, DBI
 		DBObjTable *symbolTable =  grdData->Table (DBrNSymbols);
 		DBObjTableField *foregroundFLD = symbolTable->Field (DBrNForeground);
 		DBObjTableField *backgroundFLD = symbolTable->Field (DBrNBackground);
-		DBObjTableField *styleFLD = symbolTable->Field (DBrNStyle);
+		DBObjTableField *styleFLD      = symbolTable->Field (DBrNStyle);
 		DBObjRecord *symbolRec = symbolTable->Add ("Default Symbol");
 
 		foregroundFLD->Int (symbolRec,1);
@@ -159,19 +159,19 @@ DBObjData *DBGridCreate (char *title,DBRegion extent,DBCoordinate cellSize,DBInt
 	extent.UpperRight.Y = extent.LowerLeft.Y + (DBFloat) rowNum * cellSize.Y;
 
 	data = new DBObjData (title,type);
-   data->Extent (extent);
-   data->Projection (DBMathGuessProjection (extent));
-   data->Precision  (DBMathGuessPrecision  (extent));
+	data->Extent (extent);
+	data->Projection (DBMathGuessProjection (extent));
+	data->Precision  (DBMathGuessPrecision  (extent));
 
 	layerTable = data->Table (DBrNLayers);
 	itemTable  = data->Table (DBrNItems);
-	rowNumFLD  = layerTable->Field (DBrNRowNum);
-	colNumFLD  = layerTable->Field (DBrNColNum);
+	rowNumFLD     = layerTable->Field (DBrNRowNum);
+	colNumFLD     = layerTable->Field (DBrNColNum);
 	cellWidthFLD  = layerTable->Field (DBrNCellWidth);
 	cellHeightFLD = layerTable->Field (DBrNCellHeight);
 	valueTypeFLD  = layerTable->Field (DBrNValueType);
 	valueSizeFLD  = layerTable->Field (DBrNValueSize);
-	layerFLD = layerTable->Field (DBrNLayer);
+	layerFLD      = layerTable->Field (DBrNLayer);
 
 	layerTable->Add ("FirstLayer");
 	if ((layerRec = layerTable->Item ()) == (DBObjRecord *) NULL) return ((DBObjData *) NULL);
@@ -181,8 +181,8 @@ DBObjData *DBGridCreate (char *title,DBRegion extent,DBCoordinate cellSize,DBInt
 	cellHeightFLD->Float (layerRec,cellSize.Y);
 	switch (type)
 		{
-		case DBTypeGridContinuous:	varType = DBVariableFloat;	varSize = sizeof (DBFloat4);	break;
-		case DBTypeGridDiscrete:	varType = DBVariableInt;	varSize = sizeof (DBShort);	break;
+		case DBTypeGridContinuous:	varType = DBVariableFloat;	varSize = sizeof (DBFloat4); break;
+		case DBTypeGridDiscrete:	varType = DBVariableInt;	varSize = sizeof (DBInt);	 break;
 		default:
 			CMmsgPrint (CMmsgAppError, "Invalid Data Type in: %s %d",__FILE__,__LINE__);
 			delete data;

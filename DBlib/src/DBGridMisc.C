@@ -593,14 +593,10 @@ void DBGridIF::DiscreteStats ()
 	DBInt recordID, layerID;
 	DBFloat area, sumArea;
 	DBPosition pos;
-	DBObjTableField *areaFLD = ItemTable->Field (DBrNGridArea);
+	DBObjTableField *areaFLD    = ItemTable->Field (DBrNGridArea);
 	DBObjTableField *percentFLD = ItemTable->Field (DBrNGridPercent);
 	DBObjRecord *layerRec, *record;
 
-	if (areaFLD == (DBObjTableField *) NULL)
-		ItemTable->AddField (areaFLD = new DBObjTableField (DBrNGridArea,DBTableFieldFloat,"%10.1f",sizeof (DBFloat4)));
-	if (percentFLD == (DBObjTableField *) NULL)
-		ItemTable->AddField (percentFLD = new DBObjTableField (DBrNGridPercent,DBTableFieldFloat,"%5.1f",sizeof (DBFloat4)));
 	for (recordID = 0;recordID < ItemTable->ItemNum ();++recordID)
 		{
 		record = ItemTable->Item (recordID);
