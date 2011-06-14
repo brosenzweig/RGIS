@@ -17,13 +17,21 @@ DBVPointIF	*_DBPntIF;
 DBNetworkIF *_DBNetIF;
 DBGridIF 	*_DBGrdIF;
 
+class DBObjPair {
+	public:
+		DBObjRecord *PointRec;
+		DBObjRecord *ItemRec;
+	};
+
 static DBInt _DBPointSort (const void *obj0,const void *obj1)
 
 	{
-	DBObjRecord *cellRec0 = _DBNetIF->Cell (_DBPntIF->Coordinate (((DBObjRecord **) obj0) [0]));
-	DBObjRecord *cellRec1 = _DBNetIF->Cell (_DBPntIF->Coordinate (((DBObjRecord **) obj1) [0]));
+	DBObjRecord *cellRec0 = _DBNetIF->Cell (_DBPntIF->Coordinate (((DBObjPair *) obj0)->PointRec));
+	DBObjRecord *cellRec1 = _DBNetIF->Cell (_DBPntIF->Coordinate (((DBObjPair *) obj1)->PointRec));
 
 	if (cellRec0 == cellRec1) return (0);
+	if (_DBNetIF->CellBasinID   (cellRec0) < _DBNetIF->CellBasinID (cellRec1))   return  (1);
+	if (_DBNetIF->CellBasinID   (cellRec0) > _DBNetIF->CellBasinID (cellRec1))   return (-1);
 	if (_DBNetIF->CellBasinArea (cellRec0) > _DBNetIF->CellBasinArea (cellRec1)) return  (1);
 	if (_DBNetIF->CellBasinArea (cellRec0) < _DBNetIF->CellBasinArea (cellRec1)) return (-1);
 	return (0);
@@ -50,12 +58,13 @@ DBInt DBPointToGrid (DBObjData *pntData,DBObjData *netData,DBObjData *grdData)
 	DBObjTableField *grdAttribFLD;
 	DBObjTableField *grdFLD = grdTable->Field (DBrNGridValue);
 	DBObjTableField *symFLD = grdTable->Field (DBrNSymbol);
-	DBObjRecord *cellRec, **recARR;
+	DBObjRecord *cellRec;
 	DBObjRecord *symRec = symTable->First ();
+	DBObjPair *objPair;
 
 	_DBPntIF = new DBVPointIF(pntData);
 
-	if ((recARR = (DBObjRecord **) calloc (_DBPntIF->ItemNum (),2 * sizeof (DBObjRecord *))) == (DBObjRecord **) NULL)
+	if ((objPair = (DBObjPair *) calloc (_DBPntIF->ItemNum (), sizeof (DBObjPair))) == (DBObjPair *) NULL)
 		{
 		CMmsgPrint (CMmsgAppError, "Memory Allocation Error in: %s %d",__FILE__,__LINE__);
 		delete _DBPntIF;
@@ -67,8 +76,8 @@ DBInt DBPointToGrid (DBObjData *pntData,DBObjData *netData,DBObjData *grdData)
 
 	for (pos.Row = 0;pos.Row < _DBGrdIF->RowNum ();++pos.Row)
 		for (pos.Col = 0;pos.Col < _DBGrdIF->ColNum ();++pos.Col)	_DBGrdIF->Value (pos,DBFault);
-	grdTable->AddField (new DBObjTableField (DBrNGridArea,DBTableFieldFloat,"%10.1f",sizeof (DBFloat4)));
-	grdTable->AddField (new DBObjTableField (DBrNGridPercent,DBTableFieldFloat,"%5.1f",sizeof (DBFloat4)));
+	grdTable->AddField (new DBObjTableField (DBrNGridArea,   DBTableFieldFloat,"%10.1f",sizeof (DBFloat4)));
+	grdTable->AddField (new DBObjTableField (DBrNGridPercent,DBTableFieldFloat, "%5.1f",sizeof (DBFloat4)));
 	for (pntFLD = pntFields->First ();pntFLD != (DBObjTableField *) NULL;pntFLD = pntFields->Next ())
 		if (DBTableFieldIsVisible (pntFLD)) grdTable->AddField (new DBObjTableField (*pntFLD));
 
@@ -76,44 +85,44 @@ DBInt DBPointToGrid (DBObjData *pntData,DBObjData *netData,DBObjData *grdData)
 	for (i = 0;i < _DBPntIF->ItemNum ();++i)
 		{
 		DBPause (i * 100 / _DBPntIF->ItemNum ());
-		recARR [(recID << 0x01)] = _DBPntIF->Item (i);
-		if ((recARR [(recID << 0x01)]->Flags () & DBObjectFlagIdle) == DBObjectFlagIdle) continue;
-		if (_DBNetIF->Cell (_DBPntIF->Coordinate (recARR [(recID << 0x01)])) == (DBObjRecord *) NULL) continue;
-		recARR [(recID << 0x01) + 1] = grdTable->Add (recARR [(recID << 0x01)]->Name ());
-		grdFLD->Int (recARR [(recID << 0x01) + 1],recARR [(recID << 0x01)]->RowID () + 1);
-		symFLD->Record (recARR [(recID << 0x01) + 1],symRec);
+		objPair [recID].PointRec = _DBPntIF->Item (i);
+		if ((objPair [recID].PointRec->Flags () & DBObjectFlagIdle) == DBObjectFlagIdle) continue;
+		if (_DBNetIF->Cell (_DBPntIF->Coordinate (objPair [recID].PointRec)) == (DBObjRecord *) NULL) continue;
+		objPair [recID].ItemRec = grdTable->Add (objPair [recID].PointRec->Name ());
+		grdFLD->Int (objPair [recID].ItemRec,objPair [recID].PointRec->RowID () + 1);
+		symFLD->Record (objPair [recID].ItemRec,symRec);
 		for (pntFLD = pntFields->First ();pntFLD != (DBObjTableField *) NULL;pntFLD = pntFields->Next ())
 			if ((grdAttribFLD = grdTable->Field (pntFLD->Name ())) != (DBObjTableField *) NULL)
 				switch (pntFLD->Type ())
 					{
 					case DBTableFieldString:
-						grdAttribFLD->String (recARR [(recID << 0x01) + 1], pntFLD->String	(recARR [(recID << 0x01)]));
+						grdAttribFLD->String (objPair [recID].ItemRec, pntFLD->String (objPair [recID].PointRec));
 						break;
 					case DBTableFieldInt:
-						grdAttribFLD->Int 	(recARR [(recID << 0x01) + 1], pntFLD->Int 	   (recARR [(recID << 0x01)]));
+						grdAttribFLD->Int 	 (objPair [recID].ItemRec, pntFLD->Int    (objPair [recID].PointRec));
 						break;
 					case DBTableFieldFloat:
-						grdAttribFLD->Float 	(recARR [(recID << 0x01) + 1], pntFLD->Float	   (recARR [(recID << 0x01)]));
+						grdAttribFLD->Float  (objPair [recID].ItemRec, pntFLD->Float  (objPair [recID].PointRec));
 						break;
 					case DBTableFieldDate:
-						grdAttribFLD->Date 	(recARR [(recID << 0x01) + 1], pntFLD->Date	   (recARR [(recID << 0x01)]));
+						grdAttribFLD->Date   (objPair [recID].ItemRec, pntFLD->Date   (objPair [recID].PointRec));
 						break;
 					}
 		recID++;
 		}
 
-	qsort (recARR,recID,2 * sizeof (DBObjRecord *),_DBPointSort);
+	qsort (objPair,recID, sizeof (DBObjPair),_DBPointSort);
 
 	for (recID = recID - 1;recID >= 0;--recID)
 		{
-		if ((cellRec = _DBNetIF->Cell (_DBPntIF->Coordinate (recARR [(recID << 0x01)]))) == (DBObjRecord *) NULL) continue;
-		_DBNetIF->UpStreamSearch (cellRec,(DBNetworkACTION) DBPointUpStreamAction,(void *) recARR [(recID << 0x01) + 1]->RowID ());
+		if ((cellRec = _DBNetIF->Cell (_DBPntIF->Coordinate (objPair [recID].PointRec))) == (DBObjRecord *) NULL) continue;
+		_DBNetIF->UpStreamSearch (cellRec,(DBNetworkACTION) DBPointUpStreamAction,(void *) objPair [recID].ItemRec->RowID ());
 		}
 	_DBGrdIF->DiscreteStats ();
 	delete _DBPntIF;
 	delete _DBGrdIF;
 	delete _DBNetIF;
-	free (recARR);
+	free (objPair);
 	return (DBSuccess);
 	}
 
