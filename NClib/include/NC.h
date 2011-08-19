@@ -131,6 +131,8 @@ NCstate NCfileSetValidRange (int, double, double);
 char   **NCfileList         (const char *, size_t *);
 void     NCfileListFree     (char **, size_t);
 
+NCstate NCGridContSampling (int, int);
+
 #if defined(__cplusplus)
 }
 #endif

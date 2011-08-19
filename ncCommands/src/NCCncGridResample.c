@@ -1,5 +1,6 @@
 #include <cm.h>
 #include <unistd.h>
+#include <NC.h>
 #include <NCdsHandle.h>
 
 int main (int argc,char *argv [])

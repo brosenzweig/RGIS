@@ -297,39 +297,68 @@ DBObjData *DBGridMerge (DBObjData *grdData, DBObjData *mergeData)
 
 	{
 	DBInt layerID, layerNum;
-	DBFloat gridValue;
+	DBFloat gridValue, width, height;
+	DBInt colNum, rowNum;
 	DBPosition pos;
 	DBCoordinate coord;
 	DBRegion extent;
 	DBObjTable *grdTable, *mergeTable;
-	DBGridIF *gridIF, *mergeIF;
+	DBGridIF    *grdIF, *mGrdIF;
+	DBNetworkIF *netIF, *mNetIF;
 	DBObjRecord *grdLayerRec, *appLayerRec;
 
-	if (((grdData->Type   () != DBTypeGridDiscrete) && (grdData->Type   () != DBTypeGridContinuous)) ||
-		((mergeData->Type () != DBTypeGridDiscrete) && (mergeData->Type () != DBTypeGridContinuous)) ||
+	if (((grdData->Type   () != DBTypeGridDiscrete) && (grdData->Type   () != DBTypeGridContinuous) && (grdData->Type   () != DBTypeNetwork)) ||
+		((mergeData->Type () != DBTypeGridDiscrete) && (mergeData->Type () != DBTypeGridContinuous) && (mergeData->Type () != DBTypeNetwork)) ||
 		(grdData->Type () != mergeData->Type ()))
 		return ((DBObjData *) NULL);
 
 	grdTable   = grdData->Table(DBrNLayers);
 	mergeTable = mergeData->Table(DBrNLayers);
 
-	if (grdTable->ItemNum () != mergeTable->ItemNum ())
-		{
-		CMmsgPrint (CMmsgUsrError,"Incompatible grids");
-		}
-	for (layerID = 0; layerID < grdData->Table(DBrNItems)->ItemNum(); ++layerID)
-		{
-
-		}
 	extent.Expand (grdData->Extent ());
-	if (!extent.InRegion (mergeData->Extent ()))
+	extent.Expand (mergeData->Extent ());
+	if ((grdData->Type () & DBTypeGrid) == DBTypeGrid)
 		{
-		extent.Expand (mergeData->Extent ());
+		grdIF  = new DBGridIF (grdData);
+		mGrdIF = new DBGridIF (mergeData);
 
+		width  = grdIF->CellWidth  ();
+		height = grdIF->CellHeight ();
+		if ((CMmathEqualValues (width,  mGrdIF->CellWidth  ()) == false) ||
+		    (CMmathEqualValues (height, mGrdIF->CellHeight ()) == false))
+		{
+			CMmsgPrint (CMmsgUsrError,"Different cell size");
+			goto StopGrid;
 		}
 
-	gridIF  = new DBGridIF (grdData);
-	mergeIF = new DBGridIF (mergeData);
+		if (grdData->Type () == DBTypeGridDiscrete)
+			{
+			if (grdTable->ItemNum () != mergeTable->ItemNum ())
+				{
+				CMmsgPrint (CMmsgUsrError,"Incompatible grids");
+				}
+			for (layerID = 0; layerID < grdData->Table(DBrNItems)->ItemNum(); ++layerID)
+				{
+
+				}
+			}
+		}
+	else
+		{
+		netIF  = new DBNetworkIF (grdData);
+		mNetIF = new DBNetworkIF (mergeData);
+
+		width  = netIF->CellWidth  ();
+		height = netIF->CellHeight ();
+
+		if ((CMmathEqualValues (width,  mNetIF->CellWidth  ()) == false) ||
+		    (CMmathEqualValues (height, mNetIF->CellHeight ()) == false))
+			{
+				CMmsgPrint (CMmsgUsrError,"Different cell size");
+				goto StopNet;
+			}
+		}
+
 
 /*	for (layerID = 0;layerID < layerNum;++layerID)
 		{
@@ -384,7 +413,10 @@ DBObjData *DBGridMerge (DBObjData *grdData, DBObjData *mergeData)
 			}
 		}
 */
-	delete gridIF;
-	delete mergeIF;
+	delete grdIF;
+	delete mGrdIF;
 	return (grdData);
+StopGrid:
+StopNet:
+	return ((DBObjData *) NULL);
 	}

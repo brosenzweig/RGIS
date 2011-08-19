@@ -8,7 +8,7 @@
 
 static regex_t _NCfileListRegex;
 
-static int _NCfileFilter (const struct dirent *dirent)
+static int _NCfileFilter (struct dirent *dirent)
 {
 	regmatch_t pmatch;
 	return (regexec (&_NCfileListRegex,dirent->d_name,1, &pmatch, REG_NOTBOL | REG_NOTEOL) == REG_NOMATCH ? false : true);
