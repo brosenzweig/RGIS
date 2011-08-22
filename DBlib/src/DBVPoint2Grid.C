@@ -16,7 +16,7 @@ balazs.fekete@unh.edu
 DBInt DBPointToGrid (DBObjData *pntData,DBObjData *netData,DBObjData *grdData)
 
 	{
-	DBInt i, value;
+	DBInt i;
 	DBPosition pos;
 	DBObjTable *pntTable = pntData->Table (DBrNItems);
 	DBObjTable *grdTable = grdData->Table (DBrNItems);

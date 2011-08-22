@@ -293,73 +293,168 @@ DBInt DBGridAppend (DBObjData *grdData, DBObjData *appData)
 	return (DBSuccess);
 	}
 
-DBObjData *DBGridMerge (DBObjData *grdData, DBObjData *mergeData)
+DBObjData *DBGridMerge (DBObjData *grd0Data, DBObjData *grd1Data)
 
 	{
-	DBInt layerID, layerNum;
-	DBFloat gridValue, width, height;
-	DBInt colNum, rowNum;
-	DBPosition pos;
-	DBCoordinate coord;
+	DBInt layerID, layerNum, fieldID, fieldNum;
+	DBFloat gridValue;
+	DBPosition pos, offset0, offset1;
+	DBCoordinate coord, cellSize;
 	DBRegion extent;
-	DBObjTable *grdTable, *mergeTable;
-	DBGridIF    *grdIF, *mGrdIF;
-	DBNetworkIF *netIF, *mNetIF;
-	DBObjRecord *grdLayerRec, *appLayerRec;
+	DBObjTable  *grd0ItemTable, *grd1ItemTable;
+	DBObjTable  *grd0CellTable, *grd1CellTable;
+	DBGridIF    *grd0IF = (DBGridIF *)    NULL,    *grd1IF = (DBGridIF *)    NULL,    *rGrdIF = (DBGridIF *)    NULL;
+	DBNetworkIF *net0IF = (DBNetworkIF *) NULL,    *net1IF = (DBNetworkIF *) NULL,    *rNetIF = (DBNetworkIF *) NULL;
+	DBObjRecord *grd0LayerRec, *grd1LayerRec, *rGrdLayerRec;
+	DBObjTableField *grd0ItemFLD, *grd1ItemFLD;
+	DBObjTableField *grd0CellFLD, *grd1CellFLD;
+	DBObjData *retData = (DBObjData *) NULL;
 
-	if (((grdData->Type   () != DBTypeGridDiscrete) && (grdData->Type   () != DBTypeGridContinuous) && (grdData->Type   () != DBTypeNetwork)) ||
-		((mergeData->Type () != DBTypeGridDiscrete) && (mergeData->Type () != DBTypeGridContinuous) && (mergeData->Type () != DBTypeNetwork)) ||
-		(grdData->Type () != mergeData->Type ()))
+	if (((grd0Data->Type () != DBTypeGridDiscrete) && (grd0Data->Type () != DBTypeGridContinuous) && (grd0Data->Type () != DBTypeNetwork)) ||
+		((grd1Data->Type () != DBTypeGridDiscrete) && (grd1Data->Type () != DBTypeGridContinuous) && (grd1Data->Type () != DBTypeNetwork)) ||
+		 (grd0Data->Type () != grd1Data->Type ()))
 		return ((DBObjData *) NULL);
 
-	grdTable   = grdData->Table(DBrNLayers);
-	mergeTable = mergeData->Table(DBrNLayers);
-
-	extent.Expand (grdData->Extent ());
-	extent.Expand (mergeData->Extent ());
-	if ((grdData->Type () & DBTypeGrid) == DBTypeGrid)
+	grd0ItemTable = grd0Data->Table (DBrNItems);
+	grd1ItemTable = grd1Data->Table (DBrNItems);
+	if ((fieldNum = grd0ItemTable->FieldNum ()) != grd1ItemTable->FieldNum ())
 		{
-		grdIF  = new DBGridIF (grdData);
-		mGrdIF = new DBGridIF (mergeData);
-
-		width  = grdIF->CellWidth  ();
-		height = grdIF->CellHeight ();
-		if ((CMmathEqualValues (width,  mGrdIF->CellWidth  ()) == false) ||
-		    (CMmathEqualValues (height, mGrdIF->CellHeight ()) == false))
+		CMmsgPrint (CMmsgUsrError,"Incompatible item tables");
+		goto Stop;
+		}
+	for (fieldID = 0; fieldID < fieldNum; ++fieldID)
 		{
-			CMmsgPrint (CMmsgUsrError,"Different cell size");
-			goto StopGrid;
+		grd0ItemFLD = grd0ItemTable->Field (fieldID);
+		grd1ItemFLD = grd1ItemTable->Field (fieldID);
+		if ((strcmp (grd0ItemFLD->Name (), grd1ItemFLD->Name ()) == 0) ||
+			(grd0ItemFLD->Type   () != grd1ItemFLD->Type   ()) ||
+			(grd0ItemFLD->Length () != grd1ItemFLD->Length ()) ||
+			(grd0ItemFLD->Size   () != grd1ItemFLD->Size   ()))
+			{
+			CMmsgPrint (CMmsgUsrError,"Incompatible item tables");
+			goto Stop;
+			}
 		}
 
-		if (grdData->Type () == DBTypeGridDiscrete)
+	extent.Expand (grd0Data->Extent ());
+	extent.Expand (grd1Data->Extent ());
+	if ((grd0Data->Type () & DBTypeGrid) == DBTypeGrid)
+		{
+		grd0ItemTable = grd0Data->Table (DBrNLayers);
+		grd1ItemTable = grd1Data->Table (DBrNLayers);
+		if ((layerNum = grd0ItemTable->ItemNum ()) != grd1ItemTable->ItemNum ())
 			{
-			if (grdTable->ItemNum () != mergeTable->ItemNum ())
+			CMmsgPrint (CMmsgUsrError,"Incompatible grids");
+			goto Stop;
+			}
+		for (layerID = 0; layerID < layerNum; ++layerID)
+			{
+			grd0LayerRec = grd0ItemTable->Item (layerID);
+			grd1LayerRec = grd1ItemTable->Item (layerID);
+			if (strcmp (grd0LayerRec->Name (), grd1LayerRec->Name ()) != 0)
 				{
-				CMmsgPrint (CMmsgUsrError,"Incompatible grids");
+				CMmsgPrint (CMmsgUsrError,"Incompatible grid layers");
+				goto Stop;
 				}
-			for (layerID = 0; layerID < grdData->Table(DBrNItems)->ItemNum(); ++layerID)
-				{
+			}
 
-				}
+		grd0IF = new DBGridIF (grd0Data);
+		grd1IF = new DBGridIF (grd1Data);
+
+		cellSize.X  = grd0IF->CellWidth  ();
+		cellSize.Y = grd0IF->CellHeight ();
+		if ((CMmathEqualValues (cellSize.X, grd1IF->CellWidth  ()) == false) ||
+		    (CMmathEqualValues (cellSize.Y, grd1IF->CellHeight ()) == false))
+			{
+			CMmsgPrint (CMmsgUsrError,"Different cell size");
+			goto Stop;
 			}
 		}
 	else
 		{
-		netIF  = new DBNetworkIF (grdData);
-		mNetIF = new DBNetworkIF (mergeData);
-
-		width  = netIF->CellWidth  ();
-		height = netIF->CellHeight ();
-
-		if ((CMmathEqualValues (width,  mNetIF->CellWidth  ()) == false) ||
-		    (CMmathEqualValues (height, mNetIF->CellHeight ()) == false))
+		grd0CellTable = grd0Data->Table (DBrNCells);
+		grd1CellTable = grd1Data->Table (DBrNCells);
+		if ((fieldID = grd0CellTable->FieldNum ()) != grd1CellTable->FieldNum ())
 			{
-				CMmsgPrint (CMmsgUsrError,"Different cell size");
-				goto StopNet;
+			CMmsgPrint (CMmsgUsrError,"Different cell table");
+			goto Stop;
+			}
+		for (fieldID = 0; fieldID < fieldNum; ++fieldID)
+			{
+			grd0CellFLD = grd0CellTable->Field (fieldID);
+			grd1CellFLD = grd1CellTable->Field (fieldID);
+			if ((strcmp (grd0CellFLD->Name (), grd1CellFLD->Name ()) == 0) ||
+				(grd0CellFLD->Type   () != grd1CellFLD->Type   ()) ||
+				(grd0CellFLD->Length () != grd1CellFLD->Length ()) ||
+				(grd0CellFLD->Size   () != grd1CellFLD->Size   ()))
+				{
+				CMmsgPrint (CMmsgUsrError,"Incompatible cell tables");
+				goto Stop;
+				}
+			}
+
+		net0IF = new DBNetworkIF (grd0Data);
+		net1IF = new DBNetworkIF (grd1Data);
+
+		cellSize.X = net0IF->CellWidth  ();
+		cellSize.Y = net0IF->CellHeight ();
+
+		if ((CMmathEqualValues (cellSize.X, net1IF->CellWidth  ()) == false) ||
+		    (CMmathEqualValues (cellSize.Y, net1IF->CellHeight ()) == false))
+			{
+			CMmsgPrint (CMmsgUsrError,"Different cell size");
+			goto Stop;
 			}
 		}
 
+	offset0.Row = floor ((extent.LowerLeft.X - grd0Data->Extent().LowerLeft.X) / cellSize.X);
+	offset0.Col = floor ((extent.LowerLeft.Y - grd0Data->Extent().LowerLeft.Y) / cellSize.Y);
+	offset1.Row = floor ((extent.LowerLeft.X - grd1Data->Extent().LowerLeft.X) / cellSize.X);
+	offset1.Col = floor ((extent.LowerLeft.Y - grd1Data->Extent().LowerLeft.Y) / cellSize.Y);
+	if ((CMmathEqualValues (offset0.Row * cellSize.X, extent.LowerLeft.X - grd0Data->Extent().LowerLeft.X) == false) ||
+		(CMmathEqualValues (offset0.Col * cellSize.Y, extent.LowerLeft.Y - grd0Data->Extent().LowerLeft.Y) == false) ||
+		(CMmathEqualValues (offset1.Row * cellSize.X, extent.LowerLeft.X - grd1Data->Extent().LowerLeft.X) == false) ||
+		(CMmathEqualValues (offset1.Col * cellSize.Y, extent.LowerLeft.Y - grd1Data->Extent().LowerLeft.Y) == false))
+		{
+		CMmsgPrint (CMmsgUsrError,"Unalligned Grids");
+		goto Stop;
+		}
 
+	switch (grd0Data->Type ())
+		{
+		case DBTypeGridContinuous:
+			if ((retData = DBGridCreate ((char *) "Merged Grid",extent,cellSize,DBTypeGridContinuous)) == (DBObjData *) NULL)
+				{
+				CMmsgPrint (CMmsgAppError,"Grid Creation Error in: %s:%d",__FILE__,__LINE__);
+				goto Stop;
+				}
+			rGrdIF = new DBGridIF (retData);
+			rGrdIF->MissingValue (grd0IF->MissingValue ());
+			rGrdIF->RenameLayer (grd0IF->Layer (0)->Name ());
+			for (layerID = 0;layerID < grd0IF->LayerNum (); layerID++)
+				{
+				grd0LayerRec = grd0IF->Layer (layerID);
+				grd1LayerRec = grd1IF->Layer (layerID);
+				rGrdLayerRec = layerID == 0 ? rGrdIF->Layer (layerID) : rGrdIF->AddLayer (grd0LayerRec->Name ());
+				for (pos.Row = 0; pos.Row < rGrdIF->RowNum ();pos.Row++)
+					for (pos.Col = 0; pos.Col < rGrdIF->ColNum (); pos.Col++)
+						rGrdIF->Value (rGrdLayerRec, pos, rGrdIF->MissingValue ());
+				for (pos.Row = 0; pos.Row < grd0IF->RowNum ();pos.Row++)
+					for (pos.Col = 0; pos.Col < grd0IF->ColNum (); pos.Col++)
+						if (grd0IF->Value (grd0LayerRec,pos,&gridValue) == true)
+							rGrdIF->Value(rGrdLayerRec,offset0 + pos,gridValue);
+				for (pos.Row = 0; pos.Row < grd1IF->RowNum ();pos.Row++)
+					for (pos.Col = 0; pos.Col < grd1IF->ColNum (); pos.Col++)
+						if (grd1IF->Value (grd1LayerRec,pos,&gridValue) == true)
+							rGrdIF->Value(rGrdLayerRec,offset1 + pos,gridValue);
+				rGrdIF->RecalcStats(rGrdLayerRec);
+				}
+			break;
+		case DBTypeGridDiscrete:
+			break;
+		default:
+			break;
+		}
 /*	for (layerID = 0;layerID < layerNum;++layerID)
 		{
 		appLayerRec = appIF->Layer (appLayerID);
@@ -413,10 +508,10 @@ DBObjData *DBGridMerge (DBObjData *grdData, DBObjData *mergeData)
 			}
 		}
 */
-	delete grdIF;
-	delete mGrdIF;
-	return (grdData);
-StopGrid:
-StopNet:
-	return ((DBObjData *) NULL);
+Stop:
+	if (grd0IF != (DBGridIF *)    NULL) delete grd0IF;
+	if (grd1IF != (DBGridIF *)    NULL) delete grd1IF;
+	if (net0IF != (DBNetworkIF *) NULL) delete net0IF;
+	if (net1IF != (DBNetworkIF *) NULL) delete net1IF;
+	return (retData);
 	}

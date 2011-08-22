@@ -350,6 +350,30 @@ class DBPosition
 		DBPosition () { Row = 0; Col = 0; }
 		DBPosition (const DBPosition &pos) { Row = pos.Row; Col = pos.Col; }
 		void Swap () { DBByteOrderSwapWord (&Row); DBByteOrderSwapWord (&Col);}
+		friend DBPosition operator+ (DBPosition pos0,DBPosition pos1)
+			{
+			DBPosition retPos;
+			retPos.Col = pos0.Col + pos1.Col; retPos.Row = pos0.Row + pos1.Row;
+			return (retPos);
+			}
+		friend DBPosition operator+ (DBPosition pos,DBInt delta)
+			{
+			DBPosition retPos;
+			retPos.Col = pos.Col + delta; retPos.Row = pos.Row + delta;
+			return (retPos);
+			}
+		friend DBPosition operator- (DBPosition pos0,DBPosition pos1)
+			{
+			DBPosition retPos;
+			retPos.Col = pos0.Col - pos1.Col; retPos.Row = pos0.Row - pos1.Row;
+			return (retPos);
+			}
+		friend DBPosition operator- (DBPosition pos,DBInt delta)
+			{
+			DBPosition retPos;
+			retPos.Col = pos.Col - delta; retPos.Row = pos.Row - delta;
+			return (retPos);
+			}
 	};
 
 #define DBTimeStepMinute	(0x01)
