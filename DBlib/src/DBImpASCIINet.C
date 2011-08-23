@@ -96,7 +96,7 @@ int DBImportASCIINet (DBObjData *netData,const char *fileName)
 	layerTable->Add (DBrNLookupGrid);
 	if ((layerRec = layerTable->Item (DBrNLookupGrid)) == (DBObjRecord *) NULL)
 		{ CMmsgPrint (CMmsgAppError, "Network Layer Creation Error in: %s %d",__FILE__,__LINE__); return (DBFault); }
-	 printf ("%f %f\n",coord.X,coord.Y);
+	printf ("%f %f\n",coord.X,coord.Y);
 	cellWidthFLD->Float  (layerRec,cellSize);
 	cellHeightFLD->Float (layerRec,cellSize);
 	valueTypeFLD->Int (layerRec,DBTableFieldInt);

@@ -383,7 +383,7 @@ DBObjData *DBGridMerge (DBObjData *grd0Data, DBObjData *grd1Data)
 			{
 			grd0CellFLD = grd0CellTable->Field (fieldID);
 			grd1CellFLD = grd1CellTable->Field (fieldID);
-			if ((strcmp (grd0CellFLD->Name (), grd1CellFLD->Name ()) == 0) ||
+			if ((strcmp (grd0CellFLD->Name (), grd1CellFLD->Name ()) != 0) ||
 				(grd0CellFLD->Type   () != grd1CellFLD->Type   ()) ||
 				(grd0CellFLD->Length () != grd1CellFLD->Length ()) ||
 				(grd0CellFLD->Size   () != grd1CellFLD->Size   ()))
@@ -463,6 +463,132 @@ DBObjData *DBGridMerge (DBObjData *grd0Data, DBObjData *grd1Data)
 		case DBTypeGridDiscrete:
 			break;
 		default:
+         if ((retData = new DBObjData (grd0Data->Name (),DBTypeNetwork)) == (DBObjData *) NULL)
+            {
+    			CMmsgPrint (CMmsgAppError,"Network Creation Error in: %s:%d",__FILE__,__LINE__);
+				goto Stop;
+            }
+         else
+            {
+            DBObjTable *basinTable = retData->Table (DBrNItems);
+            DBObjTable *cellTable  = retData->Table (DBrNCells);
+            DBObjTable *layerTable = retData->Table (DBrNLayers);
+
+            DBObjTableField *mouthPosFLD   = basinTable->Field (DBrNMouthPos);
+            DBObjTableField *colorFLD		 = basinTable->Field (DBrNColor);
+
+            DBObjTableField *positionFLD	 = cellTable->Field (DBrNPosition);
+            DBObjTableField *toCellFLD		 = cellTable->Field (DBrNToCell);
+            DBObjTableField *fromCellFLD	 = cellTable->Field (DBrNFromCell);
+            DBObjTableField *orderFLD		 = cellTable->Field (DBrNOrder);
+            DBObjTableField *basinFLD		 = cellTable->Field (DBrNBasin);
+            DBObjTableField *basinCellsFLD = cellTable->Field (DBrNBasinCells);
+            DBObjTableField *travelFLD		 = cellTable->Field (DBrNTravel);
+            DBObjTableField *upCellPosFLD	 = cellTable->Field (DBrNUpCellPos);
+            DBObjTableField *cellAreaFLD	 = cellTable->Field (DBrNCellArea);
+            DBObjTableField *subbasinLengthFLD = cellTable->Field (DBrNSubbasinLength);
+            DBObjTableField *subbasinAreaFLD = cellTable->Field (DBrNSubbasinArea);
+
+            DBObjTableField *rowNumFLD = layerTable->Field (DBrNRowNum);
+            DBObjTableField *colNumFLD = layerTable->Field (DBrNColNum);
+            DBObjTableField *cellWidthFLD = layerTable->Field (DBrNCellWidth);
+            DBObjTableField *cellHeightFLD = layerTable->Field (DBrNCellHeight);
+            DBObjTableField *valueTypeFLD = layerTable->Field (DBrNValueType);
+            DBObjTableField *valueSizeFLD = layerTable->Field (DBrNValueSize);
+            DBObjTableField *layerFLD = layerTable->Field (DBrNLayer);
+
+            DBObjRecord *layerRec, *dataRec, *cellRec, *basinRec, *srcCell;
+            DBInt colNum = (DBInt) ((extent.UpperRight.X - extent.LowerLeft.X) / cellSize.X);
+            DBInt rowNum = (DBInt) ((extent.UpperRight.Y - extent.LowerLeft.Y) / cellSize.Y);
+            DBInt cellID;
+            char nameSTR [DBStringLength];
+
+            retData->Extent (extent);
+            retData->Precision  (grd0Data->Precision ());
+            retData->Projection (grd0Data->Projection ());
+            retData->MaxScale   (grd0Data->MaxScale  ());
+            retData->MinScale   (grd0Data->MinScale  ());
+            retData->Document   (DBDocSubject,   grd0Data->Document (DBDocSubject));
+            retData->Document   (DBDocGeoDomain, grd0Data->Document (DBDocGeoDomain));
+            retData->Document   (DBDocVersion,   grd0Data->Document (DBDocVersion));
+            retData->Flags (DBDataFlagDispModeNetColors,DBClear);
+            retData->Flags (grd0Data->Flags () & DBDataFlagDispModeNetColors, DBSet);
+
+         	layerTable->Add (DBrNLookupGrid);
+            if ((layerRec = layerTable->Item (DBrNLookupGrid)) == (DBObjRecord *) NULL)
+               {
+               CMmsgPrint (CMmsgAppError, "Network Layer Creation Error in: %s %d",__FILE__,__LINE__);
+               delete retData;
+               retData = (DBObjData *) NULL;
+         		goto Stop;
+               }
+            cellWidthFLD->Float  (layerRec,cellSize.X);
+            cellHeightFLD->Float (layerRec,cellSize.Y);
+            valueTypeFLD->Int (layerRec,DBTableFieldInt);
+            valueSizeFLD->Int (layerRec,sizeof (DBInt));
+            colNumFLD->Int (layerRec, colNum);
+            rowNumFLD->Int (layerRec, rowNum);
+            if ((dataRec = new DBObjRecord ("NetLookupGridRecord",rowNum * colNum * sizeof (DBInt),sizeof (DBInt))) == (DBObjRecord *) NULL)
+               {
+        			CMmsgPrint (CMmsgAppError,"Look Grid Record creation error");
+               delete retData;
+               retData = (DBObjData *) NULL;
+         		goto Stop;
+               }
+            layerFLD->Record (layerRec,dataRec);
+            (retData->Arrays ())->Add (dataRec);
+            for (pos.Row = 0;pos.Row < rowNum; ++pos.Row)
+               for (pos.Col = 0;pos.Col < colNum;++pos.Col)
+                  ((DBInt *) dataRec->Data ()) [pos.Row * colNum + pos.Col] = DBFault;
+      
+            for (cellID = 0;cellID < net0IF->CellNum (); ++cellID)
+               {
+               srcCell = net0IF->Cell (cellID);
+               pos = offset0 + net0IF->CellPosition (srcCell);
+               sprintf (nameSTR,"GHAASCell:%d",cellTable->ItemNum ());
+               cellRec = cellTable->Add (nameSTR);
+               positionFLD->Position    (cellRec, pos);
+               toCellFLD->Int			    (cellRec, net0IF->CellDirection(srcCell));
+               fromCellFLD->Int		    (cellRec, (DBInt) 0);
+               orderFLD->Int			    (cellRec, (DBInt) 0);
+               basinFLD->Int			    (cellRec, (DBInt) 0);
+               basinCellsFLD->Int	    (cellRec, (DBInt) 0);
+               travelFLD->Int			    (cellRec, (DBInt) 0);
+               upCellPosFLD->Position   (cellRec, pos);
+               cellAreaFLD->Float	    (cellRec,(DBFloat) 0.0);
+               subbasinLengthFLD->Float (cellRec,(DBFloat) 0.0);
+               subbasinAreaFLD->Float	 (cellRec,(DBFloat) 0.0);
+
+               ((DBInt *) dataRec->Data ()) [pos.Row * colNum + pos.Col] = cellRec->RowID ();
+               }
+           for (cellID = 0;cellID < net1IF->CellNum (); ++cellID)
+               {
+               srcCell = net1IF->Cell (cellID);
+               pos = offset1 + net1IF->CellPosition (srcCell);
+               sprintf (nameSTR,"GHAASCell:%d",cellTable->ItemNum ());
+               cellRec = cellTable->Add (nameSTR);
+               positionFLD->Position    (cellRec, pos);
+               toCellFLD->Int			    (cellRec, net1IF->CellDirection(srcCell));
+               fromCellFLD->Int		    (cellRec, (DBInt) 0);
+               orderFLD->Int			    (cellRec, (DBInt) 0);
+               basinFLD->Int			    (cellRec, (DBInt) 0);
+               basinCellsFLD->Int	    (cellRec, (DBInt) 0);
+               travelFLD->Int			    (cellRec, (DBInt) 0);
+               upCellPosFLD->Position   (cellRec, pos);
+               cellAreaFLD->Float	    (cellRec,(DBFloat) 0.0);
+               subbasinLengthFLD->Float (cellRec,(DBFloat) 0.0);
+               subbasinAreaFLD->Float	 (cellRec,(DBFloat) 0.0);
+
+               ((DBInt *) dataRec->Data ()) [pos.Row * colNum + pos.Col] = cellRec->RowID ();
+               }
+            sprintf (nameSTR,"GHAASBasin%d",(DBInt) 0);
+            basinRec = basinTable->Add (nameSTR);
+            mouthPosFLD->Position	(basinRec,positionFLD->Position (cellTable->Item (0)));
+            colorFLD->Int				(basinRec,0);
+            rNetIF = new DBNetworkIF (retData);
+            rNetIF->Build ();
+            delete rNetIF;
+            }
 			break;
 		}
    

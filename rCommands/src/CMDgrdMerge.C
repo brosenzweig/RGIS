@@ -100,6 +100,7 @@ int main (int argc,char *argv [])
 			CMmsgPrint (CMmsgInfo,"     -u,--subject   [subject]");
 			CMmsgPrint (CMmsgInfo,"     -d,--domain    [domain]");
 			CMmsgPrint (CMmsgInfo,"     -v,--version   [version]");
+			CMmsgPrint (CMmsgInfo,"     -s,--shadeset  [standard|grey|blue|blue-to-red|elevation]");
 			CMmsgPrint (CMmsgInfo,"     -V,--verbose");
 			CMmsgPrint (CMmsgInfo,"     -h,--help");
 			return (DBSuccess);
@@ -113,7 +114,7 @@ int main (int argc,char *argv [])
 
 	grdData = new DBObjData ();
 	ret = (argNum > 1) && (strcmp (argv [1],"-") != 0) ? grdData->Read (argv [1]) : grdData->Read (stdin);
-	if ((ret == DBFault) || ((grdData->Type () & DBTypeGrid) != DBTypeGrid))
+	if ((ret == DBFault) || (((grdData->Type () & DBTypeGrid) != DBTypeGrid) && grdData->Type() != DBTypeNetwork))
 		{ delete grdData; return (CMfailed); }
 
 	for (argPos = 2;argPos < argNum; ++argPos)
