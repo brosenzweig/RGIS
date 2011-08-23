@@ -18,21 +18,21 @@ balazs.fekete@unh.edu
 int main (int argc,char *argv [])
 
 	{
-	int argPos, argNum = argc, ret, data, dataNum = 0, verbose = false;
+	int argPos, argNum = argc, ret, verbose = false;
 	char *title  = (char *) NULL, *subject = (char *) NULL;
 	char *domain = (char *) NULL, *version = (char *) NULL;
-	char **dataList = (char **) NULL;
+	char *output = (char *) NULL;
+   int shadeSet = DBDataFlagDispModeContGreyScale;
+   bool setShadeSet = false;
 	DBObjData *grdData, *mergeData, *retData;
 
 	for (argPos = 1;argPos < argNum; )
 		{
-		if (CMargTest (argv [argPos],"-a","--append"))
+         if (CMargTest (argv [argPos],"-o","--output"))
 			{
 			if ((argNum = CMargShiftLeft (argPos,argv,argNum)) <= argPos)
-				{ CMmsgPrint (CMmsgUsrError,"Missing append grid!");  return (CMfailed); }
-			if ((dataList = (char **) realloc (dataList,(dataNum + 1) * sizeof (char *))) == (char **) NULL)
-				{ CMmsgPrint (CMmsgSysError, "Memory allocation error in: %s %d",__FILE__,__LINE__); return (DBFault); }
-			dataList [dataNum++] = argv [argPos];
+				{ CMmsgPrint (CMmsgUsrError,"Missing merge grid!");  return (CMfailed); }
+			output = argv [argPos];
 			if ((argNum = CMargShiftLeft (argPos,argv,argNum)) <= argPos) break;
 			continue;
 			}
@@ -68,6 +68,24 @@ int main (int argc,char *argv [])
 			if ((argNum = CMargShiftLeft (argPos,argv,argNum)) <= argPos) break;
 			continue;
 			}
+		if (CMargTest (argv [argPos],"-s","--shadeset"))
+			{
+			int shadeCodes [] = {	DBDataFlagDispModeContStandard,
+			                        DBDataFlagDispModeContGreyScale,
+			                        DBDataFlagDispModeContBlueScale,
+			                        DBDataFlagDispModeContBlueRed,
+			                        DBDataFlagDispModeContElevation };
+			const char *shadeSets [] = { "standard","grey","blue","blue-to-red","elevation", (char *) NULL };
+
+			if ((argNum = CMargShiftLeft (argPos,argv,argNum)) <= argPos)
+				{ CMmsgPrint (CMmsgUsrError,"Missing shadeset!");     return (CMfailed); }
+			if ((shadeSet = CMoptLookup (shadeSets,argv [argPos],true)) == CMfailed)
+				{ CMmsgPrint (CMmsgUsrError,"Invalid shadeset!");     return (CMfailed); }
+			shadeSet = shadeCodes [shadeSet];
+         setShadeSet = true;
+			if ((argNum = CMargShiftLeft (argPos,argv,argNum)) <= argPos) break;
+			continue;
+			}
 		if (CMargTest (argv [argPos],"-V","--verbose"))
 			{
 			verbose = true;
@@ -76,8 +94,8 @@ int main (int argc,char *argv [])
 			}
 		if (CMargTest (argv [argPos],"-h","--help"))
 			{
-			CMmsgPrint (CMmsgInfo,"%s [options] <input grid> <output grid>",CMprgName(argv[0]));
-			CMmsgPrint (CMmsgInfo,"     -m,--merge     [merge grid]");
+			CMmsgPrint (CMmsgInfo,"%s [options] <input grid0> <input grid1> ... <input gridN>",CMprgName(argv[0]));
+			CMmsgPrint (CMmsgInfo,"     -o,--output    [merged grid]");
 			CMmsgPrint (CMmsgInfo,"     -t,--title     [dataset title]");
 			CMmsgPrint (CMmsgInfo,"     -u,--subject   [subject]");
 			CMmsgPrint (CMmsgInfo,"     -d,--domain    [domain]");
@@ -91,7 +109,6 @@ int main (int argc,char *argv [])
 		argPos++;
 		}
 
-	if (argNum > 3) { CMmsgPrint (CMmsgUsrError,"Extra arguments!"); return (CMfailed); }
 	if (verbose) RGlibPauseOpen (argv[0]);
 
 	grdData = new DBObjData ();
@@ -99,21 +116,27 @@ int main (int argc,char *argv [])
 	if ((ret == DBFault) || ((grdData->Type () & DBTypeGrid) != DBTypeGrid))
 		{ delete grdData; return (CMfailed); }
 
-	if (title   != (char *) NULL) grdData->Name (title);
-	if (subject != (char *) NULL) grdData->Document (DBDocSubject,subject);
-	if (domain  != (char *) NULL) grdData->Document (DBDocGeoDomain,domain);
-	if (version != (char *) NULL) grdData->Document (DBDocVersion,version);
-
-	for (data = 0;data < dataNum;++data)
+	for (argPos = 2;argPos < argNum; ++argPos)
 		{
 		mergeData = new DBObjData ();
-		if (mergeData->Read (dataList [data]) == DBFault)                       { delete grdData; delete mergeData; return (CMfailed); }
+		if (mergeData->Read (argv [argPos]) == DBFault)                         { delete grdData; delete mergeData; return (CMfailed); }
 		if ((retData = DBGridMerge (grdData,mergeData))  == (DBObjData *) NULL) { delete grdData; delete mergeData; return (CMfailed); }
-		delete mergeData;
-		if (retData != grdData) { delete grdData; grdData = retData; }
+      delete grdData;
+      delete mergeData;
+		grdData = retData;
 		}
+   
+	if (title   != (char *) NULL) retData->Name (title);
+	if (subject != (char *) NULL) retData->Document (DBDocSubject,   subject);
+	if (domain  != (char *) NULL) retData->Document (DBDocGeoDomain, domain);
+	if (version != (char *) NULL) retData->Document (DBDocVersion,   version);
+   if (setShadeSet)
+      {
+      retData->Flags (DBDataFlagDispModeContShadeSets,DBClear);
+      retData->Flags (shadeSet, DBSet);
+      }
 
-	ret = (argNum > 2) && (strcmp (argv [2],"-") != 0) ? grdData->Write (argv [2]) : grdData->Write (stdout);
+	ret = output != (char *) NULL ? grdData->Write (output) : grdData->Write (stdout);
 
 	delete grdData;
 	if (verbose) RGlibPauseClose ();

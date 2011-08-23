@@ -200,13 +200,10 @@ DBFloat DBGridIF::Minimum (DBInt layer) const
 DBInt DBGridIF::Coord2Pos (DBCoordinate coord,DBPosition &pos) const
 
 	{
-	DBInt row, col;
- 	col = (DBInt) floor ((coord.X - DataPTR->Extent ().LowerLeft.X ) / CellWidth ());
-	row = (DBInt) floor ((coord.Y - DataPTR->Extent ().LowerLeft.Y ) / CellHeight ());
-	pos.Col = (DBUShort) col;
-	pos.Row = (DBUShort) row;
-	if ((col < 0) || (col >= ColNum ())) return (DBFault);
-	if ((row < 0) || (row >= RowNum ())) return (DBFault);
+ 	pos.Col = (DBInt) floor ((coord.X - DataPTR->Extent ().LowerLeft.X ) / CellWidth ());
+	pos.Row = (DBInt) floor ((coord.Y - DataPTR->Extent ().LowerLeft.Y ) / CellHeight ());
+	if ((pos.Col < 0) || (pos.Col >= ColNum ())) return (DBFault);
+	if ((pos.Row < 0) || (pos.Row >= RowNum ())) return (DBFault);
 	return (DBSuccess);
 	}
 
