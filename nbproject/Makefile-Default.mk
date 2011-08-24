@@ -53,14 +53,14 @@ LDLIBSOPTIONS=
 
 # Build Targets
 .build-conf: ${BUILD_SUBPROJECTS}
-	cd . && $(MAKE) -f Makefile
+	cd . && $(MAKE) -f makefile
 
 # Subprojects
 .build-subprojects:
 
 # Clean Targets
 .clean-conf: ${CLEAN_SUBPROJECTS}
-	cd . && $(MAKE) -f Makefile clean
+	cd . && $(MAKE) -f makefile clean
 
 # Subprojects
 .clean-subprojects:
