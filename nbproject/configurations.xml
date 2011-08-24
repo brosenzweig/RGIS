@@ -1,0 +1,3130 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configurationDescriptor version="69">
+  <logicalFolder name="root" displayName="root" projectFiles="true">
+    <df name="RGIS" root=".">
+      <df name="CMlib" kind="SOURCE_LOGICAL_FOLDER">
+        <df name="include" kind="SOURCE_LOGICAL_FOLDER">
+          <in>cm.h</in>
+        </df>
+        <df name="lib" kind="SOURCE_LOGICAL_FOLDER">
+        </df>
+        <df name="obj" kind="SOURCE_LOGICAL_FOLDER">
+        </df>
+        <df name="src" kind="SOURCE_LOGICAL_FOLDER">
+          <in>cmArgParse.c</in>
+          <in>cmBuffer.c</in>
+          <in>cmMath.c</in>
+          <in>cmMessage.c</in>
+          <in>cmString.c</in>
+          <in>cmThreads.c</in>
+        </df>
+      </df>
+      <df name="DBlib" kind="SOURCE_LOGICAL_FOLDER">
+        <df name="include" kind="SOURCE_LOGICAL_FOLDER">
+          <in>DB.H</in>
+          <in>DBif.H</in>
+          <in>DBtf.h</in>
+        </df>
+        <df name="lib" kind="SOURCE_LOGICAL_FOLDER">
+        </df>
+        <df name="obj" kind="SOURCE_LOGICAL_FOLDER">
+        </df>
+        <df name="src" kind="SOURCE_LOGICAL_FOLDER">
+          <in>DBByteOrder.C</in>
+          <in>DBDataset.C</in>
+          <in>DBDate.C</in>
+          <in>DBExpARCGrd.C</in>
+          <in>DBExpARCNet.C</in>
+          <in>DBExpARCPnt.C</in>
+          <in>DBExpASCII.C</in>
+          <in>DBFile.C</in>
+          <in>DBGCont2Net.C</in>
+          <in>DBGrid2Grid.C</in>
+          <in>DBGridMisc.C</in>
+          <in>DBImpARC.C</in>
+          <in>DBImpARCLine.C</in>
+          <in>DBImpARCPoint.C</in>
+          <in>DBImpARCPoly.C</in>
+          <in>DBImpASCIINet.C</in>
+          <in>DBImpExpDMGrd.C</in>
+          <in>DBImpExpNetCDF.C</in>
+          <in>DBInfoDB.C</in>
+          <in>DBMath.C</in>
+          <in>DBMisc.C</in>
+          <in>DBNet2Grid.C</in>
+          <in>DBNetMisc.C</in>
+          <in>DBObjData.C</in>
+          <in>DBObjDataBlck.C</in>
+          <in>DBObjLIST.C</in>
+          <in>DBObjReadWrit.C</in>
+          <in>DBObjTables.C</in>
+          <in>DBPause.C</in>
+          <in>DBPredefList.C</in>
+          <in>DBTableMisc.C</in>
+          <in>DBVLineMisc.C</in>
+          <in>DBVPoint2Grid.C</in>
+          <in>DBVPolyMisc.C</in>
+          <in>DBVectorMisc.C</in>
+        </df>
+      </df>
+      <df name="f" kind="SOURCE_LOGICAL_FOLDER">
+      </df>
+      <df name="Flib" kind="SOURCE_LOGICAL_FOLDER">
+        <df name="include" kind="SOURCE_LOGICAL_FOLDER">
+          <in>Flib.h</in>
+        </df>
+        <df name="lib" kind="SOURCE_LOGICAL_FOLDER">
+        </df>
+        <df name="obj" kind="SOURCE_LOGICAL_FOLDER">
+        </df>
+        <df name="src" kind="SOURCE_LOGICAL_FOLDER">
+          <in>FData.c</in>
+          <in>FTableRead.c</in>
+          <in>Flib.c</in>
+        </df>
+      </df>
+      <df name="html" kind="SOURCE_LOGICAL_FOLDER">
+        <df name="da" kind="SOURCE_LOGICAL_FOLDER">
+        </df>
+        <df name="dm" kind="SOURCE_LOGICAL_FOLDER">
+        </df>
+        <df name="dmMisc" kind="SOURCE_LOGICAL_FOLDER">
+        </df>
+        <df name="gie" kind="SOURCE_LOGICAL_FOLDER">
+        </df>
+        <df name="Images" kind="SOURCE_LOGICAL_FOLDER">
+        </df>
+        <df name="rCommands" kind="SOURCE_LOGICAL_FOLDER">
+        </df>
+        <df name="rgis" kind="SOURCE_LOGICAL_FOLDER">
+          <df name="Images" kind="SOURCE_LOGICAL_FOLDER">
+          </df>
+        </df>
+        <df name="rgisPlot" kind="SOURCE_LOGICAL_FOLDER">
+        </df>
+        <df name="riverBed" kind="SOURCE_LOGICAL_FOLDER">
+        </df>
+        <df name="vwtm" kind="SOURCE_LOGICAL_FOLDER">
+        </df>
+      </df>
+      <df name="Messages" kind="SOURCE_LOGICAL_FOLDER">
+      </df>
+      <df name="MFlib" kind="SOURCE_LOGICAL_FOLDER">
+        <df name="include" kind="SOURCE_LOGICAL_FOLDER">
+          <in>MF.h</in>
+        </df>
+        <df name="lib" kind="SOURCE_LOGICAL_FOLDER">
+        </df>
+        <df name="obj" kind="SOURCE_LOGICAL_FOLDER">
+        </df>
+        <df name="Scripts" kind="SOURCE_LOGICAL_FOLDER">
+        </df>
+        <df name="src" kind="SOURCE_LOGICAL_FOLDER">
+          <in>MFConfig.c</in>
+          <in>MFDataStream.c</in>
+          <in>MFDate.c</in>
+          <in>MFDefinition.c</in>
+          <in>MFDomain.c</in>
+          <in>MFModel.c</in>
+          <in>MFOptions.c</in>
+          <in>MFRungeKutta.c</in>
+          <in>MFSwap.c</in>
+          <in>MFVariables.c</in>
+        </df>
+      </df>
+      <df name="ncCommands" kind="SOURCE_LOGICAL_FOLDER">
+        <df name="bin" kind="SOURCE_LOGICAL_FOLDER">
+        </df>
+        <df name="include" kind="SOURCE_LOGICAL_FOLDER">
+        </df>
+        <df name="obj" kind="SOURCE_LOGICAL_FOLDER">
+        </df>
+        <df name="src" kind="SOURCE_LOGICAL_FOLDER">
+          <in>NCCnc2table.c</in>
+          <in>NCCncAggregate.c</in>
+          <in>NCCncAttributes.c</in>
+          <in>NCCncGridResample.c</in>
+          <in>NCCncGridSampling.c</in>
+          <in>NCCncTblCalculate.c</in>
+          <in>NCCtemplate.c</in>
+        </df>
+      </df>
+      <df name="NClib" kind="SOURCE_LOGICAL_FOLDER">
+        <df name="include" kind="SOURCE_LOGICAL_FOLDER">
+          <in>NC.h</in>
+          <in>NCcm.h</in>
+          <in>NCcore.h</in>
+          <in>NCdsHandle.h</in>
+          <in>NCmath.h</in>
+          <in>NCmathEqtn.h</in>
+          <in>NCnames.h</in>
+          <in>NCstdlib.h</in>
+          <in>NCstring.h</in>
+          <in>NCtable.h</in>
+          <in>NCtime.h</in>
+        </df>
+        <df name="lib" kind="SOURCE_LOGICAL_FOLDER">
+        </df>
+        <df name="obj" kind="SOURCE_LOGICAL_FOLDER">
+        </df>
+        <df name="src" kind="SOURCE_LOGICAL_FOLDER">
+          <in>NCcmArgParse.c</in>
+          <in>NCcoordinate.c</in>
+          <in>NCdata.c</in>
+          <in>NCdate.c</in>
+          <in>NCdsHandle.c</in>
+          <in>NCdsHandleGCont.c</in>
+          <in>NCdsHandleGDisc.c</in>
+          <in>NCdsHandleGLayout.c</in>
+          <in>NCdsHandleGeo.c</in>
+          <in>NCdsHandleGrid.c</in>
+          <in>NCdsHandleNet.c</in>
+          <in>NCdsHandleVecPnt.c</in>
+          <in>NCdsHandleVector.c</in>
+          <in>NCfileCreate.c</in>
+          <in>NCfileList.c</in>
+          <in>NCgridSampling.c</in>
+          <in>NCify.c</in>
+          <in>NCmath.c</in>
+          <in>NCmathEqtn.c</in>
+          <in>NCnames.c</in>
+          <in>NCreference.c</in>
+          <in>NCregion.c</in>
+          <in>NCstdlib.c</in>
+          <in>NCstring.c</in>
+          <in>NCtable.c</in>
+        </df>
+      </df>
+      <df name="rCommands" kind="SOURCE_LOGICAL_FOLDER">
+        <df name="bin" kind="SOURCE_LOGICAL_FOLDER">
+        </df>
+        <df name="include" kind="SOURCE_LOGICAL_FOLDER">
+          <in>CMDexp.H</in>
+        </df>
+        <df name="obj" kind="SOURCE_LOGICAL_FOLDER">
+        </df>
+        <df name="src" kind="SOURCE_LOGICAL_FOLDER">
+          <in>CMDdm2rgis.C</in>
+          <in>CMDds2rgis.C</in>
+          <in>CMDdsAggregate.C</in>
+          <in>CMDdsDuration.C</in>
+          <in>CMDdsSampling.C</in>
+          <in>CMDgetHeader.C</in>
+          <in>CMDgrdAppendLayers.C</in>
+          <in>CMDgrdBoxAggr.C</in>
+          <in>CMDgrdCalculate.C</in>
+          <in>CMDgrdCellStats.C</in>
+          <in>CMDgrdCreateNetwork.C</in>
+          <in>CMDgrdCycleMean.C</in>
+          <in>CMDgrdDateLayers.C</in>
+          <in>CMDgrdDifference.C</in>
+          <in>CMDgrdExtractLayers.C</in>
+          <in>CMDgrdImport.C</in>
+          <in>CMDgrdMerge.C</in>
+          <in>CMDgrdMinMax.C</in>
+          <in>CMDgrdNoNeg.C</in>
+          <in>CMDgrdOperation.C</in>
+          <in>CMDgrdReclassDisc.C</in>
+          <in>CMDgrdRenameLayers.C</in>
+          <in>CMDgrdRunningMean.C</in>
+          <in>CMDgrdSeasonAggr.C</in>
+          <in>CMDgrdSeasonMean.C</in>
+          <in>CMDgrdTSAggr.C</in>
+          <in>CMDgrdTimeSeries.C</in>
+          <in>CMDgrdZoneHist.C</in>
+          <in>CMDgrdZoneStats.C</in>
+          <in>CMDnetAccumulate.C</in>
+          <in>CMDnetBasinDistrib.C</in>
+          <in>CMDnetBasinHist.C</in>
+          <in>CMDnetBasinProf.C</in>
+          <in>CMDnetBasinStats.C</in>
+          <in>CMDnetCellSlopes.C</in>
+          <in>CMDnetCells2Grid.C</in>
+          <in>CMDnetConfluence.C</in>
+          <in>CMDnetCreatePnts.C</in>
+          <in>CMDnetDefragment.C</in>
+          <in>CMDnetErosion.C</in>
+          <in>CMDnetImportASCII.C</in>
+          <in>CMDnetInvAccum.C</in>
+          <in>CMDnetTransfer.C</in>
+          <in>CMDnetUnaccumulate.C</in>
+          <in>CMDnetUpstreamAvg.C</in>
+          <in>CMDnetcdf2rgis.C</in>
+          <in>CMDpntGridSampling.C</in>
+          <in>CMDpntSTNChar.C</in>
+          <in>CMDpntStationDist.C</in>
+          <in>CMDpntSubbasCenter.C</in>
+          <in>CMDpntSubbasHist.C</in>
+          <in>CMDpntSubbasStats.C</in>
+          <in>CMDpntSubbasins.C</in>
+          <in>CMDpntSymbolField.C</in>
+          <in>CMDrgis2asciigrid.C</in>
+          <in>CMDrgis2dm.C</in>
+          <in>CMDrgis2domain.C</in>
+          <in>CMDrgis2ds.C</in>
+          <in>CMDrgis2netcdf.C</in>
+          <in>CMDrgis2table.C</in>
+          <in>CMDrgisMetadb.C</in>
+          <in>CMDsetHeader.C</in>
+          <in>CMDtblAddField.C</in>
+          <in>CMDtblCalculate.C</in>
+          <in>CMDtblConv2Point.C</in>
+          <in>CMDtblConvCoord.C</in>
+          <in>CMDtblDecimalDate.C</in>
+          <in>CMDtblDeleteField.C</in>
+          <in>CMDtblDeleteRec.C</in>
+          <in>CMDtblIdleRec.C</in>
+          <in>CMDtblJoinTables.C</in>
+          <in>CMDtblMJoinTables.C</in>
+          <in>CMDtblMergeCoord.C</in>
+          <in>CMDtblMergeDate.C</in>
+          <in>CMDtblRedefField.C</in>
+          <in>CMDtblSelectRec.C</in>
+          <in>CMDtblSplitDate.C</in>
+          <in>CMDtblStatistics.C</in>
+          <in>CMDtblTopoCalc.C</in>
+        </df>
+      </df>
+      <df name="rGIS" kind="SOURCE_LOGICAL_FOLDER">
+        <df name="bin" kind="SOURCE_LOGICAL_FOLDER">
+        </df>
+        <df name="include" kind="SOURCE_LOGICAL_FOLDER">
+          <in>rgis.H</in>
+        </df>
+        <df name="obj" kind="SOURCE_LOGICAL_FOLDER">
+        </df>
+        <df name="src" kind="SOURCE_LOGICAL_FOLDER">
+          <in>RGISAnField.C</in>
+          <in>RGISAnGNUXYPlot.C</in>
+          <in>RGISAnGrid.C</in>
+          <in>RGISAnLine.C</in>
+          <in>RGISAnNetStreams.C</in>
+          <in>RGISAnNetwork.C</in>
+          <in>RGISAnPoint.C</in>
+          <in>RGISAnPoly.C</in>
+          <in>RGISAnSampleGrid.C</in>
+          <in>RGISAnTable.C</in>
+          <in>RGISAnalyse.C</in>
+          <in>RGISDisplay.C</in>
+          <in>RGISEdit.C</in>
+          <in>RGISEditGrid.C</in>
+          <in>RGISEditLine.C</in>
+          <in>RGISEditNet.C</in>
+          <in>RGISEditPoint.C</in>
+          <in>RGISEditPoly.C</in>
+          <in>RGISFile.C</in>
+          <in>RGISMain.C</in>
+          <in>RGISMetaDB.C</in>
+          <in>RGISPanels.C</in>
+          <in>RGISTools.C</in>
+          <in>RGISToolsARCImp.C</in>
+          <in>RGISToolsGrdExp.C</in>
+          <in>RGISToolsGrdImp.C</in>
+          <in>RGISToolsNetExp.C</in>
+          <in>RGISToolsPntExp.C</in>
+          <in>RGISToolsToPoint.C</in>
+          <in>RGISUsrFuncGrd.C</in>
+          <in>RGISUsrFuncNet.C</in>
+          <in>RGISUsrFuncQry.C</in>
+          <in>RGISUsrFuncVec.C</in>
+          <in>RGISWorkspace.C</in>
+        </df>
+      </df>
+      <df name="rgisPlot" kind="SOURCE_LOGICAL_FOLDER">
+        <df name="bin" kind="SOURCE_LOGICAL_FOLDER">
+        </df>
+        <df name="include" kind="SOURCE_LOGICAL_FOLDER">
+          <in>rgisPlot.H</in>
+        </df>
+        <df name="obj" kind="SOURCE_LOGICAL_FOLDER">
+        </df>
+        <df name="src" kind="SOURCE_LOGICAL_FOLDER">
+          <in>RGPColorMaps.C</in>
+          <in>RGPDrawGridCont.C</in>
+          <in>RGPDrawNetwork.C</in>
+          <in>RGPDrawVecLine.C</in>
+          <in>RGPDrawVecPoint.C</in>
+          <in>RGPMain.C</in>
+        </df>
+      </df>
+      <df name="RGlib" kind="SOURCE_LOGICAL_FOLDER">
+        <df name="include" kind="SOURCE_LOGICAL_FOLDER">
+          <in>RG.H</in>
+        </df>
+        <df name="lib" kind="SOURCE_LOGICAL_FOLDER">
+        </df>
+        <df name="obj" kind="SOURCE_LOGICAL_FOLDER">
+        </df>
+        <df name="src" kind="SOURCE_LOGICAL_FOLDER">
+          <in>RGlibDataStream.C</in>
+          <in>RGlibGenFuncs.C</in>
+          <in>RGlibGrid.C</in>
+          <in>RGlibNetwork.C</in>
+          <in>RGlibPause.C</in>
+          <in>RGlibPoint.C</in>
+          <in>RGlibTable.C</in>
+        </df>
+      </df>
+      <df name="Scripts" kind="SOURCE_LOGICAL_FOLDER">
+      </df>
+      <df name="tfCommands" kind="SOURCE_LOGICAL_FOLDER">
+        <df name="bin" kind="SOURCE_LOGICAL_FOLDER">
+        </df>
+        <df name="obj" kind="SOURCE_LOGICAL_FOLDER">
+        </df>
+        <df name="src" kind="SOURCE_LOGICAL_FOLDER">
+          <in>FAccumulate.c</in>
+          <in>FCut.c</in>
+          <in>FPrintDataTypes.c</in>
+          <in>FReg.c</in>
+          <in>FSort.c</in>
+          <in>FStat.c</in>
+          <in>Ftbl2rgis.C</in>
+        </df>
+      </df>
+      <df name="UIlib" kind="SOURCE_LOGICAL_FOLDER">
+        <df name="include" kind="SOURCE_LOGICAL_FOLDER">
+          <in>UI.H</in>
+        </df>
+        <df name="lib" kind="SOURCE_LOGICAL_FOLDER">
+        </df>
+        <df name="obj" kind="SOURCE_LOGICAL_FOLDER">
+        </df>
+        <df name="src" kind="SOURCE_LOGICAL_FOLDER">
+          <in>UI2DView.C</in>
+          <in>UI2DViewAux.C</in>
+          <in>UI2DViewDisp.C</in>
+          <in>UIAttribView.C</in>
+          <in>UIAux.C</in>
+          <in>UIColorSets.C</in>
+          <in>UIDataHeaderF.C</in>
+          <in>UIDataPropF.C</in>
+          <in>UIDataset.C</in>
+          <in>UIDialog.C</in>
+          <in>UIDialogForm.C</in>
+          <in>UIFieldEdit.C</in>
+          <in>UIFileSel.C</in>
+          <in>UIGetLine.C</in>
+          <in>UIGetString.C</in>
+          <in>UIGlobe.C</in>
+          <in>UIInit.C</in>
+          <in>UIInqRegion.C</in>
+          <in>UIInqVector.C</in>
+          <in>UILoop.C</in>
+          <in>UIMarkers.C</in>
+          <in>UIMenu.C</in>
+          <in>UINumberInput.C</in>
+          <in>UIPatterns.C</in>
+          <in>UIPause.C</in>
+          <in>UIRelate.C</in>
+          <in>UISelect.C</in>
+          <in>UISymbols.C</in>
+          <in>UITable.C</in>
+          <in>UITableFields.C</in>
+          <in>UIXYGraph.C</in>
+          <in>UIXYGraphSh.C</in>
+        </df>
+      </df>
+      <df name="XResources" kind="SOURCE_LOGICAL_FOLDER">
+        <df name="bitmaps" kind="SOURCE_LOGICAL_FOLDER">
+        </df>
+      </df>
+    </df>
+    <logicalFolder name="ExternalFiles"
+                   displayName="Important Files"
+                   projectFiles="false"
+                   kind="IMPORTANT_FILES_FOLDER">
+      <itemPath>Makefile-RGIS.mk</itemPath>
+      <itemPath>makefile</itemPath>
+    </logicalFolder>
+  </logicalFolder>
+  <sourceRootList>
+    <Elem>.</Elem>
+  </sourceRootList>
+  <projectmakefile>Makefile-RGIS.mk</projectmakefile>
+  <confs>
+    <conf name="Default" type="0">
+      <toolsSet>
+        <developmentServer>localhost</developmentServer>
+        <compilerSet>GNU|GNU</compilerSet>
+        <platform>2</platform>
+      </toolsSet>
+      <makefileType>
+        <makeTool>
+          <buildCommandWorkingDir>.</buildCommandWorkingDir>
+          <buildCommand>$(MAKE) -f Makefile</buildCommand>
+          <cleanCommand>$(MAKE) -f Makefile clean</cleanCommand>
+          <executablePath></executablePath>
+        </makeTool>
+      </makefileType>
+      <item path="CMlib/src/cmArgParse.c" ex="false" tool="0">
+        <cTool>
+          <incDir>
+            <pElem>CMlib/include</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>_GNU_SOURCE</Elem>
+          </preprocessorList>
+        </cTool>
+      </item>
+      <item path="CMlib/src/cmBuffer.c" ex="false" tool="0">
+        <cTool>
+          <preprocessorList>
+            <Elem>_GNU_SOURCE</Elem>
+          </preprocessorList>
+        </cTool>
+      </item>
+      <item path="CMlib/src/cmMath.c" ex="false" tool="0">
+        <cTool>
+          <preprocessorList>
+            <Elem>_GNU_SOURCE</Elem>
+          </preprocessorList>
+        </cTool>
+      </item>
+      <item path="CMlib/src/cmMessage.c" ex="false" tool="0">
+        <cTool>
+          <incDir>
+            <pElem>CMlib/include</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>_GNU_SOURCE</Elem>
+          </preprocessorList>
+        </cTool>
+      </item>
+      <item path="CMlib/src/cmString.c" ex="false" tool="0">
+        <cTool>
+          <incDir>
+            <pElem>CMlib/include</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>_GNU_SOURCE</Elem>
+          </preprocessorList>
+        </cTool>
+      </item>
+      <item path="CMlib/src/cmThreads.c" ex="false" tool="0">
+        <cTool>
+          <incDir>
+            <pElem>CMlib/include</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>_GNU_SOURCE</Elem>
+          </preprocessorList>
+        </cTool>
+      </item>
+      <item path="DBlib/include/DBtf.h" ex="true" tool="3">
+      </item>
+      <item path="DBlib/src/DBByteOrder.C" ex="false" tool="1">
+        <ccTool>
+          <incDir>
+            <pElem>DBlib/include</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>_GNU_SOURCE</Elem>
+          </preprocessorList>
+        </ccTool>
+      </item>
+      <item path="DBlib/src/DBDataset.C" ex="false" tool="1">
+        <ccTool>
+          <incDir>
+            <pElem>CMlib/include</pElem>
+            <pElem>DBlib/include</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>_GNU_SOURCE</Elem>
+          </preprocessorList>
+        </ccTool>
+      </item>
+      <item path="DBlib/src/DBDate.C" ex="false" tool="1">
+        <ccTool>
+          <incDir>
+            <pElem>DBlib/include</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>_GNU_SOURCE</Elem>
+          </preprocessorList>
+        </ccTool>
+      </item>
+      <item path="DBlib/src/DBExpARCGrd.C" ex="false" tool="1">
+        <ccTool>
+          <incDir>
+            <pElem>CMlib/include</pElem>
+            <pElem>DBlib/include</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>_GNU_SOURCE</Elem>
+          </preprocessorList>
+        </ccTool>
+      </item>
+      <item path="DBlib/src/DBExpARCNet.C" ex="false" tool="1">
+        <ccTool>
+          <incDir>
+            <pElem>CMlib/include</pElem>
+            <pElem>DBlib/include</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>_GNU_SOURCE</Elem>
+          </preprocessorList>
+        </ccTool>
+      </item>
+      <item path="DBlib/src/DBExpARCPnt.C" ex="false" tool="1">
+        <ccTool>
+          <incDir>
+            <pElem>CMlib/include</pElem>
+            <pElem>DBlib/include</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>_GNU_SOURCE</Elem>
+          </preprocessorList>
+        </ccTool>
+      </item>
+      <item path="DBlib/src/DBExpASCII.C" ex="false" tool="1">
+        <ccTool>
+          <incDir>
+            <pElem>CMlib/include</pElem>
+            <pElem>DBlib/include</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>_GNU_SOURCE</Elem>
+          </preprocessorList>
+        </ccTool>
+      </item>
+      <item path="DBlib/src/DBFile.C" ex="false" tool="1">
+        <ccTool>
+          <incDir>
+            <pElem>DBlib/include</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>_GNU_SOURCE</Elem>
+          </preprocessorList>
+        </ccTool>
+      </item>
+      <item path="DBlib/src/DBGCont2Net.C" ex="false" tool="1">
+        <ccTool>
+          <incDir>
+            <pElem>CMlib/include</pElem>
+            <pElem>DBlib/include</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>_GNU_SOURCE</Elem>
+          </preprocessorList>
+        </ccTool>
+      </item>
+      <item path="DBlib/src/DBGrid2Grid.C" ex="false" tool="1">
+        <ccTool>
+          <incDir>
+            <pElem>CMlib/include</pElem>
+            <pElem>DBlib/include</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>_GNU_SOURCE</Elem>
+          </preprocessorList>
+        </ccTool>
+      </item>
+      <item path="DBlib/src/DBGridMisc.C" ex="false" tool="1">
+        <ccTool>
+          <incDir>
+            <pElem>CMlib/include</pElem>
+            <pElem>DBlib/include</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>_GNU_SOURCE</Elem>
+          </preprocessorList>
+        </ccTool>
+      </item>
+      <item path="DBlib/src/DBImpARC.C" ex="false" tool="1">
+        <ccTool>
+          <incDir>
+            <pElem>CMlib/include</pElem>
+            <pElem>DBlib/include</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>_GNU_SOURCE</Elem>
+          </preprocessorList>
+        </ccTool>
+      </item>
+      <item path="DBlib/src/DBImpARCLine.C" ex="false" tool="1">
+        <ccTool>
+          <incDir>
+            <pElem>CMlib/include</pElem>
+            <pElem>DBlib/include</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>_GNU_SOURCE</Elem>
+          </preprocessorList>
+        </ccTool>
+      </item>
+      <item path="DBlib/src/DBImpARCPoint.C" ex="false" tool="1">
+        <ccTool>
+          <incDir>
+            <pElem>CMlib/include</pElem>
+            <pElem>DBlib/include</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>_GNU_SOURCE</Elem>
+          </preprocessorList>
+        </ccTool>
+      </item>
+      <item path="DBlib/src/DBImpARCPoly.C" ex="false" tool="1">
+        <ccTool>
+          <incDir>
+            <pElem>CMlib/include</pElem>
+            <pElem>DBlib/include</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>_GNU_SOURCE</Elem>
+          </preprocessorList>
+        </ccTool>
+      </item>
+      <item path="DBlib/src/DBImpASCIINet.C" ex="false" tool="1">
+        <ccTool>
+          <incDir>
+            <pElem>CMlib/include</pElem>
+            <pElem>DBlib/include</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>_GNU_SOURCE</Elem>
+          </preprocessorList>
+        </ccTool>
+      </item>
+      <item path="DBlib/src/DBImpExpDMGrd.C" ex="false" tool="1">
+        <ccTool>
+          <incDir>
+            <pElem>CMlib/include</pElem>
+            <pElem>DBlib/include</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>_GNU_SOURCE</Elem>
+          </preprocessorList>
+        </ccTool>
+      </item>
+      <item path="DBlib/src/DBImpExpNetCDF.C" ex="false" tool="1">
+        <ccTool>
+          <incDir>
+            <pElem>CMlib/include</pElem>
+            <pElem>DBlib/include</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>_GNU_SOURCE</Elem>
+          </preprocessorList>
+        </ccTool>
+      </item>
+      <item path="DBlib/src/DBInfoDB.C" ex="false" tool="1">
+        <ccTool>
+          <incDir>
+            <pElem>CMlib/include</pElem>
+            <pElem>DBlib/include</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>_GNU_SOURCE</Elem>
+          </preprocessorList>
+        </ccTool>
+      </item>
+      <item path="DBlib/src/DBMath.C" ex="false" tool="1">
+        <ccTool>
+          <incDir>
+            <pElem>CMlib/include</pElem>
+            <pElem>DBlib/include</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>_GNU_SOURCE</Elem>
+          </preprocessorList>
+        </ccTool>
+      </item>
+      <item path="DBlib/src/DBMisc.C" ex="false" tool="1">
+        <ccTool>
+          <incDir>
+            <pElem>DBlib/include</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>_GNU_SOURCE</Elem>
+          </preprocessorList>
+        </ccTool>
+      </item>
+      <item path="DBlib/src/DBNet2Grid.C" ex="false" tool="1">
+        <ccTool>
+          <incDir>
+            <pElem>CMlib/include</pElem>
+            <pElem>DBlib/include</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>_GNU_SOURCE</Elem>
+          </preprocessorList>
+        </ccTool>
+      </item>
+      <item path="DBlib/src/DBNetMisc.C" ex="false" tool="1">
+        <ccTool>
+          <incDir>
+            <pElem>CMlib/include</pElem>
+            <pElem>DBlib/include</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>_GNU_SOURCE</Elem>
+          </preprocessorList>
+        </ccTool>
+      </item>
+      <item path="DBlib/src/DBObjData.C" ex="false" tool="1">
+        <ccTool>
+          <incDir>
+            <pElem>DBlib/include</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>_GNU_SOURCE</Elem>
+          </preprocessorList>
+        </ccTool>
+      </item>
+      <item path="DBlib/src/DBObjDataBlck.C" ex="false" tool="1">
+        <ccTool>
+          <incDir>
+            <pElem>DBlib/include</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>_GNU_SOURCE</Elem>
+          </preprocessorList>
+        </ccTool>
+      </item>
+      <item path="DBlib/src/DBObjLIST.C" ex="false" tool="1">
+        <ccTool>
+          <incDir>
+            <pElem>DBlib/include</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>_GNU_SOURCE</Elem>
+          </preprocessorList>
+        </ccTool>
+      </item>
+      <item path="DBlib/src/DBObjReadWrit.C" ex="false" tool="1">
+        <ccTool>
+          <incDir>
+            <pElem>CMlib/include</pElem>
+            <pElem>DBlib/include</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>_GNU_SOURCE</Elem>
+          </preprocessorList>
+        </ccTool>
+      </item>
+      <item path="DBlib/src/DBObjTables.C" ex="false" tool="1">
+        <ccTool>
+          <incDir>
+            <pElem>CMlib/include</pElem>
+            <pElem>DBlib/include</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>_GNU_SOURCE</Elem>
+          </preprocessorList>
+        </ccTool>
+      </item>
+      <item path="DBlib/src/DBPause.C" ex="false" tool="1">
+        <ccTool>
+          <preprocessorList>
+            <Elem>_GNU_SOURCE</Elem>
+          </preprocessorList>
+        </ccTool>
+      </item>
+      <item path="DBlib/src/DBPredefList.C" ex="false" tool="1">
+        <ccTool>
+          <preprocessorList>
+            <Elem>_GNU_SOURCE</Elem>
+          </preprocessorList>
+        </ccTool>
+      </item>
+      <item path="DBlib/src/DBTableMisc.C" ex="false" tool="1">
+        <ccTool>
+          <incDir>
+            <pElem>CMlib/include</pElem>
+            <pElem>DBlib/include</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>_GNU_SOURCE</Elem>
+          </preprocessorList>
+        </ccTool>
+      </item>
+      <item path="DBlib/src/DBVLineMisc.C" ex="false" tool="1">
+        <ccTool>
+          <incDir>
+            <pElem>CMlib/include</pElem>
+            <pElem>DBlib/include</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>_GNU_SOURCE</Elem>
+          </preprocessorList>
+        </ccTool>
+      </item>
+      <item path="DBlib/src/DBVPoint2Grid.C" ex="false" tool="1">
+        <ccTool>
+          <incDir>
+            <pElem>CMlib/include</pElem>
+            <pElem>DBlib/include</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>_GNU_SOURCE</Elem>
+          </preprocessorList>
+        </ccTool>
+      </item>
+      <item path="DBlib/src/DBVPolyMisc.C" ex="false" tool="1">
+        <ccTool>
+          <incDir>
+            <pElem>CMlib/include</pElem>
+            <pElem>DBlib/include</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>_GNU_SOURCE</Elem>
+          </preprocessorList>
+        </ccTool>
+      </item>
+      <item path="DBlib/src/DBVectorMisc.C" ex="false" tool="1">
+        <ccTool>
+          <incDir>
+            <pElem>CMlib/include</pElem>
+            <pElem>DBlib/include</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>_GNU_SOURCE</Elem>
+          </preprocessorList>
+        </ccTool>
+      </item>
+      <item path="Flib/src/FData.c" ex="false" tool="0">
+        <cTool>
+          <incDir>
+            <pElem>Flib/include</pElem>
+            <pElem>CMlib/include</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>_GNU_SOURCE</Elem>
+          </preprocessorList>
+        </cTool>
+      </item>
+      <item path="Flib/src/FTableRead.c" ex="false" tool="0">
+        <cTool>
+          <incDir>
+            <pElem>CMlib/include</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>_GNU_SOURCE</Elem>
+          </preprocessorList>
+        </cTool>
+      </item>
+      <item path="Flib/src/Flib.c" ex="false" tool="0">
+        <cTool>
+          <incDir>
+            <pElem>Flib/include</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>_GNU_SOURCE</Elem>
+          </preprocessorList>
+        </cTool>
+      </item>
+      <item path="MFlib/src/MFConfig.c" ex="false" tool="0">
+        <cTool>
+          <incDir>
+            <pElem>CMlib/include</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>_GNU_SOURCE</Elem>
+          </preprocessorList>
+        </cTool>
+      </item>
+      <item path="MFlib/src/MFDataStream.c" ex="false" tool="0">
+        <cTool>
+          <incDir>
+            <pElem>MFlib/include</pElem>
+            <pElem>CMlib/include</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>_GNU_SOURCE</Elem>
+          </preprocessorList>
+        </cTool>
+      </item>
+      <item path="MFlib/src/MFDate.c" ex="false" tool="0">
+        <cTool>
+          <incDir>
+            <pElem>MFlib/include</pElem>
+            <pElem>CMlib/include</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>_GNU_SOURCE</Elem>
+          </preprocessorList>
+        </cTool>
+      </item>
+      <item path="MFlib/src/MFDefinition.c" ex="false" tool="0">
+        <cTool>
+          <incDir>
+            <pElem>MFlib/include</pElem>
+            <pElem>CMlib/include</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>_GNU_SOURCE</Elem>
+          </preprocessorList>
+        </cTool>
+      </item>
+      <item path="MFlib/src/MFDomain.c" ex="false" tool="0">
+        <cTool>
+          <incDir>
+            <pElem>MFlib/include</pElem>
+            <pElem>CMlib/include</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>_GNU_SOURCE</Elem>
+          </preprocessorList>
+        </cTool>
+      </item>
+      <item path="MFlib/src/MFModel.c" ex="false" tool="0">
+        <cTool>
+          <incDir>
+            <pElem>MFlib/include</pElem>
+            <pElem>CMlib/include</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>_GNU_SOURCE</Elem>
+          </preprocessorList>
+        </cTool>
+      </item>
+      <item path="MFlib/src/MFOptions.c" ex="false" tool="0">
+        <cTool>
+          <incDir>
+            <pElem>MFlib/include</pElem>
+            <pElem>CMlib/include</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>_GNU_SOURCE</Elem>
+          </preprocessorList>
+        </cTool>
+      </item>
+      <item path="MFlib/src/MFRungeKutta.c" ex="false" tool="0">
+        <cTool>
+          <preprocessorList>
+            <Elem>_GNU_SOURCE</Elem>
+          </preprocessorList>
+        </cTool>
+      </item>
+      <item path="MFlib/src/MFSwap.c" ex="false" tool="0">
+        <cTool>
+          <preprocessorList>
+            <Elem>_GNU_SOURCE</Elem>
+          </preprocessorList>
+        </cTool>
+      </item>
+      <item path="MFlib/src/MFVariables.c" ex="false" tool="0">
+        <cTool>
+          <incDir>
+            <pElem>MFlib/include</pElem>
+            <pElem>CMlib/include</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>_GNU_SOURCE</Elem>
+          </preprocessorList>
+        </cTool>
+      </item>
+      <item path="NClib/src/NCcmArgParse.c" ex="true" tool="0">
+        <cTool>
+          <preprocessorList>
+            <Elem>_GNU_SOURCE</Elem>
+          </preprocessorList>
+        </cTool>
+      </item>
+      <item path="NClib/src/NCcoordinate.c" ex="true" tool="0">
+        <cTool>
+          <preprocessorList>
+            <Elem>_GNU_SOURCE</Elem>
+          </preprocessorList>
+        </cTool>
+      </item>
+      <item path="NClib/src/NCdata.c" ex="true" tool="0">
+        <cTool>
+          <preprocessorList>
+            <Elem>_GNU_SOURCE</Elem>
+          </preprocessorList>
+        </cTool>
+      </item>
+      <item path="NClib/src/NCdate.c" ex="true" tool="0">
+        <cTool>
+          <preprocessorList>
+            <Elem>_GNU_SOURCE</Elem>
+          </preprocessorList>
+        </cTool>
+      </item>
+      <item path="NClib/src/NCdsHandle.c" ex="true" tool="0">
+        <cTool>
+          <preprocessorList>
+            <Elem>_GNU_SOURCE</Elem>
+          </preprocessorList>
+        </cTool>
+      </item>
+      <item path="NClib/src/NCdsHandleGCont.c" ex="true" tool="0">
+        <cTool>
+          <preprocessorList>
+            <Elem>_GNU_SOURCE</Elem>
+          </preprocessorList>
+        </cTool>
+      </item>
+      <item path="NClib/src/NCdsHandleGDisc.c" ex="true" tool="0">
+      </item>
+      <item path="NClib/src/NCdsHandleGLayout.c" ex="true" tool="0">
+        <cTool>
+          <preprocessorList>
+            <Elem>_GNU_SOURCE</Elem>
+          </preprocessorList>
+        </cTool>
+      </item>
+      <item path="NClib/src/NCdsHandleGeo.c" ex="true" tool="0">
+        <cTool>
+          <preprocessorList>
+            <Elem>_GNU_SOURCE</Elem>
+          </preprocessorList>
+        </cTool>
+      </item>
+      <item path="NClib/src/NCdsHandleGrid.c" ex="true" tool="0">
+        <cTool>
+          <preprocessorList>
+            <Elem>_GNU_SOURCE</Elem>
+          </preprocessorList>
+        </cTool>
+      </item>
+      <item path="NClib/src/NCdsHandleNet.c" ex="true" tool="0">
+        <cTool>
+          <preprocessorList>
+            <Elem>_GNU_SOURCE</Elem>
+          </preprocessorList>
+        </cTool>
+      </item>
+      <item path="NClib/src/NCdsHandleVecPnt.c" ex="true" tool="0">
+        <cTool>
+          <preprocessorList>
+            <Elem>_GNU_SOURCE</Elem>
+          </preprocessorList>
+        </cTool>
+      </item>
+      <item path="NClib/src/NCdsHandleVector.c" ex="true" tool="0">
+        <cTool>
+          <preprocessorList>
+            <Elem>_GNU_SOURCE</Elem>
+          </preprocessorList>
+        </cTool>
+      </item>
+      <item path="NClib/src/NCfileCreate.c" ex="true" tool="0">
+        <cTool>
+          <preprocessorList>
+            <Elem>_GNU_SOURCE</Elem>
+          </preprocessorList>
+        </cTool>
+      </item>
+      <item path="NClib/src/NCfileList.c" ex="true" tool="0">
+        <cTool>
+          <preprocessorList>
+            <Elem>_GNU_SOURCE</Elem>
+          </preprocessorList>
+        </cTool>
+      </item>
+      <item path="NClib/src/NCgridSampling.c" ex="true" tool="0">
+        <cTool>
+          <preprocessorList>
+            <Elem>_GNU_SOURCE</Elem>
+          </preprocessorList>
+        </cTool>
+      </item>
+      <item path="NClib/src/NCify.c" ex="true" tool="0">
+      </item>
+      <item path="NClib/src/NCmath.c" ex="true" tool="0">
+        <cTool>
+          <preprocessorList>
+            <Elem>_GNU_SOURCE</Elem>
+          </preprocessorList>
+        </cTool>
+      </item>
+      <item path="NClib/src/NCmathEqtn.c" ex="true" tool="0">
+        <cTool>
+          <preprocessorList>
+            <Elem>_GNU_SOURCE</Elem>
+          </preprocessorList>
+        </cTool>
+      </item>
+      <item path="NClib/src/NCnames.c" ex="true" tool="0">
+        <cTool>
+          <preprocessorList>
+            <Elem>_GNU_SOURCE</Elem>
+          </preprocessorList>
+        </cTool>
+      </item>
+      <item path="NClib/src/NCreference.c" ex="true" tool="0">
+        <cTool>
+          <preprocessorList>
+            <Elem>_GNU_SOURCE</Elem>
+          </preprocessorList>
+        </cTool>
+      </item>
+      <item path="NClib/src/NCregion.c" ex="true" tool="0">
+        <cTool>
+          <preprocessorList>
+            <Elem>_GNU_SOURCE</Elem>
+          </preprocessorList>
+        </cTool>
+      </item>
+      <item path="NClib/src/NCstdlib.c" ex="true" tool="0">
+        <cTool>
+          <preprocessorList>
+            <Elem>_GNU_SOURCE</Elem>
+          </preprocessorList>
+        </cTool>
+      </item>
+      <item path="NClib/src/NCstring.c" ex="true" tool="0">
+        <cTool>
+          <preprocessorList>
+            <Elem>_GNU_SOURCE</Elem>
+          </preprocessorList>
+        </cTool>
+      </item>
+      <item path="NClib/src/NCtable.c" ex="true" tool="0">
+        <cTool>
+          <preprocessorList>
+            <Elem>_GNU_SOURCE</Elem>
+          </preprocessorList>
+        </cTool>
+      </item>
+      <item path="RGlib/include/RG.H" ex="true" tool="3">
+      </item>
+      <item path="RGlib/src/RGlibDataStream.C" ex="false" tool="1">
+        <ccTool>
+          <incDir>
+            <pElem>MFlib/include</pElem>
+            <pElem>CMlib/include</pElem>
+            <pElem>DBlib/include</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>_GNU_SOURCE</Elem>
+          </preprocessorList>
+        </ccTool>
+      </item>
+      <item path="RGlib/src/RGlibGenFuncs.C" ex="false" tool="1">
+        <ccTool>
+          <incDir>
+            <pElem>CMlib/include</pElem>
+            <pElem>DBlib/include</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>_GNU_SOURCE</Elem>
+          </preprocessorList>
+        </ccTool>
+      </item>
+      <item path="RGlib/src/RGlibGrid.C" ex="false" tool="1">
+        <ccTool>
+          <incDir>
+            <pElem>CMlib/include</pElem>
+            <pElem>DBlib/include</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>_GNU_SOURCE</Elem>
+          </preprocessorList>
+        </ccTool>
+      </item>
+      <item path="RGlib/src/RGlibNetwork.C" ex="false" tool="1">
+        <ccTool>
+          <incDir>
+            <pElem>CMlib/include</pElem>
+            <pElem>DBlib/include</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>_GNU_SOURCE</Elem>
+          </preprocessorList>
+        </ccTool>
+      </item>
+      <item path="RGlib/src/RGlibPause.C" ex="false" tool="1">
+        <ccTool>
+          <preprocessorList>
+            <Elem>_GNU_SOURCE</Elem>
+          </preprocessorList>
+        </ccTool>
+      </item>
+      <item path="RGlib/src/RGlibPoint.C" ex="false" tool="1">
+        <ccTool>
+          <incDir>
+            <pElem>CMlib/include</pElem>
+            <pElem>DBlib/include</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>_GNU_SOURCE</Elem>
+          </preprocessorList>
+        </ccTool>
+      </item>
+      <item path="RGlib/src/RGlibTable.C" ex="false" tool="1">
+        <ccTool>
+          <incDir>
+            <pElem>CMlib/include</pElem>
+            <pElem>DBlib/include</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>_GNU_SOURCE</Elem>
+          </preprocessorList>
+        </ccTool>
+      </item>
+      <item path="UIlib/src/UI2DView.C" ex="false" tool="1">
+        <ccTool>
+          <incDir>
+            <pElem>/usr/include/Xm</pElem>
+            <pElem>UIlib/include</pElem>
+            <pElem>DBlib/include</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>_GNU_SOURCE</Elem>
+          </preprocessorList>
+        </ccTool>
+      </item>
+      <item path="UIlib/src/UI2DViewAux.C" ex="false" tool="1">
+        <ccTool>
+          <incDir>
+            <pElem>UIlib/include</pElem>
+            <pElem>CMlib/include</pElem>
+            <pElem>DBlib/include</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>_GNU_SOURCE</Elem>
+          </preprocessorList>
+        </ccTool>
+      </item>
+      <item path="UIlib/src/UI2DViewDisp.C" ex="false" tool="1">
+        <ccTool>
+          <incDir>
+            <pElem>/usr/include/Xm</pElem>
+            <pElem>UIlib/include</pElem>
+            <pElem>CMlib/include</pElem>
+            <pElem>DBlib/include</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>_GNU_SOURCE</Elem>
+          </preprocessorList>
+        </ccTool>
+      </item>
+      <item path="UIlib/src/UIAttribView.C" ex="false" tool="1">
+        <ccTool>
+          <incDir>
+            <pElem>/usr/include/Xm</pElem>
+            <pElem>UIlib/include</pElem>
+            <pElem>CMlib/include</pElem>
+            <pElem>DBlib/include</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>_GNU_SOURCE</Elem>
+          </preprocessorList>
+        </ccTool>
+      </item>
+      <item path="UIlib/src/UIAux.C" ex="false" tool="1">
+        <ccTool>
+          <incDir>
+            <pElem>/usr/include/Xm</pElem>
+            <pElem>DBlib/include</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>_GNU_SOURCE</Elem>
+          </preprocessorList>
+        </ccTool>
+      </item>
+      <item path="UIlib/src/UIColorSets.C" ex="false" tool="1">
+        <ccTool>
+          <incDir>
+            <pElem>/usr/include/Xm</pElem>
+            <pElem>CMlib/include</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>_GNU_SOURCE</Elem>
+          </preprocessorList>
+        </ccTool>
+      </item>
+      <item path="UIlib/src/UIDataHeaderF.C" ex="false" tool="1">
+        <ccTool>
+          <incDir>
+            <pElem>/usr/include/Xm</pElem>
+            <pElem>DBlib/include</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>_GNU_SOURCE</Elem>
+          </preprocessorList>
+        </ccTool>
+      </item>
+      <item path="UIlib/src/UIDataPropF.C" ex="false" tool="1">
+        <ccTool>
+          <incDir>
+            <pElem>/usr/include/Xm</pElem>
+            <pElem>DBlib/include</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>_GNU_SOURCE</Elem>
+          </preprocessorList>
+        </ccTool>
+      </item>
+      <item path="UIlib/src/UIDataset.C" ex="false" tool="1">
+        <ccTool>
+          <incDir>
+            <pElem>/usr/include/Xm</pElem>
+            <pElem>DBlib/include</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>_GNU_SOURCE</Elem>
+          </preprocessorList>
+        </ccTool>
+      </item>
+      <item path="UIlib/src/UIDialog.C" ex="false" tool="1">
+        <ccTool>
+          <incDir>
+            <pElem>/usr/include/Xm</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>_GNU_SOURCE</Elem>
+          </preprocessorList>
+        </ccTool>
+      </item>
+      <item path="UIlib/src/UIDialogForm.C" ex="false" tool="1">
+        <ccTool>
+          <incDir>
+            <pElem>/usr/include/Xm</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>_GNU_SOURCE</Elem>
+          </preprocessorList>
+        </ccTool>
+      </item>
+      <item path="UIlib/src/UIFieldEdit.C" ex="false" tool="1">
+        <ccTool>
+          <incDir>
+            <pElem>/usr/include/Xm</pElem>
+            <pElem>DBlib/include</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>_GNU_SOURCE</Elem>
+          </preprocessorList>
+        </ccTool>
+      </item>
+      <item path="UIlib/src/UIFileSel.C" ex="false" tool="1">
+        <ccTool>
+          <incDir>
+            <pElem>/usr/include/Xm</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>_GNU_SOURCE</Elem>
+          </preprocessorList>
+        </ccTool>
+      </item>
+      <item path="UIlib/src/UIGetLine.C" ex="false" tool="1">
+        <ccTool>
+          <incDir>
+            <pElem>/usr/include/Xm</pElem>
+            <pElem>UIlib/include</pElem>
+            <pElem>DBlib/include</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>_GNU_SOURCE</Elem>
+          </preprocessorList>
+        </ccTool>
+      </item>
+      <item path="UIlib/src/UIGetString.C" ex="false" tool="1">
+        <ccTool>
+          <incDir>
+            <pElem>/usr/include/Xm</pElem>
+            <pElem>DBlib/include</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>_GNU_SOURCE</Elem>
+          </preprocessorList>
+        </ccTool>
+      </item>
+      <item path="UIlib/src/UIGlobe.C" ex="false" tool="1">
+        <ccTool>
+          <incDir>
+            <pElem>/usr/include/Xm</pElem>
+            <pElem>CMlib/include</pElem>
+            <pElem>DBlib/include</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>_GNU_SOURCE</Elem>
+          </preprocessorList>
+        </ccTool>
+      </item>
+      <item path="UIlib/src/UIInit.C" ex="false" tool="1">
+        <ccTool>
+          <incDir>
+            <pElem>/usr/include/Xm</pElem>
+            <pElem>UIlib/include</pElem>
+            <pElem>DBlib/include</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>_GNU_SOURCE</Elem>
+          </preprocessorList>
+        </ccTool>
+      </item>
+      <item path="UIlib/src/UIInqRegion.C" ex="false" tool="1">
+        <ccTool>
+          <preprocessorList>
+            <Elem>_GNU_SOURCE</Elem>
+          </preprocessorList>
+        </ccTool>
+      </item>
+      <item path="UIlib/src/UIInqVector.C" ex="false" tool="1">
+        <ccTool>
+          <preprocessorList>
+            <Elem>_GNU_SOURCE</Elem>
+          </preprocessorList>
+        </ccTool>
+      </item>
+      <item path="UIlib/src/UILoop.C" ex="false" tool="1">
+        <ccTool>
+          <incDir>
+            <pElem>/usr/include/Xm</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>_GNU_SOURCE</Elem>
+          </preprocessorList>
+        </ccTool>
+      </item>
+      <item path="UIlib/src/UIMarkers.C" ex="false" tool="1">
+        <ccTool>
+          <incDir>
+            <pElem>/usr/include/Xm</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>_GNU_SOURCE</Elem>
+          </preprocessorList>
+        </ccTool>
+      </item>
+      <item path="UIlib/src/UIMenu.C" ex="false" tool="1">
+        <ccTool>
+          <incDir>
+            <pElem>/usr/include/Xm</pElem>
+            <pElem>UIlib/include</pElem>
+            <pElem>CMlib/include</pElem>
+            <pElem>DBlib/include</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>_GNU_SOURCE</Elem>
+          </preprocessorList>
+        </ccTool>
+      </item>
+      <item path="UIlib/src/UINumberInput.C" ex="false" tool="1">
+        <ccTool>
+          <incDir>
+            <pElem>/usr/include/Xm</pElem>
+            <pElem>DBlib/include</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>_GNU_SOURCE</Elem>
+          </preprocessorList>
+        </ccTool>
+      </item>
+      <item path="UIlib/src/UIPatterns.C" ex="false" tool="1">
+        <ccTool>
+          <incDir>
+            <pElem>/usr/include/Xm</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>_GNU_SOURCE</Elem>
+          </preprocessorList>
+        </ccTool>
+      </item>
+      <item path="UIlib/src/UIPause.C" ex="false" tool="1">
+        <ccTool>
+          <incDir>
+            <pElem>/usr/include/Xm</pElem>
+            <pElem>DBlib/include</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>_GNU_SOURCE</Elem>
+          </preprocessorList>
+        </ccTool>
+      </item>
+      <item path="UIlib/src/UIRelate.C" ex="false" tool="1">
+        <ccTool>
+          <incDir>
+            <pElem>/usr/include/Xm</pElem>
+            <pElem>DBlib/include</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>_GNU_SOURCE</Elem>
+          </preprocessorList>
+        </ccTool>
+      </item>
+      <item path="UIlib/src/UISelect.C" ex="false" tool="1">
+        <ccTool>
+          <incDir>
+            <pElem>/usr/include/Xm</pElem>
+            <pElem>UIlib/include</pElem>
+            <pElem>CMlib/include</pElem>
+            <pElem>DBlib/include</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>_GNU_SOURCE</Elem>
+          </preprocessorList>
+        </ccTool>
+      </item>
+      <item path="UIlib/src/UISymbols.C" ex="false" tool="1">
+        <ccTool>
+          <incDir>
+            <pElem>/usr/include/Xm</pElem>
+            <pElem>CMlib/include</pElem>
+            <pElem>DBlib/include</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>_GNU_SOURCE</Elem>
+          </preprocessorList>
+        </ccTool>
+      </item>
+      <item path="UIlib/src/UITable.C" ex="false" tool="1">
+        <ccTool>
+          <incDir>
+            <pElem>/usr/include/Xm</pElem>
+            <pElem>UIlib/include</pElem>
+            <pElem>CMlib/include</pElem>
+            <pElem>DBlib/include</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>_GNU_SOURCE</Elem>
+          </preprocessorList>
+        </ccTool>
+      </item>
+      <item path="UIlib/src/UITableFields.C" ex="false" tool="1">
+        <ccTool>
+          <incDir>
+            <pElem>/usr/include/Xm</pElem>
+            <pElem>DBlib/include</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>_GNU_SOURCE</Elem>
+          </preprocessorList>
+        </ccTool>
+      </item>
+      <item path="UIlib/src/UIXYGraph.C" ex="false" tool="1">
+        <ccTool>
+          <incDir>
+            <pElem>/usr/include/Xm</pElem>
+            <pElem>UIlib/include</pElem>
+            <pElem>CMlib/include</pElem>
+            <pElem>DBlib/include</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>_GNU_SOURCE</Elem>
+          </preprocessorList>
+        </ccTool>
+      </item>
+      <item path="UIlib/src/UIXYGraphSh.C" ex="false" tool="1">
+        <ccTool>
+          <incDir>
+            <pElem>/usr/include/Xm</pElem>
+            <pElem>UIlib/include</pElem>
+            <pElem>CMlib/include</pElem>
+            <pElem>DBlib/include</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>_GNU_SOURCE</Elem>
+          </preprocessorList>
+        </ccTool>
+      </item>
+      <folder path="RGIS/CMlib">
+        <cTool>
+          <incDir>
+            <pElem>CMlib/src</pElem>
+          </incDir>
+        </cTool>
+      </folder>
+      <folder path="RGIS/DBlib">
+        <ccTool>
+          <incDir>
+            <pElem>DBlib/src</pElem>
+          </incDir>
+        </ccTool>
+      </folder>
+      <folder path="RGIS/Flib">
+        <cTool>
+          <incDir>
+            <pElem>Flib/src</pElem>
+          </incDir>
+        </cTool>
+      </folder>
+      <folder path="RGIS/MFlib">
+        <cTool>
+          <incDir>
+            <pElem>MFlib/src</pElem>
+          </incDir>
+        </cTool>
+      </folder>
+      <folder path="RGIS/RGlib">
+        <ccTool>
+          <incDir>
+            <pElem>RGlib/src</pElem>
+          </incDir>
+        </ccTool>
+      </folder>
+      <folder path="RGIS/UIlib">
+        <ccTool>
+          <incDir>
+            <pElem>/usr/include/X11</pElem>
+            <pElem>UIlib/src</pElem>
+          </incDir>
+        </ccTool>
+      </folder>
+      <folder path="RGIS/ncCommands">
+        <cTool>
+          <incDir>
+            <pElem>CMlib/include</pElem>
+            <pElem>NClib/include</pElem>
+            <pElem>ncCommands/src</pElem>
+          </incDir>
+        </cTool>
+      </folder>
+      <folder path="RGIS/rCommands">
+        <ccTool>
+          <incDir>
+            <pElem>rCommands/src</pElem>
+            <pElem>CMlib/include</pElem>
+          </incDir>
+        </ccTool>
+      </folder>
+      <folder path="RGIS/rgisPlot">
+        <ccTool>
+          <incDir>
+            <pElem>rgisPlot/src</pElem>
+            <pElem>DBlib/include</pElem>
+          </incDir>
+        </ccTool>
+      </folder>
+      <folder path="RGIS/tfCommands">
+        <cTool>
+          <incDir>
+            <pElem>CMlib/include</pElem>
+            <pElem>tfCommands/src</pElem>
+          </incDir>
+        </cTool>
+      </folder>
+      <item path="ncCommands/src/NCCnc2table.c" ex="false" tool="0">
+        <cTool>
+          <preprocessorList>
+            <Elem>_GNU_SOURCE</Elem>
+          </preprocessorList>
+        </cTool>
+      </item>
+      <item path="ncCommands/src/NCCncAggregate.c" ex="false" tool="0">
+        <cTool>
+          <preprocessorList>
+            <Elem>_GNU_SOURCE</Elem>
+          </preprocessorList>
+        </cTool>
+      </item>
+      <item path="ncCommands/src/NCCncAttributes.c" ex="false" tool="0">
+        <cTool>
+          <preprocessorList>
+            <Elem>_GNU_SOURCE</Elem>
+          </preprocessorList>
+        </cTool>
+      </item>
+      <item path="ncCommands/src/NCCncGridResample.c" ex="false" tool="0">
+        <cTool>
+          <preprocessorList>
+            <Elem>_GNU_SOURCE</Elem>
+          </preprocessorList>
+        </cTool>
+      </item>
+      <item path="ncCommands/src/NCCncGridSampling.c" ex="false" tool="0">
+        <cTool>
+          <preprocessorList>
+            <Elem>_GNU_SOURCE</Elem>
+          </preprocessorList>
+        </cTool>
+      </item>
+      <item path="ncCommands/src/NCCncTblCalculate.c" ex="false" tool="0">
+        <cTool>
+          <preprocessorList>
+            <Elem>_GNU_SOURCE</Elem>
+          </preprocessorList>
+        </cTool>
+      </item>
+      <item path="ncCommands/src/NCCtemplate.c" ex="true" tool="0">
+      </item>
+      <item path="rCommands/src/CMDdm2rgis.C" ex="false" tool="1">
+        <ccTool>
+          <incDir>
+            <pElem>DBlib/include</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>_GNU_SOURCE</Elem>
+          </preprocessorList>
+        </ccTool>
+      </item>
+      <item path="rCommands/src/CMDds2rgis.C" ex="false" tool="1">
+        <ccTool>
+          <incDir>
+            <pElem>DBlib/include</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>_GNU_SOURCE</Elem>
+          </preprocessorList>
+        </ccTool>
+      </item>
+      <item path="rCommands/src/CMDdsAggregate.C" ex="false" tool="1">
+        <ccTool>
+          <incDir>
+            <pElem>MFlib/include</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>_GNU_SOURCE</Elem>
+          </preprocessorList>
+        </ccTool>
+      </item>
+      <item path="rCommands/src/CMDdsDuration.C" ex="false" tool="1">
+        <ccTool>
+          <incDir>
+            <pElem>MFlib/include</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>_GNU_SOURCE</Elem>
+          </preprocessorList>
+        </ccTool>
+      </item>
+      <item path="rCommands/src/CMDdsSampling.C" ex="false" tool="1">
+        <ccTool>
+          <incDir>
+            <pElem>MFlib/include</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>_GNU_SOURCE</Elem>
+          </preprocessorList>
+        </ccTool>
+      </item>
+      <item path="rCommands/src/CMDgetHeader.C" ex="false" tool="1">
+        <ccTool>
+          <incDir>
+            <pElem>DBlib/include</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>_GNU_SOURCE</Elem>
+          </preprocessorList>
+        </ccTool>
+      </item>
+      <item path="rCommands/src/CMDgrdAppendLayers.C" ex="false" tool="1">
+        <ccTool>
+          <incDir>
+            <pElem>DBlib/include</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>_GNU_SOURCE</Elem>
+          </preprocessorList>
+        </ccTool>
+      </item>
+      <item path="rCommands/src/CMDgrdBoxAggr.C" ex="false" tool="1">
+        <ccTool>
+          <incDir>
+            <pElem>DBlib/include</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>_GNU_SOURCE</Elem>
+          </preprocessorList>
+        </ccTool>
+      </item>
+      <item path="rCommands/src/CMDgrdCalculate.C" ex="false" tool="1">
+        <ccTool>
+          <incDir>
+            <pElem>rCommands/include</pElem>
+            <pElem>DBlib/include</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>_GNU_SOURCE</Elem>
+          </preprocessorList>
+        </ccTool>
+      </item>
+      <item path="rCommands/src/CMDgrdCellStats.C" ex="false" tool="1">
+        <ccTool>
+          <incDir>
+            <pElem>DBlib/include</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>_GNU_SOURCE</Elem>
+          </preprocessorList>
+        </ccTool>
+      </item>
+      <item path="rCommands/src/CMDgrdCreateNetwork.C" ex="false" tool="1">
+        <ccTool>
+          <incDir>
+            <pElem>DBlib/include</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>_GNU_SOURCE</Elem>
+          </preprocessorList>
+        </ccTool>
+      </item>
+      <item path="rCommands/src/CMDgrdCycleMean.C" ex="false" tool="1">
+        <ccTool>
+          <incDir>
+            <pElem>DBlib/include</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>_GNU_SOURCE</Elem>
+          </preprocessorList>
+        </ccTool>
+      </item>
+      <item path="rCommands/src/CMDgrdDateLayers.C" ex="false" tool="1">
+        <ccTool>
+          <incDir>
+            <pElem>DBlib/include</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>_GNU_SOURCE</Elem>
+          </preprocessorList>
+        </ccTool>
+      </item>
+      <item path="rCommands/src/CMDgrdDifference.C" ex="false" tool="1">
+        <ccTool>
+          <incDir>
+            <pElem>DBlib/include</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>_GNU_SOURCE</Elem>
+          </preprocessorList>
+        </ccTool>
+      </item>
+      <item path="rCommands/src/CMDgrdExtractLayers.C" ex="false" tool="1">
+        <ccTool>
+          <incDir>
+            <pElem>DBlib/include</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>_GNU_SOURCE</Elem>
+          </preprocessorList>
+        </ccTool>
+      </item>
+      <item path="rCommands/src/CMDgrdImport.C" ex="false" tool="1">
+        <ccTool>
+          <incDir>
+            <pElem>DBlib/include</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>_GNU_SOURCE</Elem>
+          </preprocessorList>
+        </ccTool>
+      </item>
+      <item path="rCommands/src/CMDgrdMerge.C" ex="false" tool="1">
+        <ccTool>
+          <incDir>
+            <pElem>DBlib/include</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>_GNU_SOURCE</Elem>
+          </preprocessorList>
+        </ccTool>
+      </item>
+      <item path="rCommands/src/CMDgrdMinMax.C" ex="false" tool="1">
+        <ccTool>
+          <incDir>
+            <pElem>DBlib/include</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>_GNU_SOURCE</Elem>
+          </preprocessorList>
+        </ccTool>
+      </item>
+      <item path="rCommands/src/CMDgrdNoNeg.C" ex="false" tool="1">
+        <ccTool>
+          <incDir>
+            <pElem>DBlib/include</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>_GNU_SOURCE</Elem>
+          </preprocessorList>
+        </ccTool>
+      </item>
+      <item path="rCommands/src/CMDgrdOperation.C" ex="false" tool="1">
+        <ccTool>
+          <incDir>
+            <pElem>DBlib/include</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>_GNU_SOURCE</Elem>
+          </preprocessorList>
+        </ccTool>
+      </item>
+      <item path="rCommands/src/CMDgrdReclassDisc.C" ex="false" tool="1">
+        <ccTool>
+          <incDir>
+            <pElem>DBlib/include</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>_GNU_SOURCE</Elem>
+          </preprocessorList>
+        </ccTool>
+      </item>
+      <item path="rCommands/src/CMDgrdRenameLayers.C" ex="false" tool="1">
+        <ccTool>
+          <incDir>
+            <pElem>DBlib/include</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>_GNU_SOURCE</Elem>
+          </preprocessorList>
+        </ccTool>
+      </item>
+      <item path="rCommands/src/CMDgrdRunningMean.C" ex="false" tool="1">
+        <ccTool>
+          <incDir>
+            <pElem>DBlib/include</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>_GNU_SOURCE</Elem>
+          </preprocessorList>
+        </ccTool>
+      </item>
+      <item path="rCommands/src/CMDgrdSeasonAggr.C" ex="false" tool="1">
+        <ccTool>
+          <incDir>
+            <pElem>DBlib/include</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>_GNU_SOURCE</Elem>
+          </preprocessorList>
+        </ccTool>
+      </item>
+      <item path="rCommands/src/CMDgrdSeasonMean.C" ex="false" tool="1">
+        <ccTool>
+          <incDir>
+            <pElem>DBlib/include</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>_GNU_SOURCE</Elem>
+          </preprocessorList>
+        </ccTool>
+      </item>
+      <item path="rCommands/src/CMDgrdTSAggr.C" ex="false" tool="1">
+        <ccTool>
+          <incDir>
+            <pElem>DBlib/include</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>_GNU_SOURCE</Elem>
+          </preprocessorList>
+        </ccTool>
+      </item>
+      <item path="rCommands/src/CMDgrdTimeSeries.C" ex="false" tool="1">
+        <ccTool>
+          <incDir>
+            <pElem>DBlib/include</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>_GNU_SOURCE</Elem>
+          </preprocessorList>
+        </ccTool>
+      </item>
+      <item path="rCommands/src/CMDgrdZoneHist.C" ex="false" tool="1">
+        <ccTool>
+          <incDir>
+            <pElem>DBlib/include</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>_GNU_SOURCE</Elem>
+          </preprocessorList>
+        </ccTool>
+      </item>
+      <item path="rCommands/src/CMDgrdZoneStats.C" ex="false" tool="1">
+        <ccTool>
+          <incDir>
+            <pElem>DBlib/include</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>_GNU_SOURCE</Elem>
+          </preprocessorList>
+        </ccTool>
+      </item>
+      <item path="rCommands/src/CMDnetAccumulate.C" ex="false" tool="1">
+        <ccTool>
+          <incDir>
+            <pElem>DBlib/include</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>_GNU_SOURCE</Elem>
+          </preprocessorList>
+        </ccTool>
+      </item>
+      <item path="rCommands/src/CMDnetBasinDistrib.C" ex="false" tool="1">
+        <ccTool>
+          <incDir>
+            <pElem>DBlib/include</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>_GNU_SOURCE</Elem>
+          </preprocessorList>
+        </ccTool>
+      </item>
+      <item path="rCommands/src/CMDnetBasinHist.C" ex="false" tool="1">
+        <ccTool>
+          <incDir>
+            <pElem>DBlib/include</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>_GNU_SOURCE</Elem>
+          </preprocessorList>
+        </ccTool>
+      </item>
+      <item path="rCommands/src/CMDnetBasinProf.C" ex="false" tool="1">
+        <ccTool>
+          <incDir>
+            <pElem>DBlib/include</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>_GNU_SOURCE</Elem>
+          </preprocessorList>
+        </ccTool>
+      </item>
+      <item path="rCommands/src/CMDnetBasinStats.C" ex="false" tool="1">
+        <ccTool>
+          <incDir>
+            <pElem>DBlib/include</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>_GNU_SOURCE</Elem>
+          </preprocessorList>
+        </ccTool>
+      </item>
+      <item path="rCommands/src/CMDnetCellSlopes.C" ex="false" tool="1">
+        <ccTool>
+          <incDir>
+            <pElem>DBlib/include</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>_GNU_SOURCE</Elem>
+          </preprocessorList>
+        </ccTool>
+      </item>
+      <item path="rCommands/src/CMDnetCells2Grid.C" ex="false" tool="1">
+        <ccTool>
+          <incDir>
+            <pElem>DBlib/include</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>_GNU_SOURCE</Elem>
+          </preprocessorList>
+        </ccTool>
+      </item>
+      <item path="rCommands/src/CMDnetConfluence.C" ex="false" tool="1">
+        <ccTool>
+          <incDir>
+            <pElem>DBlib/include</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>_GNU_SOURCE</Elem>
+          </preprocessorList>
+        </ccTool>
+      </item>
+      <item path="rCommands/src/CMDnetCreatePnts.C" ex="false" tool="1">
+        <ccTool>
+          <incDir>
+            <pElem>DBlib/include</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>_GNU_SOURCE</Elem>
+          </preprocessorList>
+        </ccTool>
+      </item>
+      <item path="rCommands/src/CMDnetDefragment.C" ex="false" tool="1">
+        <ccTool>
+          <incDir>
+            <pElem>DBlib/include</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>_GNU_SOURCE</Elem>
+          </preprocessorList>
+        </ccTool>
+      </item>
+      <item path="rCommands/src/CMDnetErosion.C" ex="false" tool="1">
+        <ccTool>
+          <incDir>
+            <pElem>DBlib/include</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>_GNU_SOURCE</Elem>
+          </preprocessorList>
+        </ccTool>
+      </item>
+      <item path="rCommands/src/CMDnetImportASCII.C" ex="false" tool="1">
+        <ccTool>
+          <incDir>
+            <pElem>DBlib/include</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>_GNU_SOURCE</Elem>
+          </preprocessorList>
+        </ccTool>
+      </item>
+      <item path="rCommands/src/CMDnetInvAccum.C" ex="false" tool="1">
+        <ccTool>
+          <incDir>
+            <pElem>DBlib/include</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>_GNU_SOURCE</Elem>
+          </preprocessorList>
+        </ccTool>
+      </item>
+      <item path="rCommands/src/CMDnetTransfer.C" ex="false" tool="1">
+        <ccTool>
+          <incDir>
+            <pElem>DBlib/include</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>_GNU_SOURCE</Elem>
+          </preprocessorList>
+        </ccTool>
+      </item>
+      <item path="rCommands/src/CMDnetUnaccumulate.C" ex="false" tool="1">
+        <ccTool>
+          <incDir>
+            <pElem>DBlib/include</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>_GNU_SOURCE</Elem>
+          </preprocessorList>
+        </ccTool>
+      </item>
+      <item path="rCommands/src/CMDnetUpstreamAvg.C" ex="false" tool="1">
+        <ccTool>
+          <incDir>
+            <pElem>DBlib/include</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>_GNU_SOURCE</Elem>
+          </preprocessorList>
+        </ccTool>
+      </item>
+      <item path="rCommands/src/CMDnetcdf2rgis.C" ex="false" tool="1">
+        <ccTool>
+          <incDir>
+            <pElem>DBlib/include</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>_GNU_SOURCE</Elem>
+          </preprocessorList>
+        </ccTool>
+      </item>
+      <item path="rCommands/src/CMDpntGridSampling.C" ex="false" tool="1">
+        <ccTool>
+          <incDir>
+            <pElem>DBlib/include</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>_GNU_SOURCE</Elem>
+          </preprocessorList>
+        </ccTool>
+      </item>
+      <item path="rCommands/src/CMDpntSTNChar.C" ex="false" tool="1">
+        <ccTool>
+          <incDir>
+            <pElem>DBlib/include</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>_GNU_SOURCE</Elem>
+          </preprocessorList>
+        </ccTool>
+      </item>
+      <item path="rCommands/src/CMDpntStationDist.C" ex="false" tool="1">
+        <ccTool>
+          <incDir>
+            <pElem>DBlib/include</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>_GNU_SOURCE</Elem>
+          </preprocessorList>
+        </ccTool>
+      </item>
+      <item path="rCommands/src/CMDpntSubbasCenter.C" ex="false" tool="1">
+        <ccTool>
+          <incDir>
+            <pElem>DBlib/include</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>_GNU_SOURCE</Elem>
+          </preprocessorList>
+        </ccTool>
+      </item>
+      <item path="rCommands/src/CMDpntSubbasHist.C" ex="false" tool="1">
+        <ccTool>
+          <incDir>
+            <pElem>DBlib/include</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>_GNU_SOURCE</Elem>
+          </preprocessorList>
+        </ccTool>
+      </item>
+      <item path="rCommands/src/CMDpntSubbasStats.C" ex="false" tool="1">
+        <ccTool>
+          <incDir>
+            <pElem>DBlib/include</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>_GNU_SOURCE</Elem>
+          </preprocessorList>
+        </ccTool>
+      </item>
+      <item path="rCommands/src/CMDpntSubbasins.C" ex="false" tool="1">
+        <ccTool>
+          <incDir>
+            <pElem>DBlib/include</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>_GNU_SOURCE</Elem>
+          </preprocessorList>
+        </ccTool>
+      </item>
+      <item path="rCommands/src/CMDpntSymbolField.C" ex="false" tool="1">
+        <ccTool>
+          <incDir>
+            <pElem>DBlib/include</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>_GNU_SOURCE</Elem>
+          </preprocessorList>
+        </ccTool>
+      </item>
+      <item path="rCommands/src/CMDrgis2asciigrid.C" ex="false" tool="1">
+        <ccTool>
+          <incDir>
+            <pElem>DBlib/include</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>_GNU_SOURCE</Elem>
+          </preprocessorList>
+        </ccTool>
+      </item>
+      <item path="rCommands/src/CMDrgis2dm.C" ex="false" tool="1">
+        <ccTool>
+          <incDir>
+            <pElem>DBlib/include</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>_GNU_SOURCE</Elem>
+          </preprocessorList>
+        </ccTool>
+      </item>
+      <item path="rCommands/src/CMDrgis2domain.C" ex="false" tool="1">
+        <ccTool>
+          <incDir>
+            <pElem>MFlib/include</pElem>
+            <pElem>DBlib/include</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>_GNU_SOURCE</Elem>
+          </preprocessorList>
+        </ccTool>
+      </item>
+      <item path="rCommands/src/CMDrgis2ds.C" ex="false" tool="1">
+        <ccTool>
+          <incDir>
+            <pElem>DBlib/include</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>_GNU_SOURCE</Elem>
+          </preprocessorList>
+        </ccTool>
+      </item>
+      <item path="rCommands/src/CMDrgis2netcdf.C" ex="false" tool="1">
+        <ccTool>
+          <incDir>
+            <pElem>DBlib/include</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>_GNU_SOURCE</Elem>
+          </preprocessorList>
+        </ccTool>
+      </item>
+      <item path="rCommands/src/CMDrgis2table.C" ex="false" tool="1">
+        <ccTool>
+          <incDir>
+            <pElem>DBlib/include</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>_GNU_SOURCE</Elem>
+          </preprocessorList>
+        </ccTool>
+      </item>
+      <item path="rCommands/src/CMDrgisMetadb.C" ex="false" tool="1">
+        <ccTool>
+          <incDir>
+            <pElem>DBlib/include</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>_GNU_SOURCE</Elem>
+          </preprocessorList>
+        </ccTool>
+      </item>
+      <item path="rCommands/src/CMDsetHeader.C" ex="false" tool="1">
+        <ccTool>
+          <incDir>
+            <pElem>DBlib/include</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>_GNU_SOURCE</Elem>
+          </preprocessorList>
+        </ccTool>
+      </item>
+      <item path="rCommands/src/CMDtblAddField.C" ex="false" tool="1">
+        <ccTool>
+          <incDir>
+            <pElem>DBlib/include</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>_GNU_SOURCE</Elem>
+          </preprocessorList>
+        </ccTool>
+      </item>
+      <item path="rCommands/src/CMDtblCalculate.C" ex="false" tool="1">
+        <ccTool>
+          <incDir>
+            <pElem>rCommands/include</pElem>
+            <pElem>DBlib/include</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>_GNU_SOURCE</Elem>
+          </preprocessorList>
+        </ccTool>
+      </item>
+      <item path="rCommands/src/CMDtblConv2Point.C" ex="false" tool="1">
+        <ccTool>
+          <incDir>
+            <pElem>DBlib/include</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>_GNU_SOURCE</Elem>
+          </preprocessorList>
+        </ccTool>
+      </item>
+      <item path="rCommands/src/CMDtblConvCoord.C" ex="false" tool="1">
+        <ccTool>
+          <incDir>
+            <pElem>DBlib/include</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>_GNU_SOURCE</Elem>
+          </preprocessorList>
+        </ccTool>
+      </item>
+      <item path="rCommands/src/CMDtblDecimalDate.C" ex="false" tool="1">
+        <ccTool>
+          <incDir>
+            <pElem>DBlib/include</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>_GNU_SOURCE</Elem>
+          </preprocessorList>
+        </ccTool>
+      </item>
+      <item path="rCommands/src/CMDtblDeleteField.C" ex="false" tool="1">
+        <ccTool>
+          <incDir>
+            <pElem>DBlib/include</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>_GNU_SOURCE</Elem>
+          </preprocessorList>
+        </ccTool>
+      </item>
+      <item path="rCommands/src/CMDtblDeleteRec.C" ex="false" tool="1">
+        <ccTool>
+          <incDir>
+            <pElem>DBlib/include</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>_GNU_SOURCE</Elem>
+          </preprocessorList>
+        </ccTool>
+      </item>
+      <item path="rCommands/src/CMDtblIdleRec.C" ex="false" tool="1">
+        <ccTool>
+          <incDir>
+            <pElem>DBlib/include</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>_GNU_SOURCE</Elem>
+          </preprocessorList>
+        </ccTool>
+      </item>
+      <item path="rCommands/src/CMDtblJoinTables.C" ex="false" tool="1">
+        <ccTool>
+          <incDir>
+            <pElem>DBlib/include</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>_GNU_SOURCE</Elem>
+          </preprocessorList>
+        </ccTool>
+      </item>
+      <item path="rCommands/src/CMDtblMJoinTables.C" ex="false" tool="1">
+        <ccTool>
+          <incDir>
+            <pElem>DBlib/include</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>_GNU_SOURCE</Elem>
+          </preprocessorList>
+        </ccTool>
+      </item>
+      <item path="rCommands/src/CMDtblMergeCoord.C" ex="false" tool="1">
+        <ccTool>
+          <incDir>
+            <pElem>DBlib/include</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>_GNU_SOURCE</Elem>
+          </preprocessorList>
+        </ccTool>
+      </item>
+      <item path="rCommands/src/CMDtblMergeDate.C" ex="false" tool="1">
+        <ccTool>
+          <incDir>
+            <pElem>DBlib/include</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>_GNU_SOURCE</Elem>
+          </preprocessorList>
+        </ccTool>
+      </item>
+      <item path="rCommands/src/CMDtblRedefField.C" ex="false" tool="1">
+        <ccTool>
+          <incDir>
+            <pElem>DBlib/include</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>_GNU_SOURCE</Elem>
+          </preprocessorList>
+        </ccTool>
+      </item>
+      <item path="rCommands/src/CMDtblSelectRec.C" ex="false" tool="1">
+        <ccTool>
+          <incDir>
+            <pElem>DBlib/include</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>_GNU_SOURCE</Elem>
+          </preprocessorList>
+        </ccTool>
+      </item>
+      <item path="rCommands/src/CMDtblSplitDate.C" ex="false" tool="1">
+        <ccTool>
+          <incDir>
+            <pElem>DBlib/include</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>_GNU_SOURCE</Elem>
+          </preprocessorList>
+        </ccTool>
+      </item>
+      <item path="rCommands/src/CMDtblStatistics.C" ex="false" tool="1">
+        <ccTool>
+          <incDir>
+            <pElem>DBlib/include</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>_GNU_SOURCE</Elem>
+          </preprocessorList>
+        </ccTool>
+      </item>
+      <item path="rCommands/src/CMDtblTopoCalc.C" ex="false" tool="1">
+        <ccTool>
+          <incDir>
+            <pElem>DBlib/include</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>_GNU_SOURCE</Elem>
+          </preprocessorList>
+        </ccTool>
+      </item>
+      <item path="rGIS/src/RGISAnField.C" ex="false" tool="1">
+        <ccTool>
+          <incDir>
+            <pElem>rGIS/src</pElem>
+            <pElem>/usr/include/X11</pElem>
+            <pElem>/usr/include/Xm</pElem>
+            <pElem>UIlib/include</pElem>
+            <pElem>CMlib/include</pElem>
+            <pElem>DBlib/include</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>_GNU_SOURCE</Elem>
+          </preprocessorList>
+        </ccTool>
+      </item>
+      <item path="rGIS/src/RGISAnGNUXYPlot.C" ex="false" tool="1">
+        <ccTool>
+          <incDir>
+            <pElem>rGIS/src</pElem>
+            <pElem>/usr/include/X11</pElem>
+            <pElem>/usr/include/Xm</pElem>
+            <pElem>CMlib/include</pElem>
+            <pElem>rGIS/include</pElem>
+            <pElem>DBlib/include</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>_GNU_SOURCE</Elem>
+          </preprocessorList>
+        </ccTool>
+      </item>
+      <item path="rGIS/src/RGISAnGrid.C" ex="false" tool="1">
+        <ccTool>
+          <incDir>
+            <pElem>rGIS/src</pElem>
+            <pElem>/usr/include/X11</pElem>
+            <pElem>/usr/include/Xm</pElem>
+            <pElem>rGIS/include</pElem>
+            <pElem>CMlib/include</pElem>
+            <pElem>DBlib/include</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>_GNU_SOURCE</Elem>
+          </preprocessorList>
+        </ccTool>
+      </item>
+      <item path="rGIS/src/RGISAnLine.C" ex="false" tool="1">
+        <ccTool>
+          <incDir>
+            <pElem>rGIS/src</pElem>
+            <pElem>/usr/include/X11</pElem>
+            <pElem>/usr/include/Xm</pElem>
+            <pElem>rGIS/include</pElem>
+            <pElem>CMlib/include</pElem>
+            <pElem>DBlib/include</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>_GNU_SOURCE</Elem>
+          </preprocessorList>
+        </ccTool>
+      </item>
+      <item path="rGIS/src/RGISAnNetStreams.C" ex="false" tool="1">
+        <ccTool>
+          <incDir>
+            <pElem>rGIS/src</pElem>
+            <pElem>/usr/include/X11</pElem>
+            <pElem>/usr/include/Xm</pElem>
+            <pElem>rGIS/include</pElem>
+            <pElem>CMlib/include</pElem>
+            <pElem>DBlib/include</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>_GNU_SOURCE</Elem>
+          </preprocessorList>
+        </ccTool>
+      </item>
+      <item path="rGIS/src/RGISAnNetwork.C" ex="false" tool="1">
+        <ccTool>
+          <incDir>
+            <pElem>rGIS/src</pElem>
+            <pElem>/usr/include/X11</pElem>
+            <pElem>/usr/include/Xm</pElem>
+            <pElem>CMlib/include</pElem>
+            <pElem>rGIS/include</pElem>
+            <pElem>DBlib/include</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>_GNU_SOURCE</Elem>
+          </preprocessorList>
+        </ccTool>
+      </item>
+      <item path="rGIS/src/RGISAnPoint.C" ex="false" tool="1">
+        <ccTool>
+          <incDir>
+            <pElem>rGIS/src</pElem>
+            <pElem>/usr/include/X11</pElem>
+            <pElem>/usr/include/Xm</pElem>
+            <pElem>UIlib/include</pElem>
+            <pElem>CMlib/include</pElem>
+            <pElem>rGIS/include</pElem>
+            <pElem>DBlib/include</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>_GNU_SOURCE</Elem>
+          </preprocessorList>
+        </ccTool>
+      </item>
+      <item path="rGIS/src/RGISAnPoly.C" ex="false" tool="1">
+        <ccTool>
+          <preprocessorList>
+            <Elem>_GNU_SOURCE</Elem>
+          </preprocessorList>
+        </ccTool>
+      </item>
+      <item path="rGIS/src/RGISAnSampleGrid.C" ex="false" tool="1">
+        <ccTool>
+          <incDir>
+            <pElem>rGIS/src</pElem>
+            <pElem>/usr/include/X11</pElem>
+            <pElem>/usr/include/Xm</pElem>
+            <pElem>rGIS/include</pElem>
+            <pElem>DBlib/include</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>_GNU_SOURCE</Elem>
+          </preprocessorList>
+        </ccTool>
+      </item>
+      <item path="rGIS/src/RGISAnTable.C" ex="false" tool="1">
+        <ccTool>
+          <incDir>
+            <pElem>rGIS/src</pElem>
+            <pElem>/usr/include/X11</pElem>
+            <pElem>/usr/include/Xm</pElem>
+            <pElem>UIlib/include</pElem>
+            <pElem>DBlib/include</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>_GNU_SOURCE</Elem>
+          </preprocessorList>
+        </ccTool>
+      </item>
+      <item path="rGIS/src/RGISAnalyse.C" ex="false" tool="1">
+        <ccTool>
+          <incDir>
+            <pElem>rGIS/src</pElem>
+            <pElem>/usr/include/X11</pElem>
+            <pElem>/usr/include/Xm</pElem>
+            <pElem>UIlib/include</pElem>
+            <pElem>DBlib/include</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>_GNU_SOURCE</Elem>
+          </preprocessorList>
+        </ccTool>
+      </item>
+      <item path="rGIS/src/RGISDisplay.C" ex="false" tool="1">
+        <ccTool>
+          <incDir>
+            <pElem>rGIS/src</pElem>
+            <pElem>/usr/include/X11</pElem>
+            <pElem>/usr/include/Xm</pElem>
+            <pElem>UIlib/include</pElem>
+            <pElem>DBlib/include</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>_GNU_SOURCE</Elem>
+          </preprocessorList>
+        </ccTool>
+      </item>
+      <item path="rGIS/src/RGISEdit.C" ex="false" tool="1">
+        <ccTool>
+          <incDir>
+            <pElem>rGIS/src</pElem>
+            <pElem>/usr/include/X11</pElem>
+            <pElem>/usr/include/Xm</pElem>
+            <pElem>UIlib/include</pElem>
+            <pElem>CMlib/include</pElem>
+            <pElem>DBlib/include</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>_GNU_SOURCE</Elem>
+          </preprocessorList>
+        </ccTool>
+      </item>
+      <item path="rGIS/src/RGISEditGrid.C" ex="false" tool="1">
+        <ccTool>
+          <incDir>
+            <pElem>rGIS/src</pElem>
+            <pElem>/usr/include/X11</pElem>
+            <pElem>/usr/include/Xm</pElem>
+            <pElem>UIlib/include</pElem>
+            <pElem>rGIS/include</pElem>
+            <pElem>DBlib/include</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>_GNU_SOURCE</Elem>
+          </preprocessorList>
+        </ccTool>
+      </item>
+      <item path="rGIS/src/RGISEditLine.C" ex="false" tool="1">
+        <ccTool>
+          <incDir>
+            <pElem>rGIS/src</pElem>
+            <pElem>/usr/include/X11</pElem>
+            <pElem>/usr/include/Xm</pElem>
+            <pElem>rGIS/include</pElem>
+            <pElem>DBlib/include</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>_GNU_SOURCE</Elem>
+          </preprocessorList>
+        </ccTool>
+      </item>
+      <item path="rGIS/src/RGISEditNet.C" ex="false" tool="1">
+        <ccTool>
+          <incDir>
+            <pElem>rGIS/src</pElem>
+            <pElem>/usr/include/X11</pElem>
+            <pElem>/usr/include/Xm</pElem>
+            <pElem>UIlib/include</pElem>
+            <pElem>CMlib/include</pElem>
+            <pElem>rGIS/include</pElem>
+            <pElem>DBlib/include</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>_GNU_SOURCE</Elem>
+          </preprocessorList>
+        </ccTool>
+      </item>
+      <item path="rGIS/src/RGISEditPoint.C" ex="false" tool="1">
+        <ccTool>
+          <incDir>
+            <pElem>rGIS/src</pElem>
+            <pElem>/usr/include/X11</pElem>
+            <pElem>/usr/include/Xm</pElem>
+            <pElem>UIlib/include</pElem>
+            <pElem>rGIS/include</pElem>
+            <pElem>DBlib/include</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>_GNU_SOURCE</Elem>
+          </preprocessorList>
+        </ccTool>
+      </item>
+      <item path="rGIS/src/RGISEditPoly.C" ex="false" tool="1">
+        <ccTool>
+          <incDir>
+            <pElem>rGIS/src</pElem>
+            <pElem>/usr/include/X11</pElem>
+            <pElem>/usr/include/Xm</pElem>
+            <pElem>rGIS/include</pElem>
+            <pElem>DBlib/include</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>_GNU_SOURCE</Elem>
+          </preprocessorList>
+        </ccTool>
+      </item>
+      <item path="rGIS/src/RGISFile.C" ex="false" tool="1">
+        <ccTool>
+          <incDir>
+            <pElem>rGIS/src</pElem>
+            <pElem>/usr/include/X11</pElem>
+            <pElem>/usr/include/Xm</pElem>
+            <pElem>UIlib/include</pElem>
+            <pElem>CMlib/include</pElem>
+            <pElem>rGIS/include</pElem>
+            <pElem>DBlib/include</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>_GNU_SOURCE</Elem>
+          </preprocessorList>
+        </ccTool>
+      </item>
+      <item path="rGIS/src/RGISMain.C" ex="false" tool="1">
+        <ccTool>
+          <incDir>
+            <pElem>rGIS/src</pElem>
+            <pElem>/usr/include/X11</pElem>
+            <pElem>/usr/include/Xm</pElem>
+            <pElem>UIlib/include</pElem>
+            <pElem>CMlib/include</pElem>
+            <pElem>rGIS/include</pElem>
+            <pElem>DBlib/include</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>_GNU_SOURCE</Elem>
+          </preprocessorList>
+        </ccTool>
+      </item>
+      <item path="rGIS/src/RGISMetaDB.C" ex="false" tool="1">
+        <ccTool>
+          <incDir>
+            <pElem>rGIS/src</pElem>
+            <pElem>/usr/include/X11</pElem>
+            <pElem>/usr/include/Xm</pElem>
+            <pElem>UIlib/include</pElem>
+            <pElem>rGIS/include</pElem>
+            <pElem>DBlib/include</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>_GNU_SOURCE</Elem>
+          </preprocessorList>
+        </ccTool>
+      </item>
+      <item path="rGIS/src/RGISPanels.C" ex="false" tool="1">
+        <ccTool>
+          <incDir>
+            <pElem>rGIS/src</pElem>
+            <pElem>/usr/include/X11</pElem>
+            <pElem>/usr/include/Xm</pElem>
+            <pElem>UIlib/include</pElem>
+            <pElem>rGIS/include</pElem>
+            <pElem>DBlib/include</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>_GNU_SOURCE</Elem>
+          </preprocessorList>
+        </ccTool>
+      </item>
+      <item path="rGIS/src/RGISTools.C" ex="false" tool="1">
+        <ccTool>
+          <incDir>
+            <pElem>rGIS/src</pElem>
+            <pElem>/usr/include/X11</pElem>
+            <pElem>/usr/include/Xm</pElem>
+            <pElem>UIlib/include</pElem>
+            <pElem>rGIS/include</pElem>
+            <pElem>CMlib/include</pElem>
+            <pElem>DBlib/include</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>_GNU_SOURCE</Elem>
+          </preprocessorList>
+        </ccTool>
+      </item>
+      <item path="rGIS/src/RGISToolsARCImp.C" ex="false" tool="1">
+        <ccTool>
+          <incDir>
+            <pElem>rGIS/src</pElem>
+            <pElem>/usr/include/X11</pElem>
+            <pElem>/usr/include/Xm</pElem>
+            <pElem>DBlib/include</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>_GNU_SOURCE</Elem>
+          </preprocessorList>
+        </ccTool>
+      </item>
+      <item path="rGIS/src/RGISToolsGrdExp.C" ex="false" tool="1">
+        <ccTool>
+          <incDir>
+            <pElem>rGIS/src</pElem>
+            <pElem>CMlib/include</pElem>
+            <pElem>DBlib/include</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>_GNU_SOURCE</Elem>
+          </preprocessorList>
+        </ccTool>
+      </item>
+      <item path="rGIS/src/RGISToolsGrdImp.C" ex="false" tool="1">
+        <ccTool>
+          <incDir>
+            <pElem>rGIS/src</pElem>
+            <pElem>/usr/include/X11</pElem>
+            <pElem>/usr/include/Xm</pElem>
+            <pElem>CMlib/include</pElem>
+            <pElem>rGIS/include</pElem>
+            <pElem>DBlib/include</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>_GNU_SOURCE</Elem>
+          </preprocessorList>
+        </ccTool>
+      </item>
+      <item path="rGIS/src/RGISToolsNetExp.C" ex="false" tool="1">
+        <ccTool>
+          <incDir>
+            <pElem>rGIS/src</pElem>
+            <pElem>CMlib/include</pElem>
+            <pElem>DBlib/include</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>_GNU_SOURCE</Elem>
+          </preprocessorList>
+        </ccTool>
+      </item>
+      <item path="rGIS/src/RGISToolsPntExp.C" ex="false" tool="1">
+        <ccTool>
+          <incDir>
+            <pElem>rGIS/src</pElem>
+            <pElem>CMlib/include</pElem>
+            <pElem>DBlib/include</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>_GNU_SOURCE</Elem>
+          </preprocessorList>
+        </ccTool>
+      </item>
+      <item path="rGIS/src/RGISToolsToPoint.C" ex="false" tool="1">
+        <ccTool>
+          <incDir>
+            <pElem>rGIS/src</pElem>
+            <pElem>/usr/include/X11</pElem>
+            <pElem>/usr/include/Xm</pElem>
+            <pElem>rGIS/include</pElem>
+            <pElem>CMlib/include</pElem>
+            <pElem>DBlib/include</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>_GNU_SOURCE</Elem>
+          </preprocessorList>
+        </ccTool>
+      </item>
+      <item path="rGIS/src/RGISUsrFuncGrd.C" ex="false" tool="1">
+        <ccTool>
+          <incDir>
+            <pElem>rGIS/src</pElem>
+            <pElem>/usr/include/X11</pElem>
+            <pElem>UIlib/include</pElem>
+            <pElem>DBlib/include</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>_GNU_SOURCE</Elem>
+          </preprocessorList>
+        </ccTool>
+      </item>
+      <item path="rGIS/src/RGISUsrFuncNet.C" ex="false" tool="1">
+        <ccTool>
+          <incDir>
+            <pElem>rGIS/src</pElem>
+            <pElem>/usr/include/X11</pElem>
+            <pElem>/usr/include/Xm</pElem>
+            <pElem>UIlib/include</pElem>
+            <pElem>CMlib/include</pElem>
+            <pElem>DBlib/include</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>_GNU_SOURCE</Elem>
+          </preprocessorList>
+        </ccTool>
+      </item>
+      <item path="rGIS/src/RGISUsrFuncQry.C" ex="false" tool="1">
+        <ccTool>
+          <incDir>
+            <pElem>rGIS/src</pElem>
+            <pElem>/usr/include/X11</pElem>
+            <pElem>UIlib/include</pElem>
+            <pElem>CMlib/include</pElem>
+            <pElem>DBlib/include</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>_GNU_SOURCE</Elem>
+          </preprocessorList>
+        </ccTool>
+      </item>
+      <item path="rGIS/src/RGISUsrFuncVec.C" ex="false" tool="1">
+        <ccTool>
+          <incDir>
+            <pElem>rGIS/src</pElem>
+            <pElem>/usr/include/X11</pElem>
+            <pElem>UIlib/include</pElem>
+            <pElem>CMlib/include</pElem>
+            <pElem>DBlib/include</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>_GNU_SOURCE</Elem>
+          </preprocessorList>
+        </ccTool>
+      </item>
+      <item path="rGIS/src/RGISWorkspace.C" ex="false" tool="1">
+        <ccTool>
+          <incDir>
+            <pElem>rGIS/src</pElem>
+            <pElem>/usr/include/X11</pElem>
+            <pElem>/usr/include/Xm</pElem>
+            <pElem>UIlib/include</pElem>
+            <pElem>CMlib/include</pElem>
+            <pElem>rGIS/include</pElem>
+            <pElem>DBlib/include</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>_GNU_SOURCE</Elem>
+          </preprocessorList>
+        </ccTool>
+      </item>
+      <item path="rgisPlot/src/RGPColorMaps.C" ex="false" tool="1">
+        <ccTool>
+          <incDir>
+            <pElem>rgisPlot/include</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>_GNU_SOURCE</Elem>
+          </preprocessorList>
+        </ccTool>
+      </item>
+      <item path="rgisPlot/src/RGPDrawGridCont.C" ex="false" tool="1">
+        <ccTool>
+          <incDir>
+            <pElem>rgisPlot/include</pElem>
+            <pElem>CMlib/include</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>_GNU_SOURCE</Elem>
+          </preprocessorList>
+        </ccTool>
+      </item>
+      <item path="rgisPlot/src/RGPDrawNetwork.C" ex="false" tool="1">
+        <ccTool>
+          <incDir>
+            <pElem>CMlib/include</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>_GNU_SOURCE</Elem>
+          </preprocessorList>
+        </ccTool>
+      </item>
+      <item path="rgisPlot/src/RGPDrawVecLine.C" ex="false" tool="1">
+        <ccTool>
+          <incDir>
+            <pElem>CMlib/include</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>_GNU_SOURCE</Elem>
+          </preprocessorList>
+        </ccTool>
+      </item>
+      <item path="rgisPlot/src/RGPDrawVecPoint.C" ex="false" tool="1">
+        <ccTool>
+          <incDir>
+            <pElem>CMlib/include</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>_GNU_SOURCE</Elem>
+          </preprocessorList>
+        </ccTool>
+      </item>
+      <item path="rgisPlot/src/RGPMain.C" ex="false" tool="1">
+        <ccTool>
+          <incDir>
+            <pElem>CMlib/include</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>_GNU_SOURCE</Elem>
+          </preprocessorList>
+        </ccTool>
+      </item>
+      <item path="tfCommands/src/FAccumulate.c" ex="false" tool="0">
+        <cTool>
+          <preprocessorList>
+            <Elem>_GNU_SOURCE</Elem>
+          </preprocessorList>
+        </cTool>
+      </item>
+      <item path="tfCommands/src/FCut.c" ex="false" tool="0">
+        <cTool>
+          <preprocessorList>
+            <Elem>_GNU_SOURCE</Elem>
+          </preprocessorList>
+        </cTool>
+      </item>
+      <item path="tfCommands/src/FPrintDataTypes.c" ex="false" tool="0">
+        <cTool>
+          <incDir>
+            <pElem>Flib/include</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>_GNU_SOURCE</Elem>
+          </preprocessorList>
+        </cTool>
+      </item>
+      <item path="tfCommands/src/FReg.c" ex="true" tool="0">
+      </item>
+      <item path="tfCommands/src/FSort.c" ex="false" tool="0">
+        <cTool>
+          <preprocessorList>
+            <Elem>_GNU_SOURCE</Elem>
+          </preprocessorList>
+        </cTool>
+      </item>
+      <item path="tfCommands/src/FStat.c" ex="false" tool="0">
+        <cTool>
+          <incDir>
+            <pElem>Flib/include</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>_GNU_SOURCE</Elem>
+          </preprocessorList>
+        </cTool>
+      </item>
+      <item path="tfCommands/src/Ftbl2rgis.C" ex="true" tool="1">
+        <ccTool>
+          <preprocessorList>
+            <Elem>_GNU_SOURCE</Elem>
+          </preprocessorList>
+        </ccTool>
+      </item>
+    </conf>
+  </confs>
+</configurationDescriptor>
