@@ -1,9 +1,9 @@
-#include <cm.h>
 #include <sys/types.h>
 #include <regex.h>
 #include <dirent.h>
 #include <string.h>
 #include <stdlib.h>
+#include <cm.h>
 #include <NCcore.h>
 
 static regex_t _NCfileListRegex;

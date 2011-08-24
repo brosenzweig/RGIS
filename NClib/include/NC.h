@@ -1,9 +1,10 @@
 #ifndef _NC_H
 #define _NC_H
 
-#include<NCcm.h>
-#include<NCnames.h>
-#include<netcdf.h>
+#include <stdlib.h>
+#include <netcdf.h>
+#include <NCcore.h>
+#include <NCnames.h>
 
 #if defined(__cplusplus)
 extern "C" {

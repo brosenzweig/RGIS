@@ -7,7 +7,6 @@ CC     = $(UNIXCC) $(UNIXCCOPS) -I$(INC) -I../../CMlib/include
 TARGET = $(LIB)/libNC10.a
 
 INCLUDES = $(INC)/NC.h\
-           $(INC)/NCcm.h\
            $(INC)/NCcore.h\
            $(INC)/NCdsHandle.h\
            $(INC)/NCnames.h\
@@ -18,8 +17,7 @@ INCLUDES = $(INC)/NC.h\
            $(INC)/NCstdlib.h\
            $(INC)/NCstring.h
 
-OBJS =  $(OBJ)/NCcmArgParse.o\
-        $(OBJ)/NCcoordinate.o\
+OBJS =  $(OBJ)/NCcoordinate.o\
         $(OBJ)/NCdata.o\
         $(OBJ)/NCdsHandle.o\
         $(OBJ)/NCdsHandleGeo.o\

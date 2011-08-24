@@ -1,6 +1,46 @@
 #include <cm.h>
 #include <NC.h>
-void doHelp(bool extend,char *progName);
+
+static void doHelp(const char *progName, bool extend) {
+	if(extend) {
+		CMmsgPrint (CMmsgUsrError, "Usage: %s [options] <filename>",progName);
+		CMmsgPrint (CMmsgUsrError, "Variable modifications:");
+		CMmsgPrint (CMmsgUsrError, " -l,--longname     [varname] [long_name]               => Change the extended name");
+		CMmsgPrint (CMmsgUsrError, " -n,--standardname [varname] [standard_name]           => Change the short name");
+		CMmsgPrint (CMmsgUsrError, " -U,--units        [varname] [units]                   => Change the units");
+		CMmsgPrint (CMmsgUsrError, " -v,--validrange   [varname] [valid_low] [valid_high]  => Change valid range of the variable");
+		CMmsgPrint (CMmsgUsrError, " -o,--offset       [varname] [offset]                  => Change offset of the variable");
+		CMmsgPrint (CMmsgUsrError, " -s,--scalefactor  [varname] [scale_factor]            => Change scale factor of the variable");
+		CMmsgPrint (CMmsgUsrError, "Attribute modifications:");
+		CMmsgPrint (CMmsgUsrError, " -t,--title        [title]         => Change the title of the NetCDF file");
+		CMmsgPrint (CMmsgUsrError, " -y,--datatype     [datatype]      => Change the datatype");
+		CMmsgPrint (CMmsgUsrError, " -d,--domain       [domain]        => Change the domain");
+		CMmsgPrint (CMmsgUsrError, " -u,--subject      [subject]       => Change the subject");
+		CMmsgPrint (CMmsgUsrError, " -r,--references   [references]    => Change the references");
+		CMmsgPrint (CMmsgUsrError, " -i,--institute    [institution]   => Change the institute");
+		CMmsgPrint (CMmsgUsrError, " -s,--source       [source]        => Change the source");
+		CMmsgPrint (CMmsgUsrError, " -c,--comments     [comments]      => Change the comments");
+	} else {
+		CMmsgPrint (CMmsgUsrError, "Usage: %s [options] <filename>",progName);
+		CMmsgPrint (CMmsgUsrError, "Variable modifications:");
+		CMmsgPrint (CMmsgUsrError, " -l,--longname     [varname] [long_name]");
+		CMmsgPrint (CMmsgUsrError, " -n,--standardname [varname] [standard_name]");
+		CMmsgPrint (CMmsgUsrError, " -U,--units        [varname] [units]");
+		CMmsgPrint (CMmsgUsrError, " -v,--validrange   [varname] [valid_low] [valid_high]");
+		CMmsgPrint (CMmsgUsrError, " -o,--offset       [varname] [offset]");
+		CMmsgPrint (CMmsgUsrError, " -s,--scalefactor  [varname] [scale_factor]");
+		CMmsgPrint (CMmsgUsrError, "Attribute modifications:");
+		CMmsgPrint (CMmsgUsrError, " -t,--title        [title]");
+		CMmsgPrint (CMmsgUsrError, " -y,--datatype     [datatype]");
+		CMmsgPrint (CMmsgUsrError, " -d,--domain       [domain]");
+		CMmsgPrint (CMmsgUsrError, " -u,--subject      [subject]");
+		CMmsgPrint (CMmsgUsrError, " -r,--references   [references]");
+		CMmsgPrint (CMmsgUsrError, " -i,--institute    [institution]");
+		CMmsgPrint (CMmsgUsrError, " -s,--source       [source]");
+		CMmsgPrint (CMmsgUsrError, " -c,--comments     [comments]");
+	}
+	exit(0);
+}
 
 typedef struct VarNode_s
 {
@@ -19,105 +59,107 @@ int main (int argc,char *argv [])
 		{ CMmsgPrint (CMmsgAppError, "Memory allocation error in: %s %d",__FILE__,__LINE__); return(NCfailed); }
 	for (argPos = 1;argPos < argNum;)
 	{
-		if (NCcmArgTest(argv[argPos],"-h","--help"))
+		if (CMargTest(argv[argPos],"-h","--help"))
 		{
-			NCcmArgShiftLeft(argPos,argv,argc); argNum--;
-			if (NCcmArgCheck(argv,argPos,argNum))
-				{ if((strcmp(argv[argPos],"extend") == 0) || (strcmp(argv[argPos],"e") == 0)) doHelp(1,NCcmProgName(argv[0])); }
-			doHelp(0,NCcmProgName(argv[0]));
+			if ((argNum = CMargShiftLeft(argPos,argv,argc)) <= argPos)
+                            {
+                            doHelp(CMprgName(argv[0]),0);
+                            break;
+                            }
+                        else
+                            doHelp(CMprgName(argv[0]),(strcmp(argv[argPos],"extend") == 0) ||
+                                                      (strcmp(argv[argPos],"e")      == 0));
 			continue;
 		}
-		if (NCcmArgTest(argv[argPos],"-l","--longname"))
+		if (CMargTest(argv[argPos],"-l","--longname"))
 		{
-			NCcmArgShiftLeft(argPos,argv,argc); argNum--;
-			if ((NCcmArgCheck(argv,argPos,argNum)) || (NCcmArgCheck(argv,argPos + 1,argNum)))
-				{ CMmsgPrint (CMmsgUsrError, "Missing Long Name!"); return (NCfailed); }
+			if ((argNum = CMargShiftLeft(argPos,argv,argc)) <= argPos)
+                            { CMmsgPrint (CMmsgUsrError, "Missing variable Name!"); return (CMfailed); }
 			last->text = true;
 			last->var = argv[argPos];
-			last->dat = argv[argPos + 1];
+			if ((argNum = CMargShiftLeft(argPos,argv,argc)) <= argPos)
+                            { CMmsgPrint (CMmsgUsrError, "Missing Long Name!"); return (CMfailed); }
+			last->dat = argv[argPos];
 			last->attrib = NCnameVALongName;
 			if((last = last->next = malloc(sizeof(VarNode_t))) == NULL)
 				{ CMmsgPrint (CMmsgSysError, "Memory allocation error in: %s %d",__FILE__,__LINE__); return(NCfailed); }
 			last->dat = last->dat2 = (char *) NULL;
-			NCcmArgShiftLeft(argPos,argv,argc); argNum--;
-			NCcmArgShiftLeft(argPos,argv,argc); argNum--;
+			if ((argNum = CMargShiftLeft(argPos,argv,argc)) <= argPos) break;
 			continue;
 		}
-		if (NCcmArgTest(argv[argPos],"-n","--standardname"))
+		if (CMargTest(argv[argPos],"-n","--standardname"))
 		{
-			NCcmArgShiftLeft(argPos,argv,argc); argNum--;
-			if ((NCcmArgCheck(argv,argPos,argNum)) || (NCcmArgCheck(argv,argPos + 1,argNum)))
-				{ CMmsgPrint (CMmsgUsrError, "Missing Standard Name!"); return (NCfailed); }
+			if ((argNum = CMargShiftLeft(argPos,argv,argc)) <= argPos)
+                            { CMmsgPrint (CMmsgUsrError, "Missing variable Name!"); return (CMfailed); }
 			last->text = true;
 			last->var = argv[argPos];
-			last->dat = argv[argPos + 1];
+			if ((argNum = CMargShiftLeft(argPos,argv,argc)) <= argPos)
+                            { CMmsgPrint (CMmsgUsrError, "Missing Standard Name!"); return (CMfailed); }
+			last->dat = argv[argPos];
 			last->attrib = NCnameVAStandardName;
 			if((last = last->next = malloc(sizeof(VarNode_t))) == NULL)
-				{ CMmsgPrint (CMmsgSysError, "Memory allocation error in: %s %d"); return(NCfailed); }
+                            { CMmsgPrint (CMmsgSysError, "Memory allocation error in: %s %d"); return(CMfailed); }
 			last->dat = last->dat2 = (char *) NULL;
-			NCcmArgShiftLeft(argPos,argv,argc); argNum--;
-			NCcmArgShiftLeft(argPos,argv,argc); argNum--;
+			if ((argNum = CMargShiftLeft(argPos,argv,argc)) <= argPos) break;
 			continue;
 		}
-		if (NCcmArgTest(argv[argPos],"-U","--units"))
+		if (CMargTest(argv[argPos],"-U","--units"))
 		{
-			NCcmArgShiftLeft(argPos,argv,argc); argNum--;
-			if ((NCcmArgCheck(argv,argPos,argNum)) || (NCcmArgCheck(argv,argPos + 1,argNum)))
-				{ CMmsgPrint (CMmsgUsrError, "Missing Units!"); return (NCfailed); }
+			if ((argNum = CMargShiftLeft(argPos,argv,argc)) <= argPos)
+                            { CMmsgPrint (CMmsgUsrError, "Missing variable!"); return (CMfailed); }
 			last->text = true;
 			last->var = argv[argPos];
-			last->dat = argv[argPos + 1];
+			if ((argNum = CMargShiftLeft(argPos,argv,argc)) <= argPos)
+                            { CMmsgPrint (CMmsgUsrError, "Missing Units!"); return (CMfailed); }
+			last->dat = argv[argPos];
 			last->attrib = NCnameVAUnits;
 			if((last = last->next = malloc(sizeof(VarNode_t))) == NULL)
 				{ CMmsgPrint (CMmsgSysError, "Memory allocation error in: %s %d",__FILE__,__LINE__); return(NCfailed); }
 			last->dat = last->dat2 = (char *) NULL;
-			NCcmArgShiftLeft(argPos,argv,argc); argNum--;
-			NCcmArgShiftLeft(argPos,argv,argc); argNum--;
+			if ((argNum = CMargShiftLeft(argPos,argv,argc)) <= argPos) break;
 			continue;
 		}
-		if (NCcmArgTest(argv[argPos],"-v","--validrange"))
+		if (CMargTest(argv[argPos],"-v","--validrange"))
 		{
-			NCcmArgShiftLeft(argPos,argv,argc); argNum--;
-			if ((NCcmArgCheck(argv,argPos,argNum)) ||
-				 (NCcmArgCheck(argv,argPos + 1,argNum)) ||
-				 (NCcmArgCheck(argv,argPos + 2, argNum)))
-				{ CMmsgPrint (CMmsgUsrError, "Missing Ranges!"); return (NCfailed); }
+			if ((argNum = CMargShiftLeft(argPos,argv,argc)) <= argPos)
+                            { CMmsgPrint (CMmsgUsrError, "Missing variable!"); return (CMfailed); }
 // ********************        CHECK HERE!!! ************************
 			last->text = false;
 			last->var = argv[argPos];
-			last->dat = argv[argPos + 1];
+			if ((argNum = CMargShiftLeft(argPos,argv,argc)) <= argPos)
+                            { CMmsgPrint (CMmsgUsrError, "Missing upper range!"); return (CMfailed); }
+/			last->dat = argv[argPos + 1];
+			if ((argNum = CMargShiftLeft(argPos,argv,argc)) <= argPos)
+                            { CMmsgPrint (CMmsgUsrError, "Missing lower range!"); return (CMfailed); }
 			last->dat2 = argv[argPos + 2];
 			last->attrib = NCnameVAValidRange;
 			if((last = last->next = malloc(sizeof(VarNode_t))) == NULL)
 				{ CMmsgPrint (CMmsgSysError, "Memory allocation error in: %s %d",__FILE__,__LINE__); return(NCfailed); }
 			last->dat = last->dat2 = (char *) NULL;
-			NCcmArgShiftLeft(argPos,argv,argc); argNum--;
-			NCcmArgShiftLeft(argPos,argv,argc); argNum--;
-			NCcmArgShiftLeft(argPos,argv,argc); argNum--;
+			if ((argNum = CMargShiftLeft(argPos,argv,argc)) <= argPos) break;
 			continue;
 		}
-		if (NCcmArgTest(argv[argPos],"-o","--offset"))
+		if (CMargTest(argv[argPos],"-o","--offset"))
 		{
-			NCcmArgShiftLeft(argPos,argv,argc); argNum--;
-			if ((NCcmArgCheck(argv,argPos,argNum)) ||
-				 (NCcmArgCheck(argv,argPos + 1,argNum)))
-				{ CMmsgPrint (CMmsgUsrError, "Missing offset!"); return (NCfailed); }
+			if ((argNum = CMargShiftLeft(argPos,argv,argc)) <= argPos)
+                            { CMmsgPrint (CMmsgUsrError, "Missing variable!"); return (CMfailed); }
 			last->text = false;
 			last->var = argv[argPos];
-			last->dat = argv[argPos + 1];
+			if ((argNum = CMargShiftLeft(argPos,argv,argc)) <= argPos)
+                            { CMmsgPrint (CMmsgUsrError, "Missing offset!"); return (CMfailed); }
+			last->dat = argv[argPos];
 			last->attrib = NCnameVAAddOffset;
 			if((last = last->next = malloc(sizeof(VarNode_t))) == NULL)
-				{ CMmsgPrint (CMmsgSysError, "Memory allocation error in: %s %d",__FILE__,__LINE__); return(NCfailed); }
+                            { CMmsgPrint (CMmsgSysError, "Memory allocation error in: %s %d",__FILE__,__LINE__); return(NCfailed); }
 			last->dat = last->dat2 = (char *) NULL;
-			NCcmArgShiftLeft(argPos,argv,argc); argNum--;
-			NCcmArgShiftLeft(argPos,argv,argc); argNum--;
+			if ((argNum = CMargShiftLeft(argPos,argv,argc)) <= argPos) break;
 			continue;
 		}
-		if (NCcmArgTest(argv[argPos],"-s","--scalefactor"))
+		if (CMargTest(argv[argPos],"-s","--scalefactor"))
 		{
-			NCcmArgShiftLeft(argPos,argv,argc); argNum--;
-			if ((NCcmArgCheck(argv,argPos,argNum)) ||
-				 (NCcmArgCheck(argv,argPos + 1,argNum)))
+			CMargShiftLeft(argPos,argv,argc); argNum--;
+			if ((CMargCheck(argv,argPos,argNum)) ||
+				 (CMargCheck(argv,argPos + 1,argNum)))
 				{ CMmsgPrint (CMmsgUsrError,"Missing scale factor!"); return (NCfailed); }
 			last->text = false;
 			last->var = argv[argPos];
@@ -126,72 +168,72 @@ int main (int argc,char *argv [])
 			if((last = last->next = malloc(sizeof(VarNode_t))) == NULL)
 				{ CMmsgPrint (CMmsgSysError, "Memory allocation error in: %s %d",__FILE__,__LINE__); return(NCfailed); }
 			last->dat = last->dat2 = (char *) NULL;
-			NCcmArgShiftLeft(argPos,argv,argc); argNum--;
-			NCcmArgShiftLeft(argPos,argv,argc); argNum--;
+			CMargShiftLeft(argPos,argv,argc); argNum--;
+			CMargShiftLeft(argPos,argv,argc); argNum--;
 			continue;
 		}
-		if (NCcmArgTest(argv[argPos],"-t","--title"))
+		if (CMargTest(argv[argPos],"-t","--title"))
 		{
-			NCcmArgShiftLeft(argPos,argv,argc); argNum--;
-			if (NCcmArgCheck(argv,argPos,argNum)) { CMmsgPrint (CMmsgUsrError, "Missing Title!"); return (NCfailed); }
+			CMargShiftLeft(argPos,argv,argc); argNum--;
+			if (CMargCheck(argv,argPos,argNum)) { CMmsgPrint (CMmsgUsrError, "Missing Title!"); return (NCfailed); }
 			title = argv[argPos];
-			NCcmArgShiftLeft(argPos,argv,argc); argNum--;
+			CMargShiftLeft(argPos,argv,argc); argNum--;
 			continue;
 		}
-		if (NCcmArgTest(argv[argPos],"-y","--type"))
+		if (CMargTest(argv[argPos],"-y","--type"))
 		{
-			NCcmArgShiftLeft(argPos,argv,argc); argNum--;
-			if (NCcmArgCheck(argv,argPos,argNum)) { CMmsgPrint (CMmsgUsrError, "Missing Type!"); return (NCfailed); }
+			CMargShiftLeft(argPos,argv,argc); argNum--;
+			if (CMargCheck(argv,argPos,argNum)) { CMmsgPrint (CMmsgUsrError, "Missing Type!"); return (NCfailed); }
 			type = argv[argPos];
-			NCcmArgShiftLeft(argPos,argv,argc); argNum--;
+			CMargShiftLeft(argPos,argv,argc); argNum--;
 			continue;
 		}
-		if (NCcmArgTest(argv[argPos],"-d","--domain"))
+		if (CMargTest(argv[argPos],"-d","--domain"))
 		{
-			NCcmArgShiftLeft(argPos,argv,argc); argNum--;
-			if (NCcmArgCheck(argv,argPos,argNum)) { CMmsgPrint (CMmsgUsrError, "Missing Domain!"); return (NCfailed); }
+			CMargShiftLeft(argPos,argv,argc); argNum--;
+			if (CMargCheck(argv,argPos,argNum)) { CMmsgPrint (CMmsgUsrError, "Missing Domain!"); return (NCfailed); }
 			domain = argv[argPos];
-			NCcmArgShiftLeft(argPos,argv,argc); argNum--;
+			CMargShiftLeft(argPos,argv,argc); argNum--;
 			continue;
 		}
-		if (NCcmArgTest(argv[argPos],"-s","--subject"))
+		if (CMargTest(argv[argPos],"-s","--subject"))
 		{
-			NCcmArgShiftLeft(argPos,argv,argc); argNum--;
-			if (NCcmArgCheck(argv,argPos,argNum)) { CMmsgPrint (CMmsgUsrError, "Missing Subject!"); return (NCfailed); }
+			CMargShiftLeft(argPos,argv,argc); argNum--;
+			if (CMargCheck(argv,argPos,argNum)) { CMmsgPrint (CMmsgUsrError, "Missing Subject!"); return (NCfailed); }
 			subject = argv[argPos];
-			NCcmArgShiftLeft(argPos,argv,argc); argNum--;
+			CMargShiftLeft(argPos,argv,argc); argNum--;
 			continue;
 		}
-		if (NCcmArgTest(argv[argPos],"-r","--references"))
+		if (CMargTest(argv[argPos],"-r","--references"))
 		{
-			NCcmArgShiftLeft(argPos,argv,argc); argNum--;
-			if (NCcmArgCheck(argv,argPos,argNum)) { CMmsgPrint (CMmsgUsrError, "Missing References!"); return (NCfailed); }
+			CMargShiftLeft(argPos,argv,argc); argNum--;
+			if (CMargCheck(argv,argPos,argNum)) { CMmsgPrint (CMmsgUsrError, "Missing References!"); return (NCfailed); }
 			ref = argv[argPos];
-			NCcmArgShiftLeft(argPos,argv,argc); argNum--;
+			CMargShiftLeft(argPos,argv,argc); argNum--;
 			continue;
 		}
-		if (NCcmArgTest(argv[argPos],"-i","--institution"))
+		if (CMargTest(argv[argPos],"-i","--institution"))
 		{
-			NCcmArgShiftLeft(argPos,argv,argc); argNum--;
-			if (NCcmArgCheck(argv,argPos,argNum)) { CMmsgPrint (CMmsgUsrError, "Missing Institution!"); return (NCfailed); }
+			CMargShiftLeft(argPos,argv,argc); argNum--;
+			if (CMargCheck(argv,argPos,argNum)) { CMmsgPrint (CMmsgUsrError, "Missing Institution!"); return (NCfailed); }
 			inst = argv[argPos];
-			NCcmArgShiftLeft(argPos,argv,argc); argNum--;
+			CMargShiftLeft(argPos,argv,argc); argNum--;
 			continue;
 		}
-		if (NCcmArgTest(argv[argPos],"-s","--source"))
+		if (CMargTest(argv[argPos],"-s","--source"))
 		{
-			NCcmArgShiftLeft(argPos,argv,argc); argNum--;
-			if (NCcmArgCheck(argv,argPos,argNum)) { CMmsgPrint (CMmsgUsrError, "Missing Source!"); return (NCfailed); }
+			CMargShiftLeft(argPos,argv,argc); argNum--;
+			if (CMargCheck(argv,argPos,argNum)) { CMmsgPrint (CMmsgUsrError, "Missing Source!"); return (NCfailed); }
 			source = argv[argPos];
-			NCcmArgShiftLeft(argPos,argv,argc); argNum--;
+			CMargShiftLeft(argPos,argv,argc); argNum--;
 			continue;
 		}
-		if (NCcmArgTest(argv[argPos],"-c","--comments"))
+		if (CMargTest(argv[argPos],"-c","--comments"))
 		{
-			NCcmArgShiftLeft(argPos,argv,argc); argNum--;
-			if (NCcmArgCheck(argv,argPos,argNum)) { CMmsgPrint (CMmsgUsrError, "Missing Comment!"); return (NCfailed); }
+			CMargShiftLeft(argPos,argv,argc); argNum--;
+			if (CMargCheck(argv,argPos,argNum)) { CMmsgPrint (CMmsgUsrError, "Missing Comment!"); return (NCfailed); }
 			comments = argv[argPos];
-			NCcmArgShiftLeft(argPos,argv,argc); argNum--;
+			CMargShiftLeft(argPos,argv,argc); argNum--;
 			continue;
 		}
 		if ((argv[argPos][0] == '-') && (strlen (argv[argPos]) > 1))
@@ -201,7 +243,7 @@ int main (int argc,char *argv [])
 	last->next = (VarNode_t *) NULL;
 	if ((argNum > 1) && (strcmp(argv[1],"-") != 0)) {
 		if(nc_open(argv[1],NC_WRITE,&ncid) != NC_NOERR) { CMmsgPrint (CMmsgUsrError, "Error opening file: %s!",argv[1]); return (NCfailed); }
-	} else doHelp(0,NCcmProgName(argv[0]));
+	} else doHelp(CMprgName(argv[0]),1);
 	if(nc_redef(ncid) != NC_NOERR) { CMmsgPrint (CMmsgUsrError, "Cannot place into redef mode!"); return (NCfailed); }
 
 	last = head;
@@ -251,45 +293,4 @@ int main (int argc,char *argv [])
 
 	if(nc_close(ncid) != NC_NOERR) { CMmsgPrint (CMmsgUsrError, "Error commiting changes to file!"); return (NCfailed); }
 	return 0;
-}
-
-void doHelp(bool extend, char *progName) {
-	if(extend) {
-		CMmsgPrint (CMmsgUsrError, "Usage: %s [options] <filename>",progName);
-		CMmsgPrint (CMmsgUsrError, "Variable modifications:");
-		CMmsgPrint (CMmsgUsrError, " -l,--longname     [varname] [long_name]               => Change the extended name");
-		CMmsgPrint (CMmsgUsrError, " -n,--standardname [varname] [standard_name]           => Change the short name");
-		CMmsgPrint (CMmsgUsrError, " -U,--units        [varname] [units]                   => Change the units");
-		CMmsgPrint (CMmsgUsrError, " -v,--validrange   [varname] [valid_low] [valid_high]  => Change valid range of the variable");
-		CMmsgPrint (CMmsgUsrError, " -o,--offset       [varname] [offset]                  => Change offset of the variable");
-		CMmsgPrint (CMmsgUsrError, " -s,--scalefactor  [varname] [scale_factor]            => Change scale factor of the variable");
-		CMmsgPrint (CMmsgUsrError, "Attribute modifications:");
-		CMmsgPrint (CMmsgUsrError, " -t,--title        [title]         => Change the title of the NetCDF file");
-		CMmsgPrint (CMmsgUsrError, " -y,--datatype     [datatype]      => Change the datatype");
-		CMmsgPrint (CMmsgUsrError, " -d,--domain       [domain]        => Change the domain");
-		CMmsgPrint (CMmsgUsrError, " -u,--subject      [subject]       => Change the subject");
-		CMmsgPrint (CMmsgUsrError, " -r,--references   [references]    => Change the references");
-		CMmsgPrint (CMmsgUsrError, " -i,--institute    [institution]   => Change the institute");
-		CMmsgPrint (CMmsgUsrError, " -s,--source       [source]        => Change the source");
-		CMmsgPrint (CMmsgUsrError, " -c,--comments     [comments]      => Change the comments");
-	} else {
-		CMmsgPrint (CMmsgUsrError, "Usage: %s [options] <filename>",progName);
-		CMmsgPrint (CMmsgUsrError, "Variable modifications:");
-		CMmsgPrint (CMmsgUsrError, " -l,--longname     [varname] [long_name]");
-		CMmsgPrint (CMmsgUsrError, " -n,--standardname [varname] [standard_name]");
-		CMmsgPrint (CMmsgUsrError, " -U,--units        [varname] [units]");
-		CMmsgPrint (CMmsgUsrError, " -v,--validrange   [varname] [valid_low] [valid_high]");
-		CMmsgPrint (CMmsgUsrError, " -o,--offset       [varname] [offset]");
-		CMmsgPrint (CMmsgUsrError, " -s,--scalefactor  [varname] [scale_factor]");
-		CMmsgPrint (CMmsgUsrError, "Attribute modifications:");
-		CMmsgPrint (CMmsgUsrError, " -t,--title        [title]");
-		CMmsgPrint (CMmsgUsrError, " -y,--datatype     [datatype]");
-		CMmsgPrint (CMmsgUsrError, " -d,--domain       [domain]");
-		CMmsgPrint (CMmsgUsrError, " -u,--subject      [subject]");
-		CMmsgPrint (CMmsgUsrError, " -r,--references   [references]");
-		CMmsgPrint (CMmsgUsrError, " -i,--institute    [institution]");
-		CMmsgPrint (CMmsgUsrError, " -s,--source       [source]");
-		CMmsgPrint (CMmsgUsrError, " -c,--comments     [comments]");
-	}
-	exit(0);
 }

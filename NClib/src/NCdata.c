@@ -1,3 +1,4 @@
+#include <string.h>
 #include <cm.h>
 #include <NC.h>
 #include <NCnames.h>

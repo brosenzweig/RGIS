@@ -9,7 +9,7 @@
 
 enum { NONE = 0, HOUR = -1, DAY = -2, MONTH = -3, YEAR = -4 };
 
-void do_help(char *progName)
+static void doHelp(const char *progName)
 {
 	CMmsgPrint (CMmsgInfo, "Usage: %s [OPTIONS] \"<expression>\"",progName);
 	CMmsgPrint (CMmsgInfo, "  Flags:");
@@ -81,35 +81,40 @@ int main(int argc, char* argv[])
 	int argPos = 0, argNum = argc, interval = NONE, ncid = 0, *dimIDs = (int *) NULL;
 	NCdsHandle_t *dsHandle;
 
-	if(argNum == 1) { do_help(NCcmProgName(argv[0])); return (NCsucceeded); }
+	if(argNum == 1) { doHelp(CMprgName(argv[0])); return (NCsucceeded); }
 	if ((argNum == 2) && (argv[1][0] == '-'))
 	{
-		if (NCcmArgTest(argv[1],"-d","--debug")) SetDebug();
-		do_help(NCcmProgName(argv[0])); return (NCsucceeded);
+		if (CMargTest (argv[1],"-d","--debug")) SetDebug();
+		doHelp(CMprgName(argv[0])); return (NCsucceeded);
 	}
 	initMemInfo();
 	for(argPos = 1; argPos < argNum;)
 	{
-		if (NCcmArgTest(argv[argPos],"-d","--debug")) { SetDebug(); NCcmArgShiftLeft(argPos,argv,argc); argNum--; continue; }
-		if (NCcmArgTest(argv[argPos],"-h","--help")) { do_help(NCcmProgName(argv[0])); cleanup(NCsucceeded); }
-		if (NCcmArgTest(argv[argPos],"-f","--file"))
+		if (CMargTest(argv[argPos],"-d","--debug")) { SetDebug(); CMargShiftLeft(argPos,argv,argc); argNum--; continue; }
+		if (CMargTest(argv[argPos],"-h","--help")) { do_help(CMprgName(argv[0])); cleanup(NCsucceeded); }
+		if (CMargTest(argv[argPos],"-f","--file"))
 		{
-			NCcmArgShiftLeft(argPos,argv,argc); argNum--;
+			if ((argNum = CMargShiftLeft(argPos,argv,argc)) <= argPos)
+                            { CMmsgPrint (CMmsgUsrError,"Missing file!");  return (CMfailed); }
 			filename = argv[argPos];
-			NCcmArgShiftLeft(argPos,argv,argc); argNum--;
+			if ((argNum = CMargShiftLeft(argPos,argv,argc)) <= argPos) break;
 			continue;
 		}
-		if (NCcmArgTest(argv[argPos],"-r","--rename"))
+		if (CMargTest(argv[argPos],"-r","--rename"))
 		{
-			NCcmArgShiftLeft(argPos,argv,argc); argNum--;
+			if ((argNum = CMargShiftLeft(argPos,argv,argc)) <= argPos))
+                            { CMmsgPrint (CMmsgUsrError,"Missing name!");  return (CMfailed); }
+
 			if(rename == (char *) NULL) rename = argv[argPos];
 			else { CMmsgPrint (CMmsgUsrError, "Output field name defined twice!"); cleanup(NCfailed); }
-			NCcmArgShiftLeft(argPos,argv,argc); argNum--;
+			if ((argNum = CMargShiftLeft(argPos,argv,argc)) <= argPos) break;
 			continue;
 		}
-		if (NCcmArgTest(argv[argPos],"-s","--set"))
+		if (CMargTest(argv[argPos],"-s","--set"))
 		{
-			NCcmArgShiftLeft(argPos,argv,argc); argNum--;
+			if ((argNum = CMargShiftLeft(argPos,argv,argc)) <= argPos)
+                            { CMmsgPrint (CMmsgUsrError,"Time step!");  return (CMfailed); }
+
 			if(interval != NONE) { CMmsgPrint (CMmsgUsrError, "Interval already set!"); cleanup(NCfailed); }
 			if(NCmathIsNumber(argv[argPos])) interval = atoi(argv[argPos]);
 			else if (strcmp(argv[argPos],"hour") == 0) interval = HOUR;
@@ -117,10 +122,11 @@ int main(int argc, char* argv[])
 			else if (strcmp(argv[argPos],"month") == 0) interval = MONTH;
 			else if (strcmp(argv[argPos],"year") == 0) interval = YEAR;
 			else { CMmsgPrint (CMmsgUsrError, "Undefined time interval '%s'",argv[argPos]); cleanup(NCfailed); }
-			NCcmArgShiftLeft(argPos,argv,argc); argNum--;
+			if ((argNum = CMargShiftLeft(argPos,argv,argc)) <= argNum)
+                            { CMmsgPrint (CMmsgUsrError,"Missing variable!");  return (CMfailed); }
 			if(varname == (char *) NULL) varname = argv[argPos];
 			else { CMmsgPrint (CMmsgUsrError, "Input field name defined twice!"); cleanup(NCfailed); }
-			NCcmArgShiftLeft(argPos,argv,argc); argNum--;
+			if ((argNum = CMargShiftLeft(argPos,argv,argc)) <= argPos) break;
 			continue;
 		}
 		if ((argv[argPos][0] == '-') && (strlen (argv[argPos]) > 1))
@@ -133,7 +139,7 @@ int main(int argc, char* argv[])
 			{ CMmsgPrint (CMmsgAppError, "Error opening file: %s!",filename); return (NCfailed); }
 	} else if ((argNum > 1) && (strcmp(argv[1],"-") != 0)) {
 		if(nc_open(argv[1],NC_WRITE,&ncid) != NC_NOERR) { CMmsgPrint (CMmsgUsrError, "Error opening file: %s!",argv[1]); return (NCfailed); }
-	} else do_help(NCcmProgName(argv[0]));
+	} else doHelp(CMprgName(argv[0]));
 
 	dsHandle = NCdsHandleOpenById (ncid);
 /*	if((nc_inq_varid(ncid,varname,&inVar)) != NC_NOERR) { CMmsgPrint (CMmsgUsrError, "NC: Error getting varID!"); cleanup(NCfailed); }

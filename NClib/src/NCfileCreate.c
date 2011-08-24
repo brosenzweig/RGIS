@@ -1,5 +1,6 @@
-#include <cm.h>
+#include <string.h>
 #include <unistd.h>
+#include <cm.h>
 #include <NC.h>
 
 int NCfileCreate (char *fileName, int tplNCId)

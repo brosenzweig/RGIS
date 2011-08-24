@@ -1,5 +1,7 @@
+#include <string.h>
 #include <cm.h>
 #include <NCtable.h>
+#include <NCstdlib.h>
 
 void NCtableClose(NCtable_t *tbl)
 	{

@@ -1,5 +1,8 @@
+#include <string.h>
 #include <cm.h>
 #include <NCmathEqtn.h>
+#include <NCstdlib.h>
+#include <NCstring.h>
 
 // *** GLOBAL VARIABLES
 

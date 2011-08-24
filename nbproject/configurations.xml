@@ -152,7 +152,6 @@
       <df name="NClib" kind="SOURCE_LOGICAL_FOLDER">
         <df name="include" kind="SOURCE_LOGICAL_FOLDER">
           <in>NC.h</in>
-          <in>NCcm.h</in>
           <in>NCcore.h</in>
           <in>NCdsHandle.h</in>
           <in>NCmath.h</in>
@@ -168,7 +167,6 @@
         <df name="obj" kind="SOURCE_LOGICAL_FOLDER">
         </df>
         <df name="src" kind="SOURCE_LOGICAL_FOLDER">
-          <in>NCcmArgParse.c</in>
           <in>NCcoordinate.c</in>
           <in>NCdata.c</in>
           <in>NCdate.c</in>
@@ -1010,13 +1008,6 @@
             <pElem>MFlib/include</pElem>
             <pElem>CMlib/include</pElem>
           </incDir>
-          <preprocessorList>
-            <Elem>_GNU_SOURCE</Elem>
-          </preprocessorList>
-        </cTool>
-      </item>
-      <item path="NClib/src/NCcmArgParse.c" ex="true" tool="0">
-        <cTool>
           <preprocessorList>
             <Elem>_GNU_SOURCE</Elem>
           </preprocessorList>

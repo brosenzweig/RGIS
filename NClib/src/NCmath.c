@@ -1,4 +1,5 @@
-#include<NCmath.h>
+#include <string.h>
+#include <NCmath.h>
 
 static double _NCRadius = 6371.2213;
 static double _NCEpsilon =   0.000001;

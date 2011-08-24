@@ -1,3 +1,4 @@
+#include <string.h>
 #include <cm.h>
 #include <unistd.h>
 #include <NCdsHandle.h>
