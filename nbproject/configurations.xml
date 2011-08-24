@@ -8,6 +8,11 @@
         </df>
         <df name="lib">
         </df>
+        <df name="nbproject">
+          <in>Package-Default.bash</in>
+          <in>configurations.xml</in>
+          <in>project.xml</in>
+        </df>
         <df name="obj">
         </df>
         <df name="src">
@@ -114,6 +119,11 @@
           <in>MF.h</in>
         </df>
         <df name="lib">
+        </df>
+        <df name="nbproject">
+          <in>Package-Default.bash</in>
+          <in>configurations.xml</in>
+          <in>project.xml</in>
         </df>
         <df name="obj">
         </df>
@@ -465,6 +475,7 @@
               <pElem>/Users/ecr/balazs/NetBeans/RGIS/rCommands/include</pElem>
               <pElem>/Users/ecr/balazs/NetBeans/RGIS/rGIS/include</pElem>
               <pElem>/Users/ecr/balazs/NetBeans/RGIS/rgisPlot/include</pElem>
+              <pElem>/sw/include</pElem>
             </incDir>
           </cTool>
           <ccTool>
@@ -480,6 +491,7 @@
               <pElem>/Users/ecr/balazs/NetBeans/RGIS/rCommands/include</pElem>
               <pElem>/Users/ecr/balazs/NetBeans/RGIS/rGIS/include</pElem>
               <pElem>/Users/ecr/balazs/NetBeans/RGIS/rgisPlot/include</pElem>
+              <pElem>/sw/include</pElem>
             </incDir>
           </ccTool>
         </makeTool>
