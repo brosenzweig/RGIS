@@ -49,7 +49,7 @@ all: $(TARGET)
 clean:
 	rm $(TARGET) $(OBJS)
 
-$(TARGET): $(OBJS) $(SRC)/Makefile
+$(TARGET): $(OBJS) $(SRC)/makefile
 	$(UNIXAR) $(TARGET) $(OBJS)
 	$(UNIXRL) $(TARGET)
 

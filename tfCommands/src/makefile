@@ -37,9 +37,9 @@ uninstall:
 clean:
 	rm $(UTILS) $(OBJ)/*.o
 
-$(BIN)/%: $(SRC)/%.c $(INCLUDES) $(SRC)/Makefile
+$(BIN)/%: $(SRC)/%.c $(INCLUDES) $(SRC)/makefile
 	$(CC) -o $(OBJ)/$*.o -c $(SRC)/$*.c
 	$(LINKCC) $(OBJ)/$*.o $(LIBS) -o $(BIN)/$*
-$(BIN)/%: $(SRC)/%.C $(INCLUDES) $(SRC)/Makefile
+$(BIN)/%: $(SRC)/%.C $(INCLUDES) $(SRC)/makefile
 	$(CPP) -o $(OBJ)/$*.o -c $(SRC)/$*.C
 	$(LINKCPP) $(OBJ)/$*.o $(LIBS) -o $(BIN)/$*

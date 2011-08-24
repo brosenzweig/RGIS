@@ -107,6 +107,6 @@ uninstall:
 clean:
 	rm $(UTILS) $(OBJ)/CMD*.o
 
-$(BIN)/%: $(SRC)/CMD%.C $(INCLUDES) $(SRC)/Makefile
+$(BIN)/%: $(SRC)/CMD%.C $(INCLUDES) $(SRC)/makefile
 	$(CPP) -o $(OBJ)/CMD$*.o -c $(SRC)/CMD$*.C
 	$(LINK) $(OBJ)/CMD$*.o $(LIBS) -o $(BIN)/$*

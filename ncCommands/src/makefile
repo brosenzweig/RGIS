@@ -30,6 +30,6 @@ uninstall:
 clean:
 	rm $(UTILS) $(OBJ)/NC*.o
 
-$(BIN)/%: $(SRC)/NCC%.c $(INCLUDES) $(SRC)/Makefile
+$(BIN)/%: $(SRC)/NCC%.c $(INCLUDES) $(SRC)/makefile
 	$(CC) -o $(OBJ)/NCC$*.o -c $(SRC)/NCC$*.c
 	$(LINK) $(OBJ)/NCC$*.o $(LIBS) -o $(BIN)/$*
