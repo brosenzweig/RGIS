@@ -31,7 +31,7 @@ uninstall:
 clean:
 	rm $(BIN)/$(TARGET) $(OBJS)
 
-$(BIN)/$(TARGET): $(OBJS) $(SRC)/Makefile
+$(BIN)/$(TARGET): $(OBJS) $(SRC)/makefile
 	$(LINK) $(OBJS) $(LIBS) -o $(BIN)/$(TARGET)
 
 $(OBJ)/%.o: $(SRC)/%.C $(INCLUDES)
