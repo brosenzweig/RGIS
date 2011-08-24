@@ -1,3 +1,4 @@
+#include <string.h>
 #include <cm.h>
 #include <NC.h>
 
@@ -127,11 +128,11 @@ int main (int argc,char *argv [])
 			last->text = false;
 			last->var = argv[argPos];
 			if ((argNum = CMargShiftLeft(argPos,argv,argc)) <= argPos)
-                            { CMmsgPrint (CMmsgUsrError, "Missing upper range!"); return (CMfailed); }
-/			last->dat = argv[argPos + 1];
+				{ CMmsgPrint (CMmsgUsrError, "Missing upper range!"); return (CMfailed); }
+			last->dat = argv[argPos];
 			if ((argNum = CMargShiftLeft(argPos,argv,argc)) <= argPos)
-                            { CMmsgPrint (CMmsgUsrError, "Missing lower range!"); return (CMfailed); }
-			last->dat2 = argv[argPos + 2];
+				{ CMmsgPrint (CMmsgUsrError, "Missing lower range!"); return (CMfailed); }
+			last->dat2 = argv[argPos];
 			last->attrib = NCnameVAValidRange;
 			if((last = last->next = malloc(sizeof(VarNode_t))) == NULL)
 				{ CMmsgPrint (CMmsgSysError, "Memory allocation error in: %s %d",__FILE__,__LINE__); return(NCfailed); }
@@ -150,90 +151,89 @@ int main (int argc,char *argv [])
 			last->dat = argv[argPos];
 			last->attrib = NCnameVAAddOffset;
 			if((last = last->next = malloc(sizeof(VarNode_t))) == NULL)
-                            { CMmsgPrint (CMmsgSysError, "Memory allocation error in: %s %d",__FILE__,__LINE__); return(NCfailed); }
+                            { CMmsgPrint (CMmsgSysError, "Memory allocation error in: %s %d",__FILE__,__LINE__); return(CMfailed); }
 			last->dat = last->dat2 = (char *) NULL;
 			if ((argNum = CMargShiftLeft(argPos,argv,argc)) <= argPos) break;
 			continue;
 		}
 		if (CMargTest(argv[argPos],"-s","--scalefactor"))
 		{
-			CMargShiftLeft(argPos,argv,argc); argNum--;
-			if ((CMargCheck(argv,argPos,argNum)) ||
-				 (CMargCheck(argv,argPos + 1,argNum)))
-				{ CMmsgPrint (CMmsgUsrError,"Missing scale factor!"); return (NCfailed); }
+			if ((argNum = CMargShiftLeft(argPos,argv,argc)) <= argPos)
+				{ CMmsgPrint (CMmsgUsrError,"Missing variable!"); return (CMfailed); }
 			last->text = false;
 			last->var = argv[argPos];
-			last->dat = argv[argPos + 1];
+			if ((argNum = CMargShiftLeft(argPos,argv,argc)) <= argPos)
+				{ CMmsgPrint (CMmsgUsrError,"Missing scale factor!"); return (CMfailed); }
+			last->dat = argv[argPos];
 			last->attrib = NCnameVAScaleFactor;
 			if((last = last->next = malloc(sizeof(VarNode_t))) == NULL)
 				{ CMmsgPrint (CMmsgSysError, "Memory allocation error in: %s %d",__FILE__,__LINE__); return(NCfailed); }
 			last->dat = last->dat2 = (char *) NULL;
-			CMargShiftLeft(argPos,argv,argc); argNum--;
-			CMargShiftLeft(argPos,argv,argc); argNum--;
+			if ((argNum = CMargShiftLeft(argPos,argv,argc)) <= argPos) break;
 			continue;
 		}
 		if (CMargTest(argv[argPos],"-t","--title"))
 		{
-			CMargShiftLeft(argPos,argv,argc); argNum--;
-			if (CMargCheck(argv,argPos,argNum)) { CMmsgPrint (CMmsgUsrError, "Missing Title!"); return (NCfailed); }
+			if ((argNum = CMargShiftLeft(argPos,argv,argc)) <= argPos)
+				{ CMmsgPrint (CMmsgUsrError, "Missing Title!"); return (CMfailed); }
 			title = argv[argPos];
-			CMargShiftLeft(argPos,argv,argc); argNum--;
+			if ((argNum = CMargShiftLeft(argPos,argv,argc)) <= argPos) break;
 			continue;
 		}
 		if (CMargTest(argv[argPos],"-y","--type"))
 		{
-			CMargShiftLeft(argPos,argv,argc); argNum--;
-			if (CMargCheck(argv,argPos,argNum)) { CMmsgPrint (CMmsgUsrError, "Missing Type!"); return (NCfailed); }
+			if ((argNum = CMargShiftLeft(argPos,argv,argc)) <= argPos)
+				{ CMmsgPrint (CMmsgUsrError, "Missing Type!"); return (CMfailed); }
 			type = argv[argPos];
-			CMargShiftLeft(argPos,argv,argc); argNum--;
+			if ((argNum = CMargShiftLeft(argPos,argv,argc)) <= argPos) break;
 			continue;
 		}
 		if (CMargTest(argv[argPos],"-d","--domain"))
 		{
-			CMargShiftLeft(argPos,argv,argc); argNum--;
-			if (CMargCheck(argv,argPos,argNum)) { CMmsgPrint (CMmsgUsrError, "Missing Domain!"); return (NCfailed); }
+			if ((argNum = CMargShiftLeft(argPos,argv,argc)) <= argPos)
+				{ CMmsgPrint (CMmsgUsrError, "Missing Domain!"); return (CMfailed); }
 			domain = argv[argPos];
-			CMargShiftLeft(argPos,argv,argc); argNum--;
+			if ((argNum = CMargShiftLeft(argPos,argv,argc)) <= argPos) break;
 			continue;
 		}
 		if (CMargTest(argv[argPos],"-s","--subject"))
 		{
-			CMargShiftLeft(argPos,argv,argc); argNum--;
-			if (CMargCheck(argv,argPos,argNum)) { CMmsgPrint (CMmsgUsrError, "Missing Subject!"); return (NCfailed); }
+			if ((argNum = CMargShiftLeft(argPos,argv,argc)) <= argPos)
+				{ CMmsgPrint (CMmsgUsrError, "Missing Subject!"); return (CMfailed); }
 			subject = argv[argPos];
-			CMargShiftLeft(argPos,argv,argc); argNum--;
+			if ((argNum = CMargShiftLeft(argPos,argv,argc)) <= argPos) break;
 			continue;
 		}
 		if (CMargTest(argv[argPos],"-r","--references"))
 		{
-			CMargShiftLeft(argPos,argv,argc); argNum--;
-			if (CMargCheck(argv,argPos,argNum)) { CMmsgPrint (CMmsgUsrError, "Missing References!"); return (NCfailed); }
+			if ((argNum = CMargShiftLeft(argPos,argv,argc)) <= argPos)
+				{ CMmsgPrint (CMmsgUsrError, "Missing References!"); return (CMfailed); }
 			ref = argv[argPos];
-			CMargShiftLeft(argPos,argv,argc); argNum--;
+			if ((argNum = CMargShiftLeft(argPos,argv,argc)) <= argPos) break;
 			continue;
 		}
 		if (CMargTest(argv[argPos],"-i","--institution"))
 		{
-			CMargShiftLeft(argPos,argv,argc); argNum--;
-			if (CMargCheck(argv,argPos,argNum)) { CMmsgPrint (CMmsgUsrError, "Missing Institution!"); return (NCfailed); }
+			if ((argNum = CMargShiftLeft(argPos,argv,argc)) <= argPos)
+				{ CMmsgPrint (CMmsgUsrError, "Missing Institution!"); return (CMfailed); }
 			inst = argv[argPos];
-			CMargShiftLeft(argPos,argv,argc); argNum--;
+			if ((argNum = CMargShiftLeft(argPos,argv,argc)) <= argPos) break;
 			continue;
 		}
 		if (CMargTest(argv[argPos],"-s","--source"))
 		{
-			CMargShiftLeft(argPos,argv,argc); argNum--;
-			if (CMargCheck(argv,argPos,argNum)) { CMmsgPrint (CMmsgUsrError, "Missing Source!"); return (NCfailed); }
+			if ((argNum = CMargShiftLeft(argPos,argv,argc)) <= argPos)
+				{ CMmsgPrint (CMmsgUsrError, "Missing Source!"); return (CMfailed); }
 			source = argv[argPos];
-			CMargShiftLeft(argPos,argv,argc); argNum--;
+			if ((argNum = CMargShiftLeft(argPos,argv,argc)) <= argPos) break;
 			continue;
 		}
 		if (CMargTest(argv[argPos],"-c","--comments"))
 		{
-			CMargShiftLeft(argPos,argv,argc); argNum--;
-			if (CMargCheck(argv,argPos,argNum)) { CMmsgPrint (CMmsgUsrError, "Missing Comment!"); return (NCfailed); }
+			if ((argNum = CMargShiftLeft(argPos,argv,argc)) <= argPos)
+				{ CMmsgPrint (CMmsgUsrError, "Missing Comment!"); return (CMfailed); }
 			comments = argv[argPos];
-			CMargShiftLeft(argPos,argv,argc); argNum--;
+			if ((argNum = CMargShiftLeft(argPos,argv,argc)) <= argPos) break;
 			continue;
 		}
 		if ((argv[argPos][0] == '-') && (strlen (argv[argPos]) > 1))

@@ -1,7 +1,6 @@
 #include <cm.h>
 #include <netcdf.h>
 #include <NCcore.h>
-#include <NCcm.h>
 #include <NCstring.h>
 #include <NCstdlib.h>
 #include <NCmath.h>
@@ -91,7 +90,7 @@ int main(int argc, char* argv[])
 	for(argPos = 1; argPos < argNum;)
 	{
 		if (CMargTest(argv[argPos],"-d","--debug")) { SetDebug(); CMargShiftLeft(argPos,argv,argc); argNum--; continue; }
-		if (CMargTest(argv[argPos],"-h","--help")) { do_help(CMprgName(argv[0])); cleanup(NCsucceeded); }
+		if (CMargTest(argv[argPos],"-h","--help"))  { doHelp(CMprgName(argv[0])); cleanup(NCsucceeded); }
 		if (CMargTest(argv[argPos],"-f","--file"))
 		{
 			if ((argNum = CMargShiftLeft(argPos,argv,argc)) <= argPos)
@@ -102,8 +101,8 @@ int main(int argc, char* argv[])
 		}
 		if (CMargTest(argv[argPos],"-r","--rename"))
 		{
-			if ((argNum = CMargShiftLeft(argPos,argv,argc)) <= argPos))
-                            { CMmsgPrint (CMmsgUsrError,"Missing name!");  return (CMfailed); }
+			if ((argNum = CMargShiftLeft(argPos,argv,argc)) <= argPos)
+				{ CMmsgPrint (CMmsgUsrError,"Missing name!");  return (CMfailed); }
 
 			if(rename == (char *) NULL) rename = argv[argPos];
 			else { CMmsgPrint (CMmsgUsrError, "Output field name defined twice!"); cleanup(NCfailed); }

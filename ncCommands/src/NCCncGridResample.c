@@ -1,5 +1,6 @@
-#include <cm.h>
+#include <string.h>
 #include <unistd.h>
+#include <cm.h>
 #include <NC.h>
 #include <NCdsHandle.h>
 
@@ -13,60 +14,60 @@ int main (int argc,char *argv [])
 
 	for (argPos = 1;argPos < argNum; )
 	{
-		if (NCcmArgTest (argv [argPos],"-T","--template"))
+		if (CMargTest (argv [argPos],"-T","--template"))
 		{
-			NCcmArgShiftLeft (argPos,argv,argc); argNum--;
-			if (NCcmArgCheck(argv,argPos,argNum)) { CMmsgPrint (CMmsgUsrError, "Missing template!");		return (NCfailed); }
+			if ((argNum = CMargShiftLeft(argPos,argv,argc)) <= argPos)
+				{ CMmsgPrint (CMmsgUsrError, "Missing template!"); return (CMfailed); }
 			template  = argv [argPos];
-			NCcmArgShiftLeft (argPos,argv,argc); argNum--;
+			if ((argNum = CMargShiftLeft(argPos,argv,argc)) <= argPos) break;
 			continue;
 		}
-		if (NCcmArgTest (argv [argPos],"-h","--help"))
+		if (CMargTest (argv [argPos],"-h","--help"))
 		{
-			printf ("%s [options] <ncgis grid> <ncgis grid>", NCcmProgName(argv [0]));
+			printf ("%s [options] <ncgis grid> <ncgis grid>", CMprgName(argv [0]));
 			printf ("     -T,--template");
 			printf ("     -h,--help");
-			return (NCsucceeded);
+			return (CMsucceeded);
 		}
 		if ((argv [argPos][0] == '-') && (strlen (argv [argPos]) > 1))
 		{
 			CMmsgPrint (CMmsgUsrError, "Unknown option: %s!",argv [argPos]);
-			return (NCfailed);
+			return (CMfailed);
 		}
 		argPos++;
 	}
 	if (template == (char *) NULL)
-	{ CMmsgPrint (CMmsgUsrError, "%s: Missing template!",  NCcmProgName (argv [0])); return (NCfailed); }
+	{ CMmsgPrint (CMmsgUsrError, "%s: Missing template!",  CMprgName (argv [0])); return (CMfailed); }
 	if (argNum < 3)
-	{ CMmsgPrint (CMmsgUsrError, "%s: Too few arguments!", NCcmProgName (argv [0])); return (NCfailed); }
+	{ CMmsgPrint (CMmsgUsrError, "%s: Too few arguments!", CMprgName (argv [0])); return (CMfailed); }
 
 	if ((status = nc_open (argv [1], NC_NOWRITE, &sncid)) != NC_NOERR)
-	{ NCprintNCError (status,"main"); return (NCfailed); }
+	{ NCprintNCError (status,"main"); return (CMfailed); }
 
-	if ((dataType = NCdataGetType (sncid)) == NCfailed) { nc_close (sncid); return (NCfailed); }
+	if ((dataType = NCdataGetType (sncid)) == CMfailed) { nc_close (sncid); return (CMfailed); }
 	if ((dataType != NCtypeGCont) && (dataType != NCtypeGDisc))
 	{
-		CMmsgPrint (CMmsgUsrError, "%s: Non-grid input coverage!", NCcmProgName (argv [0]));
+		CMmsgPrint (CMmsgUsrError, "%s: Non-grid input coverage!", CMprgName (argv [0]));
 		nc_close (sncid);
-		return (NCfailed);
+		return (CMfailed);
 	}
 	if ((status = nc_open (template, NC_NOWRITE, &tncid)) != NC_NOERR)
 	{
 		NCprintNCError (status,"main");
 		nc_close (sncid);
-		return (NCfailed);
+		return (CMfailed);
 	}
-	if ((dataType = NCdataGetType (tncid)) == NCfailed)
-	{ nc_close (sncid); nc_close (sncid); return (NCfailed); }
+	if ((dataType = NCdataGetType (tncid)) == CMfailed)
+	{ nc_close (sncid); nc_close (sncid); return (CMfailed); }
 	if ((dataType != NCtypeGCont) && (dataType != NCtypeGDisc) && (dataType != NCtypeNetwork))
 	{
-		CMmsgPrint (CMmsgUsrError, "%s: Non-grid template coverage!", NCcmProgName (argv [0]));
+		CMmsgPrint (CMmsgUsrError, "%s: Non-grid template coverage!", CMprgName (argv [0]));
 		nc_close (sncid);
 		nc_close (tncid);
-		return (NCfailed);
+		return (CMfailed);
 	}
-	if ((dncid = NCfileCreate (argv [2],tncid)) == NCfailed)
-	{ nc_close (sncid); nc_close (tncid); return (NCfailed); }
+	if ((dncid = NCfileCreate (argv [2],tncid)) == CMfailed)
+	{ nc_close (sncid); nc_close (tncid); return (CMfailed); }
 
 	if ((title    == (char *) NULL) && 
 		 ((title   = NCdataGetTextAttribute (sncid,NC_GLOBAL,NCnameGATitle))   == (char *) NULL)) title   = "Undefined";
@@ -75,19 +76,19 @@ int main (int argc,char *argv [])
 	if ((domain   == (char *) NULL) && 
 		 ((domain  = NCdataGetTextAttribute (sncid,NC_GLOBAL,NCnameGADomain))  == (char *) NULL)) domain  = "Undefined";
 
-	if (NCdataSetTextAttribute (dncid,NC_GLOBAL,NCnameGATitle,  title)   == NCfailed)
-	{ nc_close (sncid); nc_close (tncid); nc_close (dncid); unlink (argv [2]); return (NCfailed); }
-	if (NCdataSetTextAttribute (dncid,NC_GLOBAL,NCnameGASubject,subject) == NCfailed)
-	{ nc_close (sncid); nc_close (tncid); nc_close (dncid); unlink (argv [2]); return (NCfailed); }
-	if (NCdataSetTextAttribute (dncid,NC_GLOBAL,NCnameGADomain, domain)  == NCfailed)
-	{ nc_close (sncid); nc_close (tncid); nc_close (dncid); unlink (argv [2]); return (NCfailed); }
+	if (NCdataSetTextAttribute (dncid,NC_GLOBAL,NCnameGATitle,  title)   == CMfailed)
+	{ nc_close (sncid); nc_close (tncid); nc_close (dncid); unlink (argv [2]); return (CMfailed); }
+	if (NCdataSetTextAttribute (dncid,NC_GLOBAL,NCnameGASubject,subject) == CMfailed)
+	{ nc_close (sncid); nc_close (tncid); nc_close (dncid); unlink (argv [2]); return (CMfailed); }
+	if (NCdataSetTextAttribute (dncid,NC_GLOBAL,NCnameGADomain, domain)  == CMfailed)
+	{ nc_close (sncid); nc_close (tncid); nc_close (dncid); unlink (argv [2]); return (CMfailed); }
 
-	if ((dvarid = NCfileVarClone (sncid, dncid)) == NCfailed) 
-	{ nc_close (sncid); nc_close (tncid); nc_close (dncid); unlink (argv [2]); return (NCfailed); }
+	if ((dvarid = NCfileVarClone (sncid, dncid)) == CMfailed) 
+	{ nc_close (sncid); nc_close (tncid); nc_close (dncid); unlink (argv [2]); return (CMfailed); }
 	ret = NCGridContSampling (sncid, dncid);
 	nc_close (sncid);
 	nc_close (tncid);
 	nc_close (dncid);
-	if (ret == NCfailed) unlink (argv [2]);
+	if (ret == CMfailed) unlink (argv [2]);
 	return (ret);
 }

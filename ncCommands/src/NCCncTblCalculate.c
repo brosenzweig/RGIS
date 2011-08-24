@@ -1,9 +1,11 @@
+#include <string.h>
+#include <stdio.h>
 #include <cm.h>
 #include <NCmathEqtn.h>
 #include <NCtable.h>
-#include <stdio.h>
+#include <NCstring.h>
 
-void do_help(char *progName)
+static void doHelp(const char *progName)
 {
 	CMmsgPrint (CMmsgUsrError, "Usage: %s [OPTIONS] \"<expression>\"",progName);
 	CMmsgPrint (CMmsgUsrError, "  Flags:");
@@ -90,8 +92,8 @@ int main(int argc, char* argv[])
 	int argPos = 0, argNum = argc;
 	double output = 0.0;
 
-	if(argNum == 1) { do_help(NCcmProgName(argv[0])); return (NCsucceeded); }
-	if ((argNum == 2) && (argv[1][0] == '-')) { if (NCcmArgTest(argv[1],"-d","--debug")) SetDebug(); do_help(NCcmProgName(argv[0])); return (NCsucceeded); }
+	if(argNum == 1) { doHelp(CMprgName(argv[0])); return (NCsucceeded); }
+	if ((argNum == 2) && (argv[1][0] == '-')) { if (CMargTest(argv[1],"-d","--debug")) SetDebug(); doHelp(CMprgName(argv[0])); return (NCsucceeded); }
 	inFile.fname = (char *) NULL;
 	inFile.ncTYPE = false;
 	inFile.file = (FILE *) NULL;
@@ -101,105 +103,115 @@ int main(int argc, char* argv[])
 	initMemInfo();
 	for(argPos = 1; argPos < argNum;)
 	{
-		if (NCcmArgTest(argv[argPos],"-d","--debug")) { SetDebug(); NCcmArgShiftLeft(argPos,argv,argc); argNum--; continue; }
-		if (NCcmArgTest(argv[argPos],"-l","--lisp")) { setLisp(); NCcmArgShiftLeft(argPos,argv,argc); argNum--; continue; }
-		if (NCcmArgTest(argv[argPos],"-h","--help")) { do_help(NCcmProgName(argv[0])); cleanup(NCsucceeded); }
-		if (NCcmArgTest(argv[argPos],"-t","--table"))
-		{
-			NCcmArgShiftLeft(argPos,argv,argc); argNum--;
-			if((inFile.ncTYPE != false) && (inFile.file != (FILE *) NULL)) { CMmsgPrint (CMmsgUsrError, "-t flag must precede -f flag!"); cleanup(NCfailed); }
+		if (CMargTest(argv[argPos],"-d","--debug")) { SetDebug(); if ((argNum = CMargShiftLeft(argPos,argv,argc)) <= argPos) break; else continue; }
+		if (CMargTest(argv[argPos],"-l","--lisp"))  { setLisp();  if ((argNum = CMargShiftLeft(argPos,argv,argc)) <= argPos) break; else continue; }
+		if (CMargTest(argv[argPos],"-h","--help"))  { doHelp(CMprgName(argv[0])); cleanup (CMsucceeded); }
+		if (CMargTest(argv[argPos],"-t","--table"))
+			{
+			if ((argNum = CMargShiftLeft(argPos,argv,argc)) <= argPos)
+				{ CMmsgPrint (CMmsgUsrError, "Missing table!"); cleanup(CMfailed); }
+			if((inFile.ncTYPE != false) && (inFile.file != (FILE *) NULL))
+				{ CMmsgPrint (CMmsgUsrError, "-t flag must precede -f flag!"); cleanup(CMfailed); }
 			tablename = argv[argPos];
-			NCcmArgShiftLeft(argPos,argv,argc); argNum--;
+			if ((argNum = CMargShiftLeft(argPos,argv,argc)) <= argPos) break;
 			continue;
-		}
-		if (NCcmArgTest(argv[argPos],"-f","--file"))
-		{
-			NCcmArgShiftLeft(argPos,argv,argc); argNum--;
-			if((inFile.ncTYPE != false) && (inFile.file != (FILE *) NULL)) { CMmsgPrint (CMmsgUsrError, "multiple -f flags!"); cleanup(NCfailed); }
+			}
+		if (CMargTest(argv[argPos],"-f","--file"))
+			{
+			if ((argNum = CMargShiftLeft(argPos,argv,argc)) <= argPos)
+				{ CMmsgPrint (CMmsgUsrError, "Missing file!"); cleanup(CMfailed); }
+			if((inFile.ncTYPE != false) && (inFile.file != (FILE *) NULL)) { CMmsgPrint (CMmsgUsrError, "multiple -f flags!"); cleanup(CMfailed); }
 			inFile.fname = argv[argPos];
 			if(nc_open(inFile.fname,NC_WRITE,&i) == NC_NOERR)
-			{
+				{
 				inFile.ncTYPE = true;
 				inFile.ncid = i;
 				if((inFile.tbl = NCtableOpen(i,tablename)) == (NCtable_t *) NULL)
-					{ CMmsgPrint (CMmsgUsrError, "Error encountered!"); cleanup(NCfailed); }
-			} else if((inFile.file = fopen(inFile.fname,"r")) != (FILE *) NULL)
-			{
+					{ CMmsgPrint (CMmsgUsrError, "Error encountered!"); cleanup(CMfailed); }
+				}
+			else if((inFile.file = fopen(inFile.fname,"r")) != (FILE *) NULL)
+				{
 				inFile.ncTYPE = false;
 				inFile.curRow = (char *) NULL;
 				inFile.curRow = CMbufGetLine(inFile.curRow,&i,inFile.file);
-				if (inFile.curRow == (char *) NULL) { CMmsgPrint (CMmsgUsrError, "Empty File '%s'",inFile.fname); cleanup(NCfailed); }
+				if (inFile.curRow == (char *) NULL) { CMmsgPrint (CMmsgUsrError, "Empty File '%s'",inFile.fname); cleanup(CMfailed); }
 				else { i = strlen(inFile.curRow); (inFile.curRow)[i - 1] = '\0'; }
 				inFile.row = (char **) NULL;
 				inFile.numCol = NCstringTokenize(inFile.curRow, &(inFile.row),'\t');
-			} else { CMmsgPrint (CMmsgUsrError, "Cannot open file '%s'!",inFile.fname); cleanup(NCfailed); }
-			NCcmArgShiftLeft(argPos,argv,argc); argNum--;
+				}
+			else { CMmsgPrint (CMmsgUsrError, "Cannot open file '%s'!",inFile.fname); cleanup(CMfailed); }
+			if ((argNum = CMargShiftLeft(argPos,argv,argc)) <= argPos) break;
 			continue;
 		}
-		if (NCcmArgTest(argv[argPos],"-o","--output"))
+		if (CMargTest(argv[argPos],"-o","--output"))
 		{
-			NCcmArgShiftLeft(argPos,argv,argc); argNum--;
+			if ((argNum = CMargShiftLeft(argPos,argv,argc)) <= argPos)
+				{ CMmsgPrint (CMmsgUsrError, "Missing output!"); cleanup(CMfailed); }
 			if(strcmp(argv[argPos],"-") == 0) outFile = stdout;
 			else if ((outFile = fopen(argv[argPos],"w")) == (FILE *) NULL)
-				{ CMmsgPrint (CMmsgUsrError, "Error opening file '%s' for writing!",argv[argPos]); cleanup(NCfailed); }
-			NCcmArgShiftLeft(argPos,argv,argc); argNum--;
+				{ CMmsgPrint (CMmsgUsrError, "Error opening file '%s' for writing!",argv[argPos]); cleanup(CMfailed); }
+			if ((argNum = CMargShiftLeft(argPos,argv,argc)) <= argPos) break;
 			continue;
 		}
 		argPos++;
 	}
 	if((inFile.ncTYPE == false) && (outFile == (FILE *) NULL)) outFile = stdout;
 	for(argPos = 1; argPos < argNum;) {
-		if (NCcmArgTest(argv[argPos],"-v","--variable"))
+		if (CMargTest(argv[argPos],"-v","--variable"))
 		{ // constant variable
-			if(NCstringMatch(argv[argPos + 1],0,"VAR")) { CMmsgPrint (CMmsgUsrError, "Variable names cannot start with 'VAR'!"); cleanup(NCfailed); }
-			NCcmArgShiftLeft(argPos,argv,argc); argNum--;
+			if ((argNum = CMargShiftLeft(argPos,argv,argc)) <= argPos)
+				{ CMmsgPrint (CMmsgUsrError, "Missing variable!"); cleanup(CMfailed); }
+			if(NCstringMatch(argv[argPos],0,"VAR"))
+				{ CMmsgPrint (CMmsgUsrError, "Variable names cannot start with 'VAR'!"); cleanup(CMfailed); }
 			i = strlen(argv[argPos]);
 			for(j = 0; (j < i) && (argv[argPos][j] != '='); j++);
 			name = NCstringSubstr(argv[argPos],0,j - 1);
 			tmp = NCstringSubstr(argv[argPos],j + 1,i);
-			if((k = NCmathAddVar(-1,name,false)) == NCfailed) cleanup(NCfailed);
+			if((k = NCmathAddVar(-1,name,false)) == CMfailed) cleanup(CMfailed);
 			if(NCmathIsNumber(tmp)) NCmathSetVarVal(k,atof(tmp));
-			else { CMmsgPrint (CMmsgUsrError, "%s is not a <double>!",tmp); cleanup(NCfailed); }
+			else { CMmsgPrint (CMmsgUsrError, "%s is not a <double>!",tmp); cleanup(CMfailed); }
 			free(tmp);
 			free(name);
-			NCcmArgShiftLeft(argPos,argv,argc); argNum--;
+			if ((argNum = CMargShiftLeft(argPos,argv,argc)) <= argPos) break;
 			continue;
 		}
-		if (NCcmArgTest(argv[argPos],"-e","--expression"))
+		if (CMargTest(argv[argPos],"-e","--expression"))
 		{
-			NCcmArgShiftLeft(argPos,argv,argc); argNum--;
-			if(input != (char *) NULL) { CMmsgPrint (CMmsgUsrError, "Expression defined twice!"); cleanup(NCfailed); }
+			if ((argNum = CMargShiftLeft(argPos,argv,argc)) <= argPos)
+				{ CMmsgPrint (CMmsgUsrError, "Missing expression!"); cleanup(CMfailed); }
+			if(input != (char *) NULL) { CMmsgPrint (CMmsgUsrError, "Expression defined twice!"); cleanup(CMfailed); }
 			if((input = malloc((strlen(argv[argPos]) + 1) * sizeof(char))) == NULL)
-				{ CMmsgPrint (CMmsgSysError, "Memory Allocation error in: %s %d",__FILE__,__LINE__); cleanup(NCfailed); }
+				{ CMmsgPrint (CMmsgSysError, "Memory Allocation error in: %s %d",__FILE__,__LINE__); cleanup(CMfailed); }
 			strcpy(input,argv[argPos]);
-			NCcmArgShiftLeft(argPos,argv,argc); argNum--;
+			if ((argNum = CMargShiftLeft(argPos,argv,argc)) <= argPos) break;
 			continue;
 		}
-		if (NCcmArgTest(argv[argPos],"-r","--rename"))
+		if (CMargTest(argv[argPos],"-r","--rename"))
 		{
-			NCcmArgShiftLeft(argPos,argv,argc); argNum--;
+			if ((argNum = CMargShiftLeft(argPos,argv,argc)) <= argPos)
+				{ CMmsgPrint (CMmsgUsrError, "Missing name!"); cleanup(CMfailed); }
 			if(fieldname == (char *) NULL)
 			{
 				if((fieldname = malloc(sizeof(char) * (strlen(argv[argPos]) + 1))) == NULL)
-					{ CMmsgPrint (CMmsgSysError, "Memory Allocation error in: %s %d",__FILE__,__LINE__); cleanup(NCfailed); }
+					{ CMmsgPrint (CMmsgSysError, "Memory Allocation error in: %s %d",__FILE__,__LINE__); cleanup(CMfailed); }
 				strcpy(fieldname,argv[argPos]);
 			}
-			else { CMmsgPrint (CMmsgUsrError, "Output field name defined twice!"); cleanup(NCfailed); }
-			NCcmArgShiftLeft(argPos,argv,argc); argNum--;
+			else { CMmsgPrint (CMmsgUsrError, "Output field name defined twice!"); cleanup(CMfailed); }
+			if ((argNum = CMargShiftLeft(argPos,argv,argc)) <= argPos) break;
 			continue;
 		}
 		if ((argv[argPos][0] == '-') && (strlen (argv[argPos]) > 1))
-			{ CMmsgPrint (CMmsgUsrError, "Unknown option: %s!",argv[argPos]); cleanup(NCfailed); }
+			{ CMmsgPrint (CMmsgUsrError, "Unknown option: %s!",argv[argPos]); cleanup(CMfailed); }
 		// if nothing else it must be an equation
 		if(input == (char *) NULL) {
 			if((input = malloc((strlen(argv[argPos]) + 1) * sizeof(char))) == NULL)
-			 { CMmsgPrint (CMmsgSysError, "Memory Allocation error in: %s %d",__FILE__,__LINE__); cleanup(NCfailed); }
+			 { CMmsgPrint (CMmsgSysError, "Memory Allocation error in: %s %d",__FILE__,__LINE__); cleanup(CMfailed); }
 			strcpy(input,argv[argPos]);
-			NCcmArgShiftLeft(argPos,argv,argc); argNum--;
+			if ((argNum = CMargShiftLeft(argPos,argv,argc)) <= argPos) break;
 			continue;
 		}
 		CMmsgPrint (CMmsgUsrError, "Unknown option: %s!",argv[argPos]);
-		cleanup(NCfailed);
+		cleanup(CMfailed);
 //		argPos++;
 	}
 
@@ -207,8 +219,8 @@ int main(int argc, char* argv[])
 	if(input == (char *) NULL)
 	{
 		CMmsgPrint (CMmsgUsrError, "Missing <expression>");
-		do_help(NCcmProgName(argv[0]));
-		cleanup(NCfailed);
+		doHelp(CMprgName(argv[0]));
+		cleanup(CMfailed);
 /*		CMmsgPrint (CMmsgUsrError, "<expression> =? ");
 		CMbufGetLine(&input,&inLen,stdin);
 		cons++;
@@ -222,7 +234,7 @@ int main(int argc, char* argv[])
 	if(fieldname == (char *) NULL)
 	{
 		if((fieldname = malloc(sizeof(char) * (strlen("Results") + 1))) == NULL)
-			{ CMmsgPrint (CMmsgSysError, "Memory Allocation error in: %s %d",__FILE__,__LINE__); cleanup(NCfailed); }
+			{ CMmsgPrint (CMmsgSysError, "Memory Allocation error in: %s %d",__FILE__,__LINE__); cleanup(CMfailed); }
 		strcpy(fieldname,"Results");
 	}
 	while(i < strlen(input))
@@ -238,21 +250,21 @@ int main(int argc, char* argv[])
 					if(strcmp(((inFile.tbl)->Fields)[k].Name,tmp) == 0)
 					{
 						if(colnum != -1)
-							{ CMmsgPrint (CMmsgUsrError, "Multiple matches for column '%s'!",tmp); free(tmp); free(input); cleanup(NCfailed); }
+							{ CMmsgPrint (CMmsgUsrError, "Multiple matches for column '%s'!",tmp); free(tmp); free(input); cleanup(CMfailed); }
 						colnum = k;
 					}
 				if(colnum == -1) { 
-					if(!NCstringUnStripch(&tmp,'"')) { free(tmp); free(input); cleanup(NCfailed); }
+					if(!NCstringUnStripch(&tmp,'"')) { free(tmp); free(input); cleanup(CMfailed); }
 					for(k = 0; k < (inFile.tbl)->NFields; k++)
 						if(strcmp(((inFile.tbl)->Fields)[k].Name,tmp) == 0)
 						{
 							if(colnum != -1)
-								{ printf("Multiple matches for column '%s'!",tmp); free(tmp); free(input); cleanup(NCfailed); }
+								{ printf("Multiple matches for column '%s'!",tmp); free(tmp); free(input); cleanup(CMfailed); }
 							colnum = k;
 						}
-					if(colnum == -1) { CMmsgPrint (CMmsgUsrError, "Missing column '%s'!",tmp); free(tmp); free(input); cleanup(NCfailed); }
+					if(colnum == -1) { CMmsgPrint (CMmsgUsrError, "Missing column '%s'!",tmp); free(tmp); free(input); cleanup(CMfailed); }
 				}
-			} else if(inFile.file == (FILE *) NULL) { CMmsgPrint (CMmsgUsrError, "No input file given!"); cleanup(NCfailed);
+			} else if(inFile.file == (FILE *) NULL) { CMmsgPrint (CMmsgUsrError, "No input file given!"); cleanup(CMfailed);
 			} else
 			{
 				colnum = -1;
@@ -260,34 +272,34 @@ int main(int argc, char* argv[])
 					if(strcmp((inFile.row)[k],tmp) == 0)
 					{
 						if(colnum != -1)
-							{ CMmsgPrint (CMmsgUsrError, "Multiple matches for column '%s'!",tmp); free(tmp); free(input); cleanup(NCfailed); }
+							{ CMmsgPrint (CMmsgUsrError, "Multiple matches for column '%s'!",tmp); free(tmp); free(input); cleanup(CMfailed); }
 						colnum = k;
 					}
 				if(colnum == -1)
 				{
-					if(!NCstringUnStripch(&tmp,'"')) { free(tmp); free(input); cleanup(NCfailed); }
+					if(!NCstringUnStripch(&tmp,'"')) { free(tmp); free(input); cleanup(CMfailed); }
 					for(k = 0; k < inFile.numCol; k++)
 						if(strcmp((inFile.row)[k],tmp) == 0)
 						{
 							if(colnum != -1)
-								{ CMmsgPrint (CMmsgUsrError, "Multiple matches for column '%s'!",tmp); free(tmp); free(input); cleanup(NCfailed); }
+								{ CMmsgPrint (CMmsgUsrError, "Multiple matches for column '%s'!",tmp); free(tmp); free(input); cleanup(CMfailed); }
 							colnum = k;
 						}
-					if(colnum == -1) { CMmsgPrint (CMmsgUsrError, "Missing column '%s'!",tmp); free(tmp); free(input); cleanup(NCfailed); }
+					if(colnum == -1) { CMmsgPrint (CMmsgUsrError, "Missing column '%s'!",tmp); free(tmp); free(input); cleanup(CMfailed); }
 				}
 			}
 			free(tmp);
 			if((name = malloc(sizeof(char) * 6)) == NULL)
-				{ CMmsgPrint (CMmsgSysError, "Memory Allocation error in: %s %d",__FILE__,__LINE__); cleanup(NCfailed); }
+				{ CMmsgPrint (CMmsgSysError, "Memory Allocation error in: %s %d",__FILE__,__LINE__); cleanup(CMfailed); }
 			strcpy(name,"VAR");
-			if((tmp = malloc(sizeof(char) * 3)) == NULL) { CMmsgPrint (CMmsgSysError, "Memory Allocation error in: %s %d",__FILE__,__LINE__); cleanup(NCfailed); }
+			if((tmp = malloc(sizeof(char) * 3)) == NULL) { CMmsgPrint (CMmsgSysError, "Memory Allocation error in: %s %d",__FILE__,__LINE__); cleanup(CMfailed); }
 			sprintf(tmp,"%.2d",NCmathGetVarNum() + 1);
 			tmp[2] = '\0';
 			strcat(name,tmp);
 			free(tmp);
 			name[5] = '\0';
 			NCstringReplace(&input,i,j+1,name);
-			if(NCmathAddVar(colnum,name,true) == NCfailed) cleanup(NCfailed);
+			if(NCmathAddVar(colnum,name,true) == CMfailed) cleanup(CMfailed);
 			free(name);
 			i = i + 6;
 		}
@@ -361,7 +373,7 @@ int main(int argc, char* argv[])
 			free(inFile.curRow);
 			inFile.curRow = (char *) NULL;
 			if ((inFile.curRow = CMbufGetLine(inFile.curRow,&i,inFile.file)) == (char *) NULL) break;
-//			if (inFile.curRow == (char *) NULL) { CMmsgPrint (CMmsgUsrError, "Unexpected end of file!"); cleanup(NCfailed); }
+//			if (inFile.curRow == (char *) NULL) { CMmsgPrint (CMmsgUsrError, "Unexpected end of file!"); cleanup(CMfailed); }
 			else
 			{
 				i = strlen(inFile.curRow);
