@@ -14,7 +14,6 @@ LIBS   = -L../../CMlib/lib\
          -L../../DBlib/lib\
          -L../../RGlib/lib -lRG22 -lDB22 -lMF10 -lCM10 $(UNIXLIBS)
 
-
 INCLUDES = $(INC)/CMDexp.H
 
 UTILS = $(BIN)/dsAggregate\
