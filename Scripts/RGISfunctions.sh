@@ -26,136 +26,139 @@ function RGISlookupSubject ()
 		(cloud_cover)                               #  6
 			echo "CloudCover"
 		;;
-		(cropping_intensity)                        #  7
+		(continents)                                #  7
+			echo "Continents"
+		;;
+		(cropping_intensity)                        #  8
 			echo "Crops-Intensity"
 		;;
-		(daily_precipitation_fraction)              #  8
+		(daily_precipitation_fraction)              #  9
 			echo "Precipitation-DailyFraction"
 		;;
-		(din_areal_loading)                         #  9
+		(din_areal_loading)                         # 10
 			echo "DIN-AreaLoading"
 		;;
-		(din_point_loading)                         # 10
+		(din_point_loading)                         # 11
 			echo "DIN-PointLoading"
 		;;
-		(discharge)                                 # 11
+		(discharge)                                 # 12
 			echo "Discharge"
 		;;
-		(doc_areal_loading)                         # 12
+		(doc_areal_loading)                         # 13
 			echo "DOC-ArealLoading"
 		;;
-		(doc_point_loading)                         # 13
+		(doc_point_loading)                         # 14
 			echo "DOC-PointLoading"
 		;;
-		(don_areal_loading)                         # 14
+		(don_areal_loading)                         # 15
 			echo "DON-ArealLoading"
 		;;
-		(don_point_loading)                         # 15
+		(don_point_loading)                         # 16
 			echo "DON-PointLoading"
 		;;
-		(elevation)                                 # 16
+		(elevation)                                 # 17
 			echo "Elevation"
 		;;
-		(min_elevation)                             # 17
+		(min_elevation)                             # 18
 			echo "Elevation-Min"
 		;;
-		(max_elevation)                             # 18
+		(max_elevation)                             # 19
 			echo "Elevation-Max"
 		;;
-		(field_capacity)                            # 19
+		(field_capacity)                            # 20 
 			echo "Soil-FieldCapacity"
 		;;
-		(growing_season1)                           # 20
+		(growing_season1)                           # 21
 			echo "Crops-GrowingSeason1"
 		;;
-		(growing_season2)                           # 21
+		(growing_season2)                           # 22
 			echo "Crops-GrowingSeason2"
 		;;
-		(irrigated_area_fraction)                   # 22
+		(irrigated_area_fraction)                   # 23
 			echo "Irrigation-AreaFraction"
 		;;
-		(irrigation_efficiency)                     # 23
+		(irrigation_efficiency)                     # 24
 			echo "Irrigation-Efficiency"
 		;;
-		(irrigation_gross_demand)                   # 24
+		(irrigation_gross_demand)                   # 25
 			echo "IrrGrossDemand"
 		;;
-		(network)                                   # 25
+		(network)                                   # 26
 			echo "Network"
 		;;
-		(n_litterfall)                              # 26
+		(n_litterfall)                              # 27
 			echo "N-LitterFall"
 		;;
-		(nh4_areal_loading)                         # 27
+		(nh4_areal_loading)                         # 28
 			echo "NH4-ArealLoading"
 		;;
-		(nh4_point_loading)                         # 28
+		(nh4_point_loading)                         # 29
 			echo "Nh4-PointLoading"
 		;;
-		(no3_areal_loading)                         # 29
+		(no3_areal_loading)                         # 30
 			echo "NO3-ArealLoading"
 		;;
-		(no3_point_loading)                         # 30
+		(no3_point_loading)                         # 31
 			echo "NO3-PointLoading"
 		;;
-		(other_crop_fraction)                       # 31
+		(other_crop_fraction)                       # 32
 			echo "CropFraction-Other"
 		;;
-		(perennial_crop_fraction)                   # 32
+		(perennial_crop_fraction)                   # 33
 			echo "CropFraction-Perennial"
 		;;
-		(population)								        # 33
+		(population)								        # 34
 			echo "Population"
 		;;
-		(population_density)								  # 34
+		(population_density)								  # 35
 			echo "Population-Density"
 		;;
-		(population-rural)                          # 35
+		(population-rural)                          # 36
 			echo "Population-Rural"
 		;;
-		(population-urban)                          # 36
+		(population-urban)                          # 37
 			echo "Population-Urban"
 		;;
-		(precipitation)                             # 37
+		(precipitation)                             # 38
 			echo "Precipitation"
 		;;
-		(rain_pet)                                  # 38
+		(rain_pet)                                  # 39
 			echo "RainPET"
 		;;
-		(reservoir_capacity)                        # 39
+		(reservoir_capacity)                        # 40
 			echo "Reservoir-Capacity"
 		;;
-		(rice_crop_fraction)                        # 40
+		(rice_crop_fraction)                        # 41
 			echo "CropFraction-Rice"
 		;;
-		(rice_percolation_rate)                     # 41
+		(rice_percolation_rate)                     # 42
 			echo "Crops-RicePercolationRate"
 		;;
-		(rooting_depth)                             # 42
+		(rooting_depth)                             # 43
 			echo "Soil-RootingDepth"
 		;;
-		(runoff)                                    # 43
+		(runoff)                                    # 44
 			echo "Runoff"
 		;;
-		(small_reservoir_coefficient)               # 44
+		(small_reservoir_coefficient)               # 45
 			echo "SmallReservoir-Coefficient"
 		;;
-		(soil_moisture)                             # 45
+		(soil_moisture)                             # 46
 			echo "SoilMoisture"
 		;;
-		(soil_moisture_change)                      # 46
+		(soil_moisture_change)                      # 47
 			echo "SoilMoistureChange"
 		;;
-		(vapor_pressure)                            # 47
+		(vapor_pressure)                            # 48
 			echo "VaporPressure"
 		;;
-		(vegetables_crop_fraction)                  # 48
+		(vegetables_crop_fraction)                  # 49
 			echo "CropFraction-Vegetables"
 		;;
-		(wilting_point)                             # 49
+		(wilting_point)                             # 50
 			echo "Soil-WiltingPoint"
 		;;
-		(wind_speed)                                # 50
+		(wind_speed)                                # 51
 			echo "WindSpeed"
 		;;
 		(*)
@@ -192,136 +195,139 @@ function _RGISlookupFullName ()
 		(cloud_cover)                               #  6
 			echo "Cloud Cover"
 		;;
-		(cropping_intensity)                        #  7
+		(continents)                                #  7
+			echo "Continents"
+		;;
+		(cropping_intensity)                        #  8
 			echo "Cropping Intensity"
 		;;
-		(din_areal_loading)                         #  8
+		(din_areal_loading)                         #  9
 			echo "DIN Areal Loading"
 		;;
-		(din_point_loading)                         #  9
+		(din_point_loading)                         # 10 
 			echo "DIN Point Loading"
 		;;
-		(discharge)                                 # 10
+		(discharge)                                 # 11
 			echo "Discharge"
 		;;
-		(don_areal_loading)                         # 11
+		(don_areal_loading)                         # 12
 			echo "DON Areal Loading"
 		;;
-		(doc_point_loading)                         # 12
+		(doc_point_loading)                         # 13
 			echo "DOC Point Loading"
 		;;
-		(doc_areal_loading)                         # 13
+		(doc_areal_loading)                         # 14
 			echo "DOC Areal Loading"
 		;;
-		(don_point_loading)                         # 14
+		(don_point_loading)                         # 15
 			echo "DON Point Loading"
 		;;
-		(daily_precipitation_fraction)              # 15
+		(daily_precipitation_fraction)              # 16
 			echo "Daily Precipitation Fraction"
 		;;
-		(elevation)                                 # 16
+		(elevation)                                 # 17
 			echo "Elevation"
 		;;
-		(max_elevation)                             # 17
+		(max_elevation)                             # 18
 			echo "Maximum Elevation"
 		;;
-		(min_elevation)                             # 18
+		(min_elevation)                             # 19
 			echo "Minimum Elevation"
 		;;
-		(field_capacity)                            # 19
+		(field_capacity)                            # 20
 			echo "Field Capacity"
 		;;
-		(growing_season1)                           # 20 
+		(growing_season1)                           # 21 
 			echo "Growing Season 1"
 		;;
-		(growing_season2)                           # 21
+		(growing_season2)                           # 22
 			echo "Growing Season 2"
 		;;
-		(irrigated_area_fraction)                   # 22 
+		(irrigated_area_fraction)                   # 23 
 			echo "Irrigated Area Fraction"
 		;;
-		(irrigation_efficiency)                     # 23 
+		(irrigation_efficiency)                     # 24 
 			echo "Irrigation Efficiency"
 		;;
-		(irrigation_gross_demand)                   # 24
+		(irrigation_gross_demand)                   # 25
 			echo "Irrigation Gross Demand"
 		;;
-		(network)                                   # 25
+		(network)                                   # 26
 			echo "STNetwork"
 		;;
-		(n_litterfall)                              # 26
+		(n_litterfall)                              # 27
 			echo "N LitterFall"
 		;;
-		(nh4_areal_loading)                         # 27
+		(nh4_areal_loading)                         # 28
 			echo "NH4 Areal Loading"
 		;;
-		(nh4_point_loading)                         # 28
+		(nh4_point_loading)                         # 29
 			echo "NH4 Point Loading"
 		;;
-		(no3_areal_loading)                         # 29
+		(no3_areal_loading)                         # 30
 			echo "NO3 Areal Loading"
 		;;
-		(no3_point_loading)                         # 30
+		(no3_point_loading)                         # 31
 			echo "NO3 Point Loading"
 		;;
-		(other_crop_fraction)                       # 31
+		(other_crop_fraction)                       # 32
 			echo "Other Crop Fraction"
 		;;
-		(perennial_crop_fraction)                   # 32
+		(perennial_crop_fraction)                   # 33
 			echo "Perennial Crop Fraction"
 		;;
-		(population)								        # 33
+		(population)								        # 34
 			echo "Population"
 		;;
-		(population_density)     	                 # 34
+		(population_density)     	                 # 35
 			echo "Population Density"
 		;;
-		(population-rural)                          # 35
+		(population-rural)                          # 36
 			echo "Rural Population"
 		;;
-		(population-urban)                          # 36
+		(population-urban)                          # 37
 			echo "Urban Population"
 		;;
-		(precipitation)                             # 37
+		(precipitation)                             # 38
 			echo "Precipitation"
 		;;
-		(rain_pet)                                  # 38
+		(rain_pet)                                  # 39
 			echo "Rain Potential ET"
 		;;
-		(reservoir_capacity)                        # 39
+		(reservoir_capacity)                        # 40
 			echo "Reservoir Capacity"
 		;;
-		(rice_crop_fraction)                        # 40
+		(rice_crop_fraction)                        # 41
 			echo "Rice Crop Fraction"
 		;;
-		(rice_percolation_rate)                     # 41
+		(rice_percolation_rate)                     # 42
 			echo "Rice Percolation Rate"
 		;;
-		(rooting_depth)                             # 42
+		(rooting_depth)                             # 43
 			echo "Rooting Depth"
 		;;
-		(runoff)                                    # 43
+		(runoff)                                    # 44
 			echo "Runoff"
 		;;
-		(small_reservoir_coefficient)               # 44
+		(small_reservoir_coefficient)               # 45
 			echo "Small-reservoir Coefficient"
 		;;
-		(soil_moisture)                             # 45
+		(soil_moisture)                             # 46
 			echo "Soil Moisture"
 		;;
-		(soil_moisture_change)                      # 46
+		(soil_moisture_change)                      # 47
 			echo "Soil Moisture Change"
 		;;
-		(vapor_pressure)                            # 47
+		(vapor_pressure)                            # 48
 			echo "Vapor Pressure"
 		;;
-		(vegetables_crop_fraction)                  # 48
+		(vegetables_crop_fraction)                  # 49
 			echo "Vegetables Crop Fraction"
 		;;
-		(wilting_point)                             # 49
+		(wilting_point)                             # 50
 			echo "Wilting Point"
 		;;
-		(wind_speed)                                # 50
+		(wind_speed)                                # 51
 			echo "Wind Speed"
 		;;
 		(*)
@@ -351,130 +357,133 @@ function RGISlookupShadeset ()
 		(cloud_cover)                               #  6
 			echo "grey"
 		;;
-		(cropping_intensity)                        #  7
+		(continents)                                #  7
 			echo "grey"
 		;;
-		(daily_precipitation_fraction)              #  8
+		(cropping_intensity)                        #  8
 			echo "grey"
 		;;
-		(din_areal_loading)                         #  9
+		(daily_precipitation_fraction)              #  9
 			echo "grey"
 		;;
-		(din_point_loading)                         # 10
+		(din_areal_loading)                         # 10
 			echo "grey"
 		;;
-		(discharge)                                 # 11
+		(din_point_loading)                         # 11
+			echo "grey"
+		;;
+		(discharge)                                 # 12
 			echo "blue"
 		;;
-		(don_areal_loading)                         # 12
+		(don_areal_loading)                         # 13
 			echo "grey"
 		;;
-		(don_point_loading)                         # 13
+		(don_point_loading)                         # 14
 			echo "grey"
 		;;
-		(doc_areal_loading)                         # 14
+		(doc_areal_loading)                         # 15
 			echo "grey"
 		;;
-		(doc_point_loading)                         # 15
+		(doc_point_loading)                         # 16
 			echo "grey"
 		;;
-		(elevation|max_elevation|min_elevation)     # 16 17 18
+		(elevation|max_elevation|min_elevation)     # 17 18 19
 			echo "elevation"
 		;;
-		(field_capacity)                            # 19
+		(field_capacity)                            # 20
 			echo "grey"
 		;;
-		(growing_season1)                           # 20 
+		(growing_season1)                           # 21 
 			echo "grey"
 		;;
-		(growing_season2)                           # 21
+		(growing_season2)                           # 22
 			echo "grey"
 		;;
-		(irrigated_area_fraction)                   # 22
+		(irrigated_area_fraction)                   # 23
 			echo "grey"
 		;;
-		(irrigation_efficiency)                     # 23
+		(irrigation_efficiency)                     # 24
 			echo "grey"
 		;;
-		(irrigation_gross_demand)                   # 24
+		(irrigation_gross_demand)                   # 25
 			echo "grey"
 		;;
-		(network)                                   # 25
+		(network)                                   # 26
 			echo "grey"
 		;;
-		(n_litterfall)                              # 26
+		(n_litterfall)                              # 27
 			echo "grey"
 		;;
-		(nh4_areal_loading)                         # 27
+		(nh4_areal_loading)                         # 28
 			echo "grey"
 		;;
-		(nh4_point_loading)                         # 28
+		(nh4_point_loading)                         # 29
 			echo "grey"
 		;;
-		(no3_areal_loading)                         # 29
+		(no3_areal_loading)                         # 30
 			echo "grey"
 		;;
-		(no3_point_loading)                         # 30
+		(no3_point_loading)                         # 31
 			echo "grey"
 		;;
-		(other_crop_fraction)                       # 31
+		(other_crop_fraction)                       # 32
 			echo "grey"
 		;;
-		(perennial_crop_fraction)                   # 32
+		(perennial_crop_fraction)                   # 33
 			echo "grey"
 		;;
-		(population)                                # 33
+		(population)                                # 34
 			echo "grey"
 		;;
-		(population_density)                        # 34
+		(population_density)                        # 35
 			echo "grey"
 		;;
-		(population-rural)                          # 35
+		(population-rural)                          # 36
 			echo "grey"
 		;;
-		(population-urban)                          # 36
+		(population-urban)                          # 37
 			echo "grey"
 		;;
-		(precipitation)                             # 37
+		(precipitation)                             # 38
 			echo "blue"
 		;;
-		(rain_pet)                                  # 38
+		(rain_pet)                                  # 39
 			echo "grey"
 		;;
-		(reservoir_capacity)                        # 39
+		(reservoir_capacity)                        # 40
 			echo "grey"
 		;;
-		(rice_crop_fraction)                        # 40
+		(rice_crop_fraction)                        # 41
 			echo "grey"
 		;;
-		(rice_percolation_rate)                     # 41
+		(rice_percolation_rate)                     # 42
 			echo "grey"
 		;;
-		(rooting_depth)                             # 42
+		(rooting_depth)                             # 43
 			echo "grey"
 		;;
-		(runoff)                                    # 43
+		(runoff)                                    # 44
 			echo "blue"
 		;;
-		(small_reservoir_coefficient)               # 44
+		(small_reservoir_coefficient)               # 45
 			echo "grey"
 		;;
-		(soil_moisture)                             # 45
+		(soil_moisture)                             # 46
 			echo "grey"
 		;;
-		(soil_moisture_change)                      # 46
+		(soil_moisture_change)                      # 47
 			echo "blue-to-red"
 		;;
-		(vapor_pressure)                            # 47
+		(vapor_pressure)                            # 48
 			echo "blue"
 		;;
-		(vegetables_crop_fraction)                  # 48
+		(vegetables_crop_fraction)                  # 49
 			echo "grey"
 		;;
-		(wilting_point)                             # 49
+		(wilting_point)                             # 50
 			echo "grey"
 		;;
-		(wind_speed)                                # 50
+		(wind_speed)                                # 51
 			echo "grey"
 		;;
 		(*)
@@ -504,130 +513,133 @@ function RGISlookupAggrMethod ()
 		(cloud_cover)                               #  6
 			echo "avg"
 		;;
-		(cropping_intensity)                        #  7
+		(continents)                                #  7
+			echo "N/A"
+		;;
+		(cropping_intensity)                        #  8
 			echo "avg"
 		;;
-		(daily_precipitation_fraction)              #  8
+		(daily_precipitation_fraction)              #  9
 			echo "avg"
 		;;
-		(din_areal_loading)                         #  9
+		(din_areal_loading)                         # 10 
 			echo "sum"
 		;;
-		(din_point_loading)                         # 10
+		(din_point_loading)                         # 11
 			echo "sum"
 		;;
-		(discharge)                                 # 11
+		(discharge)                                 # 12
 			echo "avg"
 		;;
-		(don_areal_loading)                         # 12
+		(don_areal_loading)                         # 13
 			echo "sum"
 		;;
-		(don_point_loading)                         # 13
+		(don_point_loading)                         # 14
 			echo "sum"
 		;;
-		(doc_areal_loading)                         # 14
+		(doc_areal_loading)                         # 15
 			echo "sum"
 		;;
-		(doc_point_loading)                         # 15
+		(doc_point_loading)                         # 16
 			echo "sum"
 		;;
-		(elevation|max_elevation|min_elevation)     # 16 17 18 
+		(elevation|max_elevation|min_elevation)     # 17 18 19 
 			echo "avg"
 		;;
-		(field_capacity)                            # 19
+		(field_capacity)                            # 20
 			echo "avg"
 		;;
-		(growing_season1)                           # 20
+		(growing_season1)                           # 21
 			echo "avg"
 		;;
-		(growing_season2)                           # 21
+		(growing_season2)                           # 22
 			echo "avg"
 		;;
-		(irrigated_area_fraction)                   # 22
+		(irrigated_area_fraction)                   # 23
 			echo "avg"
 		;;
-		(irrigation_efficiency)                     # 23
+		(irrigation_efficiency)                     # 24
 			echo "avg"
 		;;
-		(irrigation_gross_demand)                   # 24
+		(irrigation_gross_demand)                   # 25
 			echo "sum"
 		;;
-		(network)                                   # 25
+		(network)                                   # 26
 			echo "avg"
 		;;
-		(n_litterfall)                              # 26
+		(n_litterfall)                              # 27
 			echo "sum"
 		;;
-		(nh4_areal_loading)                         # 27
+		(nh4_areal_loading)                         # 28
 			echo "sum"
 		;;
-		(nh4_point_loading)                         # 28
+		(nh4_point_loading)                         # 29
 			echo "sum"
 		;;
-		(no3_areal_loading)                         # 29
+		(no3_areal_loading)                         # 30
 			echo "sum"
 		;;
-		(no3_point_loading)                         # 30
+		(no3_point_loading)                         # 31
 			echo "sum"
 		;;
-		(other_crop_fraction)                       # 31
+		(other_crop_fraction)                       # 32
 			echo "avg"
 		;;
-		(perennial_crop_fraction)                   # 32
+		(perennial_crop_fraction)                   # 33
 			echo "avg"
 		;;
-		(population)                                # 33
+		(population)                                # 34
 			echo "avg"
 		;;
-		(population_density)                        # 34
+		(population_density)                        # 35
 			echo "avg"
 		;;
-		(population-rural)                          # 35
+		(population-rural)                          # 36
 			echo "avg"
 		;;
-		(population-urban)                          # 36
+		(population-urban)                          # 37
 			echo "avg"
 		;;
-		(precipitation)                             # 37
+		(precipitation)                             # 38
 			echo "sum"
 		;;
-		(rain_pet)                                  # 38
+		(rain_pet)                                  # 39
 			echo "sum"
 		;;
-		(reservoir_capacity)                        # 39
+		(reservoir_capacity)                        # 40
 			echo "avg"
 		;;
-		(rice_crop_fraction)                        # 40
+		(rice_crop_fraction)                        # 41
 			echo "avg"
 		;;
-		(rice_percolation_rate)                     # 41
+		(rice_percolation_rate)                     # 42
 			echo "avg"
 		;;
-		(rooting_depth)                             # 42
+		(rooting_depth)                             # 43
 			echo "avg"
 		;;
-		(runoff)                                    # 43
+		(runoff)                                    # 44
 			echo "sum"
 		;;
-		(small_reservoir_coefficient)               # 44
+		(small_reservoir_coefficient)               # 45
 			echo "avg"
 		;;
-		(soil_moisture)                             # 45
+		(soil_moisture)                             # 46
 			echo "avg"
 		;;
-		(soil_moisture_change)                      # 46
+		(soil_moisture_change)                      # 47
 			echo "avg"
 		;;
-		(vapor_pressure)                            # 47
+		(vapor_pressure)                            # 48
 			echo "avg"
 		;;
-		(vegetables_crop_fraction)                  # 48
+		(vegetables_crop_fraction)                  # 49
 			echo "avg"
 		;;
-		(wilting_point)                             # 49
+		(wilting_point)                             # 50
 			echo "avg"
 		;;
-		(wind_speed)                                # 50
+		(wind_speed)                                # 51
 			echo "avg"
 		;;
 		(*)
