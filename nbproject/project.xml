@@ -4,9 +4,9 @@
     <configuration>
         <data xmlns="http://www.netbeans.org/ns/make-project/1">
             <name>RGIS</name>
-            <c-extensions/>
+            <c-extensions>c</c-extensions>
             <cpp-extensions>C</cpp-extensions>
-            <header-extensions>h</header-extensions>
+            <header-extensions>H,h</header-extensions>
             <sourceEncoding>UTF-8</sourceEncoding>
             <make-dep-projects/>
             <sourceRootList>

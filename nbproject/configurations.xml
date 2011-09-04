@@ -471,34 +471,34 @@
           <executablePath></executablePath>
           <cTool>
             <incDir>
-              <pElem>/Users/ecr/balazs/NetBeans/RGIS/CMlib/include</pElem>
-              <pElem>/Users/ecr/balazs/NetBeans/RGIS/DBlib/include</pElem>
-              <pElem>/Users/ecr/balazs/NetBeans/RGIS/Flib/include</pElem>
-              <pElem>/Users/ecr/balazs/NetBeans/RGIS/MFlib/include</pElem>
-              <pElem>/Users/ecr/balazs/NetBeans/RGIS/NClib/include</pElem>
-              <pElem>/Users/ecr/balazs/NetBeans/RGIS/RGlib/include</pElem>
-              <pElem>/Users/ecr/balazs/NetBeans/RGIS/UIlib/include</pElem>
-              <pElem>/Users/ecr/balazs/NetBeans/RGIS/ncCommands/include</pElem>
-              <pElem>/Users/ecr/balazs/NetBeans/RGIS/rCommands/include</pElem>
-              <pElem>/Users/ecr/balazs/NetBeans/RGIS/rGIS/include</pElem>
-              <pElem>/Users/ecr/balazs/NetBeans/RGIS/rgisPlot/include</pElem>
+              <pElem>CMlib/include</pElem>
+              <pElem>DBlib/include</pElem>
+              <pElem>Flib/include</pElem>
+              <pElem>MFlib/include</pElem>
+              <pElem>NClib/include</pElem>
+              <pElem>RGlib/include</pElem>
+              <pElem>UIlib/include</pElem>
+              <pElem>ncCommands/include</pElem>
+              <pElem>rCommands/include</pElem>
+              <pElem>rGIS/include</pElem>
+              <pElem>rgisPlot/include</pElem>
               <pElem>/sw/include</pElem>
               <pElem>/sw/lib/pgplot</pElem>
             </incDir>
           </cTool>
           <ccTool>
             <incDir>
-              <pElem>/Users/ecr/balazs/NetBeans/RGIS/CMlib/include</pElem>
-              <pElem>/Users/ecr/balazs/NetBeans/RGIS/DBlib/include</pElem>
-              <pElem>/Users/ecr/balazs/NetBeans/RGIS/Flib/include</pElem>
-              <pElem>/Users/ecr/balazs/NetBeans/RGIS/MFlib/include</pElem>
-              <pElem>/Users/ecr/balazs/NetBeans/RGIS/NClib/include</pElem>
-              <pElem>/Users/ecr/balazs/NetBeans/RGIS/RGlib/include</pElem>
-              <pElem>/Users/ecr/balazs/NetBeans/RGIS/UIlib/include</pElem>
-              <pElem>/Users/ecr/balazs/NetBeans/RGIS/ncCommands/include</pElem>
-              <pElem>/Users/ecr/balazs/NetBeans/RGIS/rCommands/include</pElem>
-              <pElem>/Users/ecr/balazs/NetBeans/RGIS/rGIS/include</pElem>
-              <pElem>/Users/ecr/balazs/NetBeans/RGIS/rgisPlot/include</pElem>
+              <pElem>CMlib/include</pElem>
+              <pElem>DBlib/include</pElem>
+              <pElem>Flib/include</pElem>
+              <pElem>MFlib/include</pElem>
+              <pElem>NClib/include</pElem>
+              <pElem>RGlib/include</pElem>
+              <pElem>UIlib/include</pElem>
+              <pElem>ncCommands/include</pElem>
+              <pElem>rCommands/include</pElem>
+              <pElem>rGIS/include</pElem>
+              <pElem>rgisPlot/include</pElem>
               <pElem>/sw/include</pElem>
               <pElem>/sw/lib/pgplot</pElem>
             </incDir>
