@@ -461,6 +461,7 @@ DBObjData *DBGridMerge (DBObjData *grd0Data, DBObjData *grd1Data)
 				}
 			break;
 		case DBTypeGridDiscrete:
+         // TODO
 			break;
 		default:
          if ((retData = new DBObjData (grd0Data->Name (),DBTypeNetwork)) == (DBObjData *) NULL)
