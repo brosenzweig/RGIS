@@ -19,23 +19,6 @@
           <in>cmThreads.c</in>
         </df>
       </df>
-      <df name="cmlib">
-        <df name="include">
-          <in>cm.h</in>
-        </df>
-        <df name="lib">
-        </df>
-        <df name="obj">
-        </df>
-        <df name="src">
-          <in>cmArgParse.c</in>
-          <in>cmBuffer.c</in>
-          <in>cmMath.c</in>
-          <in>cmMessage.c</in>
-          <in>cmString.c</in>
-          <in>cmThreads.c</in>
-        </df>
-      </df>
       <df name="DBlib">
         <df name="include">
           <in>DB.H</in>
