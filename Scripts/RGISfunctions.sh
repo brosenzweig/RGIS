@@ -992,6 +992,9 @@ function RGISfile ()
 		(network)
 			local extension="gdbn"
 		;;
+		(continents)
+			local extension="gdbd"
+		;;
 		(*)
 			local extension="gdbc"
 		;;
