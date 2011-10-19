@@ -17,8 +17,8 @@ DBObjTable *_DBCreateDataBlockSymbols ()
 	{
 	DBTableFieldDefinition fieldDefs [] =
 		{	DBTableFieldDefinition (DBrNSymbolID,		DBTableFieldInt,      (char *) "%2d", sizeof (DBShort)),
-			DBTableFieldDefinition (DBrNForeground,	    DBTableFieldInt,      (char *) "%2d", sizeof (DBShort)),
-			DBTableFieldDefinition (DBrNBackground,	    DBTableFieldInt,      (char *) "%2d", sizeof (DBShort)),
+			DBTableFieldDefinition (DBrNForeground,   DBTableFieldInt,      (char *) "%2d", sizeof (DBShort)),
+			DBTableFieldDefinition (DBrNBackground,   DBTableFieldInt,      (char *) "%2d", sizeof (DBShort)),
 			DBTableFieldDefinition (DBrNStyle,			DBTableFieldInt,      (char *) "%2d", sizeof (DBShort)),
 			DBTableFieldDefinition () };
 	return (new DBObjTable (DBrNSymbols,fieldDefs));
@@ -97,7 +97,7 @@ DBObjTable *_DBCreateDataBlockNetBasins ()
 	{
 	DBTableFieldDefinition fieldDefs [] =
 		{	DBTableFieldDefinition (DBrNMouthPos,		DBTableFieldPosition,DBHiddenField,     sizeof (DBPosition),true),
-			DBTableFieldDefinition (DBrNBasinOrder,     DBTableFieldInt,     (char *) "%2d",    sizeof (DBByte),true),
+			DBTableFieldDefinition (DBrNBasinOrder,   DBTableFieldInt,     (char *) "%2d",    sizeof (DBByte),true),
 			DBTableFieldDefinition (DBrNColor,			DBTableFieldInt,     (char *) "%2d",    sizeof (DBInt),true),
 			DBTableFieldDefinition (DBrNSymbol,			DBTableFieldTableRec,DBHiddenField,	    sizeof (DBAddress),true),
 			DBTableFieldDefinition (DBrNBasinLength,	DBTableFieldFloat,   (char *) "%10.1f", sizeof (DBFloat4),true),
@@ -110,7 +110,7 @@ DBObjTable *_DBCreateDataBlockNetCells ()
 
 	{
 	DBTableFieldDefinition fieldDefs [] =
-		{	DBTableFieldDefinition (DBrNPosition,       DBTableFieldPosition,DBHiddenField,	    sizeof (DBPosition),true),
+		{	DBTableFieldDefinition (DBrNPosition,       DBTableFieldPosition,DBHiddenField,	   sizeof (DBPosition),true),
 			DBTableFieldDefinition (DBrNToCell,         DBTableFieldInt,     (char *) "%2X",    sizeof (DBByte),true),
 			DBTableFieldDefinition (DBrNFromCell,       DBTableFieldInt,     (char *) "%2X",    sizeof (DBByte),true),
 			DBTableFieldDefinition (DBrNOrder,          DBTableFieldInt,     (char *) "%2d",    sizeof (DBByte),true),
@@ -130,13 +130,13 @@ DBObjTable *_DBCreateDataBlockGridLayers ()
 
 	{
 	DBTableFieldDefinition fieldDefs [] =
-		{	DBTableFieldDefinition (DBrNRowNum,			DBTableFieldInt,        (char *) "%6d",   sizeof (DBInt),true),
-			DBTableFieldDefinition (DBrNColNum,			DBTableFieldInt,        (char *) "%6d",   sizeof (DBInt),true),
-			DBTableFieldDefinition (DBrNValueType,		DBTableFieldInt,        (char *) "%1d",   sizeof (DBByte),true),
-			DBTableFieldDefinition (DBrNValueSize,		DBTableFieldInt,        (char *) "%1d",   sizeof (DBByte),true),
-			DBTableFieldDefinition (DBrNCellWidth,		DBTableFieldFloat,      (char *) "%8.3f", sizeof (DBFloat),true),
-			DBTableFieldDefinition (DBrNCellHeight,	    DBTableFieldFloat,	    (char *) "%8.3f", sizeof (DBFloat),true),
-			DBTableFieldDefinition (DBrNLayer,			DBTableFieldDataRec,	DBHiddenField,	  sizeof (DBAddress),true),
+		{	DBTableFieldDefinition (DBrNRowNum,			DBTableFieldInt,     (char *) "%6d",   sizeof (DBInt),    true),
+			DBTableFieldDefinition (DBrNColNum,			DBTableFieldInt,     (char *) "%6d",   sizeof (DBInt),    true),
+			DBTableFieldDefinition (DBrNValueType,		DBTableFieldInt,     (char *) "%1d",   sizeof (DBByte),   true),
+			DBTableFieldDefinition (DBrNValueSize,		DBTableFieldInt,     (char *) "%1d",   sizeof (DBByte),   true),
+			DBTableFieldDefinition (DBrNCellWidth,		DBTableFieldFloat,   (char *) "%8.3f", sizeof (DBFloat),  true),
+			DBTableFieldDefinition (DBrNCellHeight,   DBTableFieldFloat,   (char *) "%8.3f", sizeof (DBFloat),  true),
+			DBTableFieldDefinition (DBrNLayer,			DBTableFieldDataRec,	DBHiddenField,    sizeof (DBAddress),true),
 			DBTableFieldDefinition () };
 	return (new DBObjTable (DBrNLayers,fieldDefs));
 	}
@@ -149,7 +149,7 @@ DBObjTable *_DBCreateDataBlockGridVariableStats ()
 			DBTableFieldDefinition (DBrNMaximum,		DBTableFieldFloat,      (char *) "%10.3f", sizeof (DBFloat),true),
 			DBTableFieldDefinition (DBrNAverage,		DBTableFieldFloat,      (char *) "%10.3f", sizeof (DBFloat),true),
 			DBTableFieldDefinition (DBrNStdDev,			DBTableFieldFloat,      (char *) "%10.3f", sizeof (DBFloat),true),
-			DBTableFieldDefinition (DBrNMissingValue,	DBTableFieldFloat,	     DBHiddenField,    sizeof (DBFloat),true),
+			DBTableFieldDefinition (DBrNMissingValue,	DBTableFieldFloat,	   DBHiddenField,     sizeof (DBFloat),true),
 			DBTableFieldDefinition () };
 	return (new DBObjTable (DBrNItems,fieldDefs));
 	}
@@ -160,8 +160,8 @@ DBObjTable *_DBCreateDataBlockGridCategoryTable ()
 	DBTableFieldDefinition fieldDefs [] =
 		{	DBTableFieldDefinition (DBrNGridValue,		DBTableFieldInt,        (char *) "%3d",    sizeof (DBInt),    true),
 			DBTableFieldDefinition (DBrNSymbol,			DBTableFieldTableRec,   DBHiddenField,     sizeof (DBAddress),true),
-			DBTableFieldDefinition (DBrNGridArea,       DBTableFieldFloat,      (char *) "%10.f",  sizeof (DBFloat),  true),
-			DBTableFieldDefinition (DBrNGridPercent,    DBTableFieldFloat,      (char *) "%5.2f",  sizeof (DBFloat),  true),
+			DBTableFieldDefinition (DBrNGridArea,     DBTableFieldFloat,      (char *) "%10.f",  sizeof (DBFloat),  true),
+			DBTableFieldDefinition (DBrNGridPercent,  DBTableFieldFloat,      (char *) "%5.2f",  sizeof (DBFloat),  true),
 			DBTableFieldDefinition () };
 	return (new DBObjTable (DBrNItems,fieldDefs));
 	}
@@ -170,7 +170,7 @@ DBObjTable *_DBCreateDataBlockRelateTable ()
 
 	{
 	DBTableFieldDefinition fieldDefs [] =
-		{	DBTableFieldDefinition (DBrNRelateData,		 DBTableFieldString,   (char *) "%s", DBDataNameLen,  true),
+		{	DBTableFieldDefinition (DBrNRelateData,      DBTableFieldString,   (char *) "%s", DBDataNameLen,  true),
 			DBTableFieldDefinition (DBrNRelateField,     DBTableFieldString,   (char *) "%s", DBStringLength, true),
 			DBTableFieldDefinition (DBrNRelateJoinField, DBTableFieldString,   (char *) "%s", DBStringLength, true),
 			DBTableFieldDefinition () };

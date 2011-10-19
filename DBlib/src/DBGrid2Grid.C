@@ -153,8 +153,8 @@ DBObjData *DBGridCreate (char *title,DBRegion extent,DBCoordinate cellSize,DBInt
 	if ((type & DBTypeGrid) != DBTypeGrid)
 		{ CMmsgPrint (CMmsgAppError, "Invalid data type in: %s %d",__FILE__,__LINE__); return ((DBObjData *) NULL); }
 
-	colNum = (DBShort) ceil ((extent.UpperRight.X - extent.LowerLeft.X) / cellSize.X);
-	rowNum = (DBShort) ceil ((extent.UpperRight.Y - extent.LowerLeft.Y) / cellSize.Y);
+	colNum = (DBInt) ceil ((extent.UpperRight.X - extent.LowerLeft.X) / cellSize.X);
+	rowNum = (DBInt) ceil ((extent.UpperRight.Y - extent.LowerLeft.Y) / cellSize.Y);
 	extent.UpperRight.X = extent.LowerLeft.X + (DBFloat) colNum * cellSize.X;
 	extent.UpperRight.Y = extent.LowerLeft.Y + (DBFloat) rowNum * cellSize.Y;
 
@@ -361,7 +361,7 @@ DBObjData *DBGridMerge (DBObjData *grd0Data, DBObjData *grd1Data)
 		grd0IF = new DBGridIF (grd0Data);
 		grd1IF = new DBGridIF (grd1Data);
 
-		cellSize.X  = grd0IF->CellWidth  ();
+		cellSize.X = grd0IF->CellWidth  ();
 		cellSize.Y = grd0IF->CellHeight ();
 		if ((CMmathEqualValues (cellSize.X, grd1IF->CellWidth  ()) == false) ||
 		    (CMmathEqualValues (cellSize.Y, grd1IF->CellHeight ()) == false))
