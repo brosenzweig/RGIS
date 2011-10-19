@@ -582,13 +582,13 @@ class DBObjRecord : public DBObject
 	public:
 		DBObjRecord () : DBObject ("",sizeof (DBObjRecord))
 			{ LengthVAR = 0; ItemSizeVAR = 0; DataPTR = (DBAddress) NULL; }
-		DBObjRecord (const char *name,DBUnsigned length,DBInt itemSize) : DBObject (name,sizeof (DBObjRecord))
+		DBObjRecord (const char *name,size_t length,DBInt itemSize) : DBObject (name,sizeof (DBObjRecord))
 			{
 			DataPTR = length > 0 ? (DBAddress) ((char *) malloc (length) - (char *) NULL) : (DBAddress) NULL;
 			LengthVAR = DataPTR == (DBAddress) NULL ? 0 : length;
 			ItemSizeVAR = itemSize;
 			}
-		DBObjRecord (const char *name,DBUnsigned length) : DBObject (name,sizeof (DBObjRecord))
+		DBObjRecord (const char *name,size_t length) : DBObject (name,sizeof (DBObjRecord))
 			{
 			DataPTR = length > 0 ? (DBAddress) ((char *) malloc (length) - (char *) NULL) : (DBAddress) NULL;
 			LengthVAR = DataPTR == (DBAddress) NULL ? 0 : length;
@@ -603,8 +603,8 @@ class DBObjRecord : public DBObject
 			}
 		~DBObjRecord () { if (DataPTR != (DBAddress) NULL) free ((char *) NULL + DataPTR); }
 		void *Data () const { return ((char *) NULL + DataPTR); }
-		DBInt Length () const { return (LengthVAR); }
-		void Realloc (DBInt length)
+		size_t Length () const { return (LengthVAR); }
+		void Realloc (size_t length)
 			{
 			if (length > 0)
 				{

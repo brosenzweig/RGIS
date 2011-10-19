@@ -329,8 +329,8 @@ DBInt DBGridIF::Value (DBObjRecord *layerRec,DBPosition pos,DBFloat value)
 	DBInt j = DimensionVAR.Col * (DimensionVAR.Row - pos.Row - 1) + pos.Col;
 	DBObjRecord *dataRec = LayerFLD->Record (layerRec);
 
-//	if (pos.Col < 0) return (DBFault); No longer possible
-//	if (pos.Row < 0) return (DBFault);
+	if (pos.Col < 0) return (DBFault);
+	if (pos.Row < 0) return (DBFault);
 	if (pos.Col >= DimensionVAR.Col) return (DBFault);
 	if (pos.Row >= DimensionVAR.Row) return (DBFault);
 
