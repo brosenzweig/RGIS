@@ -201,7 +201,7 @@ class DMDataset : public DMFileHeader
 				cellHeightFLD->Float (layerRec,CellHeight ());
 				valueTypeFLD->Int (layerRec,((DBInt) DBTypeGridDiscrete) == data->Type () ? DBTableFieldInt : valueType);
 				valueSizeFLD->Int (layerRec,valueSize);
-				if ((dataRec = new DBObjRecord (layerName,ColNum () * RowNum () * valueSize,valueSize)) == (DBObjRecord *) NULL)
+				if ((dataRec = new DBObjRecord (layerName,((size_t) ColNum ()) * RowNum () * valueSize,valueSize)) == (DBObjRecord *) NULL)
 					return (DBFault);
 				(data->Arrays ())->Add (dataRec);
 				layerFLD->Record (layerRec,dataRec);

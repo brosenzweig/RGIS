@@ -63,7 +63,7 @@ void DBVLineIF::Vertexes (DBObjRecord *lineRec,DBCoordinate *coord,DBInt vertexN
 		{
 		if ((dataRec = dataArrays->Item (lineRec->RowID ())) == (DBObjRecord *) NULL)
 			{
-			if ((dataRec = new DBObjRecord (lineRec->Name (),vertexNum * sizeof (DBCoordinate),sizeof (DBFloat))) == (DBObjRecord *) NULL) return;
+			if ((dataRec = new DBObjRecord (lineRec->Name (),((size_t) vertexNum) * sizeof (DBCoordinate),sizeof (DBFloat))) == (DBObjRecord *) NULL) return;
 			dataArrays->Add (dataRec);
 			}
 		else	dataRec->Realloc (vertexNum * sizeof (DBCoordinate));

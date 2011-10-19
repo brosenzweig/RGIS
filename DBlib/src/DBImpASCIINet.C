@@ -103,7 +103,7 @@ int DBImportASCIINet (DBObjData *netData,const char *fileName)
 	valueSizeFLD->Int (layerRec,sizeof (DBInt));
 	rowNumFLD->Int (layerRec,rowNum);
 	colNumFLD->Int (layerRec,colNum);
-	if ((dataRec = new DBObjRecord ("NetLookupGridRecord",rowNum * colNum * sizeof (DBInt),sizeof (DBInt))) == (DBObjRecord *) NULL)
+	if ((dataRec = new DBObjRecord ("NetLookupGridRecord",((size_t) rowNum) * colNum * sizeof (DBInt),sizeof (DBInt))) == (DBObjRecord *) NULL)
 		return (DBFault);
 	layerFLD->Record (layerRec,dataRec);
 	(netData->Arrays ())->Add (dataRec);

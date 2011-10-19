@@ -101,7 +101,7 @@ DBObjData *DBGridToGrid (DBObjData *srcGridData,DBInt type, DBInt valueType, DBI
 		grdData->Flags (DBDataFlagDispModeContShadeSets,DBClear);
 		grdData->Flags (srcGridData->Flags () & DBDataFlagDispModeContShadeSets,DBSet);
 		}
-	if ((dataRec = new DBObjRecord (layerRec->Name (),gridIF->ColNum () * gridIF->RowNum () * valueSize,valueSize)) == (DBObjRecord *) NULL)
+	if ((dataRec = new DBObjRecord (layerRec->Name (),((size_t) gridIF->ColNum ()) * gridIF->RowNum () * valueSize,valueSize)) == (DBObjRecord *) NULL)
 		{ delete gridIF; return ((DBObjData *) NULL); }
 	(grdData->Arrays ())->Add (dataRec);
 	layerFLD->Record (layerRec,dataRec);
@@ -190,7 +190,7 @@ DBObjData *DBGridCreate (char *title,DBRegion extent,DBCoordinate cellSize,DBInt
 		}
 	valueTypeFLD->Int (layerRec,varType);
 	valueSizeFLD->Int (layerRec,varSize);
-	dataRec = new DBObjRecord (layerRec->Name (),colNum * rowNum * varSize,varSize);
+	dataRec = new DBObjRecord (layerRec->Name (),((size_t) colNum) * rowNum * varSize,varSize);
 	if (dataRec == (DBObjRecord *) NULL) { delete data; return ((DBObjData *) NULL); }
 
 	(data->Arrays ())->Add (dataRec);
@@ -529,7 +529,7 @@ DBObjData *DBGridMerge (DBObjData *grd0Data, DBObjData *grd1Data)
             valueSizeFLD->Int (layerRec,sizeof (DBInt));
             colNumFLD->Int (layerRec, colNum);
             rowNumFLD->Int (layerRec, rowNum);
-            if ((dataRec = new DBObjRecord ("NetLookupGridRecord",rowNum * colNum * sizeof (DBInt),sizeof (DBInt))) == (DBObjRecord *) NULL)
+            if ((dataRec = new DBObjRecord ("NetLookupGridRecord",((size_t) rowNum) * colNum * sizeof (DBInt),sizeof (DBInt))) == (DBObjRecord *) NULL)
                {
         			CMmsgPrint (CMmsgAppError,"Look Grid Record creation error");
                delete retData;

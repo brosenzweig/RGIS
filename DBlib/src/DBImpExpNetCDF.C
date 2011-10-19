@@ -1700,7 +1700,7 @@ DBInt DBImportNetCDF (DBObjData *data,const char *filename)
 		cellHeightFLD->Float (layerRec,cellSize.Y);
 		valueTypeFLD->Int (layerRec,DBTableFieldFloat);
 		valueSizeFLD->Int (layerRec,sizeof (DBFloat4));
-		layerFLD->Record (layerRec,dataRec = new DBObjRecord (layerName,colNum * rowNum * sizeof (DBFloat4),sizeof (DBFloat4)));
+		layerFLD->Record (layerRec,dataRec = new DBObjRecord (layerName,((size_t) colNum) * rowNum * sizeof (DBFloat4),sizeof (DBFloat4)));
 		(data->Arrays ())->Add (dataRec);
 
 		for (rowID = 0;rowID < rowNum;rowID++)

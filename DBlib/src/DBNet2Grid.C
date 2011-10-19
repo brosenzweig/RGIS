@@ -63,7 +63,7 @@ DBObjData *DBNetworkToGrid (DBObjData *netData,DBInt type)
 			delete netIF;
 			return ((DBObjData *) NULL);
 		}
-	if ((dataRec = new DBObjRecord (layerRec->Name (),netIF->ColNum () * netIF->RowNum () * valueSizeFLD->Int (layerRec),valueSizeFLD->Int (layerRec))) == (DBObjRecord *) NULL)
+	if ((dataRec = new DBObjRecord (layerRec->Name (),((size_t) netIF->ColNum ()) * netIF->RowNum () * valueSizeFLD->Int (layerRec),valueSizeFLD->Int (layerRec))) == (DBObjRecord *) NULL)
 		{ delete netIF; return ((DBObjData *) NULL); }
 	(grdData->Arrays ())->Add (dataRec);
 	layerFLD->Record (layerRec,dataRec);

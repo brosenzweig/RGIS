@@ -113,7 +113,7 @@ DBObjRecord *DBGridIF::AddLayer (char *layerName)
 	cellHeightFLD->Float (layerRec,cellHeightFLD->Float (firstLayer));
 	valueTypeFLD->Int (layerRec,valueTypeFLD->Int (firstLayer));
 	valueSizeFLD->Int (layerRec,valueSizeFLD->Int (firstLayer));
-	if ((dataRec = new DBObjRecord (layerName,rowNumFLD->Int (firstLayer) * colNumFLD->Int (firstLayer) * valueSizeFLD->Int (firstLayer),valueSizeFLD->Int (firstLayer))) == (DBObjRecord *) NULL)
+	if ((dataRec = new DBObjRecord (layerName,((size_t) rowNumFLD->Int (firstLayer)) * colNumFLD->Int (firstLayer) * valueSizeFLD->Int (firstLayer),valueSizeFLD->Int (firstLayer))) == (DBObjRecord *) NULL)
 		{ return ((DBObjRecord *) NULL); }
 	LayerFLD->Record (layerRec,dataRec);
 	((Data ())->Arrays ())->Add (dataRec);
