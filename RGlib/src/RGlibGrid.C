@@ -1829,7 +1829,7 @@ Stop:
 	return (progress < maxProgress ? DBFault : DBSuccess);
 	}
 
-void RGlibGridSampling (DBObjData *splData,DBObjData *grdData)
+void RGlibGridSampling (DBObjData *splData,DBObjData *grdData, bool netMode)
 
 	{
 	DBInt layerID, layerNum = 0, recordID;
@@ -1878,7 +1878,7 @@ void RGlibGridSampling (DBObjData *splData,DBObjData *grdData)
 					record = table->Item (recordID);
 					DBPause ((layerRec->RowID () * table->ItemNum () + recordID) * 100 / (gridIF->LayerNum () * table->ItemNum ()));
 					if (pntIF != (DBVPointIF *) NULL) coord = pntIF->Coordinate (record);
-					else	coord = netIF->Center (record);
+               else	coord = netMode ? netIF->Center (record) : netIF->Center (record) + netIF->Delta (record);
 
 					if (gridIF->Value (layerRec,coord,&value))
 							newField->Float (record,value);
@@ -1899,7 +1899,7 @@ void RGlibGridSampling (DBObjData *splData,DBObjData *grdData)
 				{
 				record = table->Item (recordID);
 				if (pntIF != (DBVPointIF *) NULL) coord = pntIF->Coordinate (record);
-				else	coord = netIF->Center (record);
+				else	coord = netMode ? netIF->Center (record) : netIF->Center (record) + netIF->Delta (record);
 
 				if ((grdRec = gridIF->GridItem (coord)) != (DBObjRecord *) NULL)
 					newField->String (record,grdRec->Name ());
@@ -1919,7 +1919,7 @@ void RGlibGridSampling (DBObjData *splData,DBObjData *grdData)
 						record = table->Item (recordID);
 						DBPause ((field->RowID () * table->ItemNum () + recordID) * 100 / (fields->ItemNum () * table->ItemNum ()));
 						if (pntIF != (DBVPointIF *) NULL) coord = pntIF->Coordinate (record);
-						else	coord = netIF->Center (record);
+						else	coord = netMode ? netIF->Center (record) : netIF->Center (record) + netIF->Delta (record);
 
 						if ((grdRec = gridIF->GridItem (coord)) != (DBObjRecord *) NULL)
 							switch (field->Type ())

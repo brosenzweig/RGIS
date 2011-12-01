@@ -65,6 +65,7 @@ DBInt RGlibGridNoNegatives (DBObjData *,DBInt);
 DBInt RGlibGridCellStats (DBObjData *,DBObjData *);
 DBInt RGlibGridBivarCellStats (DBObjData *,DBObjData *, DBObjData *);
 DBInt RGlibGridSampling (DBObjData *,DBObjData *,DBObjData *);
+void  RGlibGridSampling (DBObjData *,DBObjData *, bool);
 DBInt RGlibCycleMean (DBObjData *,DBObjData *,DBInt,DBInt);
 DBInt RGlibLayerAggregate (DBObjData *,DBObjData *,DBInt,DBInt,DBInt);
 DBInt RGlibTSAggregate (DBObjData *,DBObjData *,DBInt, DBInt);
@@ -89,7 +90,6 @@ DBInt RGlibNetworkHeadStats (DBObjData *,DBObjData *,DBObjData *,DBInt);
 DBInt RGlibNetworkHistogram (DBObjData *,DBObjData *,DBObjData *);
 DBInt RGlibNetworkPsmRouting (DBObjData *,DBObjData *, DBObjData *, DBInt, DBFloat, DBObjData *);
 DBInt RGlibNetworkDefragment (DBObjData *, DBObjData *,DBFloat, DBFloat, bool);
-void RGlibGridSampling (DBObjData *,DBObjData *);
 
 DBInt RGLibTableJoin (DBObjTable *,DBObjTableField *,DBObjTable *,DBObjTableField *);
 

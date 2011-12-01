@@ -18,7 +18,7 @@ balazs.fekete@unh.edu
 int main (int argc,char *argv [])
 
 	{
-	int argPos, argNum = argc, ret, mode = 0, verbose = false;
+	int argPos, argNum = argc, ret, mode = 0, netMode = 0, verbose = false;
 	char *title  = (char *) NULL, *subject = (char *) NULL;
 	char *domain = (char *) NULL, *version = (char *) NULL;
 	char *splName = (char *) NULL;
@@ -41,6 +41,17 @@ int main (int argc,char *argv [])
 			if ((argNum = CMargShiftLeft (argPos,argv,argNum)) <= argPos)
 				{ CMmsgPrint (CMmsgUsrError,"Missing mode!");         return (CMfailed); }
 			if ((mode = CMoptLookup (modes,argv [argPos],true)) == DBFault)
+				{ CMmsgPrint (CMmsgUsrError,"Invalid mode!");         return (CMfailed); }
+			if ((argNum = CMargShiftLeft (argPos,argv,argNum)) <= argPos) break;
+			continue;
+			}
+		if (CMargTest (argv [argPos],"-n","--netmode"))
+			{
+			const char *modes [] = {"from", "to", (char *) NULL };
+
+			if ((argNum = CMargShiftLeft (argPos,argv,argNum)) <= argPos)
+				{ CMmsgPrint (CMmsgUsrError,"Missing mode!");         return (CMfailed); }
+			if ((netMode = CMoptLookup (modes,argv [argPos],true)) == DBFault)
 				{ CMmsgPrint (CMmsgUsrError,"Invalid mode!");         return (CMfailed); }
 			if ((argNum = CMargShiftLeft (argPos,argv,argNum)) <= argPos) break;
 			continue;
@@ -88,6 +99,7 @@ int main (int argc,char *argv [])
 			CMmsgPrint (CMmsgInfo,"%s [options] <input grid> <output table>",CMprgName(argv[0]));
 			CMmsgPrint (CMmsgInfo,"     -s,--sample    [sampling points or network]");
 			CMmsgPrint (CMmsgInfo,"     -m,--mode      [table|attrib]");
+			CMmsgPrint (CMmsgInfo,"     -n,--netmode   [from|to]");
 			CMmsgPrint (CMmsgInfo,"     -t,--title     [dataset title]");
 			CMmsgPrint (CMmsgInfo,"     -u,--subject   [subject]");
 			CMmsgPrint (CMmsgInfo,"     -d,--domain    [domain]");
@@ -138,7 +150,7 @@ int main (int argc,char *argv [])
 		if (subject != (char *) NULL)	splData->Document (DBDocSubject,subject);
 		if (domain	!= (char *) NULL)	splData->Document (DBDocGeoDomain,domain);
 		if (version != (char *) NULL) splData->Document (DBDocVersion,version);
-		RGlibGridSampling (splData,grdData);
+		RGlibGridSampling (splData,grdData,netMode);
 		ret = (argNum > 2) && (strcmp (argv [2],"-") != 0) ?
 				splData->Write (argv [2]) : splData->Write (stdout);
 		}

@@ -431,6 +431,6 @@ void RGISAnNetworkCellSampleGridCBK (Widget widget, RGISWorkspace *workspace,XmA
 
 	widget = widget;	workspace = workspace; callData = callData;
 	UIPauseDialogOpen ((char *) "Cell Sampling");
-	RGlibGridSampling (netData,grdData);
+	RGlibGridSampling (netData,grdData,true);
 	UIPauseDialogClose ();
 	}
