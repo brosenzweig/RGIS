@@ -150,7 +150,7 @@ int main (int argc,char *argv [])
 		if (subject != (char *) NULL)	splData->Document (DBDocSubject,subject);
 		if (domain	!= (char *) NULL)	splData->Document (DBDocGeoDomain,domain);
 		if (version != (char *) NULL) splData->Document (DBDocVersion,version);
-		RGlibGridSampling (splData,grdData,netMode);
+		RGlibGridSampling (splData,grdData,netMode == 0 ? true : false);
 		ret = (argNum > 2) && (strcmp (argv [2],"-") != 0) ?
 				splData->Write (argv [2]) : splData->Write (stdout);
 		}
