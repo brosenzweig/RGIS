@@ -364,14 +364,24 @@
         </df>
       </df>
       <df name="rServer">
+        <df name=".svn">
+        </df>
         <df name="bin">
+          <df name=".svn">
+          </df>
         </df>
         <df name="include">
+          <df name=".svn">
+          </df>
           <in>rServer.H</in>
         </df>
         <df name="obj">
+          <df name=".svn">
+          </df>
         </df>
         <df name="src">
+          <df name=".svn">
+          </df>
           <in>RSVRMain.C</in>
         </df>
       </df>
@@ -468,42 +478,19 @@
             <incDir>
               <pElem>CMlib/include</pElem>
               <pElem>DBlib/include</pElem>
-              <pElem>NClib/include</pElem>
               <pElem>RGlib/include</pElem>
-              <pElem>UIlib/include</pElem>
-              <pElem>ncCommands/include</pElem>
-              <pElem>rCommands/include</pElem>
-              <pElem>rGIS/include</pElem>
-              <pElem>rgisPlot/include</pElem>
-              <pElem>/sw/include</pElem>
-              <pElem>/sw/lib/pgplot</pElem>
             </incDir>
           </cTool>
           <ccTool>
             <incDir>
               <pElem>CMlib/include</pElem>
               <pElem>DBlib/include</pElem>
-              <pElem>NClib/include</pElem>
               <pElem>RGlib/include</pElem>
-              <pElem>UIlib/include</pElem>
-              <pElem>ncCommands/include</pElem>
-              <pElem>rCommands/include</pElem>
-              <pElem>rGIS/include</pElem>
-              <pElem>rgisPlot/include</pElem>
-              <pElem>/sw/include</pElem>
-              <pElem>/sw/lib/pgplot</pElem>
             </incDir>
-            <preprocessorList>
-              <Elem>_GNU_SOURCE</Elem>
-            </preprocessorList>
           </ccTool>
         </makeTool>
       </makefileType>
       <item path="CMlib/include/cm.h" ex="true" tool="3" flavor="0">
-      </item>
-      <item path="DBlib/include/DB.H" ex="true" tool="3" flavor="0">
-      </item>
-      <item path="DBlib/include/DBif.H" ex="true" tool="3" flavor="0">
       </item>
       <item path="DBlib/include/DBtf.h" ex="true" tool="3" flavor="0">
       </item>
@@ -531,42 +518,42 @@
       </item>
       <item path="NClib/include/NCtime.h" ex="true" tool="3" flavor="0">
       </item>
-      <item path="NClib/src/NCcoordinate.c" ex="false" tool="0" flavor="0">
+      <item path="NClib/src/NCcoordinate.c" ex="true" tool="0" flavor="0">
         <cTool>
           <preprocessorList>
             <Elem>_GNU_SOURCE</Elem>
           </preprocessorList>
         </cTool>
       </item>
-      <item path="NClib/src/NCdata.c" ex="false" tool="0" flavor="0">
+      <item path="NClib/src/NCdata.c" ex="true" tool="0" flavor="0">
         <cTool>
           <preprocessorList>
             <Elem>_GNU_SOURCE</Elem>
           </preprocessorList>
         </cTool>
       </item>
-      <item path="NClib/src/NCdate.c" ex="false" tool="0" flavor="0">
+      <item path="NClib/src/NCdate.c" ex="true" tool="0" flavor="0">
         <cTool>
           <preprocessorList>
             <Elem>_GNU_SOURCE</Elem>
           </preprocessorList>
         </cTool>
       </item>
-      <item path="NClib/src/NCdsHandle.c" ex="false" tool="0" flavor="0">
+      <item path="NClib/src/NCdsHandle.c" ex="true" tool="0" flavor="0">
         <cTool>
           <preprocessorList>
             <Elem>_GNU_SOURCE</Elem>
           </preprocessorList>
         </cTool>
       </item>
-      <item path="NClib/src/NCdsHandleGCont.c" ex="false" tool="0" flavor="0">
+      <item path="NClib/src/NCdsHandleGCont.c" ex="true" tool="0" flavor="0">
         <cTool>
           <preprocessorList>
             <Elem>_GNU_SOURCE</Elem>
           </preprocessorList>
         </cTool>
       </item>
-      <item path="NClib/src/NCdsHandleGDisc.c" ex="false" tool="0" flavor="0">
+      <item path="NClib/src/NCdsHandleGDisc.c" ex="true" tool="0" flavor="0">
         <cTool>
           <incDir>
             <pElem>/sw/include</pElem>
@@ -583,70 +570,70 @@
           </incDir>
         </cTool>
       </item>
-      <item path="NClib/src/NCdsHandleGLayout.c" ex="false" tool="0" flavor="0">
+      <item path="NClib/src/NCdsHandleGLayout.c" ex="true" tool="0" flavor="0">
         <cTool>
           <preprocessorList>
             <Elem>_GNU_SOURCE</Elem>
           </preprocessorList>
         </cTool>
       </item>
-      <item path="NClib/src/NCdsHandleGeo.c" ex="false" tool="0" flavor="0">
+      <item path="NClib/src/NCdsHandleGeo.c" ex="true" tool="0" flavor="0">
         <cTool>
           <preprocessorList>
             <Elem>_GNU_SOURCE</Elem>
           </preprocessorList>
         </cTool>
       </item>
-      <item path="NClib/src/NCdsHandleGrid.c" ex="false" tool="0" flavor="0">
+      <item path="NClib/src/NCdsHandleGrid.c" ex="true" tool="0" flavor="0">
         <cTool>
           <preprocessorList>
             <Elem>_GNU_SOURCE</Elem>
           </preprocessorList>
         </cTool>
       </item>
-      <item path="NClib/src/NCdsHandleNet.c" ex="false" tool="0" flavor="0">
+      <item path="NClib/src/NCdsHandleNet.c" ex="true" tool="0" flavor="0">
         <cTool>
           <preprocessorList>
             <Elem>_GNU_SOURCE</Elem>
           </preprocessorList>
         </cTool>
       </item>
-      <item path="NClib/src/NCdsHandleVecPnt.c" ex="false" tool="0" flavor="0">
+      <item path="NClib/src/NCdsHandleVecPnt.c" ex="true" tool="0" flavor="0">
         <cTool>
           <preprocessorList>
             <Elem>_GNU_SOURCE</Elem>
           </preprocessorList>
         </cTool>
       </item>
-      <item path="NClib/src/NCdsHandleVector.c" ex="false" tool="0" flavor="0">
+      <item path="NClib/src/NCdsHandleVector.c" ex="true" tool="0" flavor="0">
         <cTool>
           <preprocessorList>
             <Elem>_GNU_SOURCE</Elem>
           </preprocessorList>
         </cTool>
       </item>
-      <item path="NClib/src/NCfileCreate.c" ex="false" tool="0" flavor="0">
+      <item path="NClib/src/NCfileCreate.c" ex="true" tool="0" flavor="0">
         <cTool>
           <preprocessorList>
             <Elem>_GNU_SOURCE</Elem>
           </preprocessorList>
         </cTool>
       </item>
-      <item path="NClib/src/NCfileList.c" ex="false" tool="0" flavor="0">
+      <item path="NClib/src/NCfileList.c" ex="true" tool="0" flavor="0">
         <cTool>
           <preprocessorList>
             <Elem>_GNU_SOURCE</Elem>
           </preprocessorList>
         </cTool>
       </item>
-      <item path="NClib/src/NCgridSampling.c" ex="false" tool="0" flavor="0">
+      <item path="NClib/src/NCgridSampling.c" ex="true" tool="0" flavor="0">
         <cTool>
           <preprocessorList>
             <Elem>_GNU_SOURCE</Elem>
           </preprocessorList>
         </cTool>
       </item>
-      <item path="NClib/src/NCify.c" ex="false" tool="0" flavor="0">
+      <item path="NClib/src/NCify.c" ex="true" tool="0" flavor="0">
         <cTool>
           <incDir>
             <pElem>/sw/include</pElem>
@@ -663,56 +650,56 @@
           </incDir>
         </cTool>
       </item>
-      <item path="NClib/src/NCmath.c" ex="false" tool="0" flavor="0">
+      <item path="NClib/src/NCmath.c" ex="true" tool="0" flavor="0">
         <cTool>
           <preprocessorList>
             <Elem>_GNU_SOURCE</Elem>
           </preprocessorList>
         </cTool>
       </item>
-      <item path="NClib/src/NCmathEqtn.c" ex="false" tool="0" flavor="0">
+      <item path="NClib/src/NCmathEqtn.c" ex="true" tool="0" flavor="0">
         <cTool>
           <preprocessorList>
             <Elem>_GNU_SOURCE</Elem>
           </preprocessorList>
         </cTool>
       </item>
-      <item path="NClib/src/NCnames.c" ex="false" tool="0" flavor="0">
+      <item path="NClib/src/NCnames.c" ex="true" tool="0" flavor="0">
         <cTool>
           <preprocessorList>
             <Elem>_GNU_SOURCE</Elem>
           </preprocessorList>
         </cTool>
       </item>
-      <item path="NClib/src/NCreference.c" ex="false" tool="0" flavor="0">
+      <item path="NClib/src/NCreference.c" ex="true" tool="0" flavor="0">
         <cTool>
           <preprocessorList>
             <Elem>_GNU_SOURCE</Elem>
           </preprocessorList>
         </cTool>
       </item>
-      <item path="NClib/src/NCregion.c" ex="false" tool="0" flavor="0">
+      <item path="NClib/src/NCregion.c" ex="true" tool="0" flavor="0">
         <cTool>
           <preprocessorList>
             <Elem>_GNU_SOURCE</Elem>
           </preprocessorList>
         </cTool>
       </item>
-      <item path="NClib/src/NCstdlib.c" ex="false" tool="0" flavor="0">
+      <item path="NClib/src/NCstdlib.c" ex="true" tool="0" flavor="0">
         <cTool>
           <preprocessorList>
             <Elem>_GNU_SOURCE</Elem>
           </preprocessorList>
         </cTool>
       </item>
-      <item path="NClib/src/NCstring.c" ex="false" tool="0" flavor="0">
+      <item path="NClib/src/NCstring.c" ex="true" tool="0" flavor="0">
         <cTool>
           <preprocessorList>
             <Elem>_GNU_SOURCE</Elem>
           </preprocessorList>
         </cTool>
       </item>
-      <item path="NClib/src/NCtable.c" ex="false" tool="0" flavor="0">
+      <item path="NClib/src/NCtable.c" ex="true" tool="0" flavor="0">
         <cTool>
           <preprocessorList>
             <Elem>_GNU_SOURCE</Elem>
@@ -721,33 +708,78 @@
       </item>
       <item path="RGlib/include/RG.H" ex="true" tool="3" flavor="0">
       </item>
-      <item path="UIlib/include/UI.H" ex="true" tool="3" flavor="0">
-      </item>
       <folder path="RGIS/CMlib">
         <cTool>
+          <incDir>
+            <pElem>CMlib/src</pElem>
+          </incDir>
           <preprocessorList>
             <Elem>_GNU_SOURCE</Elem>
           </preprocessorList>
         </cTool>
       </folder>
+      <folder path="RGIS/CMlib/src">
+        <cTool>
+          <incDir>
+            <pElem>CMlib/src</pElem>
+          </incDir>
+          <inheritIncValues>false</inheritIncValues>
+          <inheritPreValues>false</inheritPreValues>
+        </cTool>
+      </folder>
+      <folder path="RGIS/DBlib">
+        <ccTool>
+          <incDir>
+            <pElem>DBlib/src</pElem>
+          </incDir>
+        </ccTool>
+      </folder>
+      <folder path="RGIS/DBlib/src">
+        <ccTool>
+          <incDir>
+            <pElem>DBlib/src</pElem>
+            <pElem>DBlib/include</pElem>
+          </incDir>
+          <inheritIncValues>false</inheritIncValues>
+          <inheritPreValues>false</inheritPreValues>
+        </ccTool>
+      </folder>
       <folder path="RGIS/Flib">
         <cTool>
           <incDir>
-            <pElem>Flib/include</pElem>
+            <pElem>Flib/src</pElem>
           </incDir>
           <preprocessorList>
             <Elem>_GNU_SOURCE</Elem>
           </preprocessorList>
+        </cTool>
+      </folder>
+      <folder path="RGIS/Flib/src">
+        <cTool>
+          <incDir>
+            <pElem>Flib/src</pElem>
+          </incDir>
+          <inheritIncValues>false</inheritIncValues>
+          <inheritPreValues>false</inheritPreValues>
         </cTool>
       </folder>
       <folder path="RGIS/MFlib">
         <cTool>
           <incDir>
-            <pElem>MFlib/include</pElem>
+            <pElem>MFlib/src</pElem>
           </incDir>
           <preprocessorList>
             <Elem>_GNU_SOURCE</Elem>
           </preprocessorList>
+        </cTool>
+      </folder>
+      <folder path="RGIS/MFlib/src">
+        <cTool>
+          <incDir>
+            <pElem>MFlib/src</pElem>
+          </incDir>
+          <inheritIncValues>false</inheritIncValues>
+          <inheritPreValues>false</inheritPreValues>
         </cTool>
       </folder>
       <folder path="RGIS/NClib">
@@ -760,56 +792,128 @@
       <folder path="RGIS/RGlib">
         <ccTool>
           <incDir>
-            <pElem>MFlib/include</pElem>
-            <pElem>RGlib/include</pElem>
+            <pElem>RGlib/src</pElem>
           </incDir>
+        </ccTool>
+      </folder>
+      <folder path="RGIS/RGlib/src">
+        <ccTool>
+          <incDir>
+            <pElem>RGlib/src</pElem>
+            <pElem>DBlib/include</pElem>
+          </incDir>
+          <inheritIncValues>false</inheritIncValues>
+          <inheritPreValues>false</inheritPreValues>
         </ccTool>
       </folder>
       <folder path="RGIS/UIlib">
         <ccTool>
           <incDir>
-            <pElem>UIlib/include</pElem>
+            <pElem>UIlib/src</pElem>
           </incDir>
+        </ccTool>
+      </folder>
+      <folder path="RGIS/UIlib/src">
+        <ccTool>
+          <incDir>
+            <pElem>UIlib/src</pElem>
+            <pElem>UIlib/include</pElem>
+            <pElem>DBlib/include</pElem>
+          </incDir>
+          <inheritIncValues>false</inheritIncValues>
+          <inheritPreValues>false</inheritPreValues>
         </ccTool>
       </folder>
       <folder path="RGIS/ncCommands">
         <cTool>
           <incDir>
-            <pElem>ncCommands/include</pElem>
-            <pElem>NClib/include</pElem>
+            <pElem>ncCommands/src</pElem>
           </incDir>
+        </cTool>
+      </folder>
+      <folder path="RGIS/ncCommands/src">
+        <cTool>
+          <incDir>
+            <pElem>ncCommands/src</pElem>
+          </incDir>
+          <inheritIncValues>false</inheritIncValues>
+          <inheritPreValues>false</inheritPreValues>
         </cTool>
       </folder>
       <folder path="RGIS/rCommands">
         <ccTool>
           <incDir>
-            <pElem>rCommands/include</pElem>
-            <pElem>MFlib/include</pElem>
-            <pElem>RGlib/include</pElem>
+            <pElem>rCommands/src</pElem>
           </incDir>
+        </ccTool>
+      </folder>
+      <folder path="RGIS/rCommands/src">
+        <ccTool>
+          <incDir>
+            <pElem>rCommands/include</pElem>
+            <pElem>rCommands/src</pElem>
+            <pElem>DBlib/include</pElem>
+          </incDir>
+          <inheritIncValues>false</inheritIncValues>
+          <inheritPreValues>false</inheritPreValues>
         </ccTool>
       </folder>
       <folder path="RGIS/rGIS">
         <ccTool>
           <incDir>
+            <pElem>rGIS/src</pElem>
+          </incDir>
+        </ccTool>
+      </folder>
+      <folder path="RGIS/rGIS/src">
+        <ccTool>
+          <incDir>
+            <pElem>rGIS/src</pElem>
             <pElem>UIlib/include</pElem>
             <pElem>rGIS/include</pElem>
-            <pElem>RGlib/include</pElem>
+            <pElem>DBlib/include</pElem>
           </incDir>
+          <inheritIncValues>false</inheritIncValues>
+          <inheritPreValues>false</inheritPreValues>
+        </ccTool>
+      </folder>
+      <folder path="RGIS/rServer">
+        <ccTool>
+          <incDir>
+            <pElem>rServer/src</pElem>
+          </incDir>
+        </ccTool>
+      </folder>
+      <folder path="RGIS/rServer/src">
+        <ccTool>
+          <incDir>
+            <pElem>rServer/src</pElem>
+          </incDir>
+          <inheritIncValues>false</inheritIncValues>
+          <inheritPreValues>false</inheritPreValues>
         </ccTool>
       </folder>
       <folder path="RGIS/rgisPlot">
         <ccTool>
           <incDir>
-            <pElem>rgisPlot/include</pElem>
+            <pElem>rgisPlot/src</pElem>
           </incDir>
+        </ccTool>
+      </folder>
+      <folder path="RGIS/rgisPlot/src">
+        <ccTool>
+          <incDir>
+            <pElem>rgisPlot/src</pElem>
+            <pElem>DBlib/include</pElem>
+          </incDir>
+          <inheritIncValues>false</inheritIncValues>
+          <inheritPreValues>false</inheritPreValues>
         </ccTool>
       </folder>
       <folder path="RGIS/tfCommands">
         <cTool>
           <incDir>
-            <pElem>Flib/include</pElem>
-            <pElem>DBlib/include</pElem>
+            <pElem>tfCommands/src</pElem>
           </incDir>
         </cTool>
         <ccTool>
@@ -819,49 +923,16 @@
           </incDir>
         </ccTool>
       </folder>
-      <item path="ncCommands/src/NCCnc2table.c" ex="false" tool="0" flavor="0">
+      <folder path="RGIS/tfCommands/src">
         <cTool>
-          <preprocessorList>
-            <Elem>_GNU_SOURCE</Elem>
-          </preprocessorList>
+          <incDir>
+            <pElem>tfCommands/src</pElem>
+          </incDir>
+          <inheritIncValues>false</inheritIncValues>
+          <inheritPreValues>false</inheritPreValues>
         </cTool>
-      </item>
-      <item path="ncCommands/src/NCCncAggregate.c" ex="false" tool="0" flavor="0">
-        <cTool>
-          <preprocessorList>
-            <Elem>_GNU_SOURCE</Elem>
-          </preprocessorList>
-        </cTool>
-      </item>
-      <item path="ncCommands/src/NCCncAttributes.c" ex="false" tool="0" flavor="0">
-        <cTool>
-          <preprocessorList>
-            <Elem>_GNU_SOURCE</Elem>
-          </preprocessorList>
-        </cTool>
-      </item>
-      <item path="ncCommands/src/NCCncGridResample.c" ex="false" tool="0" flavor="0">
-        <cTool>
-          <preprocessorList>
-            <Elem>_GNU_SOURCE</Elem>
-          </preprocessorList>
-        </cTool>
-      </item>
-      <item path="ncCommands/src/NCCncGridSampling.c" ex="false" tool="0" flavor="0">
-        <cTool>
-          <preprocessorList>
-            <Elem>_GNU_SOURCE</Elem>
-          </preprocessorList>
-        </cTool>
-      </item>
-      <item path="ncCommands/src/NCCncTblCalculate.c" ex="false" tool="0" flavor="0">
-        <cTool>
-          <preprocessorList>
-            <Elem>_GNU_SOURCE</Elem>
-          </preprocessorList>
-        </cTool>
-      </item>
-      <item path="ncCommands/src/NCCtemplate.c" ex="false" tool="0" flavor="0">
+      </folder>
+      <item path="ncCommands/src/NCCtemplate.c" ex="true" tool="0" flavor="0">
         <cTool>
           <incDir>
             <pElem>/sw/include</pElem>
@@ -877,43 +948,13 @@
           </incDir>
         </cTool>
       </item>
-      <item path="rCommands/include/CMDexp.H" ex="true" tool="3" flavor="0">
+      <item path="rGIS/src/RGISAnPoly.C" ex="true" tool="1" flavor="0">
       </item>
-      <item path="rGIS/include/rgis.H" ex="true" tool="3" flavor="0">
+      <item path="rServer/include/rServer.H" ex="true" tool="3" flavor="0">
       </item>
       <item path="rgisPlot/include/rgisPlot.H" ex="true" tool="3" flavor="0">
       </item>
-      <item path="tfCommands/src/FAccumulate.c" ex="false" tool="0" flavor="0">
-        <cTool>
-          <incDir>
-            <pElem>tfCommands/include</pElem>
-          </incDir>
-          <preprocessorList>
-            <Elem>_GNU_SOURCE</Elem>
-          </preprocessorList>
-        </cTool>
-      </item>
-      <item path="tfCommands/src/FCut.c" ex="false" tool="0" flavor="0">
-        <cTool>
-          <incDir>
-            <pElem>tfCommands/include</pElem>
-          </incDir>
-          <preprocessorList>
-            <Elem>_GNU_SOURCE</Elem>
-          </preprocessorList>
-        </cTool>
-      </item>
-      <item path="tfCommands/src/FPrintDataTypes.c" ex="false" tool="0" flavor="0">
-        <cTool>
-          <incDir>
-            <pElem>tfCommands/include</pElem>
-          </incDir>
-          <preprocessorList>
-            <Elem>_GNU_SOURCE</Elem>
-          </preprocessorList>
-        </cTool>
-      </item>
-      <item path="tfCommands/src/FReg.c" ex="false" tool="0" flavor="0">
+      <item path="tfCommands/src/FReg.c" ex="true" tool="0" flavor="0">
         <cTool>
           <incDir>
             <pElem>/sw/include</pElem>
@@ -929,25 +970,7 @@
           </incDir>
         </cTool>
       </item>
-      <item path="tfCommands/src/FSort.c" ex="false" tool="0" flavor="0">
-        <cTool>
-          <incDir>
-            <pElem>tfCommands/include</pElem>
-          </incDir>
-          <preprocessorList>
-            <Elem>_GNU_SOURCE</Elem>
-          </preprocessorList>
-        </cTool>
-      </item>
-      <item path="tfCommands/src/FStat.c" ex="false" tool="0" flavor="0">
-        <cTool>
-          <incDir>
-            <pElem>tfCommands/include</pElem>
-          </incDir>
-          <preprocessorList>
-            <Elem>_GNU_SOURCE</Elem>
-          </preprocessorList>
-        </cTool>
+      <item path="tfCommands/src/Ftbl2rgis.C" ex="true" tool="1" flavor="0">
       </item>
     </conf>
   </confs>
