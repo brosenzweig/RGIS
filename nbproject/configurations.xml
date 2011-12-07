@@ -363,6 +363,18 @@
           <in>RGlibTable.C</in>
         </df>
       </df>
+      <df name="rServer">
+        <df name="bin">
+        </df>
+        <df name="include">
+          <in>rServer.H</in>
+        </df>
+        <df name="obj">
+        </df>
+        <df name="src">
+          <in>RSVRMain.C</in>
+        </df>
+      </df>
       <df name="Scripts">
       </df>
       <df name="tfCommands">

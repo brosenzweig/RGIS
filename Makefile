@@ -1,9 +1,10 @@
 include ./common.mk
-all: rgis_target rcommands_target nccommands_target rgisPlot_target tfcommands_target
+all: rgis_target rcommands_target rserver_target nccommands_target rgisPlot_target tfcommands_target
 
 install: $(INSTALLDIR)/bin $(INSTALLDIR)/XResources/bitmaps $(INSTALLDIR)/Messages $(INSTALLDIR)/html $(INSTALLDIR)/Scripts $(INSTALLDIR)/f
 	$(UNIXMAKE) -C rGIS       install
 	$(UNIXMAKE) -C rCommands  install
+	$(UNIXMAKE) -C rServer    install
 	$(UNIXMAKE) -C rgisPlot   install
 	$(UNIXMAKE) -C tfCommands install
 	cp XResources/bitmaps/* $(INSTALLDIR)/XResources/bitmaps/
@@ -17,6 +18,7 @@ install: $(INSTALLDIR)/bin $(INSTALLDIR)/XResources/bitmaps $(INSTALLDIR)/Messag
 reinstall: $(INSTALLDIR)/bin $(INSTALLDIR)/XResources/bitmaps $(INSTALLDIR)/Messages $(INSTALLDIR)/html $(INSTALLDIR)/Scripts $(INSTALLDIR)/f
 	$(UNIXMAKE) -C rGIS       install
 	$(UNIXMAKE) -C rCommands  install
+	$(UNIXMAKE) -C rServer    install
 	$(UNIXMAKE) -C rgisPlot   install
 	$(UNIXMAKE) -C tfCommands install
 	cp XResources/bitmaps/* $(INSTALLDIR)/XResources/bitmaps/
@@ -28,9 +30,10 @@ reinstall: $(INSTALLDIR)/bin $(INSTALLDIR)/XResources/bitmaps $(INSTALLDIR)/Mess
 
 uninstall:
 	$(UNIXMAKE) -C rGIS       uninstall
-	$(UNIXMAKE) -C tfCommands uninstall
-	$(UNIXMAKE) -C rgisPlot   uninstall
 	$(UNIXMAKE) -C rCommands  uninstall
+	$(UNIXMAKE) -C rServer    uninstall
+	$(UNIXMAKE) -C rgisPlot   uninstall
+	$(UNIXMAKE) -C tfCommands uninstall
 	rm -rf $(INSTALLDIR)/XResources
 	rm -rf $(INSTALLDIR)/Messages
 	rm -rf $(INSTALLDIR)/html
@@ -44,6 +47,7 @@ clean:
 	$(UNIXMAKE) -C rgisPlot   clean
 	$(UNIXMAKE) -C ncCommands clean
 	$(UNIXMAKE) -C rCommands  clean
+	$(UNIXMAKE) -C rServer    clean
 	$(UNIXMAKE) -C tfCommands clean
 	$(UNIXMAKE) -C CMlib      clean
 	$(UNIXMAKE) -C DBlib      clean
@@ -70,6 +74,8 @@ rgis_target: cmlib_target dblib_target rglib_target uilib_target
 	$(UNIXMAKE) -C rGIS all
 rcommands_target: cmlib_target rglib_target mflib_target
 	$(UNIXMAKE) -C rCommands all
+rserver_target: cmlib_target rglib_target mflib_target
+	$(UNIXMAKE) -C rServer  all
 nccommands_target: cmlib_target nclib_target
 	$(UNIXMAKE) -C ncCommands all
 tfcommands_target: cmlib_target dblib_target flib_target
