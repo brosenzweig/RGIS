@@ -93,9 +93,9 @@ int main (int argc,char *argv [])
       return (CMfailed);
       }
    if (title	!= (char *) NULL) netData->Name (title);
-	if (subject == (char *) NULL) netData->Document (DBDocSubject,   subject);
-	if (domain	== (char *) NULL) netData->Document (DBDocGeoDomain, domain);
-   if (version == (char *) NULL) netData->Document (DBDocVersion,   version);
+	if (subject != (char *) NULL) netData->Document (DBDocSubject,   subject);
+	if (domain	!= (char *) NULL) netData->Document (DBDocGeoDomain, domain);
+   if (version != (char *) NULL) netData->Document (DBDocVersion,   version);
    
    netIF = new DBNetworkIF (netData);   
    ret = netIF->Trim ();
