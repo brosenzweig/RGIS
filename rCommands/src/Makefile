@@ -49,11 +49,13 @@ UTILS = $(BIN)/dsAggregate\
         $(BIN)/netBasinHist\
         $(BIN)/netBasinProf\
         $(BIN)/netBasinStats\
+        $(BIN)/netBuild\
         $(BIN)/netCellSlopes\
         $(BIN)/netUpstreamAvg\
         $(BIN)/netErosion\
         $(BIN)/netImportASCII\
         $(BIN)/netTransfer\
+        $(BIN)/netTrim\
         $(BIN)/netDefragment\
         $(BIN)/netCells2Grid\
         $(BIN)/netConfluence\
