@@ -61,6 +61,7 @@ UTILS = $(BIN)/dsAggregate\
         $(BIN)/netConfluence\
         $(BIN)/netCreatePnts\
         $(BIN)/pntGridSampling\
+        $(BIN)/pntGridValue\
         $(BIN)/pntSTNChar\
         $(BIN)/pntSubbasins\
         $(BIN)/pntSubbasStats\
