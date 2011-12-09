@@ -63,13 +63,48 @@ int main (int argc,char *argv [])
             {
             layerRec = gridIF->Layer (layerID);
             if (gridIF->Value(layerRec,coord,&value))
-               printf ("%s: %f\n",layerRec->Name(),value);
+               printf ("%s: %f\n",    layerRec->Name(),value);
             else
-               printf ("%s: nodata",layerRec->Name());
+               printf ("%s: nodata\n",layerRec->Name());
             }
          delete gridIF;
          } break;
       case DBTypeGridDiscrete:
+         {
+         DBGridIF *gridIF = new DBGridIF (data);   
+         DBObjRecord *record = gridIF->GridItem (coord);
+         DBObjTableField *field;
+         DBInt fieldID, fieldNum = data->Table(DBrNItems)->FieldNum ();
+         
+         delete gridIF;
+
+         if (record != (DBObjRecord *) NULL)
+            {
+            for (fieldID = 0; fieldID < fieldNum; ++field)
+               {
+               field = data->Table (DBrNItems)->Field(fieldID);
+               if (DBTableFieldIsVisible(field))
+                  {
+                  switch (field->Type())
+                     {
+                     case DBTableFieldString:
+                     case DBTableFieldDate:
+                        printf ("%s: %s\n",  field->Name (), field->String (record));
+                        break;
+                     case DBTableFieldInt:
+                        printf ("%s: %d\n",  field->Name (), field->Int    (record));
+                        break;
+                     case DBTableFieldFloat:
+                        printf ("%s: %lf\n", field->Name (), field->Float  (record));
+                        break;
+                     default:
+                        CMmsgPrint (CMmsgAppError,"invalid field type");
+                        break;
+                     }
+                  }
+               }
+            }
+         }
          break;
       case DBTypeNetwork:
          break;
