@@ -251,6 +251,7 @@
           <in>CMDnetUpstreamAvg.C</in>
           <in>CMDnetcdf2rgis.C</in>
           <in>CMDpntGridSampling.C</in>
+          <in>CMDpntGridValue.C</in>
           <in>CMDpntSTNChar.C</in>
           <in>CMDpntStationDist.C</in>
           <in>CMDpntSubbasCenter.C</in>
