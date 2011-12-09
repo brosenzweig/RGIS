@@ -80,7 +80,7 @@ int main (int argc,char *argv [])
 
          if (record != (DBObjRecord *) NULL)
             {
-            for (fieldID = 0; fieldID < fieldNum; ++field)
+            for (fieldID = 0; fieldID < fieldNum; ++fieldID)
                {
                field = data->Table (DBrNItems)->Field(fieldID);
                if (DBTableFieldIsVisible(field))
