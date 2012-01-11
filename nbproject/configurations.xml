@@ -1,14 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<configurationDescriptor version="79">
+<configurationDescriptor version="80">
   <logicalFolder name="root" displayName="root" projectFiles="true" kind="ROOT">
     <df name="RGIS" root=".">
       <df name="CMlib">
         <df name="include">
           <in>cm.h</in>
-        </df>
-        <df name="lib">
-        </df>
-        <df name="obj">
         </df>
         <df name="src">
           <in>cmArgParse.c</in>
@@ -24,10 +20,6 @@
           <in>DB.H</in>
           <in>DBif.H</in>
           <in>DBtf.h</in>
-        </df>
-        <df name="lib">
-        </df>
-        <df name="obj">
         </df>
         <df name="src">
           <in>DBByteOrder.C</in>
@@ -73,10 +65,6 @@
         <df name="include">
           <in>Flib.h</in>
         </df>
-        <df name="lib">
-        </df>
-        <df name="obj">
-        </df>
         <df name="src">
           <in>FData.c</in>
           <in>FTableRead.c</in>
@@ -88,10 +76,6 @@
         </df>
         <df name="dm">
         </df>
-        <df name="dmMisc">
-        </df>
-        <df name="gie">
-        </df>
         <df name="Images">
         </df>
         <df name="rCommands">
@@ -100,22 +84,12 @@
           <df name="Images">
           </df>
         </df>
-        <df name="rgisPlot">
-        </df>
-        <df name="riverBed">
-        </df>
-        <df name="vwtm">
-        </df>
       </df>
       <df name="Messages">
       </df>
       <df name="MFlib">
         <df name="include">
           <in>MF.h</in>
-        </df>
-        <df name="lib">
-        </df>
-        <df name="obj">
         </df>
         <df name="Scripts">
         </df>
@@ -133,12 +107,6 @@
         </df>
       </df>
       <df name="ncCommands">
-        <df name="bin">
-        </df>
-        <df name="include">
-        </df>
-        <df name="obj">
-        </df>
         <df name="src">
           <in>NCCnc2table.c</in>
           <in>NCCncAggregate.c</in>
@@ -161,10 +129,6 @@
           <in>NCstring.h</in>
           <in>NCtable.h</in>
           <in>NCtime.h</in>
-        </df>
-        <df name="lib">
-        </df>
-        <df name="obj">
         </df>
         <df name="src">
           <in>NCcoordinate.c</in>
@@ -194,12 +158,8 @@
         </df>
       </df>
       <df name="rCommands">
-        <df name="bin">
-        </df>
         <df name="include">
           <in>CMDexp.H</in>
-        </df>
-        <df name="obj">
         </df>
         <df name="src">
           <in>CMDdm2rgis.C</in>
@@ -287,12 +247,8 @@
         </df>
       </df>
       <df name="rGIS">
-        <df name="bin">
-        </df>
         <df name="include">
           <in>rgis.H</in>
-        </df>
-        <df name="obj">
         </df>
         <df name="src">
           <in>RGISAnField.C</in>
@@ -332,12 +288,8 @@
         </df>
       </df>
       <df name="rgisPlot">
-        <df name="bin">
-        </df>
         <df name="include">
           <in>rgisPlot.H</in>
-        </df>
-        <df name="obj">
         </df>
         <df name="src">
           <in>RGPColorMaps.C</in>
@@ -352,10 +304,6 @@
         <df name="include">
           <in>RG.H</in>
         </df>
-        <df name="lib">
-        </df>
-        <df name="obj">
-        </df>
         <df name="src">
           <in>RGlibDataStream.C</in>
           <in>RGlibGenFuncs.C</in>
@@ -367,12 +315,8 @@
         </df>
       </df>
       <df name="rServer">
-        <df name="bin">
-        </df>
         <df name="include">
           <in>rServer.H</in>
-        </df>
-        <df name="obj">
         </df>
         <df name="src">
           <in>RSVRMain.C</in>
@@ -381,10 +325,6 @@
       <df name="Scripts">
       </df>
       <df name="tfCommands">
-        <df name="bin">
-        </df>
-        <df name="obj">
-        </df>
         <df name="src">
           <in>FAccumulate.c</in>
           <in>FCut.c</in>
@@ -398,10 +338,6 @@
       <df name="UIlib">
         <df name="include">
           <in>UI.H</in>
-        </df>
-        <df name="lib">
-        </df>
-        <df name="obj">
         </df>
         <df name="src">
           <in>UI2DView.C</in>
